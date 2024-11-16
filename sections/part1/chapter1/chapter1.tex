@@ -16,7 +16,7 @@ subjectivement appeler le ``calcul''.
 
 La notion de calculabilité, qui définit ce qui est calculable et ce qui ne l'est pas, apporte une
 définition du calcul. Cette notion est fondé sur des modèles fondamentaux du calcul (tous
-équivalents, et heureusement !) comme les machines de Turing et le λ-calcul. Les ordinateurs
+équivalents, et heureusement !) comme les machines de Turing et le $\lambda$-calcul. Les ordinateurs
 contemporains sont fondés sur le modèle de la machine de Turing et sont dits équivalents au
 modèle de la machine de Turing.
 
@@ -673,7 +673,7 @@ mais qui a le bénéfice d'être simple et suffisante dans un cadre purement pra
 Tout simplement.
 
 \begin{algorithm}
-\caption{Premier exemple simple}\label{alg:two}
+\caption{Premier exemple simple}\label{alg:hello}
 Afficher("Bonjour !")\;
 Afficher("Au revoir !")\;
 \end{algorithm}
@@ -693,7 +693,7 @@ L'\textbf{Algorithme 1} produira donc le résultat suivant :
 L'intérêt d'algorithmes est notamment d'automatiser des tâches. On peut notamment imaginer l'algorithme suivant :
 \newline
 \begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:two}
+\caption{Aller chercher le journal}\label{alg:letters}
 Aller à la boîte aux lettres\;
 \eSi{la boîte est ouverte} {
 	Ramasser le contenu de la boîte aux lettres\;
@@ -714,7 +714,7 @@ On peut imaginer apprendre cet algorithme à notre corbeau de compagnie (c'est t
 	\item que l'instruction "Fermer la boîte aux lettres" est présente deux fois, et surtout qu'on est certain qu'elle s'exécute. En effet, cette instruction est présente que la condition "\textit{la boîte est ouverte}" soit vérifiée ou non ! \textit{idem} pour l'instruction "Ramasser le journal". On peut donc les mettre une seule fois à la fin.
 \end{itemize}
 \begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:two}
+\caption{Aller chercher le journal}\label{alg:optletters}
 Aller à la boîte aux lettres\;
 \eSi{la boîte est ouverte} {
 	\Comment*[r]{Il n'y a rien à faire !}

@@ -55,8 +55,8 @@ La fonction \textsf{scanf} ne fait pas que lire le flux des entrées clavier, el
 Ce formatage diffère un peu du formatage de \textsf{printf}. On observe ainsi qu'au lieu de prendre la variable vers laquelle écrire en argument, \textsf{scanf} demande l'adresse de cette variable. En effet, écrire $x$ fournirait la valeur de $x$ (qui est indéfinie) et la fonction \textsf{scanf} n'a alors aucun moyen d'écrire dans la variable (puisqu'elle ne sait pas où elle se trouve). On lui donne donc son adresse pour que \textsf{scanf} puisse y écrire.
  
 Par ailleurs, on peut également formater plusieurs données d'un coup avec \textsf{scanf} :
-\begin{listing}
-	\begin{minted}[linenos=false]{c}
+\begin{listing}[ht]
+	\begin{minted}[mathescape, linenos=false]{c}
 int x, y;
 printf("Entrer deux nombres : ");
 int counter = scanf("%d %d", &x, &y); // press enter to valid the entry
@@ -133,7 +133,7 @@ Pour revenir à notre premier problème, on veut un affichage par défaut effica
  
 Par ailleurs, il est possible de rediriger les flux vers d'autres sorties que la console. On peut donc imaginer conserver \textit{stdout} pour afficher du texte dans notre programme, mais rediriger \textit{stderr} vers un fichier sur le disque dur qui servira de \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}.
 \subsection{Exemple pratique d'utilisation de \textit{stderr}}
-On rappel que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \ref{lst:prgm1}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
+On rappel que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \hyperref[lst:prgm1]{ci-dessus}{}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
 	\begin{minted}{c}
 #include <stdlib.h>
 #include <stdio.h>
