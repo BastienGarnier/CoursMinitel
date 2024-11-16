@@ -1,0 +1,208 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Les variables constituent la brique de base du langage. Une variable au sens informatique est un conteneur d'une donnée dont la valeur peut évoluer au cours de l'exécution du programme.
+ 
+Cette donnée représente de l'information. Elle est donc numérique, bien que l'interprétation puisse être de toute nature : image, vidéo, chaîne de caractère, nombre entier ou à virgule, arbre informatique, etc\dots On peut par exemple penser à la représentation d'une couleur comme un triplet $(r, g, b)\in{\llbracket 0, 255\rrbracket^{3}}$, c'est-à-dire un mot binaire de trois octets.
+ 
+\textbf{Rapport entre variable informatique et variable mathématique :}
+ 
+Une variable en mathématique désigne un objet indéterminé. Cela semble au premier abord faux car il peut arriver qu'on écrive les phrases suivantes :
+\begin{itemize}
+	\item ``Soit $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
+	\item ``$\forall{x\in{E}}, \mathcal{P}(x)$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat quelconque à un seul paramètre
+\end{itemize}
+En y regardant de plus près, on observe qu'il s'agit en fait simplement de facilités d'écriture équivalentes aux phrases suivantes :
+\begin{itemize}
+	\item ``Soit $e$ un objet indéterminé. Supposons $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
+	\item ``$\forall{x}, x\in{E}\implies{\mathcal{P}(e)}$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat quelconque à un seul paramètre
+\end{itemize}
+Cet objet finit par ne plus être indéterminé du fait d'hypothèses à son propos.
+ 
+D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. Elles peuvent donc potentiellement évoluer et changer de valeur au cours du temps. Cette notion de temporalité est tout à fait absente du concept de variable mathématique.
+ 
+\textbf{Approximation de stockage des variables :}
+ 
+On considère dans un premier temps que les variables sont caractérisés par trois informations :
+\begin{itemize}
+	\item une \textit{étiquette}, aussi appelée le nom de de la variable
+	\item une adresse mémoire
+	\item une donnée sur $N$ octets (ou $8N$ bits) à cette adresse
+\end{itemize}
+Une variable peut être vue alors comme une ``case'' de $N$ octets dans la RAM, positionnée à une certaine adresse mémoire. Le langage C nous permet d'associer à cette adresse une étiquette, appelée le nom de la variable. Cette étiquette est oubliée après la compilation, et ne subsiste que l'adresse mémoire dans le programme en langage machine.\newline
+Visuellement : 
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.25\textwidth]{variable}
+		\captionof{figure}{Schéma du stockage d'une variable}\label{img:variable}
+	\end{center}
+\end{minipage}
+ 
+\textbf{Type d'une variable :}
+ 
+Le langage C propose un certain nombre de types ``de base'' directement intégrés au langage. Ces types représentent des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$. Définir une variable selon un type de base du langage C consiste donc à limiter les données qu'elle contient à un sous-ensemble de $\mathbb{Z}$ ou $\mathbb{R}$, c'est-à-dire à interpréter le mot binaire de $N$ bits sur lequel la variable est définit avec une fonction $btoi$ (\textit{\underline{b}inary \underline{to} \underline{i}nteger} ou $btof$ (\textit{\underline{b}inary \underline{to} \underline{f}loat}).
+ 
+On a les types de base suivants :
+\begin{itemize}
+	\item \textsf{char} : donnée $d$ sur 1 octet (8 bits) $d\in{\llbracket-128; 127\rrbracket}$
+	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-32768; 32767\rrbracket}$
+	\item \textsf{int} : donnée $d$ sur 4 octets (32 bits) $d\in{\llbracket-2147483648; 2147483647\rrbracket}$
+	\item \textsf{long int} : donnée $d$ sur 8 octets (64 bits) $d\in{\llbracket-9223372036854775808; 9223372036854775807\rrbracket}$
+	\item \textsf{float} : donnée $d$ sur 4 octets (32 bits) $d\in{\mathbb{R}_{f32}}$
+	\item \textsf{double} : donnée $d$ sur 8 octets (64 bits) $d\in{\mathbb{R}_{f64}}$
+	\item \textsf{long double} : donnée $d$ sur 16 octets (128 bits) $d\in{\mathbb{R}_{f128}}$
+	\item \textsf{TYPE*} : donnée $d$ sur 8 octets qui est l'adresse mémoire d'une donnée de type \textsf{TYPE} quelconque
+\end{itemize}
+La syntaxe du langage C pour déclarer une variable d'un type quelconque \textsf{TYPE} est la suivante :
+\begin{minted}[linenos=false]{c}
+TYPE any_variable; // uninitialized variable : undertermined value
+TYPE any_variable = ANY_VALUE; // initialized with value ANY_VALUE
+\end{minted}
+Il n'est pas possible en C de définir deux fois un même identifiant. Ainsi, le code suivant provoque une erreur à la compilation :
+\begin{minted}[linenos=false]{c}
+int age = 20; // declare age as an int with value 20
+char age = 19; // ERROR : age is already in use
+\end{minted}
+Ainsi, un identifiant définit avec un certain type ne peut pas en changer jusqu'à ce qu'il ne soit plus définit (c'est-à-dire souvent jusqu'à la fin de l'exécution du programme). Après ne plus être définit, il pourra l'être à nouveau avec un autre type. Cela sera vu avec les \textit{espaces de noms}.
+ 
+\textbf{Remarque 1 :} L'exécution d'un programme en C est séquentielle. Pour cette raison, on ne peut référer à une variable qu'après l'avoir déclarée :
+\begin{minted}[linenos=false]{c}
+test = 2; // ERROR : 'test' is not declared yet
+int test;
+\end{minted}
+Pour cette raison, toutes les variables doivent être déclarées avant tous les lieux du code où elles se trouvent référencées.
+ 
+\textbf{Remarque 2 :} le symbole \textsf{=} est un symbole d'\textit{assignation}. Contrairement aux conventions mathématiques, il ne définit par une fonction binaire renvoyant $Vrai$ si les deux objets sont égaux. Il permet cependant de changer à tout instant la valeur d'une variable déjà définie :
+\begin{minted}[linenos=false]{c}
+int nombre_de_feuilles = 2000;
+nombre_de_feuilles = 1000; // Assigne à la variable nombre_de_feuilles la valeur 1000
+\end{minted}
+On observe une équivalence stricte entre les expressions suivantes : 
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+// First expression :
+TYPE variable = valeur;
+
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+// Second expression :
+TYPE variable; // undetermined value
+variable = valeur;
+\end{minted}
+\end{minipage}
+
+La première expression est une facilité d'écriture très largement utilisée\footnote{Appelée \textit{sucre syntaxique} dans certains milieux ;-)}
+ 
+En conséquence, le code suivant est tout à fait correct, bien qu'inutile sous cette forme :
+\begin{minted}[linenos=false]{c}
+int a = a; // a's value is still undetermined
+\end{minted}
+En effet, le symbole $a$ est définit avant l'assignation.
+\subsection{Taille et type d'une variable}
+Il est possible de récupérer la taille d'une variable après l'avoir déclarée, ainsi que son type (depuis la version \textit{C23})
+ 
+Cela est effectué par les opérateurs unaires \textsf{sizeof} et \textsf{typeof}. L'opérateur d'alignement \textsf{\_Alignof} sera détaillé dans une section ultérieure.
+ 
+\textbf{Opérateur \textsf{sizeof} :}
+ 
+L'opérateur \textsf{sizeof} est particulièrement commun. Son exécution est quasiment systématiquement effectuée \textit{à la compilation}. En effet, il retourne une valeur numérique précalculable. La valeur du résultat est donc remplacée dans le code à la génération de l'exécutable.
+ 
+\textsf{sizeof} renvoie le nombre d'octets $N$ nécessaires au stockage de l'espace mémoire associé à une étiquette ou un type. On utilise en général \textsf{sizeof} sur les types :
+\begin{minted}[linenos=false]{c}
+sizeof(char); // 1
+sizeof(short int); // 2
+sizeof(int); // 4
+sizeof(long int); // 8
+sizeof(float); // 4
+sizeof(double); // 8
+sizeof(long double); // 16
+
+TYPE a;
+sizeof(a); // Bytes needed to save 'a' in memory
+sizeof(TYPE); // same
+\end{minted}
+\textbf{Remarque :} L'opérateur \textsf{sizeof} renvoie une valeur de type \textsf{size\_t}, équivalente à un \textsf{long int}.
+ 
+\textbf{Opérateur \textsf{typeof} :}
+ 
+L'opérateur \textsf{typeof}, tout comme \textsf{sizeof}, est calculé au moment de la compilation. D'ailleurs, effectuer un tel calcul durant l'exécution du programme n'a aucun sens. En effet, \textsf{typeof} renvoie le type d'une variable. Les deux codes suivants sont donc strictement équivalents : 
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+typeof(int) a;
+int b;
+typeof(b) c;
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+int a;
+int b;
+int c;
+\end{minted}
+\end{minipage}
+\subsection{Entiers signés et non signés}
+Il est possible en langage C de choisir pour les nombres entiers entre l'interprétation signée de sa représentation binaire, et l'interprétation non signée. Cela se fait par les mot-clés \textsf{signed} et \textsf{unsigned}. Par défaut, les variables entières sont interprétés comme signées. Ainsi, le mot-clé \textsf{signed} n'est pas utile au moment de la définition de la variable. Cela peut être cependant utile pour une réinterprétation ultérieure (voir \textbf{Projection de type}). La syntaxe est la suivante :
+\begin{minted}[linenos=false]{c}
+char v = 130; // signed by default, truth is v = 2 - 128 = -126
+unsigned short int v2 = -1; // unsigned interpretation, truth is v2 = 65535
+signed int v3 = -4; // 'signed' is useless because it's implicit
+// etc...
+\end{minted}
+\textbf{Remarque :} Le langage C ne propose pas de nombres flottants non signés car le standard de représentation des nombres flottants implique directement la présence du signe.
+\subsection{Introduction à la portée des variables : les blocs}
+Les variables sont déclarés dans des blocs de portée. Ces blocs de portée sont indiqués par les accolades gauche et droite $\{$ et $\}$. Ils indiquent dans quelle région du programme les variables sont déclarés. En particulier, il est possible d'imbriquer les blocs entre eux. Cela permet de remplacer dans une certaine partie du code une variable par une autre du même. Cela peut être intéressant pour rester lisible et utiliser des variables qui correspondent toujours à leur utilité :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int main()
+{ // First bloc
+	int a = 5; // declared in the upper 'main' bloc
+	{ // Second bloc nested in the first one
+		// at this point, 'a' is still equal to 5
+		double a = 3.14; // Not the same 'a'
+		// at this point, 'a' is equal to 3.14
+	}
+	// 'a' get back to 5
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Ces blocs peuvent être définis partout dans un code. Il est possible de déclarer des variables dans ou hors de ces blocs.
+ 
+En particulier, il est possible de définir des variables hors du bloc \textsf{main}. Ces variables sont dites globales car accessibles dans tous les blocs du programmes même ceux qui ne sont pas le bloc de la fonction \textsf{main}\footnote{On verra comment définir d'autres fonctions dans la section sur les \textbf{Routines}} :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int some_global_variable = VALUE;
+int main() {
+	char some_global_variable = OTHER_VALUE;
+	// some code
+}
+
+// Some other code may access to 'some_global_variable'
+\end{minted}
+\textbf{Remarque :} Maîtriser la portée des variables et ne pas garder déclarée une variable alors qu'elle n'est plus utile permet au compilateur d'optimiser le code machine produit. Par exemple, dans le code suivant :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int main() {
+	{
+		int v = VALUE;
+		// using 'v'
+	}
+	// Some big code
+	{
+		int v = ANOTHER_VALUE;
+		// using 'v'
+	}
+	return EXIT_SUCCESS;
+}
+\end{minted}
+$v$ possède une valeur particulière d'initialisation dans une région du code, puis une autre valeur particulière d'initialisation dans une autre région du code très éloignée de la première. Indiquer cela avec les blocs de portés permet d'indiquer au compilateur qu'il est inutile de stocker la valeur de $v$ entre les deux régions.
+\subsection{Exercices}
+\exercise{Interversion de variables par effet de bord} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. En initialisant au maximum une seule variable supplémentaire, échanger les valeurs des deux premières variables. Ainsi, si $a = 8$ et $b = 6$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = 8$ et $a = 6$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas à être modifié si les valeurs de $a$ et $b$ sont changées.
+\end{document}

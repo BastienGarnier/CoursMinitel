@@ -1,0 +1,78 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\subsection{Introduction au tas}
+Un programme informatique, lorsqu'il est chargé en mémoire, comporte un troisième espace mémoire nommé \textit{le tas} (\textit{heap} en anglais). Il se nomme ainsi car il correspond à un tas de mémoire accessible au programmeur.\footnote{Au sens qu'il y en a beaucoup, et qu'on pioche ``dans le tas'' lorsqu'il s'agit de trouver une adresse pour allouer de la mémoire. L'appelation ne fait pas référence à la structure de donnée homonyme}
+ 
+Le tas est un espace mémoire de taille extensible\footnote{Avec comme limite la taille de la RAM de l'ordinateur.}. Il peut être aggrandit au fur-et-à-mesure des allocations, c'est-à-dire lorsque trop de variables ont été alloués. Ainsi, il est virtuellement possible d'utiliser l'entièreté de la RAM avec le tas. Il possède cependant certains défauts :
+\begin{itemize}
+	\item les variables alloués ne sont pas toutes contigües en mémoire, contrairement à la pile. Cela ralentit l'accès à celles-ci.
+	\item les espaces mémoires alloués aux variables ne sont pas libérés automatiquement à la sortie des routines, \textbf{c'est au programmeur d'être responsable}
+\end{itemize}
+Le deuxième point est particulièrement important, puisqu'il peut être la source de graves bogues connus sous le nom de fuites de mémoire (\textit{memory leaks} en anglais). La fuite de mémoire apparaît lorsqu'une variable est allouée dynamiquement sur le tas, et que le programmeur oublie de la libérer avant la fin de la routine. Le système d'exploitation continue de considérer que la zone mémoire est utilisée jusqu'à ce que le programme se termine. Dans le cadre d'applications conséquente, cela peut être vraiment problématique.\footnote{J'ai joué y a un bail à \textit{Nehrim : At fate's edge}, un jeu amateur utilisant le moteur de jeu de \textit{The Elder Scrolls IV : Oblivion}, et du fait de ces fuites de mémoire, le jeu \textit{freezait} après une heure ou deux. Il était alors nécessaire de l'éteindre et de le relancer. Excellent néanmoins, je conseille !}
+ 
+Un autre bogue très récurrent qui empêche totalement le fonctionnement du programme est l'accès à une variable dont l'espace mémoire a été libéré : s'ensuite l'erreur de segmentation, de code $-11$, provoqué par le système d'exploitation qui perçoit cela comme une attaque du système !\footnote{Si il était possible d'accéder à n'importe quelle case mémoire d'un ordinateur sans protection, le \textit{hacking} serait presque trivial.} Ce bogue est rencontré en quasi-permanence chez les débutants, dès lors que des structures complexes sont manipulées en mémoire. Il arrive aussi très fréquemment\footnote{Quoi que ceux-ci en disent ;)} chez les programmeurs expérimentés. En effet, il est d'une facilité extraordinaire de rencontrer ce bogue dès lors que la programmation manque un tout soit peu de rigueur.\footnote{C'est cette erreur qui crée la peur déraisonnée des pointeurs et la ``haine'' du C par quantité de programmeurs. Plus sérieusement, d'autres langages de programmation assez bas niveau qui assurent malgré tout en interne la sécurisation de la mémoire, comme le \textit{Rust}, sont souvent préférés en entreprise pour une question de stabilité et d'assurance qualité. Ce qui ne change rien au fait que savoir programmer en C assure une compétence bien plus grande que de ne pas savoir, en raison de l'affrontement direct avec le ``mal''}
+\subsection{Les routines \textsf{malloc} et \textsf{free}}
+Pour gérer ``soi-même''\footnote{C'est les routines qui font le gros du boulot hein ! Faudrait pas se mettre à voler par les chevilles x)} de la mémoire sur le tas, deux fonctions de la bibliothèque \textit{stdlib.h} fournissent les fonctionnalités suivantes :
+\begin{itemize}
+	\item allouer un espace mémoire, grâce à \textsf{malloc}\footnote{Pour \textit{\underline{M}emory \underline{Alloc}ation}}
+	\item libérer un espace mémoire, grâce à \textsf{free}
+\end{itemize}
+Le détail du fonctionnement interne des deux fonctions ne sera pas explicité.\footnote{Mais pour le plaisir : \url{https://wiki.osdev.org/Memory_management}, \url{https://wiki.osdev.org/Memory_Allocation}, \url{https://codebrowser.dev/glibc/glibc/malloc/malloc.c.html} et la G.O.A.T. \url{https://gee.cs.oswego.edu/dl/}}
+ 
+Voici les prototypes de ces deux fonctions issus de la documentation officielle :
+\begin{minted}[linenos=false]{c}
+#include <stdlib.h>
+void *malloc(size_t size);
+void free(void *ptr);
+\end{minted}
+La fonction \textsf{malloc} prend en argument un nombre d'octets, et renvoie un pointeur de type quelconque vers la première case de l'espace mémoire alloué. La procédure \textsf{free} prend en argument un pointeur quelconque vers un espace mémoire, et libère l'entièreté de cet espace mémoire.
+ 
+On observe ici une première utilisation des pointeurs quelconques \textsf{void*} : \textsf{free} prend simplement une adresse, et libère la mémoire associée en interne. Elle n'a pas à connaître le type de la variable libérée.
+ 
+En particulier, tout accès ultérieur à cet espace mémoire peut \textbf{potentiellement} provoquer l'erreur de segmentation de code $-11$. Il ne s'agit que d'une potentialité car tant que l'espace mémoire libéré n'est pas réutilisé par un autre programme, le système d'exploitation peut ne pas relever d'erreur.
+\begin{minted}{c}
+#include <stdio.h> // printf
+#include <stdlib.h> // malloc and free
+
+int main() {
+	int* array = (int*)malloc(sizeof(int) * 5); // Allocates 4 * 5 = 20 octets.
+
+	for (int i = 0; i < 5; i++) {
+		printf("%d\n", *(array + i));
+	}
+
+	free(array); // authorize future allocation of this address
+}
+\end{minted}
+Il s'agit d'un pointeur vers un espace mémoire de 20 octets. On peut y accéder de la même manière que pour un tableau.
+ 
+\textbf{Remarque 1 :} La projection de type peut être conservé comme implicite :
+\begin{minted}[linenos=false]{c}
+short int* array = malloc(sizeof(short int) * 10); // Allocates 2 * 10 = 20 octets
+\end{minted}
+\textbf{Remarque 2 :} Il est à présent possible d'allouer en mémoire un tableau dont la taille dépend des variables du programme, et de le renvoyer par une fonction !
+\begin{minted}{c}
+#include <stdio.h> // printf
+#include <stdlib.h> // malloc and free
+
+int* make_array(unsigned int n) {
+	int *array = (int*)malloc(sizeof(int) * n); // Allocates (4 * n) bytes
+	for (unsigned int i = 0; i < n; i++) {
+		array[i] = i;
+	}
+	return array;
+}
+
+int main() {
+	int* array = make_array(10); //	4 * 10 = 40 bytes array
+
+	for (unsigned int i = 0; i < 10; i++) {
+		printf("%d\n", array[i]);
+	}
+
+	free(array); // memory always have to be freed
+}
+\end{minted}
+\subsection{Exercices}
+\end{document}

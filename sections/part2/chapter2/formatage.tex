@@ -1,0 +1,103 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Cette section ne détaille pas ce qu'est techniquement une chaîne de caractères. Elle présente seulement le \textit{formatage d'une chaîne de caractères}, c'est-à-dire la mise en forme. Il est sous-entendu en programmation que le formatage d'une chaîne de caractères est effectué selon des variables. De manière générale, le système de formatage d'une chaîne de caractères en C permet d'inclure dans une chaîne de caractères les valeurs de variables quelconques.
+ 
+Le formatage d'une chaîne est effectué à l'aide de deux caractères spéciaux :
+\begin{itemize}
+	\item le caractère de formatage des caractères spéciaux $\setminus$
+	\item le caractère de formatage de variables $\%$
+\end{itemize}
+Aucun de ces deux caractères ne peut être affiché directement dans une chaîne de caractère :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+// produces a compilation warning and prints "'est pas affichable." :
+	printf("% n'est pas affichable."); 
+// compilation error :
+	printf("\ non plus.");
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Pour afficher réellement un des ces deux caractères, il faut l'\textit{échapper} en le répétant. On appelle cette opération l'échappement car elle permet au caractère d'échapper au formatage de la chaîne de caractères.
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	printf("%% n'est pas affichable.\n");
+	printf("\\ non plus.\n");
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Formatage des caractères spéciaux}
+Les caractères considérés comme spéciaux sont :
+\begin{itemize}
+	\item caractère de passage à la ligne suivante : \textsf{$\setminus$n}\footnote{Ce caractère est désigné en anglais par le symbole \textsf{LF} pour \textit{``Line Feed''}}
+	\item caractère retour au début de la ligne actuelle : \textsf{$\setminus$r}\footnote{Appelé aussi \textit{retour chariot}, en référence aux machines à écrire. Ce caractère est désigné en anglais par le symbole \textsf{CR} pour \textit{``carriage return''}}
+	\item caractère de tabulation : \textsf{$\setminus$t}
+	\item caractère de chaîne de caractère \textsf{"} : \textsf{$\setminus$"}
+\end{itemize}
+\begin{lstlisting}[title=Exemples]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	printf("Pas de retour a la ligne apres cette phrase.");
+	printf("Alors que la oui.\n");
+	printf("Recommencer au \"debut\" : \rdebut\n");
+	printf("Une tabulation : \t c'etait une tabulation.\n");
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Formatage de variables}
+Le formatage de variables nécessite d'indiquer le type de variable qui va être affichée. En effet, en fonction de son type, l'interprétation de sa représentation binaire change.
+ 
+On distingue les principaux modificateurs d'affichage :
+\begin{itemize}
+	\item \textsf{signed char} OU \textsf{signed short int} OU \textsf{signed int} : \textsf{$\%$d}
+	\item \textsf{signed long int} : \textsf{$\%$ld}
+	\item \textsf{unsigned char} OU \textsf{unsigned short int} OU \textsf{unsigned int} : \textsf{$\%$u}
+	\item \textsf{unsigned long int} : \textsf{$\%$lu}
+	\item \textsf{float} : \textsf{$\%$f}
+	\item \textsf{double} : \textsf{$\%$lf}
+	\item \textsf{long double} : \textsf{$\%$Lf}
+\end{itemize}
+Ces modificateurs sont insérés dans la chaîne de caractères. Il devient ensuite possible de donner en argument à la fonction \textsf{printf} les valeurs à insérer en lieu et place des modificateurs :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 3
+
+int main() {
+	printf("Valeur du nombre N : %d", N);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Il est possible de mettre autant de modificateurs qu'on le souhaite dans la chaîne de caractère. Il faut cependant respecter le nombre de modificateurs et mettre précisément le même nombre de variables :
+\begin{minted}[linenos=false]{c}
+// Error : no integer is given :
+printf("%u est un entier non signé"); 
+ // Error : 42 should not be there :
+printf("%lf : 64 bits, %f : 32 bits.", 3.1415926358, 2,718281828, 42);
+\end{minted}
+Bien sûr, les entrées peuvent être des variables :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	unsigned short int a = -7;
+	int b = 10;
+	printf("%u + %d = %d\n", a, b, a+b);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Exercices}
+\exercise{Taille des types}Écrire un programme en C qui affiche la taille en octets des différents types de base du langage.
+\end{document}

@@ -1,0 +1,68 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+La \textit{projection de type} (\textit{static cast} en anglais) est une opération unaire du langage C qui permet la conversion d'un variable d'un type à un autre.
+ 
+L'exemple suivant, extrêmement simple, va servir d'illustration à la projection de type : on souhaite diviser un nombre stocké comme un \underline{entier} par un diviseur stocké comme un \underline{entier}, et obtenir le nombre \underline{flottant} résultant. C'est-à-dire ne pas effectuer une division entière mais réelle.
+ 
+On essaie dans un premier temps le code suivant :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int some_integer = 7851;
+	int divider = 100;
+	double a = some_integer/divider;
+	printf("%.2lf\n", a);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Après exécution, on a le résultat : \textsf{78.00}
+ 
+Le problème se situe au calcul \textsf{some\_integer/100}. En effet, l'opération effectuée est une division entière. Le résultat de cette division est donc $78$, qui est ensuite convertit implicitement en \textsf{double} par l'opérateur $=$. \newline
+Il faudrait que la division effectuée ne soit pas une division entière. Pour cela, il est nécessaire de modifier l'interprétation d'au moins une des deux variables (\textsf{some\_integer} ou \textsf{divider}) pour qu'elle soit interprétée comme un \textsf{double} AVANT la division. On ne souhaite cependant pas modifier le type d'une des deux variables de manière définitive.
+ 
+La solution à cela est la \textit{projection de type}. Il s'agit de forcer le compilateur à réinterpréter/convertir la variable en un autre type que celui auquel elle a été assignée. La syntaxe est la suivante :
+\begin{minted}[linenos=false]{c}
+TYPE1 variable;
+TYPE2 reinterpreted_variable = (TYPE2)(variable);
+\end{minted}
+Dans notre cas, il suffit d'écrire :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int some_integer = 7851;
+	int divider = 100;
+	double a = (double)(some_integer)/divider;
+	printf("%.2lf\n", a);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Le résultat après exécution est bien : $78.51$
+ 
+\textbf{Remarque :} Le mot binaire désigné par \textsf{nombre\_entier} est différent de celui de \textsf{(double)(nombre\_entier)} du fait de l'écriture des nombres flottants. Il s'agit donc d'une conversion. Il est possible aussi que la projection de type n'induise pas de réécriture du mot binaire, comme dans le cas d'une réinterprétation de la signature d'un nombre. 
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	unsigned short int v = -1;
+	printf("%d\n", v); // prints 65535
+	printf("%d\n", (signed short int)(v)); // prints -1 but it's the same binary word
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Exercices}
+\exercise{Quelques évaluations}\newline
+Dire pour chaque expression si elle est vraie ou fausse (respectivement : différente ou égale à 0) :
+\begin{minted}[linenos=false]{c}
+int e1 = 0xFFFFFFF00 != 0xFFFFFFFF - (char)(-1);
+int e2 = 0xFFFFFFFF - (unsigned char)(-1) - 0xFFFFFFF00;
+int e3 = !(e1 == e2) || (1 ^ e2);
+int e4 = (unsigned char)(!(((64 ^ e3) % 8) - 1) + 256) - 2;
+int e5 = e1 && e3;
+\end{minted}
+\end{document}

@@ -1,0 +1,193 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\textit{\underline{Recommandation} : revoir le vocabulaire sur les fichiers de la partie 1 du cours}.
+ 
+La manipulation de fichiers est vitale pour l'écriture de programmes persistents, c'est-à-dire dont certains états peuvent durer même quand le programme n'est pas en cours d'exécution. On peut par exemple penser à des fichiers de configuration de logiciels. La sauvegarde de certains états particuliers permet aussi au logiciel de traiter des données différentes et de stocker de manière persistente les résultats du/des traitements. On peut penser à tous les fichiers édités par des éditeurs de texte, des sauvegardes de jeux-vidéos, ou de manière beaucoup plus générique à la simple existence de l'entièreté des fichiers sur un disque dur qui permettent de donner une ``mémoire longue durée'' à l'ordinateur pour qu'il puisse s'exécuter en conservant une part des traitements effectuées.
+ 
+La bibliothèque standard vous fournit différentes fonctions pour manipuler les fichiers, toutes déclarées dans l’en-tête \textit{$<$stdio.h$>$}. Toutefois, celles-ci manipulent non pas des fichiers, mais des flux de données en provenance ou à destination de fichiers.
+ 
+Cela permet notamment d'effectuer à nouveau des optimisations grâce aux tampons, et de rediriger des flux. On peut par exemple imaginer rediriger un flux standard de sortie vers un fichier pour écrire un \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}, ou rediriger le flux de lecture d'un fichier vers la console (pour en afficher le contenu par exemple).
+\subsection{Droits des fichiers}
+Cette sous-section n'est destiné qu'aux utilisateurs des systèmes Unix comme Linux. En effet, sous Windows, le système est légèrement différent bien que par certains aspects plus proche qu'il n'y paraît. Il ne sera pas traité.\footnote{Pour plus d'informations : \url{https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control}} Le but est simplement de comprendre l'existence de droits. Pour plus de détails, voir \url{https://www.linuxtricks.fr/wiki/droits-sous-linux-utilisateurs-groupes-permissions}.
+ 
+Les fichiers sous Linux ont 3 types de droits :
+\begin{itemize}
+	\item lecture (noté \textit{r} comme \textit{\underline{r}ead} en anglais) : possibilité de lire le contenu du fichier
+	\item écriture (noté \textit{w} comme \textit{\underline{w}rite} en anglais) : possibilité de modifier le contenu du fichier
+	\item exécution (noté \textit{x} comme \textit{e\underline{x}ecution} en anglais) : si le fichier contient des instructions exécutables, possibilité de les exécuter
+\end{itemize}
+Il est nécessaire de manipuler ces droits avec précaution. En effet, lors de la mise en réseau d'ordinateurs, des droits mal gérés peuvent présenter rapidement des risques de sécurité local comme réseau.
+ 
+Par ailleurs, chaque fichier sous Linux :
+\begin{itemize}
+	\item a un propriétaire\footnote{Il ne s'agit pas nécessairement du créateur du fichier puisque la propriété peut être transmise}
+	\item est affilié à un groupe d'utilisateurs
+\end{itemize}
+On distingue parmi les utilisateurs qui peuvent potentiellement accéder au fichier (\textit{i.e.} lire, écrire ou exécuter ce fichier) trois catégories :
+\begin{enumerate}
+	\item le propriétaire du fichier (noté \textit{u} comme \textit{\underline{u}ser} en anglais)\footnote{Appeler ``utilisateur'' le propriétaire est au mieux vague, au pire dénué de sens. Mais bon, c'est comme ça.}
+	\item les utilisateurs du groupe du fichier (noté \textit{g} comme \textit{\underline{g}roup} en anglais)
+	\item les autres utilisateurs (noté \textit{o} comme \textit{\underline{o}thers} en anglais)
+\end{enumerate}
+Chaque fichier possède donc en données supplémentaires les droits de $r$, $w$ et $x$ pour chacune de ces catégories. \newline
+Pour observer les droits des fichiers on peut utiliser l'argument \textit{-l} (pour \textit{long list}) de la commande \textit{ls} dans un terminal Linux :
+\begin{minted}{bash}
+user@computer ~/working_directory> ls -la
+total 20
+-rwxrwxr-x 1 user user 15960 sept. 21 18:38 main
+-rw-rw-r-- 1 user user	 105 sept. 21 18:37 main.c
+\end{minted}
+\textbf{Petit aparté :}
+ 
+Le total indiqué est le nombre de ko utilisés ($1\ ko = 1024\ octets$) pour stocker en mémoire les données affichés par \textit{ls}. Observe que le total d'octets utilisés est $20\times{1024} = 20480>15960 + 105$ qui est la taille réelle des fichiers présents. En effet, le système de fichiers utilise des zones mémoires par blocs de $4\ ko$ appelés \textit{pages}. On a :
+\begin{itemize}
+	\item \textit{``main''} avec $\left\lceil\dfrac{15960}{4096}\right\rceil = 4 \text{ pages}$
+	\item \textit{``main.c''} avec $\left\lceil\dfrac{105}{4096}\right\rceil = 1\text{\ page}$
+\end{itemize}
+Donc au total 5 pages.
+ 
+\textbf{Fin de l'aparté\dots}
+ 
+Les droits d'utilisateurs sont indiqués à gauche. Le format est le suivant :
+$$\underbrace{-}_{\text{type}}\underbrace{---}_{\text{propriétaire}}\underbrace{---}_{\text{groupe}}\underbrace{---}_{\text{autres}}$$
+Le type peut indiquer si un fichier est spécial. Par exemple, les répertoires sont considérés comme des fichiers spéciaux de type \textit{`d'}. Un fichier classique n'a pas de type précisé (un simple trait horizontal).
+ 
+Les droits pour chaque catégorie d'accesseurs au fichier sont individuellement sous la forme $(r, w, x)$. Indiquer la lettre indique le droit d'accès. Ainsi, un fichier dont les droits d'utilisateurs sont décrits par :
+$$-rwxrw----$$
+donne les informations suivantes :
+\begin{itemize}
+	\item il s'agit d'un fichier classique
+	\item le propriétaire a les droits de lecture, d'écriture et d'exécution
+	\item les utilisateurs du même groupe ont les droits de lecture et d'écriture
+	\item les autres utilisateurs n'ont aucun droit sur le fichier
+\end{itemize}
+Pour la suite, il faut s'assurer que les fichiers manipulés par un programme C ont bien les droits nécessaires. L'utilisateur considéré pour cela est l'utilisateur qui a exécuté le programme. On peut \textit{uniquement pour tester les programmes C dans le cadre de ce cours} ajouter l'intégralité des droits de lecture et d'écriture à un fichier existant par la commande :
+\begin{minted}{bash}
+user@computer ~/working_directory> chmod a+rw somefilename
+user@computer ~/working_directory>
+\end{minted}
+\subsection{Les flux de fichiers en C}
+Pour manipuler des fichiers en C, il faut fondamentalement quatre routines :
+\begin{itemize}
+	\item une routine d'ouverture/création de flux
+	\item une routine d'écriture dans un flux
+	\item une routine de lecture d'un flux
+	\item une routine de fermeture d'un flux
+\end{itemize}
+Heureusement, \textit{$<$stdio.h$>$} fournit toutes ces routines :
+\begin{itemize}
+	\item \textsf{fopen} pour ouvrir/créer un flux de fichier
+	\item \textsf{fwrite} pour écrire dans un flux de fichier
+	\item \textsf{fread} pour écrire dans un flux de fichier
+	\item \textsf{fclose} pour fermer un flux de fichier
+\end{itemize}
+Les prototypes sont les suivants :
+\subsubsection{\detokenize{FILE* fopen(const char *pathname, const char *mode);}}
+\textbf{Entrées :}\newline
+\textit{pathname} est une chaîne de caractère constante qui indique le chemin d'accès (relatif ou absolu) vers le fichier. \newline
+Le \textit{mode} d'ouverture est aussi une chaîne de caractère constante dont les valeurs peuvent être :
+\begin{itemize}
+	\item ``r'' : ouverture d'un flux \textit{textuel} de \textit{lecture}. Le flux est positionné \textit{au début} du fichier (donc les données sont lues à partir de là).
+	\item ``r+'' : \textit{idem} que ``r'' mais flux de \textit{lecture et d'écriture}
+	\item ``w'' : Crée le fichier si il n'existe pas et le vide de tout contenu. Ouverture d'un flux \textit{textuel} d'\textit{écriture}. Le flux est positionné \textit{au début} du fichier
+	\item ``w+'' : \textit{idem} que ``w'' mais flux de \textit{lecture et d'écriture}
+	\item ``a'' : Crée le fichier si il n'existe pas. Ouverture d'un flux \textit{textuel} d'\textit{écriture}. Le flux est positionné \textit{à la fin} du fichier.
+	\item ``a+'' : \textit{idem} que ``a'' mais flux de \textit{lecture et d'écriture}
+\end{itemize}
+L'ajout du caractère `b' après la lettre ouvre le fichier avec un flux \textit{binaire}. Par exemple : \textit{``rb+''} ouvre un flux \textit{binaire} vers le fichier en \textit{lecture et écriture}.
+ 
+\textbf{Sortie :} La fonction renvoie un pointeur vers un flux de fichier.
+\subsubsection{\detokenize{long int fwrite(const void *ptr, long int size, long int nmemb, FILE* stream);}}
+\textbf{Entrées :}\newline
+\textit{nmemb} est le nombre d'objets à copier de \textit{size} octets situés à l'adresse \textit{ptr} vers le flux \textit{stream}.
+ 
+\textbf{Sortie :} La fonction renvoie le nombre d'objets effectivement écrits. En cas d'erreur, ce nombre est strictement inférieur à \textit{nmemb}
+\subsubsection{\detokenize{long int fread(void *ptr, long int size, long int nmemb, FILE* stream);}}
+\textbf{Entrées :}\newline
+\textit{nmemb} est le nombre d'objets à lire de \textit{size} octets depuis le flux \textit{stream}. Ces objets sont stockés consécutivement à l'adresse \textit{ptr}.
+ 
+\textbf{Sortie :} La fonction renvoie le nombre d'objets effectivement lus. En cas d'erreur ou d'arrivée à la fin du fichier (auquel il y a moins à lire que voulu), ce nombre est strictement inférieur à \textit{nmemb}.
+\subsubsection{\detokenize{int fclose(FILE *stream);}}
+\textbf{Entrée :} \textit{stream} est le flux à fermer
+ 
+\textbf{Sortie :} 0 en cas de succès. \textsf{EOF} en cas d'erreur.\footnote{\textsf{EOF} est une constante définie dans \textit{$<$stdio.h$>$} et vaut généralement $-1$}
+\subsubsection{Un classique de l'ISMIN}
+Rien ne vaut un exemple à ce stade.\footnote{Et pas des moindres, il s'agit de la fine fleur des idées de sujet des types qui écrivent les examens de l'ISMIN. Les pauvres\dots Il ne faudrait pas les laisser seules avec eux-mêmes. Ce serait inconscient.} Le code ci-dessous va lire et écrire dans un flux binaire vers un fichier \textit{``annuaire.data''}. Il va y stocker des informations sur des individus :
+\begin{itemize}
+	\item leur nom sous forme d'un tableau de 50 caractères
+	\item leur numéro de téléphone sous forme d'un entier sur 64 bits
+\end{itemize}
+Le programme suivant ajoute une nouvelle personne à chaque exécution :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Person {
+	char name[50];
+	long int number;
+};
+
+struct Person person_make() {
+	struct Person p;
+	printf("Nom : ");
+	scanf("%s", p.name);
+	printf("Numero : ");
+	scanf("%ld", &(p.number));
+	return p;
+}
+
+void person_add_to_file(const char *pathname, struct Person p) {
+	FILE *fd = fopen(pathname, "ab");
+	if (!fwrite(&p, sizeof(struct Person), 1, fd)) {
+		fprintf(stderr, "Erreur d'ecriture dans annuaire.data\n");
+	}
+	fclose(fd); // necessary : allows the file to be opened again
+}
+
+void person_print_numbers_from_file(const char *pathname) {
+	FILE *fd = fopen(pathname, "rb");
+	struct Person p;
+	while (fread(&p, sizeof(struct Person), 1, fd) == 1) {
+		printf("%s : %ld\n", p.name, p.number);
+	}
+	fclose(fd);
+}
+
+int main() {
+	struct Person p = person_make();
+	person_add_to_file("annuaire.data", p);
+	person_print_numbers_from_file("annuaire.data");
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Rediriger un flux standard vers un fichier}
+La redirection de flux a été évoquée précédemment et on montre ici comment la réaliser.
+ 
+\textbf{Remarque 1 :} Cette section est purement anecdotique.\footnote{Précisons : inutile dans le cadre de la formation ISMIN, mais absolument pas dans le cadre d'un apprentissage plus complet. Sinon, il n'y aurait pas de chapitre après celui-ci pour traiter des concepts avancés du langage.}
+ 
+\textbf{Remarque 2 :} Faire des remarques comme ça, on dirait presque ChatGPT
+ 
+\textbf{Remarque 3 :} À la différence majeure que ChatGPT n'a pas de sens de l'humour
+ 
+La redirection de flux passe par la fonction \textsf{freopen} dont le prototype est le suivant :
+\begin{center}
+\detokenize{FILE *freopen(const char *pathname, const char *mode, FILE *stream);}
+\end{center}
+L'idée est simple : on ouvre un flux vers un fichier de chemin d'accès \textit{pathname} en mode \textit{mode} et on ajoute en argument le flux \textit{stream} qu'il faut remplacer. \textit{stream} est d'abord fermé puis ouvert et associé au flux de sortie de la fonction.
+ 
+En un exemple :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	freopen("log.txt", "w", stderr);
+	fprintf(stderr, "Erreur dans le log !!!");
+	fclose(stderr);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Exercices}
+Voir les annales d'\textit{Algorithme et Programmation 1}. Toutes les notions nécessaires ont été abordées. Une correction par Minitel (et par les profs (beurk !)) sera proposé aussi vite que possible sur le NextCloud.
+\end{document}

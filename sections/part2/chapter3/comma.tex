@@ -1,0 +1,76 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Ceci n’est pas une blague. Il s’agit d’une section traitant de la virgule ``,'' en C, à la fois comme
+opérateur entre différentes expressions et comme séparateur de déclarations.
+
+Cette section n’apparaît qu’à la fin du cours de C au vu de l’anecdoticité\footnote{Je ne sais pas si le mot existe\dots} de cette caractéristique du
+langage. Il s’agit uniquement d’être exhaustif.
+
+Et très honnêtement, ça ne sert pas à grand-chose\dots Mais si jamais, c’est là !
+\subsection{La virgule comme opérateur}
+La virgule sert à effectuer des opérations à effets de bord lors de l’écriture d’expressions.
+
+\textbf{Rappel :} Une routine à effet de bord est une routine qui agit autrement que par sa valeur de retour,
+c’est-à-dire qui agit en dehors de son environnement local. Par exemple, une routine qui affiche du
+texte est une routine à effet de bord. Une routine qui modifie la valeur d’un tableau entré en argument
+est une routine à effet de bord.
+
+La syntaxe est la suivante :
+\begin{minted}[linenos=false]{c}
+expression = (expr1, ..., exprn);
+\end{minted}
+Elle est équivalente à :
+\begin{minted}[linenos=false]{c}
+expr1;
+expr2;
+...;
+expr<n-1>;
+expression = exprn;
+\end{minted}
+Un exemple purement technique consistant à compter le nombre d’assignations à des variables :*
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdio.h>
+
+#define ASSIGN(X) (i++, X)
+
+int main(int argc, char **argv) {
+	unsigned int i = 0;
+	int a = ASSIGN(42);
+	int b = ASSIGN(64);
+	b = ASSIGN(a + b);
+	int c = ASSIGN(i*b + a);
+	printf("Nombre d'assignations : %u\n", i);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Un second exemple à peine moins inutile pour l’échange de valeur de deux variables :
+\begin{minted}[linenos=false]{c}
+int a = 42;
+int b = 64;
+int tmp = (tmp = a, a = b, b = tmp);
+print("a = %d et b = %d\n", a, b);
+\end{minted}
+\textbf{Remarque :} Oublier les parenthèses dans ce deuxième exemple est rédhibitoire puisque le compilateur
+va considérer que les variables a et b sont redéfinies dans le même bloc, ce qui amène à une erreur de
+compilation.
+
+En particulier, il faut rester attentif à la priorité des opérateurs. L’opérateur d’assignation est en effet
+prioritaire sur la virgule.
+\begin{minted}[linenos=false]{c}
+int x = 1, 2, 3;
+\end{minted}
+est incorrect car équivalent à :
+\begin{minted}[linenos=false]{c}
+(((int x = 1), 2), 3);
+\end{minted}
+qui n’a pas de sens.
+\subsection{La virgule comme séparateur}
+La virgule sert également dans un cas déjà observé : la séparation des déclarations de variables.
+\begin{minted}[linenos=false]{c}
+int a = 3, b = a + 1;
+\end{minted}
+\subsection{Conclusion}
+Ben voilà c’est tout...
+\end{document}

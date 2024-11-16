@@ -1,0 +1,236 @@
+\documentclass[../../main.tex]{subfiles}
+\graphicspath{{sections/part1/images/}}
+\begin{document}
+\section{Un peu de vocabulaire}
+Cette table de vocabulaire est donné en préambule pour ne pas trop surcharger le texte ci-après.
+
+\definition{BIOS}{Le BIOS (\textit{\underline{B}asic \underline{I}nput \underline{O}utput \underline{S}ystem}) est le programme qui s'exécute au démarrage de l'ordinateur (appelé le \textit{boot}). C'est lui qui permet de le lancer véritablement pour être utilisé. En effet, son objectif est de ``passer la main'' au système d'exploitation, grâce à un petit programme appelé le \textit{bootloader} (\textit{loader} signifie chargeur en anglais).}
+
+\definition{Système d'exploitation}{Un système d'exploitation est un programme exécuté par le BIOS juste après le lancement. Ce programme fournie à l'utilisateur de l'ordinateur toutes les fonctionnalités dont il pourrait avoir besoin : accès au disque dur, accès à la mémoire vive, aux périphériques entrée/sortie, possibilité d'exécuter des programmes utilisateurs, générateur de nombres pseudo-aléatoire, etc\dots}
+
+\definition{Répertoire}{Un répertoire est le nom technique donné au dossier. Il contient d'autres répertoires ou fichiers. Il permet en effet de \textit{répertorier} des fichiers ou d'autres répertoires. Sa fonction principale est donc la classification.}
+
+\definition{Fichier}{Un fichier est un ensemble d'informations numériques constituées d'une séquence d'octets. Ces informations peuvent représenter des données allant du programme informatique à la vidéo en passant par les informations d'une communication réseaux, un livre numérique, la mémoire d'un programme informatique, etc\dots Ces informations sont réunis sous un même nom et manipulé comme une unité, appelé le fichier.}
+
+\definition{Extension de nom fichier}{Une extension de nom de fichier (ou plus simplement ``extension de fichier'') est une suite de caractères à la fin du nom du fichier, séparée du radical du nom de fichier par un point, qui indique à l'utilisateur de l'ordinateur et aux logiciels le format des données qu'il contient. L'extension agit uniquement à titre \textit{indicatif} ! La modifier sans modifier le fichier lui-même n'effectue STRICTEMENT AUCUNE conversion. Il ne suffit pas d'appeler un chat un chien pour que celui-ci se transforme subitement ! Le nom d'un fichier est seulement une étiquette. Il n'a aucune incidence sur ce que le fichier contient réellement.\footnote{J'insiste car il s'agit là d'une \textit{croyance} extrêmement répandue chez les utilisateurs non techniciens d'outils informatiques}}
+
+\definition{Système de fichiers}{Afin de faciliter la localisation et la gestion des répertoires et des fichiers, ceux-ci sont organisés suivant un système de fichiers. C'est ce système qui permet à l'utilisateur de répartir les fichiers dans une arborescence de répertoires et de les localiser par un chemin d'accès.}
+
+\definition{Répertoire de travail}{Le répertoire de travail d'un exécutable est le répertoire dans lequel l'exécutable va effectuer ses instructions. Par exemple, si l'exécutable contient une instruction qui ouvre et lit un fichier sur le disque dur, l'ordinateur essaiera d'ouvrir ce fichier dans le répertoire de travail, renverra une erreur si ce fichier n'est pas présent dans le répertoire de travail. Il est possible de modifier le répertoire de travail d'un exécutable à l'intérieur de celui-ci (par certaines instructions).}
+
+\definition{Chemin d'accès}{Chaîne de caractères qui décrit la position du fichier sur son support de stockage au sein du système de fichiers. On distingue deux types de chemin d'accès : 
+\begin{itemize}
+		 \item chemin absolu : décrit la position absolue du fichier depuis la racine de l'arborescence du système de fichiers ($/$ sous Linux, $C:/$ sous Windows)
+		 \item chemin relatif : décrit la position relative du fichier par rapport au répertoire de travail. On considère alors le répertoire de travail comme la racine de l'arborescence
+\end{itemize}
+}
+\definition{Instruction}{Une instruction est une séquence d'octets qui peut être lue par l'UCC pour exécuter une action.}
+
+\definition{Exécutable}{Un fichier exécutable (ou plus simplement un exécutable) est un fichier contenant un entête d'informations générales et une séquence d'instructions. L'entête peut par exemple définir le point d'entrée du programme, c'est-à-dire l'adresse (relative) dans la séquence d'instructions à laquelle l'ordinateur doit débuter sa lecture des instructions.}
+
+\definition{Niveau d'abstraction}{Les langages de programmation peuvent être plus abstraits, c'est-à-dire être proche ou non du fonctionnement technique de l'ordinateur. Un langage à haut niveau d'abstraction va cacher la technique associée à la manipulation du matériel de l'ordinateur (mémoire vive, périphériques, etc\dots) tandis qu'un langage à bas niveau d'abstraction va laisser la possibilité au programmeur de manipuler lui-même ce qui est ``matériel''. En fait, les langages à haut niveau d'abstraction écrivent les instructions de manipulation bas niveau à l'insu du programmeur.}
+\section{Une classification}
+\subsection{Objectifs des langages de programmation}
+Les langages dits \og de programmation \fg ont un objectif : la description de données.
+
+Ces données peuvent être de multiples natures. Ce peut être :
+\begin{itemize}
+	\item un programme
+	\item une page internet
+	\item une base de relations entre données
+	\item un fichier PDF comme celui-ci
+	\item de la musique
+	\item etc\dots
+\end{itemize}
+Il est à noter par ailleurs qu'un programme est potentiellement capable de décrire lui-même n'importe quel type information. Cependant, certains langages de programmation décrivent directement les données et non pas le programme qui les génère. On appelle les langages de programmation décrivant les données directement des \textit{langages de description}. Les langages décrivant des instructions exécutables par un ordinateur sont appellés des \textit{langages impératifs}.
+
+Parmi les langages de description les plus importants, on peut citer :
+\begin{itemize}
+	\item HTML : description de pages internets
+	\item CSS : description de l'apparence d'éléments (associé presque directement au HTML)
+	\item LaTex : description de fichiers PDF, que ce soient diaporamas, articles de recherche, livres, etc\dots
+	\item les langages HDL (VHDL, SystemVerilog, \dots) : description de circuits électroniques intégrés
+	\item Z : description de la spécification formelle de systèmes.\footnote{Certains affirmerait que comme personne ne le connaît, il est sans importance\dots je le mets pour attirer l'attention sur un langage atypique particulièrement intéressant et absolument pas dépourvu d'utilité.}
+\end{itemize}
+Parmi les langages impératifs les plus importants, on peut citer :
+\begin{itemize}
+	\item Scratch : langage à très haut niveau d'abstraction spécialisé pour l'éducation, c'est-à-dire destiné à l'apprentissage de l'algorithmie pour les enfants
+	\item Python : langage généraliste à très haut niveau d'abstraction destiné au prototypage rapide d'applications
+	\item Java : langage généraliste à très haut niveau d'abstraction, très utilisé dans le développement d'applications
+	\item JavaScript : langage à très haut niveau d'abstraction permettant de dynamiser des pages internets. Sert au développement d'applications Webs. Il manipule et génère des pages internets sous forme de texte HTML.
+	\item R : langage à très haut niveau d'abstraction spécialisé pour le calcul statistique et les visualisations de données
+	\item PHP : langage à très haut niveau d'abstraction spécialisé pour la programmation de serveurs Web
+	\item C : langage généraliste à niveau relativement bas d'abstraction (par rapport à la plupart des autres, mais très haut tout de même par rapport à l'Assembleur). Il est utilisé notamment dans le développement de programmes dans des systèmes embarqués, ou pour tout ce qui se rapproche de l'ordinateur, comme les systèmes d'exploitation par exemple.
+	\item C++ : une extension du langage C qui introduit des concepts de plus haut niveau d'abstraction tout en conservant le rapprochement technique avec l'ordinateur. Ce langage est le plus utilisé dans le développement d'applications et de jeux-vidéos.
+	\item C\# (prononcer \textit{C sharp}) : langage généraliste de haut niveau utilisé pour le développement d'applications et de jeux-vidéos. Le système d'exploitation Windows est programmé en grande partie avec ce langage. 
+	\item Rust : langage généraliste associant bas niveau et haut niveau. Nécessite une certaine compétence en matière de programmation.
+	\item Assembleur : le langage généraliste du plus bas niveau d'abstraction accessible par un humain. Il s'agit d'une traduction presque littérale des actions effectués par un ordinateur. Nécessite une certaine compétence en matière de programmation.
+\end{itemize}
+\subsection{Langages compilés et interprétés}
+Les langages de programmation peuvent être à nouveau divisés en deux catégories distinctes :
+\begin{itemize}
+	\item les langages compilés
+	\item les langages interprétés
+\end{itemize}
+La compilation consiste à traduire un texte écrit dans un langage de programmation sous une forme accessible par un ordinateur, c'est-à-dire en langage binaire généralement.
+
+Certains langages de programmation nécessitent d'être compilés pour que la donnée décrite puisse être traitée par l'ordinateur. Par exemple, la description en LaTex d'un document nécessite une compilation par un autre programme pour être codée au format PDF. Les langages C, C++ et Assembleur sont également des langages qui nécessitent un \textit{compilateur} pour être transformés/traduits en code binaire qui puisse être exécuté par un ordinateur. Ces langages de programmation sont en général plus anciens que les langages dits ``interprétés''
+
+L'autre catégorie de langages, dits interprétés, n'est jamais traduite en langage binaire pour être exécuté par l'ordinateur directement. Il y a à la place une interface créée par un autre programme appellé \textit{interpréteur}. Ce programme, qui lui est exécuté par l'ordinateur, va simuler l'exécution de l'ordinateur sur le code. Il va lire chacune des lignes du programme écrit, et va faire exécuter les instructions correspondantes à l'ordinateur. Cela permet notamment de créer un niveau d'abstraction supplémentaire pour le programmeur, qui n'a pas besoin de connaître sa machine pour écrire des programmes. C'est l'interpréteur qui s'occupe de l'aspect le plus technique. Le désavantage majeur de ce type de langages interprétés est que l'exécution d'un programme est beaucoup plus lente puisqu'une étape de traduction ``en direct'' par l'interpréteur est nécessaire \textbf{à chaque exécution du programme}. Ce type de langages n'a pu se développer que lorsque les ordinateurs ont été assez puissants pour le permettre. Cela explique par exemple l'explosion de Python dans le monde du développement ces dix dernières années.\footnote{Avis personnel de l'auteur : utiliser des langages qui consomment beaucoup plus de ressources pour arriver au même résultat avec des performances moindres pour des seules raisons de facilité est un problème dans un monde qui a besoin d'une baisse drastique de la consommation énergétique pour sa survie. Le Python ne permet pas de comprendre en profondeur les choses ni d'optimiser les programmes écrits de manière réellement efficace. Il n'est donc pas adapté pour des projets de grande envergure mais reste parfois utile pour tester une idée en cinq minutes. Certains argueront que le langage est utilisé à profusion dans le monde de l'industrie. Il s'agit pour moi d'une erreur à but lucrative mais non pérenne. À discuter\dots}
+\section{Le langage C}
+Le langage C est un langage de bas niveau. Il permet donc de mieux comprendre le fonctionnement interne de l'ordinateur puisqu'il permet la manipulation de la mémoire. D'un autre côté, il traduit assez bien dans sa syntaxe l'intuition algorithmique humaine et se trouve donc un moyen efficace d'apprendreà à programmer. Il est de plus très simple et présente peu de technicité langagière pure (au contraire de langages comme le Rust ou le Java par exemple). En cela, l'apprentissage du C permet de basculer ensuite vers un très grand nombre d'autres langages de programmation.
+
+Le C a été inventé dans les années 70 dans l'objectif particulier de développer des systèmes d'exploitation. En effet, son rapprochement avec la machine, son extrême modularité, sa syntaxe claire et précise et la possibilité d'inclure des fragments de programmes écrits en assembleur à l'intérieur de programmes écrits en C permettent de développer n'importe quel type d'application complexe avec une certaine facilité pour l'époque. Le C reste très utilisé dans les systèmes embarquées et le développement de systèmes d'exploitation. Pour tout un tas de raisons allant du manque de souplesse abstraite du langage à certaines failles de sécurité introduites par les programmeurs rêveurs\footnote{Qui se trouvent être suffisamment nombreux pour avoir une mauvaise influence sur la réputation du langage\dots}, le langage C a tendance à être remplacé pour le développement d'applications complexes par d'autres langages qui proposent certaines solutions abstraites\footnote{comme la programmation orientée objets}, tiennent plus la main au programmeur en terme de sécurité et de stabilité de développement\footnote{On pourra penser au \textit{garbage collector} introduit dans une quantité phénoménale de langages}, proposent plus de fonctionnalités pré-écrites\footnote{Il n'y a qu'à voir la taille de la bibliothèque standard du C++ par rapport à celle du C}, etc\dots
+\subsection{Installer un éditeur et un compilateur}
+Avant de pouvoir programmer en C, il est nécessaire d'installer certains outils de base.
+\subsubsection{Éditeur de texte}
+Le premier est l'éditeur de texte incluant la coloration syntaxique (\textit{syntax highlighting} en anglais), nécessaire pour la programmation quelque soit le langage utilisé. En effet, la coloration syntaxique permet de reconnaître les éléments du langage facilement et rend le code beaucoup plus lisible.
+\begin{lstlisting}[title=Un premier programme]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h>
+
+int main(int argc, char **argv) {
+	printf("Hello World !\n");
+	return 0;
+}
+\end{minted}
+Les différents éléments du programme sont directement visibles.
+
+Il existe deux grandes familles d'éditeurs de code :
+\begin{itemize}
+	\item Les Environnements de Développement Intégrés (EDIs) : en général spécialisés dans un unique langage de programmation, ils incluent le compilateur/interpréteur de celui-ci et tous les outils nécessaires pour programmer dans ce langage.
+	\item Les éditeurs de texte : permettent d'éditer n'importe quel langage de programmation, mais ne fournissent aucun outil de compilation/interprétation, qui doit être installé à part (\textit{recommandé, car l'apprentissage de la compilation ``à la main'' est utile})
+\end{itemize}
+Il existe plusieurs EDIs/éditeurs de code connus qui permettent d'éditer des programmes dans la plupart des langages de programmation :
+\begin{itemize}
+	\item Sublime Text : un éditeur de texte simple mais complet, recommandé pour commencer (\url{https://www.sublimetext.com/download}).
+	\item Atom : une variante de Sublime Text (\url{https://github.com/atom/atom/releases/tag/v1.60.0})
+	\item Code::Blocks : un EDI pour programmer en langages C et C++ sous Windows (\url{https://www.codeblocks.org/downloads/binaries/})
+	\item Visual Studio Code : un éditeur de texte pouvant être étendu en EDI, probablement le plus connu et le plus utilisé (\url{https://code.visualstudio.com/})
+	\item Visual Studio Community : un EDI pouvant être étendu sur plusieurs langages (extrêmement lourd, seulement utile pour de très gros projets professionnels)
+	\item EMACS : un éditeur de texte pouvant être étendu en EDI pour n'importe quel langage de programmation, envoyer des mails, naviguer sur Internet, ouvrir des PDFs, etc\dots, etc\dots (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (\url{https://www.gnu.org/software/emacs/}).\newline
+		Il s'agit en vérité de beaucoup plus que d'un simple EDI/éditeur. On ne le sait pas au moment où on l'installe, c'est tout\dots
+	\item vim : un éditeur de texte pour les systèmes d'exploitation Linux uniquement (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (installé par défaut)
+\end{itemize}
+\subsubsection{Compilateur}
+\textbf{Sous Windows :}
+
+Pour installer un compilateur indépendant sous Windows, il faut télécharger l'archive à l'adresse : \url{https://github.com/brechtsanders/winlibs_mingw/releases/download/14.1.0posix-18.1.5-11.0.1-ucrt-r1/winlibs-x86_64-posix-seh-gcc-14.1.0-llvm-18.1.5-mingw-w64ucrt-11.0.1-r1.zip} puis extraire l'archive dans \textsf{C:/} de sorte à avoir un répertoire \textsf{C:/mingw64/}.
+
+Le compilateur est alors dans le répertoire \textsf{C:/mingw64/bin/} et pourra être utilisé pour compiler les programmes écrits en C ou en C++.
+
+\textbf{Sous Linux :}
+
+Un compilateur du langage C est présent par défaut dans le système d'exploitation. Seul l'EDI/éditeur de texte doit être installé
+\subsection{Compiler le premier programme}
+Il faut pour compiler ce premier programme connaître le principe d'un \textit{terminal de commande}. Un terminal de commande permet d'exécuter les fonctionnalités du système d'exploitation sans passer par une interface graphique (c'est-à-dire des boutons, des fenêtres, etc\dots). Toutes les actions sont effectués par \textit{lignes de commande}. À une époque où l'interface graphique n'existait pas, ces terminaux de commande étaient les seuls moyens de manipuler un ordinateur.
+
+Le code du premier programme doit être écrit dans un fichier de nom quelconque (appelé \textit{``main.c''} par convention).
+
+Pour la suite, on pourra utiliser l'arborescence de fichiers suivante\footnote{Vous êtes bien sûr libre de faire autrement, il s'agit simplement de poser une structure conventionnelle pour la suite du cours.} :
+\begin{center}
+\begin{forest}
+[Documents
+	[Apprendre\_le\_C
+		[src
+			[main.c]
+		]
+	]
+]
+\end{forest}
+\end{center}
+Le répertoire ``src''\footnote{Pour ``source''} contiendra les fichiers de code \textit{C}. Cette arborescence sera développée et étendue dans par la suite.
+
+\textbf{Sous Windows :}
+
+Il existe deux terminaux de commande sous Windows. Le plus connu et le moins utile est le terminal dit \textit{CMD}. Il est hérité des anciennes versions de Windows, et ne permet pas de faire grand-chose. Le plus généraliste est le terminal plus récent \textit{PowerShell} qui permet une souplesse de manipulation plus élevée. En vérité, PowerShell est lui-même un langage de programmation impératif interprété à très haut niveau d'abstraction spécialisé dans la manipulation du système d'exploitation Windows.
+
+Cependant, le langage PowerShell demande plus de ressources à l'ordinateur, et dans notre cas, le CMD est suffisant.
+
+On peut exécuter l'un ou l'autre en maintant les touches $\textsf{Windows} + \textsf{R}$ du clavier et en tapant dans la fenêtre qui apparaît soit \textsf{cmd}, soit \textsf{powershell}.
+
+Dans les deux cas, comme PowerShell comprend les possibilités du CMD, on peut exécuter les mêmes lignes de commande pour compiler notre programme :
+\begin{lstlisting}[title=Compiler sous Windows]
+\end{lstlisting}
+\begin{minted}[linenos]{batch}
+C:\Users\user> cd Documents/Apprendre_le_C
+C:\Users\user\Documents\Apprendre_le_C> C:/mingw64/bin/gcc.exe src/main.c -o main.exe
+C:\Users\user\Documents\Apprendre_le_C> main.exe
+\end{minted}
+\og user \fg{} désigne votre nom d'utilisateur. Si une erreur apparaît à la première ligne, il faut taper \textsf{Utilisateurs} au lieu de \textsf{Users} (le système peut être en français).
+
+\textbf{Sous Linux :}
+
+Il n'existe qu'un seul type de terminal sous Linux\footnote{Pour simplifier\dots que les puristes pardonnent.}. On ouvre ce terminal par les touches $\textsf{CTRL} + \textsf{ALT} + \textsf{T}$. Il suffit ensuite d'écrire :
+\begin{lstlisting}[title=Compiler sous Linux]
+\end{lstlisting}
+\begin{minted}[linenos]{bash}
+user@computer ~> cd ~/Apprendre_le_C
+user@computer ~/Apprendre_le_C> gcc src/main.c -o main
+user@computer ~/Apprendre_le_C> ./main
+\end{minted}
+\textbf{Dans les deux cas :}
+
+La première ligne modifie le répertoire de travail du terminal. \newline
+La deuxième ligne compile notre programme sous la forme d'un exécutable appelé ``main.exe'' ou ``main''.\newline
+La troisième ligne commande à l'ordinateur d'exécuter le programme ``main.exe'' ou ``main'' au sein du terminal.
+
+Le résultat devrait être l'affichage du texte ``Hello World !'' à l'écran.
+\subsection{Analyse du premier programme}
+On rappelle le premier programme écrit en C :
+\begin{lstlisting}[title=Un premier programme]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h>
+
+int main()
+{
+	printf("Hello World !\n");
+	return 0;
+}
+\end{minted}
+Bien qu'il s'agisse d'un programme très simple, il pose les fondements du langage par bien des aspects. L'une des premières tâches à effectuer lors de la découverte d'un language est d'apprendre les nombreux \textit{mot-clés} et symboles du langage de programmation. Une fois que vous aurez appris la signification sous-jacente au code, vous serez en mesure de ``parler'' au compilateur et de lui donner vos propres ordres et de construire n'importe quel type de programme que vous êtes assez inventif et ingénieux pour créer\footnote{Avec certaines contraintes théoriques et pratiques}. Le compilateur va ensuite le transformer en langage binaire et l'ordinateur l'exécutera.
+
+Mais il est à noter que connaître la signification des symboles arcaniques du langage n'est pas tout ce qu'il y a à faire en programmation. Vous ne pouvez pas maîtriser une autre langue en lisant un dictionnaire de traduction. Pour parler couramment une autre langue, il faut s'entraîner à converser dans cette langue. L'apprentissage d'un langage de programmation n'est pas différent. Il faut s'entraîner à ``parler'' au compilateur avec le code source écrit. Tous les codes écrits dans ce cours doivent être retapés à la main (sans copié-collé qui n'apprend rien) et il ne faut pas hésiter à les expérimenter et les modifier avec curiosité.
+
+\textbf{Analyse ligne par ligne :}
+\begin{minted}[linenos=false]{c}
+#include <stdio.h>
+\end{minted}
+Cette première ligne présente un aspect très puissant du langage C (toujours présent dans une certaine mesure dans les autres langages de programmation impératifs) : la \textit{modulation}.
+
+La modulation consiste à diviser un programme en plusieurs ensembles de sous-programmes appelés \textit{modules} (\textit{modules} en anglais) qui vont chacun définir des fonctionnalités. Ces fonctionnalités sont ensuite utilisés dans un programme principal. Ce découpage permet de structurer un programme. Dans le cas de très gros projets (de plusieurs milliers, dizaines de milliers voire centaines de milliers de lignes de code\footnote{Les systèmes d'exploitation comme Linux ou Windows, ou encore les très gros logiciels comme les éditeurs de jeux vidéos tapent plutôt dans les quelques millions de lignes de code}), ce découpage est obligatoire pour pouvoir se retrouver dans le programme et savoir où les fonctionnalités ont été développés. On peut y penser comme à la fabrication d'un avion. L'entreprise Airbus ne fabrique pas l'intégralité de ses avions au même endroit. Il s'agit pour une part de l'assemblage de différents composants (ici les modules) construit à des endroits différents (parfois par des entreprises différentes).
+
+Un \textit{bibliothèque} (\textit{library} en anglais) est une collection de modules.
+
+Le langage C présente une très grande quantité de fonctionnalités qui ont déjà été programmés et qu'il suffit de ré-utiliser. Pour ne pas avoir à surcharger notre programme avec des fonctionnalités inutiles, il est possible de choisir les fonctionnalités incluses. Cela se fait par l'instruction \textsf{\#\detokenize{include}} qui permet d'inclure le contenu d'un module choisi. Par ``inclure'', il faut entendre : copier l'ensemble du code écrit dans le module dans notre programme.
+
+Le module \textsf{stdio} est un module de la bibliothèque \textit{\underline{st}an\underline{d}ard} pour les entrées/sorties (\underline{I}nput/\underline{O}utput). Une bibliothèque dite standard est une bibliothèque présente par défaut dans le langage, présente à son installation. En C, les modules de cette bibliothèque sont indiqués entre chevrons \textsf{$<$nom\_module.h$>$}. Un module non standard (c'est-à-dire définie par le programmeur) est indiqué entre guillemets \textsf{"nom\_module.h"}.
+
+Les informations nécessaires de ces modules sont stockés dans des fichiers dit d'entête (\textit{\underline{h}eaders} en anglais) qui finissent par l'extension \textit{.h}. Ce sont ces informations qui sont données pour permettre l'inclusion du code. Ces fichiers sont à différencier des fichiers d'extension \textit{.c} qui définissent les fichiers de code du langage C (l'extension d'un fichier de code est modifié en fonction du langage de programmation : \textit{py} en Python, \textit{java} en Java, etc\dots)
+\begin{minted}[linenos=false]{c}
+int main()
+\end{minted}
+Cette instruction permet de définir la fonction principale (\textit{main} en anglais signifie principal(e)). Une fonction en informatique est un algorithme avec certains paramètres appelés des entrées et qui renvoie une certaine valeur appelée sortie. Le concept de fonction en informatique est donc le même qu'en mathématiques.
+
+La fonction \textsf{main} est celle qui est appelée à l'exécution du programme. En ceci, son adresse en mémoire définit le \textit{point d'entrée} du programme, c'est-à-dire l'adresse à laquelle débute l'exécution du programme.
+
+On appelle \textit{type de retour d'une fonction} le type de la valeur en sortie de la fonction. Ici, ce type est \textsf{int}, c'est-à-dire \textit{\underline{int}eger} en anglais, qui signifie ``entier''. La fonction \textsf{main} renvoie donc un entier. L'entier renvoyé par la fonction \textsf{main} représente l'état du programme à la fin de son exécution. En général, 0 signifie que tout s'est bien passé, et $-1$ signifie qu'une erreur a eu lieu au cours de l'exécution du programme.
+
+Les parenthèses contiennent les paramètres de la fonction définie. On observe que dans ce cas-ci, la fonction \textsf{main} n'a aucun paramètre.
+\begin{minted}[linenos=false]{c}
+{
+...
+}
+\end{minted}
+Les accolades définissent un \textit{bloc de code}. Ce bloc est associé à la fonction \textsf{main}. Il contient l'algorithme exécuté par cette fonction.
+\begin{minted}[linenos=false]{c}
+printf("Hello World !\n");
+\end{minted}
+Cette instruction appelle la fonction \textsf{printf} écrite dans le module d'entrée/sortie \textsf{stdio} inclue plus haut. Cette fonction sert à afficher du texte sur un terminal de commande. Le caractère ``$\setminus$n'' représente le retour à la ligne.
+\begin{minted}[linenos=false]{c}
+return 0;
+\end{minted}
+L'instruction \textsf{return} renvoie la sortie de la fonction écrite. Ici, la sortie de la fonction \textsf{main} est 0, c'est-à-dire que tout s'est bien passé. En général, le \textsf{return} à la fin de la fonction \textsf{main} renvoie toujours 0. En effet, si on est arrivé à la fin du programme, c'est qu'il n'y a pas eu de problème. On renvoie un code d'erreur seulement si une erreur nous empêche d'aller plus loin.
+\end{document}

@@ -1,0 +1,158 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\definition{Flux}{En informatique, un flux (\textit{stream} en anglais), est une séquence infinie discrète d'éléments indicés par le temps.
+On peut y penser comme une bande transporteuse d'objets quelconques, dont on n'aurais accès qu'à un certain élément (ou à rien) à l'instant présent :
+ 
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{bande_transporteuse}
+	\end{center}
+\end{minipage}
+}
+ 
+Il s'agit d'un concept \textit{purement abstrait} qui permet de penser à certains comportement en ignorant les détails techniques. Ces détails techniques seront vues ultérieurement avec la manipulation des \textit{flux de fichiers}.
+ 
+Un exemple ``utile'' dans notre cas est celui des flux d'entrée et de sortie d'un ordinateur. On peut penser par exemple :
+\begin{itemize}
+	\item au flux d'images d'une vidéo en \textit{streaming}
+	\item au flux de sortie d'un texte sur un terminal
+	\item au flux d'entrée du clavier
+	\item au flux des positions du curseur, manipulé par une souris ou un pad
+	\item au flux d'une communication internet entre un client et un serveur
+	\item au flux résultant de l'écriture et de la lecture d'un fichier sur un disque
+	\item au flux résultant de l'écriture et de la lecture d'une variable en mémoire
+	\item etc\dots
+\end{itemize}
+La manipulation des flux standards passe par la bibliothèque \textsf{$<$stdio.h$>$}, qui est la bibliothèque standard des entrées et sorties.
+ 
+De manière générale, un flux peut être de deux types :
+\begin{itemize}
+	\item \textit{textuel} : suites de caractères terminées par le caractère de fin de ligne `\textsf{$\setminus$n}' qui forment des lignes
+	\item \textit{binaire} : suites de mots binaires regroupés en blocs de multiplets
+\end{itemize}
+\textbf{Remarque :} On peut aussi considérer qu'un flux textuel est un flux binaire dans le sens où du texte est représenté par des mots binaires dans un ordinateur. Cependant, considérer de manière abstraite qu'il s'agit de texte au sens humain permet de faciliter l'analyse théorique.\footnote{Voir la théorie du langage dans la bibliothèque Minitel}
+ 
+En particulier, trois flux \textit{textuels} sont créés par défaut au moment de l'ouverture d'un terminal :
+\begin{itemize}
+	\item le flux de sortie standard représenté en C par \textit{stdout}
+	\item le flux d'entrée standard représenté en C par \textit{stdin}
+	\item le flux d'erreur standard représenté en C par \textit{stderr}
+\end{itemize}
+Certains flux ont déjà été expérimentés dès à présent, comme \textit{stdout} grâce à la fonction \textsf{printf}, ou de manière abstraite les flux \textit{binaires} d'accès à la mémoire par la manipulation de variables.\footnote{Dont les fonctionnements techniques ne reposent pas tout à fait sur le concept de flux ceci étant dit\dots }
+ 
+\subsection{Flux d'entrée standard}
+On s'intéresse ici à la manipulation du flux d'entrée \textit{stdin}. Il est possible de manipuler le flux des entrées clavier dans le terminal par la fonction \textsf{scanf} :
+\begin{minted}[linenos=false]{c}
+int x;
+printf("Entrer un nombre : ");
+int counter = scanf("%d", &x); // press enter to valid the entry
+printf("%d valeurs saisies.", counter);
+printf("Le nombre saisi est %d", x);
+\end{minted}
+La fonction \textsf{scanf} ne fait pas que lire le flux des entrées clavier, elle effectue un formatage de ces entrées tout comme le fait la fonction \textsf{printf}. Par ailleurs, on peut observer qu'elle bloque l'exécution du programme jusqu'à l'appui sur la touche \textit{Entrée} après avoir saisi une chaîne non vide de caractères.
+ 
+Ce formatage diffère un peu du formatage de \textsf{printf}. On observe ainsi qu'au lieu de prendre la variable vers laquelle écrire en argument, \textsf{scanf} demande l'adresse de cette variable. En effet, écrire $x$ fournirait la valeur de $x$ (qui est indéfinie) et la fonction \textsf{scanf} n'a alors aucun moyen d'écrire dans la variable (puisqu'elle ne sait pas où elle se trouve). On lui donne donc son adresse pour que \textsf{scanf} puisse y écrire.
+ 
+Par ailleurs, on peut également formater plusieurs données d'un coup avec \textsf{scanf} :
+\begin{listing}
+	\begin{minted}[linenos=false]{c}
+int x, y;
+printf("Entrer deux nombres : ");
+int counter = scanf("%d %d", &x, &y); // press enter to valid the entry
+printf("%d valeurs saisies.", counter);
+printf("Les deux nombres saisis sont %d et %d", x, y);
+	\end{minted}
+	\label{lst:prgm1}
+\end{listing}
+\subsection{Flux de sortie standard et flux d'erreur standard}
+Il est possible en C de choisir sur quel flux on veut afficher les données grâce à la fonction \textsf{fprintf}. Cette fonction prend un argument en plus, qui est le flux vers lequel envoyer les données :
+\begin{minted}[linenos=false]{c}
+fprintf(stdout, "Hello World !\n");
+fprintf(stderr, "Une erreur est survenue !\n");
+\end{minted}
+L'existence de \textit{stderr} en plus de \textit{stdout} peut sembler tout à fait superflue. Un premier intérêt est exhibé par l'exécution des deux codes suivants :  
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+fprintf(stdout, "Hello World !");
+while (1);
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+fprintf(stderr, "Petite erreur !");
+while (1);
+\end{minted}
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{bash}
+> ./stdout
+
+
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{bash}
+> ./stderr
+Petite erreur !
+
+\end{minted}
+\end{minipage}
+ 
+Le texte envoyé sur \textit{stderr} s'affiche alors que le texte envoyé sur \textit{stdout} non. La question, simple et bête, est la suivante : \textit{pourquoi ?}
+ 
+La réponse, quant-à-elle, n'est pas particulièrement compliqué, mais tout de même moins évidente que la question.\newline
+Pour des raisons d'optimisation, les flux peuvent utiliser un \textit{tampon mémoire} (\textit{memory buffer} en anglais). En effet, l'accès en écriture à des supports comme la carte vidéo ou un disque dur est en général beaucoup plus lent que l'écriture dans la RAM. Pour cette raison, les fonctions d'affichage tentent de minimiser le nombre d'accès effectués par le programme à ces supports. Au lieu d'envoyer directement à travers le flux les données textuelles, on les stockent d'abord dans une zone mémoire appelée un \textit{tampon} et on vide ensuite d'un seul coup l'entièreté du tampon.
+ 
+Il existe plusieurs stratégies de manipulation des tampons :
+\begin{itemize}
+	\item Flux sans tampon (\textit{unbuffered stream}) : les données textuelles sont transmises individuellement dès que possible
+	\item Flux tamponné par ligne (\textit{line buffered stream}) : les données textuelles sont transmises par blocs dès qu'un caractère de retour à la ligne est rencontré
+	\item Flux complètement tamponné (\textit{fully buffered stream}) : les données textuelles sont transmises par blocs d'une taille arbitraire déterminée précédemment
+\end{itemize}
+Le flux \textit{stdout} est par défaut tamponné par ligne tandis que le flux \textit{stderr} est par défaut sans tampon. \newline
+On peut facilement obtenir la taille du bloc de tampon de \textit{stdout} et de \textit{stderr} :
+\begin{minted}{c}
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdio_ext.h>
+
+int main() {
+	printf("Size of the default stdout buffer : ");
+	printf("%ld\n", __fbufsize(stdout));
+	fprintf(stderr, "Size of the default stderr buffer : ");
+	fprintf(stderr, "%ld\n", __fbufsize(stderr));
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\textbf{Remarque :} Comme la fonction \textsf{\_\_fbufsize} est appelée avant l'affichage de son résultat et que le tampon est initialisé sur la première écriture du flux \textit{stdout}, oublier d'écrire le premier \textsf{printf} affiche une taille de tampon de 0.
+ 
+Pour revenir à notre premier problème, on veut un affichage par défaut efficace mais on veut que dans le cas où le programme s'arrête du fait d'un disfonctionnement, on puisse tout de même avoir le message d'erreur (par exemple, si on essaye d'accéder à une zone mémoire qui n'existe pas). La disjonction en deux flux de sorties différents est utile.
+ 
+Par ailleurs, il est possible de rediriger les flux vers d'autres sorties que la console. On peut donc imaginer conserver \textit{stdout} pour afficher du texte dans notre programme, mais rediriger \textit{stderr} vers un fichier sur le disque dur qui servira de \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}.
+\subsection{Exemple pratique d'utilisation de \textit{stderr}}
+On rappel que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \ref{lst:prgm1}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
+	\begin{minted}{c}
+#include <stdlib.h>
+#include <stdio.h>
+
+int main() {
+	int x, y, counter;
+	printf("Entrer deux nombres : ");
+	if ((counter = scanf("%d %d", &x, &y)) != 2) // press enter to valid the entry
+	{
+		fprintf(stderr, "Erreur saisie incorrecte.\n"); // \n only for readability
+	} else {
+		printf("%d valeurs saisies.", counter);
+		printf("Les deux nombres saisis sont %d et %d", x, y);
+	}
+	return EXIT_SUCCESS;
+}
+	\end{minted}
+\subsection{Exercices}
+\exercise{Distance Euclidienne}Écrire un programme qui demande à l'utilisateur d'entrer deux points $A = (x_{A}, y_{A}), B = (x_{B}, y_{B})\in{\mathbb{R}_{f64}^{2}}$, les affiche et donne le carré de la distance euclidienne entre ces deux points :
+$$\lVert{A - B}\rVert^{2}_{euclide} = (x_{A} - x_{B})^{2} + (y_{A} - y_{B})^{2}$$
+\exercise{Somme d'entiers}Écrire un programme qui demande à l'utilisateur d'entrer $N$ entiers et renvoie la somme de ces entiers. Ce programme ne devra pas utiliser plus de 3 variables.
+\end{document}

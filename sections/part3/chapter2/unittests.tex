@@ -1,0 +1,21 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part3/images/}}
+\begin{document}
+C'est pour cela que les tests unitaires existent. L'objectif des programmes de tests unitaires est de
+vérifier des routines isolées (unitaires) dans des cas particulier d'exécution qui pourrait potentiellement
+amener à une erreur en comparant la sortie de chaque routine sur une entrée $e$ prédéterminée avec une
+sortie attendue $s(e)$. Il faut alors tester tous les entrées les plus particulières.
+
+Chaque routine d'un programme doit en théorie être testée par des tests unitaires. Dans la pratique,
+du fait des ressources humaines nécessaires à la réalisation de ces tests, on ne test que les routines
+``non triviales'' d'un programme, c'est-à-dire celles qui peuvent présenter des fautes potentielles.
+
+L'importance des tests unitaires est multiple :
+\begin{itemize}
+	\item Correction efficiente des bogues : une routine bogué est plus facilement corrigeable tôt que lorsque
+la moitié du programme en est dépendant.
+	\item Documentation : les tests unitaires servent d'exemples sur la manière dont les routines doivent
+être utilisées
+	\item Confiance en la qualité du code
+\end{itemize}
+\end{document}

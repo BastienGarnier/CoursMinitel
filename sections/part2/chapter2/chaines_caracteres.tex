@@ -1,0 +1,150 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\definecolor{asciigreen}{rgb}{0, 0.52, 0.51}
+\definecolor{asciiblue}{rgb}{0.16, 0, 0.46}
+\definecolor{asciired}{rgb}{0.6, 0, 0}
+La manipulation de texte au sens humain du terme n'est pas une fonctionnalité naturelle pour un ordinateur. Celui-ci ne peut que manipuler des chaînes de mots binaires constituées de 0 et 1, c'est-à-dire d'absence ou de présence de tension.
+ 
+Pour pouvoir manipuler du texte, il faut d'abord pouvoir exprimer ce texte, donc poser une correspondance entre du texte et des mots binaires. 
+\subsection{Caractères ASCII}
+Le premier standard international largement utilisé est apparu avec l'ANSI (\textit{\underline{A}merican \underline{N}ational \underline{S}tandards \underline{I}nstitute}). Celle-ci a posé une norme de correspondance entre les caractères de la langue anglaise et les mots binaires codés sur 7 bits. Cela définit donc $2^{7} = 128$ caractères :
+\begin{center}
+	\tiny
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabular}{>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l}
+	\small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} \\
+	\hline
+	0 & 0 & [NULL] & 32 & 20 & [SPACE] & 64 & 40 & @ & 96 & 60 & ` \\
+	1 & 1 & [START OF HEADING] & 33 & 21 & ! & 65 & 41 & A & 97 & 61 & a \\
+	2 & 2 & [START OF TEXT] & 34 & 22 & " & 66 & 42 & B & 98 & 62 & b \\
+	3 & 3 & [END OF TEXT] & 35 & 23 & \# & 67 & 43 & C & 99 & 63 & c \\
+	4 & 4 & [END OF TRANSMISSION] & 36 & 24 & \$ & 68 & 44 & D & 100 & 64 & d \\
+	5 & 5 & [ENQUIRY] & 37 & 25 & \% & 69 & 45 & E & 101 & 65 & e \\
+	6 & 6 & [ACKNOWLEDGE] & 38 & 26 & \& & 70 & 46 & F & 102 & 66 & f \\
+	7 & 7 & [BELL] & 39 & 27 & ' & 71 & 47 & G & 103 & 67 & g \\
+	8 & 8 & [BACKSPACE] & 40 & 28 & ( & 72 & 48 & H & 104 & 68 & h \\
+	9 & 9 & [HORIZONTAL TAB] & 41 & 29 & ) & 73 & 49 & I & 105 & 69 & i \\
+	10 & A & [LINE FEED] & 42 & 2A & \* & 74 & 4A & J & 106 & 6A & j\\
+	11 & B & [VERTICAL TAB] & 43 & 2B & + & 75 & 4B & K & 107 & 6B & k \\
+	12 & C & [FORM FEED] & 44 & 2C & , & 76 & 4C & L & 108 & 6C & l\\
+	13 & D & [CARRIAGE RETURN] & 45 & 2D & - & 77 & 4D & M & 109 & 6D & m\\
+	14 & E & [SHIFT OUT] & 46 & 2E & . & 78 & 4E & N & 110 & 6E & n\\
+	15 & F & [SHIFT IN] & 47 & 2F & / & 79 & 4F & O & 111 & 6F & o\\
+	16 & 10 & [DATA LINK ESCAPE] & 48 & 30 & 0 & 80 & 50 & P & 112 & 70&p\\
+	17 & 11 & [DEVICE CONTROL 1] & 49 & 31 & 1 & 81 & 51 & Q & 113 & 71&q\\
+	18 & 12 & [DEVICE CONTROL 2] & 50 & 32 & 2 & 82 & 52 & R & 114 & 72&r\\
+	19 & 13 & [DEVICE CONTROL 3] & 51 & 33 & 3 & 83 & 53 & S & 115 & 73&s\\
+	20 & 14 & [DEVICE CONTROL 4] & 52 & 34 & 4 & 84 & 54 & T & 116 & 74&t\\
+	21 & 15 & [NEGATIVE ACKNOWLEDGE] & 53 & 35 & 5 & 85 & 55 & U & 117 & 75&u\\
+	22 & 16 & [SYNCHRONOUS IDLE] & 54 & 36 & 6 & 86 & 56 & V  & 118 & 76&v\\
+	23 & 17 & [END FOF TRANS. BLOCK] & 55 & 37 & 7 & 87 & 57 & W & 119 & 77&w\\
+	24 & 18 & [CANCEL] & 56 & 38 & 8 & 88 & 58 & X & 120 & 78&x\\
+	25 & 19 & [END OF MEDIUM] & 57 & 39 & 9 & 89 & 59 & Y & 121 & 79&y\\
+	26 & 1A & [SUBSTITUTE] & 58 & 3A & : & 90 & 5A & Z & 122 & 7A&z\\
+	27 & 1B & [ESCAPE] & 59 & 3B & ; & 91 & 5B & [ & 123 & 7B&\{\\
+	28 & 1C & [FILE SEPARATOR] & 60 & 3C & $<$ & 92 & 5C & \textbackslash & 124 & 7C&$|$\\
+	29 & 1D & [GROUP SEPARATOR] & 61 & 3D & = & 93 & 5D & ] & 125 & 7D&\}\\
+	30 & 1E & [RECORD SEPARATOR] & 62 & 3E & $>$ & 94 & 5E & $\wedge$ & 126 & 7E&$\sim$\\
+	31 & 1F & [UNIT SEPARATOR] & 63 & 3F & ? & 95 & 5F & \_ & 127 & 7F&[DEL]\\
+	\end{tabular}
+\end{center}
+\textbf{Remarque :} On peut trouver cette table en écrivant \textit{man ascii} dans un terminal de commande sous Linux.
+ 
+La plupart des systèmes manipulent des mots binaires dont le nombre de bits est multiple de $8$. Par défaut, certains systèmes posent le bit de poids fort à la valeur 0. Il est toutefois possible d'étendre le codage ASCII en une version étendu (\textit{extended ASCII}). Il existe plusieurs standards d'ASCII étendu et il n'en sera pas discuté ici.
+ 
+\textbf{Exemple :} Selon l'ASCII, le caractère `a' est décrit par le mot binaire : $(1100001)_{2} = 0\textsf{x}61 = 97$. On peut également effectuer la correspondance dans l'autre sens, en réécrivant sous forme de caractères des mots binaires de 8 bits. Ainsi, \textsf{0x2B} décrit le caractère `$+$'
+ 
+\exercise{Traduction ASCII [COURS]}Trouver la chaîne de caractères décrite par la chaîne de mots binaires suivante :\newline
+$$\textsf{0x4D696E6974656C203D20474F41540A0D00}$$
+\textit{\underline{Indication} : on pourra segmenter en mots de 8 bits la chaîne.}
+\subsection{Chaîne de caractères}
+Si un caractère est en informatique un mot binaire écrit sur 8 bits, une chaîne de caractères est basiquement un tableau de caractères. On observe toutefois quelques subtilités :
+\begin{itemize}
+	\item un tableau est de taille finie, et donc doit aussi l'être une chaîne de caractères
+	\item une chaîne de caractères ne remplit pas toujours l'entièreté d'un tableau. Il faut donc pouvoir indiquer la fin de la chaîne n'importe où
+	\item la structure de donnée du tableau ne permet pas aisément certaines manipulations, comme l'insertion d'une chaîne de caractères au milieu d'une autre
+\end{itemize}
+\textbf{Remarque :} Concernant le dernier point, aucune solution ne sera proposée ici puisque ce n'est pas le coeur du propos. Il faut se rapprocher d'ouvrages d'algorithmie pour trouver une réponse satisfaisante.\footnote{Cela dépend de plus du besoin. Un \textit{gap buffer} n'aura pas les mêmes propriétés qu'un \textit{rop tree}. C'est bon, j'ai drop quelques noms ça fait genre que je maîtrise ;)}
+\subsection{En langage C}
+La manipulation de texte sous forme de chaînes de caractères est native au langage C bien que nettement moins développé que dans d'autres langages.\footnote{Autant dire qu'en C, il n'y a que le strict minimum hein !}
+ 
+En particulier, on peut remarquer que le type du langage C pour des entiers sur 8 bits est \textit{char}, comme \textit{character} qui signifie \textit{caractère} en français.\footnote{Coïncidence ? Je ne crois pas.}
+ 
+La manipulation de caractères et de chaînes de caractères suit une nomenclature précise :
+\begin{itemize}
+	\item on représente un caractère entre guillements simples : `a', `b', `=', `!', `:', etc\dots
+	\item on représente une chaîne de caractères entre guillemets doubles : ``Hello World !'', ``42 is the answer'', etc\dots
+\end{itemize}
+En langage C :
+\begin{minted}[linenos=false]{c}
+char chr = '+';
+char text[50] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', ' ', '!', 0};
+\end{minted}
+\textbf{Remarque 1 :} Comme \textit{char} est un type entier, `+' est le mot binaire associé au caractère +. De même, le tableau de caractères est un tableau de mots binaires représentant chacun des caractères. Il s'ensuit qu'il est équivalent d'écrire :
+\begin{minted}[linenos=false]{c}
+char chr = 43;
+char text[50] = {72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 32, 33, 0};
+\end{minted}
+On peut ensuite afficher ces caractères par deux ``nouveaux'' modificateurs d'affichage : 
+\begin{itemize}
+	\item \textsf{char} interprété comme caractère : \textsf{\%c}
+	\item \textsf{char[]} ou \textsf{char*} interprétés comme chaînes de caractères : \textsf{\%s}
+\end{itemize}
+\begin{minted}[linenos=false]{c}
+printf("Caractere %c est represente par %d\n", chr, chr);
+printf("Premier caractere du texte : %c\n", text[0]);
+printf("%s\n", text); // characters array interpreted as text
+\end{minted}
+Pour celles et ceux qui se posent la question : \textit{``Whatz ve feuck ? Fé koi fe véro à la fin d'une faîne ?}, le langage C pose par convention que la fin d'une chaîne de caractères est indiqué par le caractère spécial $\setminus0\equiv\textit{[NULL]}$ de valeur entière 0. On peut l'écrire directement dans une chaîne de la façon suivante :
+\begin{minted}[linenos=false]{c}
+// 0 after the 'l', and 0 at the end of the string :
+char text[50] = {'H', 'e', 'l', 'l', '\0', ' ', 'W', 'o', 'r', 'l', 'd', ' ', '!', 0};
+printf("%s\n", text); // displays Hell on the screen
+\end{minted}
+L'affichage s'arrête au premier 0 rencontré qui indique la fin de la chaîne.
+ 
+On peut ensuite modifier cette chaîne de caractères comme un tableau classique :
+\begin{minted}[linenos=false]{c}
+char text[50] = {'H', 'e', 'l', 'l', '\0', ' ', 'W', 'o', 'r', 'l', 'd', ' ', '!', 0};
+text[4] = 'o';
+printf("%s\n", text); // displays Hello World ! on the screen
+\end{minted}
+\subsection{Se faciliter la vie avec les chaînes littérales}
+Les lecteurs/rices attentifs/ives auront remarqué un fait étrange. La fonction \textsf{printf} affiche par défaut des chaînes de caractères :
+\begin{minted}[linenos=false]{c}
+printf("Hello World !");
+\end{minted}
+et il n'y a pas besoin d'initialiser de p*tain de tableau de c*n pour cela.
+ 
+Cela n'a en fait rien d'étrange\footnote{Étonnant n'est-ce pas ? Qui l'aurait crû ?}, le langage C propose nativement les chaînes de caractères littérales. Il s'agit d'une facilité d'écriture des chaînes de caractères qui consiste simplement à écrire le texte entre guillemets doubles ``'' et laisser le compilateur créer lui-même le tableau en interne, et le remplir avec les caractères précisés entre guillements, plus un 0 pour finir la chaîne.\newline
+Ainsi, il est possible d'écrire simplement :
+\begin{minted}[linenos=false]{c}
+printf("%s", "%s\n"); // 0 is added automatically
+\end{minted}
+Ici, le compilateur construit deux chaînes de caractères : la première qui contient les caractères `\%', `s' et '$\setminus{0}$' et la seconde qui contient les caractères `\%', `s', `$\setminus$n' et '$\setminus0$'. Les caractères `\%' et `s' ne constituent un caractère spécial de formatage que dans la chaîne manipulé par \textsf{printf}, c'est-à-dire la première.
+\subsection{Exercices}
+\exercise{Calculatrice}Écrire un programme qui demande à l'utilisateur d'entrer des calculs sous la forme $x\star y$, où $x, y\in{\mathbb{R}_{f64}}, \star\in\{+, -, /, *\}$ et lui donne le résultat. Si une erreur a lieu lors de la lecture, le programme termine. Ainsi, un scénario possible d'exécution est le suivant :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc calculatrice.c -o main
+user@computer ~/working_directory> ./main
+> 7 + 5
+12.000000
+> 8 * 2.2
+17.600000
+> 0.1 + 0.2
+0.300000
+> 1. - 0.8
+0.200000
+> 27.1 / 3
+9.033333
+> t * 8
+Erreur !
+user@computer ~/working_directory>
+\end{minted}
+On rappelle que l'appui des touches \textit{Ctrl + C} permet de forcer l'arrêt du programme. On peut donc exécuter une boucle infinie sans risques.
+ 
+\textbf{Remarque : } $nan\equiv{\textit{Not A Number}}$ et $inf\equiv{\infty}$, que l'on obtenir par $0/0$ et $1/0$. Par ailleurs, ces deux ``nombres'' peuvent être utilisés dans la calculatrice.
+ 
+\textit{\underline{Indication} : un caractère est un nombre, il peut donc être utilisé dans un aiguillage 'switch-case'}
+\end{document}

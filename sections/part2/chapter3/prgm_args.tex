@@ -1,0 +1,71 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Les programmes informatiques sont des routines, et plus particulièrement des fonctions, puisqu'ils retournent leur valeur de statut :
+\begin{minted}[linenos=false]{c}
+int main() {
+	return STATUT;
+}
+\end{minted}
+Cependant, les programmes tels qu'ils ont été vus depuis le début de ce document n'ont pas de paramètres. Cela explique donc mal la possibilité d'écrire de genre de commandes dans un terminal :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c -o main
+user@computer ~/working_directory>
+\end{minted}
+En effet, les chaînes de caractères ``main.c'', ``-o'' et ``main'' ont tout d'arguments donnés au programme \textit{gcc}. Or cela n'est absolument pas possible avec le prototype de la fonction \textit{main} qui a été donné dans la première partie du cours et tout au long de la seconde partie.
+
+L'objectif de cette section est donc de revenir sur un petit ``mensonge'' à but simplificateur : le prototype de \textit{main}
+\subsection{Le véritable prototype de \textit{main}}
+Le prototype de main est le suivant :
+\begin{minted}[linenos=false]{c}
+int main(int argc, char **argv);
+\end{minted}
+Le compilateur C accepte la version sans paramètres mais c'est bien la version avec paramèters qui est complète. Les deux paramètres fournissent les informations sur les arguments donnés au programme :
+\begin{itemize}
+	\item \textit{argc} : nombre d'arguments donnés au programme
+	\item \textit{argv} : tableau des chaînes de caractères des arguments donnés au programme\footnote{Le double pointeur est ainsi justifié : \begin{itemize}
+	\item la première étoile désigne le tableau de caractères
+	\item la seconde étoile désigne le tableau des tableaux de caractères
+	\end{itemize}}
+\end{itemize}
+Plus particulièrement, \textit{argc} est la longueur du tableau \textit{argv}.
+
+Par ailleurs, on a toujours $argc \geq 1$. L'explication est la suivante : c'est l'entièreté de la ligne de commande qui effectue l'appel du programme qui est passée à celui-ci. En particulier, le nom du programme est le premier mot de cette ligne et lui est donc passé également.\\
+C'est-à-dire que $argv[0] = \text{nom du programme}$ :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char **argv) {
+	printf("%s\n", argv[0]);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c -o main
+user@computer ~/working_directory> ./main
+./main
+user@computer ~/working_directory> cd ..
+user@computer ~> working_directory/main
+working_directory/main
+user@computer ~> 
+\end{minted}
+\subsection{Exercices}
+\exercise{Liste des arguments} Écrire un programme qui affiche toute la liste des arguments passés au programme, c'est-à-dire tel que :
+\begin{minted}{bash}
+user@computer ~/working_directory> ./main salut les gens !
+./main
+salut
+les
+gens
+!
+user@computer ~/working_directory>
+\end{minted}
+\exercise{Un cat minimaliste} L'objectif est de reproduire le comportement minimal de la commande \textit{cat} du terminal. \\
+Écrire un programme qui prend en argument un chemin vers un fichier texte et en affiche le contenu. On donnera par \textit{stderr} un message d'erreur si aucun nom n'est donné en paramètre, et un autre message d'erreur si l'ouverture du fichier a échoué.
+\begin{minted}{bash}
+user@computer ~/working_directory> ./main fichier.txt
+Ceci est le contenu du fichier !!!
+user@computer ~/working_directory>
+\end{minted}
+\end{document}

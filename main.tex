@@ -1,0 +1,187 @@
+\documentclass[french]{minitelreport}
+
+\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part3/images/}}
+
+\usepackage[backend=biber,style=numeric, sorting=nty]{biblatex}
+\addbibresource{references/references.bib}
+\providecommand{\topdir}{.}
+\addglobalbib{\topdir/references/references.bib}
+
+%%%%%%%%%%%%
+% Counters %
+%%%%%%%%%%%%
+
+% Compteur des exercices
+
+\newcounter{exercisescounter}
+\setcounter{exercisescounter}{0}
+
+\newcommand{\exercise}[1]{
+	\refstepcounter{exercisescounter}
+	\textbf{Exercice \arabic{exercisescounter}\IfNoValueF{#1}{ (#1)}. \label{exercise:#1}}
+}
+
+\newcommand{\refexercise}[1]{
+	\textbf{Exercice \ref{exercise:#1}.}
+}
+
+% Compteur de solutions
+
+\newcounter{solutioncounter}
+\setcounter{solutioncounter}{0}
+
+\newcommand{\solution}[1]{
+	\stepcounter{solutioncounter}
+	\textbf{Solution \arabic{solutioncounter}\IfNoValueF{#1}{ (#1)}.}
+}
+
+\newcommand{\listdefinitionsname}{Liste des définitions}
+\newlistof{definition}{def}{\listdefinitionsname}
+
+\newcommand{\definition}[2]{
+	\refstepcounter{definition}
+	\begin{minitelbasicbox}{\textbf{Définition \arabic{definition}\IfNoValueF{#1}{ : #1}}}
+#2
+	\end{minitelbasicbox}
+	\addcontentsline{def}{figure}{\protect\numberline{\thesection.\thedefinition}\qquad#1}
+}
+
+\newcounter{propositioncounter}
+\setcounter{propositioncounter}{0}
+
+\newcommand{\proposition}[1]{
+	\stepcounter{propositioncounter}
+	\textbf{Proposition \arabic{propositioncounter}\ifthenelse{\equal{#1}{}}{}{ (#1)}. }
+}
+
+\usepackage{subfiles}
+\begin{document}
+\title{Informatique}
+\subtitle{Une introduction à la pratique}
+\variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
+\maketitle
+\section*{Préface}
+\addcontentsline{toc}{section}{Préface}
+\subfile{sections/preface}
+\tableofcontents
+\listoftables
+\listofdefinition
+\newpage
+\part{Prolégomènes}
+	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction de l'introduction}
+	\subfile{sections/part1/introduction}
+	\chapter{Présentation du sujet}
+		\subfile{sections/part1/chapter1/chapter1}
+	\chapter{Programmer un ordinateur}
+		\subfile{sections/part1/chapter2/chapter2}
+\part{Du langage C}
+	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction}
+	\subfile{sections/part2/introduction}
+	\chapter{Fondamentaux du langage}
+		\subfile{sections/part2/chapter1/chapter1}
+	\chapter{Bases du langage}
+		\section{Variables}
+		\subfile{sections/part2/chapter2/variables}
+		\section{Formatage de texte}
+		\subfile{sections/part2/chapter2/formatage}
+		\section{Opérateurs sur les variables}
+		\subfile{sections/part2/chapter2/operateurs}
+		\section{Projection de type}
+		\subfile{sections/part2/chapter2/projections}
+		\section{Structures de contrôle}
+		\subfile{sections/part2/chapter2/controle_structures}
+		\section{Routines}
+		\subfile{sections/part2/chapter2/routines}
+		\section{Pointeurs}
+		\subfile{sections/part2/chapter2/pointeurs}
+		\section{Interagir avec les flux standards}
+		\subfile{sections/part2/chapter2/stdstreams}
+		\section{Tableaux statiques}
+		\subfile{sections/part2/chapter2/tab_statiques}
+		\section{Tableaux dynamiques}
+		\subfile{sections/part2/chapter2/tab_dynamiques}
+		\section{Tableaux multidimensionnels}
+		\subfile{sections/part2/chapter2/tab_multidim}
+		\section{Structures}
+		\subfile{sections/part2/chapter2/structures}
+		\section{Modulation et entêtes}
+		\subfile{sections/part2/chapter2/modulation}
+		\section{Chaînes de caractères}
+		\subfile{sections/part2/chapter2/chaines_caracteres}
+		\section{Les flux de fichiers}
+		\subfile{sections/part2/chapter2/flux_fichiers}
+	\chapter{Concepts avancés (en cours de rédaction)}
+		\section{Paramètres d'un programme}
+		\subfile{sections/part2/chapter3/prgm_args}
+		\section{Unions}
+		\subfile{sections/part2/chapter3/union}
+		\section{Champs de bits}
+		\subfile{sections/part2/chapter3/champs_bits}
+		\section{Espaces locaux et espace global}
+		\subfile{sections/part2/chapter3/local_global}
+		\section{Classes de stockage}
+		\subfile{sections/part2/chapter3/classes_stockage}
+		\section{Construction de littéraux}
+		\subfile{sections/part2/chapter3/litteraux}
+		\section{Pointeurs de routines}
+		\subfile{sections/part2/chapter3/pointeurs_routines}
+		\section{Tableaux de routines}
+		\subfile{sections/part2/chapter3/tableaux_routines}
+		\section{Fonctions variadiques}
+		\subfile{sections/part2/chapter3/variadic}
+		\section{Alignement}
+		\subfile{sections/part2/chapter3/alignement}
+		\section{Directives de préprocesseurs (2)}
+		\subfile{sections/part2/chapter3/preprocessor}
+		\section{Assembleur en C}
+		\subfile{sections/part2/chapter3/assembly}
+		\section{La virgule}
+		\subfile{sections/part2/chapter3/comma}
+		\section{\textit{Tricks} récréatifs (ft. Basile)}
+		\subfile{sections/part2/chapter3/tricks}
+\part{Le vrai monde de la réalité réelle}
+	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction}
+	\subfile{sections/part3/introduction}
+	\chapter{Outils utiles à la programmation}
+		\section{La documentation}
+			\subsection{Liste des sites d'information}
+				\subsubsection{\textit{Wikipedia.org}}
+				\subsubsection{\textit{man7.org}}
+				\subsubsection{Microsoft Doc}
+				\subsubsection{Zeste de Savoir}
+				\subsubsection{\textit{os-dev.org}}
+				\subsubsection{\textit{developpez.com}}
+			\subsection{Documentation hors-ligne}
+				\subsubsection{La commande \textit{man} sous Linux}
+				La commande \textit{man} du terminal Linux est probablement la commande la plus utile au développeur C.
+			\subsection{Lire un prototype}
+			Abbréviations classiques : fd, buffer, etc...
+			\subsection{Liste des sites de forum}
+				\subsubsection{Stack Overflow}
+				\subsubsection{developpez.com}
+			\subsection{À propos des GPTs}
+			\subfile{sections/part3/chapter1/gpt}
+		\section{Makefiles}
+		\subfile{sections/part3/chapter1/makefile}
+		\section{Créer sa bibliothèque externe}
+		\section{Utiliser un débogueur}
+		Le déboguage est une composante fondamentale du développement logiciel. En effet, il est fondamentale de pouvoir identifier les fautes dans un code, en particulier si celui-ci rencontre des erreurs fatales à son fonctionnement (i.e. \textit{crash}). \textit{GDB} (\textit{\underline{G}NU \underline{D}e\underline{B}ugger}) est un logiciel qui permet d'opérer le déboguage de programmes complexes. Seront détaillés dans la suite les fonctionnalités basiques qu'il propose.
+	\chapter{Méthodes de programmation propre}
+		\section{La gestion des erreurs}
+		\subfile{sections/part3/chapter2/erreurs}
+		\section{Tests unitaires}
+		\subfile{sections/part3/chapter2/unittests}
+		\section{À propos du style}
+		\subfile{sections/part3/chapter2/style}
+\part{Annexes}
+\chapter{Correction des \theexercisescounter\ exercices}
+	\subfile{sections/solutions}
+\printbibheading
+\printbibliography[type=book,heading=subbibliography,title={Livres}]
+\printbibliography[type=manual, heading=subbibliography, title={Manuels et documentation}]
+\printbibliography[type=online, heading=subbibliography, title={Autres liens}]
+\addcontentsline{toc}{chapter}{Bibliographie}
+\end{document}

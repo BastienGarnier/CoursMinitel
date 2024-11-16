@@ -1,0 +1,192 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\section{Identifiants}
+\definition{Identifiant}{Un identifiant est un symbole qui identifie une entité du langage (variable, routine, structure, etc\dots), c'est-à-dire qui la désigne. Un identifiant est composé de caractères compris dans l'ensemble :
+$$\Sigma = \{0, \dots, 9\}\cup{\{\_\}}\cup\{a, \dots, z\}\cup\{A, \dots, Z\}$$
+ Le symbole \_ s'appelle l'\textit{underscore} (ou tiret du ``8'' en français, on conservera toutefois l'appellation anglaise car plus commune).}
+ 
+% Dit autrement, l'ensemble des identifiants est décrit formellement par le langage régulier suivant ($\bullet$ désigne la concaténation de deux langages) :
+% $$I = (\Sigma\setminus\{0, \dots, 9\})\bullet{\Sigma^{*}}$$
+Un identifiant ne peut pas débuter par un chiffre.
+Dit autrement, l'ensemble des identifiants est l'ensemble des mots formés d'une lettre ou d'un underscore suivi potentiellement d'un nombre quelconque de lettres, de chiffres ou d'underscores.
+ 
+\textbf{Exemples :}
+\begin{itemize}
+	\item les mots \textsf{\_}, \textsf{a}, \textsf{b}, \textsf{t} et \textsf{z} sont des identifiants
+	\item le mot \textsf{\_uN\_1denTifIant5\_Qu3lqU0nqU3} est un identifiant
+	\item le mot \textsf{J3\_su1s\_Un\_SymboLe\_Qu31qu0nQu3} est un identifiant
+	\item le mot \textsf{nombre\_2} est un identifiant
+	\item le mot \textsf{2\_nombres} n'est pas un identifiant (car il commence par un chiffre)
+	\item le mot \textsf{dire\_\#\_bonjour} n'est pas un identifiant (car $\#\notin{\Sigma}$)
+	\item le mot \textsf{\_\_\_\_} est un identifiant
+	\item le mot \textsf{Salut\_0uille} est un identifiant
+\end{itemize}
+Il existe un certain nombre d'identifiant dit \textit{réservés} par le langage qui ne peuvent pas être utilisés ou dont l'utilisation amène un comportement imprévisible du programme. On distingue deux catégories de ces symboles :
+\begin{itemize}
+	\item les mot-clés
+	\item les identifiants débutant par un underscore
+\end{itemize}
+Certains mot-clés ont été affublés d'une version du langage C. Ces mot-clés ne sont donc présents qu'à partir de cette version (correspondant à l'année de publication). .
+ 
+Voici la liste des standards principaux du langage qui ont été publiés (par ordre chronologique croissant) :
+\begin{itemize}
+	\item K$\&$R C : standard des créateurs du langage
+	\item ANSI-C (C89) : première spécification dite \textit{standard} par l'ANSI (\textit{\underline{A}merican \underline{N}ational \underline{S}tandards \underline{I}nstitute}
+	\item C99 : première spécification de l'ISO (\textit{\underline{I}nternational \underline{O}rganization for \underline{S}tandardization})
+	\item C11
+	\item C17
+	\item C23
+\end{itemize}
+Les mots clés du langage C sont les suivants :
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline alignas (C23) & extern & sizeof & \_Alignas (C11) \\
+\hline alignof (C23) & false (C23) & static & \_Alignof (C11) \\
+\hline auto & float & static\_assert (C23) & \_Atomic (C11) \\
+\hline bool (C23) & for & struct & \_BitInt (C23) \\
+\hline break & goto & switch & \_Bool (C99) \\
+\hline case & if & thread\_local (C23) & \_Complex (C99) \\
+\hline char & inline (C99) & true (C23) & \_Decimal128 (C23) \\
+\hline const & int & typedef & \_Decimal32 (C23) \\
+\hline constexpr (C23) & long & typeof (C23) &\_Decimal64 (C23) \\
+\hline continue & nullptr (C23) & typeof\_unqual (C23) & \_Generic (C11) \\
+\hline default & register & union & \_Imaginary (C99) \\
+\hline do & restrict & unsigned & \_Noreturn (C11) \\
+\hline double & return & void & \_Static\_assert (C11) \\
+\hline else & short & volatile & \_Thread\_local (C11) \\
+\hline enum & signed & while \\
+\hline
+\end{tabular}
+\end{center}
+\textbf{Remarque 1 :} Quelque soit le standard utilisé pour votre propre compilation, il extrêmement conseillé, dans un souci de compatibilité quand la convention n'est pas officiellement posé dans le cadre du projet, de ne jamais utiliser un mot-clé de ce tableau comme identifiant personnel quel que soit le standard utilisé.
+ 
+\textbf{Remarque 2 :} Dans un souci de compatibilité quand la convention n'est pas officiellement posé dans le cadre du projet, il est conseillé de n'utiliser que les outils fournis par les standards chronologiquement inférieurs ou égales à C99 (c'est-à-dire sans utiliser d'outils des standards C11 et supérieur). Cela inclut les bibliothèques ajoutés dans les standards suivants du langage.
+ 
+Dans les deux cas, la transmission du code source à un tiers ne compilant pas selon le même standard peut être potentiellement source d'erreurs et de bogues à la compilation.
+ 
+La plupart des IDEs permettent de choisir entre les différents standards du compilateur. Lors d'une compilation ``à la main'', le paramètre \textsf{-std} permet de spécifier le standard. Par exemple, \textsf{gcc main.c -o main -std=c23} va compiler selon le standard C23.
+ 
+\textbf{Internationalité des identifiants :}
+ 
+Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, tous les identifiants d'un code doivent être en anglais de préférence.\footnote{C'est triste mais c'est la vie.}
+\section{Commentaires}
+Les commentaires sont présents dans l'immense majorité des langages de programmation. Ils permettent d'annoter un code pour en expliquer certaines composantes ou pour exprimer certaines métadonnées vis-à-vis de celui-ci. Il peut s'agir par exemple de copier la licence utilisée dans le programme, de noter le nom de l'auteur du programme, d'expliquer le but d'un bloc de code, d'expliquer l'implantation pratique d'un objet théorique ou encore d'expliquer un aspect technique particulier du programme.
+ 
+Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ignore purement et simplement. Ainsi, il s'agit uniquement d'informations destinés au lecteur du code. Il peut y avoir plusieurs utilités :
+\begin{itemize}
+	\item un développeur qui n'a plus touché à son code depuis six mois peut trouver extrêmement utile de l'avoir commenté lorsqu'il revient dessus
+	\item dans le cas d'un projet conséquent, le développement est effectué en équipe. Un développeur peut avoir besoin de comprendre/modifier ce qui a déjà été écrit par un autre.
+\end{itemize}
+\textbf{Internationalité des commentaires :}
+ 
+Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, les commentaires d'un programme doivent tous être écrits en anglais.\footnote{C'est triste mais c'est la vie\dots Comment ça je me répète ?}
+ 
+En C, on distingue deux types de commentaires :
+\begin{itemize}
+	\item les commentaires sur une ligne
+	\item les commentaires par bloc
+\end{itemize}
+\subsection{Commentaires sur une ligne}
+Les commentaires sur une ligne sont indiqués par le double slash : \textsf{//} \newline
+Tous les caractères d'une ligne qui suivent un double slash sont considérés comme texte du commentaire, et donc ignorés par le compilateur.
+\begin{lstlisting}[title=Exemple]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+printf("Salut les gens !\n"); // \n represents the line feed symbol
+\end{minted}
+\textbf{Remarque :} Le commentaire ne peut pas être inséré à l'intérieur d'une chaîne de caractères. Ainsi :
+\begin{minted}[linenos=false]{c}
+printf("Je ne dirais // pas bonjour !\n");
+\end{minted}
+compile sans erreur et produit la sortie : \textsf{Je ne dirais // pas bonjour}.
+\subsection{Commentaires par bloc}
+Les commentaires par bloc permettent d'écrire des commentaires sur plusieurs lignes. Ils sont indiqués par une entrée de commentaire et une sortie de commentaire : \textsf{/*} et \textsf{*/}.
+\begin{lstlisting}[title=Exemple]
+\end{lstlisting}
+\begin{minted}{c}
+/*
+MINITEL Association
+An example to illustrate comments
+
+#include <stdio.h> // this line will never be read
+*/
+
+#include <stdio.h> // Include the 'stdio' library
+
+int main() { // Defines the main function of the program
+	return 0; // Means a successful running of the program
+}
+\end{minted}
+\section{Le point-virgule}
+Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer la fin d'une instruction. Les commentaires et les directives préprocesseurs ne finissent pas par un point-virgule car ils ne sont pas considérés comme des instructions du langage (voir sections \textbf{Commentaires} et \textbf{Directives préprocesseurs}).
+ 
+Le point-virgule ne peut en aucun cas être remplacé par un retour à la ligne (comme on le ferait en Python). Cependant, il permet d'écrire plusieurs instructions sur une seule et même ligne (comme en Python) :
+\begin{minted}{c}
+#include <stdio.h> // preprocessor directives do not end with a semicolon character
+
+int main() {
+	// instructions end with semicolon but not comments
+	printf("Salut !\n"); printf("Deuxieme Salut !\n"); 
+	return 0;
+}
+\end{minted}
+\section{Point d'entrée du programme}
+Lorsqu'un programme est chargé en mémoire rapide pour être exécuté par l'ordinateur, il commence à une adresse $a_{0}$ et fini à une adresse $a_{0} + l$, où $l$ est la taille du programme, c'est-à-dire le nombre d'octets du fichier binaire généré par le compilateur.
+ 
+Cependant, le programme lui-même ne débute pas nécessairement à $a_{0}$. À cette adresse peut commencer la déclaration de données globales au programme, d'instructions tierces, de fonctionnalités autres, etc\dots C'est pourquoi le fichier enregistré sur le disque dur contient aussi un entête qui n'est pas le programme lui-même mais contient certaines informations sur le programme.
+ 
+En particulier, cet entête contient une adresse relative $a_{start} < l$ qui désigne le \textit{point d'entrée} du programme. Lorsque le programme est chargé en mémoire rapide à l'adresse $a_{start}$, l'ordinateur commence son exécution à l'adresse $a_{0} + a_{start}$.
+ 
+Lors de la compilation, pour que le compilateur sache quel est le point d'entrée du programme, une convention a été posée : une fonction d'entrée du programme doit être codée, qui est désignée comme point d'entrée du programme. Cette fonction se nomme par défaut $main$ en langage C. À la compilation, le compilateur posera comme point d'entrée l'adresse de la fonction $main$ dans le programme. Elle renvoie un entier qui représente l'état de sortie du programme, et traduit l'événement : ``l'exécution du programme a réussie'' selon les conventions suivantes :
+\begin{itemize}
+	\item \textsf{EXIT\_SUCCESS} : l'exécution du programme a réussi
+	\item \textsf{EXIT\_FAILURE} : l'exécution du programme a échoué
+\end{itemize}
+\textbf{Remarque :} Ces deux identifiants sont définis dans la bibliothèque \textsf{stdlib} qu'il faut donc inclure par la ligne :
+\begin{minted}{c}
+#include <stdlib.h>
+\end{minted}
+Les valeurs de ces identifiants diffèrent selon le système d'exploitation (voir section suivante). Sous Windows et Ubuntu, ces valeurs sont :
+\begin{itemize}
+	\item \textsf{EXIT\_SUCCESS} $ = 0$
+	\item \textsf{EXIT\_FAILURE} $ = -1$
+\end{itemize}
+On peut donc écrire :
+\begin{lstlisting}[title=Exemple]
+\end{lstlisting}
+\begin{minted}{c}
+// the order of libraries includes does'nt matter
+#include <stdlib.h> // EXIT_SUCCESS and EXIT_FAILURE (among others)
+#include <stdio.h> // printf (among others)
+
+int main() {
+	return EXIT_SUCCESS; // Means a successful running of the program
+}
+\end{minted}
+\section{Directives préprocesseurs (1)}
+Les directives préprocesseurs sont des instructions qui seront exécutés par le compilateur. Elles ne font donc pas partie du programme lui-même mais permettent de ``diriger'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes.
+ 
+Les directives de préprocesseurs débutent par le caractère \#. Seules les directives de préprocesseur commencent par ce caractère. Ainsi, \textsf{\#include} est une directive de préprocesseur, qui va copier \textit{avant la compilation proprement dite} le contenu de la bibliothèque ciblé dans le code du fichier qui effectue l'inclusion.
+ 
+On peut aussi considérer la directive \textsf{\#define} qui va permettre de définir des constantes (comme \textsf{EXIT\_SUCCESS} et \textsf{EXIT\_FAILURE}):
+\begin{lstlisting}[title=Exemple]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h>
+
+#define RETURN_CONSTANT 0
+
+int main()
+{
+	return RETURN_CONSTANT;
+}
+\end{minted}
+\textbf{Remarque 1 :} La définition d'un symbole par la directive \textsf{\#define} remplace la valeur définit par ce symbole dans l'entièreté du code analysé par le compilateur avant que celui-ci ne compile réellement le programme.
+ 
+\textbf{Remarque 2 :} Toutes les directives de préprocesseur ne sont pas données ici (et en vérité très peu). Il ne s'agit que des plus récurrentes dans la pratique.
+ 
+\textbf{Remarque 3 :} Mis-à-part \textsf{\#include} et \textsf{\#define}, aucune directive de préprocesseur ne devrait être utilisé à tort et à travers. L'objectif des directives telles que celles-ci est la portabilité du code pour la compilation, et la facilitation d'écriture pour de très gros projets. Ainsi, en incluant d'autres codes, il devient possible de partitionner des programmes très long\footnote{De l'ordre de la centaine de milliers voire de	quelques millions de lignes de code par exemple, et sans aller jusque-là, de quelques milliers de lignes}. Ces directives ne font pas partie \textit{en soi} du langage.
+ 
+Un approfondissement technique sera effectué ultérieurement.
+\end{document}

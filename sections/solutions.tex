@@ -1,0 +1,299 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temps que l'on progresse le plus au niveau du raisonnement et des réflexes. N'hésitez pas !
+\\ \\ 
+La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre les deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est pas garanti que les programmes proposés ci-dessous soient optimales, que ce soit par l'optimisation des constantes, la taille du code, ou d'autres paramètres. Il est d'ailleurs rare de pouvoir optimiser un programme selon toutes les contraintes\footnote{Par exemple, un programme parfois plus gros en mémoire peut-être plus rapide à l'exécution.}
+\section{Première partie}
+On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
+\subsection{Opérations logiques sur les mots binaires}
+\solution{La compréhension pour mieux comprendre} On peut établir un lien entre les opérations logiques élémentaires et les opérations élémentaires en théorie des ensembles (union, union disjointe, intersection, privation). En effet :
+\begin{itemize}
+	\item $A\cup{B} = \{e\ |\ e\in{A}\vee e\in{B}\}$, on a : $\mathbb{P}(e\in A\cup{B}) = \mathbb{P}(e\in A) + \mathbb{P}(e\in B) - \mathbb{P}(e\in (A\cap B))$
+	\item $A\uplus{B} = \{e\ |\ e\in{A}\oplus e\in{B}\}$, on a : $\mathbb{P}(e\in A\uplus{B}) = \mathbb{P}(e\in A) + \mathbb{P}(e\in B) - 2\times\mathbb{P}(e\in (A\cap B))$
+	\item $A\cap{B} = \{e\ |\ e\in{A}\wedge e\in{B}\}$, on a : $\mathbb{P}(e\in A\cap{B}) = \mathbb{P}(e\in A)\mathbb{P}(e\in B)$
+	\item $\Omega\setminus{A} = \{e\ |\ \neg e\in{A}\}$, on a $\mathbb{P}(e\in{\Omega\setminus{A}}) = 1 - \mathbb{P}(e\in{A})$
+\end{itemize}
+Il semble donc intuitif de retrouver des expressions semblables :
+\begin{itemize}
+	\item $\vee\ :\ (a, b) \mapsto a + b - ab$
+	\item $\oplus\ :\ (a, b) \mapsto |a - b|$
+	\item $\wedge\ :\ (a, b) \mapsto a\times b$
+	\item $\neg\ :\ a \mapsto 1 - a$
+\end{itemize}
+\solution{Universalité des fonctions logiques élémentaires}
+On considère un opérateur logique $\ast$ $N$-aire de $\mathcal{B}^{N}$ dans $\mathcal{B}^{M}$ où $M\in{\mathbb{N}^{*}}$. Soit $e\in{\mathcal{B}^{N}}$. On note $\ast(e) = \ast_{M-1}(e)\ast_{M-2}(e)\dots\ast_{0}(e)$. On observe que $\ast$ est entièrement définie par les fonctions $\ast_{i}, i\in{\llbracket0, M-1\rrbracket}$ de $\mathcal{B}^{N}$ dans $\mathcal{B}$.
+\\ \\
+Montrons donc que toute fonction logique de $\mathcal{B}^{N}$ dans $\mathcal{B}$ peut s'écrire comme une combinaison des fonctions $\vee$, $\wedge$ et $\neg$.
+\\ \\
+On peut partitionner $\mathcal{B}^{N}$ en deux ensembles disjoints $T$ et $F$ tels que $\ast = \mathbbm{1}_{T}$. C'est-à-dire que $T = \{e\in\mathcal{B}^{N}\ |\ \ast(e) = 1\} = \{t_{1}, \dots, t_{Card(T)}\}$.
+\\ \\
+D'où, en posant que l'égalité de deux éléments vaut 1 et leur différence vaut 0\footnote{On explicite dans la suite l'expression de $e = t_{i}$.} :
+\begin{equation}
+	\ast(e) = 1 \Leftrightarrow \displaystyle\bigvee_{i = 1}^{Card(T)}(e = t_i)
+\end{equation}
+On note $e = e_{N-1}\dots e_{0}$ et pour tout $i\in{\llbracket 1, k\rrbracket}$, $t_{i} = t_{i, N-1}\dots t_{i, 0}$.
+\\ \\
+On remarque que pour avoir $e = t_{i}$, il faut que :
+\begin{itemize}
+	\item les 1 de $e$ soient les 1 de $t_{i}$
+	\item les 0 de $e$ soient les 0 de $t_{i}$.
+\end{itemize}
+On note $K_{1}(t_{i}) = \{k\in\{\llbracket 0, N-1\rrbracket\ |\ t_{i, k} = 1\}$ et $K_{0}(t_{i}) = \{k\in\{\llbracket 0, N-1\rrbracket\ |\ t_{i, k} = 0\}$. \\
+Alors :
+$$
+\begin{array}{lcl}
+	e = t_i & \Leftrightarrow & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}(e_k = t_{i, k})\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}(e_k = t_{i, k}) \\
+ & & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}(e_k = 1)\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}(e_k = 0) \\
+ & & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}e_k\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}\neg{e_k}
+\end{array}
+$$
+Finalement, on arrive à la définition par compréhension de $\ast$ :
+\begin{displaymath}
+\begin{array}{lclcl}
+\ast & : & \mathcal{B}^{N} & \rightarrow & \mathcal{B} \\
+& & (e_{N-1}, \dots, e_{0}) & \mapsto & \displaystyle\bigvee_{i = 1}^{Card(T)}\left(\displaystyle\bigwedge_{k\in{K_{1}(t_i)}}e_k\displaystyle\bigwedge_{k\in{K_{1}(t_i)}}\neg{e_k}\right)
+\end{array}
+\end{displaymath}
+Les informations de la fonction sont contenues dans $T$.
+\\ \\
+\textbf{Remarque : }$\mathcal{B}^{N}$ est en bijection avec $\llbracket 0, 2^{N}-1\rrbracket$. Les opérations $\vee$, $\wedge$ et $\neg$ permettent donc de définir n'importe quelle fonction sur $\llbracket 0, 2^{N}-1\rrbracket$ d'arité finie, donc par exemple l'addition, la multiplication, etc\dots\footnote{On utilise évidemment pas cette formule pour définir les opérateurs arithmétiques. Il s'agit seulement de la preuve que ces opérateurs logiques sont capables de telles définitions.}
+\\ \\
+\solution{Porte NAND}
+La table de vérité de NAND est :
+\begin{center}
+\begin{tabular}{c|c|c}
+$A$ & $B$ & $A\uparrow{B}$ \\
+\hline
+0 & 0 & 1 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+On a ensuite pour tout $a, b\in{\mathcal{B}}$ :
+\begin{itemize}
+	\item $\neg(a) = a\uparrow{a}$
+	\item $a\wedge b = \neg{a\uparrow{b}} = (a\uparrow{b})\uparrow(a\uparrow{b})$
+	\item $a\vee b = \neg{(\neg a \wedge \neg{b})} = \neg{a}\uparrow\neg{b} = (a\uparrow a) \uparrow (b\uparrow b)$
+\end{itemize}
+\solution{Porte NOR}
+La table de vérité de NOR est :
+\begin{center}
+\begin{tabular}{c|c|c}
+$A$ & $B$ & $A\uparrow{B}$ \\
+\hline
+0 & 0 & 1 \\
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+On a ensuite pour tout $a, b\in{\mathcal{B}}$ :
+\begin{itemize}
+	\item $\neg a = a\downarrow a$
+	\item $a \vee b = \neg{(a \downarrow b)} = (a\downarrow b) \downarrow (a\downarrow b)$
+	\item $a\wedge b = (\neg a)\downarrow (\neg b) = (a\downarrow a) \downarrow (b\downarrow b)$
+\end{itemize}
+\solution{Petit retour à l'algèbre fondamentale} Comme $\oplus$ est une opération \textit{bit à bit}, il suffit de vérifier que $G = (\mathcal{B}, \oplus)$ est un groupe commutatif.
+\begin{itemize}
+	\item $\oplus$ est une fonction de $\mathcal{B}^{2}$ dans $\mathcal{B}$ il s'agit bien d'une loi de composition interne.
+	\item On observe que $0\oplus0 = x$ et $0\oplus 1 = 1$ et $1\oplus 0 = 1$. Donc $0$ est un élément neutre par $\oplus$. Comme $1\oplus1 = 0$, 0 est le seul élément neutre.
+	\item $\oplus$ est associative
+	\item Pour tout $x\in{\mathcal{B}}$, $x\oplus x = 0$ donc $x^{-1} = x$
+	\item $\oplus$ est commutative
+\end{itemize}
+Donc $G$ est bien un groupe commutatif.
+\\ \\
+\solution{Inversibilité des décalages} Les décalages ne sont pas inversibles. En effet, quand des bits sont supprimés par un décalage de trop de bits, l'information est perdue. Un décalage dans l'autre sens ne produit que des 0. Par exemple : $(01000 \ll 2) \gg 2 = 00000 \neq 01000$
+\subsection{Opérations arithmétiques}
+\solution{Conversion en binaire} \\ \\
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+	\item $(01001100)_{2}$
+	\item $(10111100)_{2}$
+	\item $(00100001)_{2}$
+	\item $(01101101)_{2}$
+	\item $(01011100)_{2}$
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+	\item $(11010011)_{2}$
+	\item $(00000100)_{2}$
+	\item $(11101110)_{2}$
+	\item $(10100001)_{2}$
+	\item $(01111110)_{2}$
+\end{itemize}
+\end{minipage}
+\subsection{Opérations sur les nombres à virgules}
+\solution{Écriture en base 2 de nombres non entiers}
+\begin{itemize}
+	\item $(1110.1001)_2$
+	\item $(1.01101)_2$
+	\item $(111.0111)_2$
+	\item $(0.0001001\underline{001}\dots)_2$ : il existe un nombre infini de décimales. On a le même phénomène avec la représentation de $\frac{1}{3}$ en décimal.
+\end{itemize}
+\subsection{Représentation hexadécimale}
+\solution{Conversion binaire-hexadécimale}
+\begin{itemize}
+	\item $713705 = (1010\ 1110\ 0011\ 1110\ 1001)_{2} = 0\textsf{xAE}3\textsf{E}9$
+	\item $8.8 = (1.00011001001001001001001)_{2}\times 2^{3} = 0100\ 0001\ 1000\ 1100\ 1001\ 0010\ 0100\ 1001 = 0\textsf{x}418\textsf{C}9249$
+	\item $42 = (0001\ 1010)_{2} = 0\textsf{x}1\textsf{A}$
+	\item $-1.1 = -(1.00010010010010010010010)_2\times{2^1} = 1100\ 0000\ 0000\ 1001\ 0010\ 0100\ 1001\ 0010 = 0\textsf{xC}0092492$
+	\item $101 = (0110\ 0101)_2 = 0\textsf{x}65$
+\end{itemize}
+\section{Deuxième partie}
+\subsection{Bases du langage}
+\subsubsection{Variables}
+\solution{Interversion de variables par effet de bord}
+\inputminted{c}{solutions/inter_var_side_effect.c}
+\subsubsection{Formatage de chaînes de caractères}
+\solution{Taille des types}
+\inputminted{c}{solutions/taille_types.c}
+\subsubsection{Opérateurs sur les variables}
+\solution{Valeur}
+\\ \\ 
+Le premier code est strictement équivalent au code suivant :
+\begin{minted}{c}
+int i = 10;
+i = i - i;
+i--;
+\end{minted}
+D'où $i = -1$ en fin d'exécution.\\ \\ 
+Le second code est strictement équivalent au code suivant :
+\begin{minted}{c}
+int i = 10;
+i--;
+i = i - i;
+\end{minted}
+D'où $i = 0$ en fin d'exécution.
+\\ \\ 
+\solution{Calcul d'expressions}
+\begin{itemize}
+	\item $a = 55$
+	\item $b = 41$
+	\item $c = 93$ (on évalue d'abord la division)
+	\item $d = 65522$ ($93 - 107 = 0 - 14 \equiv 65535 - 13 [65536]$)
+\end{itemize}
+\solution{Priorité des opérateurs}
+\begin{minted}{c}
+int a = 6, b = 12, c = 24;
+a = 25*12 + b;
+printf("%d", a > 4 && b == 18);
+(a >= 6&&b < 18) || c != 18;
+c = a = b + 10;
+\end{minted}
+\solution{Interversion sans effet de bord (1)}
+\inputminted{c}{solutions/inter_no_side_effect_1.c}
+On note $a_{p}$ et $b_{p}$ les valeurs de $a$ et $b$ précédent l'interversion, et $a_{s}$ et $b_{s}$ les valeurs de $a$ et $b$ succédant à l'interversion. \\ \\ 
+Les opérateurs $+$ et $-$ conservent l'écriture binaire des mots. L'échange est donc correct quelques soient les signatures de $a$ et $b$.\\ \\ 
+Avec $a$ sur $N_{a}$ bits et $b$ sur $N_{b}$ bits avec $N_{a} > N_{b}$, on peut choisir $a = 2^{N_{b}}$ et $b$ quelconque. Alors $a + b = 2^{N_{b}}+b$ puis $b_{s} = 2^{N_{b}}+b_{p} - b_{p} = 2^{N_{b}} = -1 \neq{a}$. La permutation est donc incorrecte.
+\\ \\ 
+Cela peut être justifié sans calcul par l'observation suivante : les bits $a_{N_{a}-1}\dots a_{N_b}$ sont perdus par la modulation par $2^{N_{b}}$. La permutation ne peut donc être correcte.
+\\ \\ 
+\solution{Interversion sans effet de bord (2)}
+\inputminted{c}{solutions/inter_no_side_effect_2.c}
+En effet, on rappelle que pour tout ${x\in{\mathcal{B}^{N}}}$, $x\oplus{x} = 0$ et $x\oplus{0} = x$. Ainsi, $b_{s} = a\oplus{b}\oplus{b} = a$ et $a_{s} = a\oplus{b}\oplus{a} = b$.
+\\ \\ 
+\solution{Multiplication par décalage} On observe que $14 = (1110)_{2} = 2^{3} + 2^{2} + 2^{1} = (1 \ll 3) + (1 \ll 2) + (1 \ll 1)$. Il est toutefois possible de faire mieux en prêtant plus attention à la représentation binaire de 14. En effet, $14 + 1 = (1111)_{2} = 16 - 1$, c'est-à-dire $14 = 16 - 2 = 2^{4} - 2^{1} = (1 \ll 4) - (1 \ll 1)$
+\inputminted{c}{solutions/mult_decalage.c}
+Il est ainsi possible, parfois, d'optimiser l'opération de multiplication grâce à cette technique. La méthode classique de la multiplication est en effet plus lente à calculer, bien que plus générale. Cela est particulièrement visible lors de la multiplication de grands nombres :
+$$987654321\times{65534} = (987654321 \ll 16) - (987654321 \ll 1)$$
+Seules 2 décalages et une soustraction sont effectuées ($65534 = 65536 - 2 = 2^{16} - 2^{1}$)
+\\ \\ 
+\solution{Valeur absolue}On utilise la particularité qu'un décalage logique (effectué sur \textsf{unsigned int}) n'effectue pas d'extension du signe :
+\inputminted{c}{solutions/valeur_absolue.c}
+Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujours vrai et \textsf{0 \& x == 0} est toujours vrai.
+\subsubsection{Projection de type}
+\solution{Quelques évaluations}
+\begin{enumerate}
+	\item \textit{vraie} car $0\textsf{xFFFFFFFF} + 1 = 0$ ($e1$ est sur 32 bits)
+	\item \textit{faux} car $\textsf{(unsigned char)(-1)} = 255 = 0\textsf{xFF}$, d'où l'expression est égale à 0.
+	\item \textit{vraie} car on a \textsf{!(e1 == e2)} $\equiv$ \textsf{e1 != e2} qui est vraie.
+	\item \textit{vraie} car $64\wedge{e3} = 65 \equiv 1[8]$. D'où $\textsf{!(((64 $\wedge$ e3) \% 8) - 1)} = 1$.\newline Alors : $e4 \equiv{\textsf{(unsigned char)(257) - 2}} = -1$
+\end{enumerate}
+\subsubsection{Structures de contrôle du flot d'exécution}
+\solution{[COURS]}
+\inputminted{c}{solutions/cours_structure_controle.c}
+À partir de $u_{4}$ inclut, les valeurs de la suite sont fausses. On observe ainsi que $u_{3} = 808602$, d'où $u_{4} = 3\times808602^{2} - 5\times{808602} + 2 = 1961507540204 > 2^{31} - 1 = 2147483647$. Il y a un dépassement de capacité car la variable $u$ est stocké sur trop peu de bits. Le résultat est donc correct modulo $2^{32}$
+\\ \\ 
+\solution{Question d'âge}
+\inputminted{c}{solutions/question_d_age.c}
+\solution{Suite de Fibonacci}
+\inputminted{c}{solutions/suite_fibonacci_1.c}
+\solution{Nombres premiers}\newline
+Par définition, un nombre $n$ est premier si il possède exactement deux diviseurs distincts : $n$ et $1$. On peut donc tester la primalité d'un nombre en vérifiant qu'il ne possède pas d'autres diviseurs positifs strictement supérieurs à 1 que lui-même. Un premier algorithme naïf\footnote{Enfin, pas tout à fait puisqu'en ignorant les nombres pairs, on obtient seulement $\dfrac{N}{2}$ tours. Mais cela est équivalent asymptotiquement (les constantes restant des constantes).} est donc le suivant :
+\inputminted{c}{solutions/nombres_premiers.c}
+Considérons maintenant un diviseur $d$ de $n$. Il existe donc $q$ tel que $n = dq$. On observe que si $d \geq \sqrt{n}$ alors $q \leq{\sqrt{n}}$. Par ailleurs, $q$ est un diviseur de $n$ lui aussi. Supposons que l'on ait vérifié que pour tout $1 < m \leq \sqrt{n}$, $m\nmid{n}$, alors il est absurde qu'il existe un diviseur de $n$ supérieur strictement à $\sqrt{n}$ car il existerait alors un diviseur $d$ strictement inférieur à $\sqrt{n}$.
+\\ \\ 
+Il suffit donc de vérifier la divisibilité de $n$ par les entiers $m\leq{\sqrt{n}}$ :
+\begin{minted}[firstnumber=10]{c}
+for (int i = 3; i*i <= n && is_primal; i++) {
+	is_primal = (n % i == 0) ? 0 : is_primal;
+}
+\end{minted}
+On a $\dfrac{n}{\sqrt{n}}\underset{n\rightarrow{\infty}}{\rightarrow}\infty$, l'algorithme est donc plus efficace (et il ne s'agit pas d'une constante).
+\subsubsection{Routines}
+\solution{Encore Fibonacci}
+\inputminted{c}{solutions/suite_fibonacci_2.c}
+\solution{Puissances entières}
+\inputminted{c}{solutions/int_pow.c}
+On observe que $(2^{31}-1)^{2^{32}-1}\approx{2^{31\times{2^{32}}}}$ est très largement supérieur à $2^{63} - 1$ qui est la valeur maximale d'un \textsf{long int}. En fait, pour stocker le résultat maximal de la fonction \textsf{pow}, il faudrait un disque dur d'environ $4\times{31} = 124\ Go$. Par ailleurs, la fonction \textsf{pow} reste infiniment loin d'être surjective dans $\mathbb{Z}$.
+\subsubsection{Pointeurs}
+\solution{Quelques procédures inutiles pour devenir un bot efficace}
+\inputminted{c}{solutions/become_bot.c}
+\solution{Interversion sans effet de bord (3)}
+\inputminted{c}{solutions/inter_no_side_effect_3.c}
+En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *x = 0$. Les autres lignes sont inutiles, mais chacune a le même effet que la première.
+\\ \\ 
+\solution{Distance de Manhattan}
+\inputminted{c}{solutions/manhattan_dist.c}
+\subsubsection{Interagir avec les flux standards}
+\solution{Distance Euclidienne}
+\inputminted{c}{solutions/euclidian_dist.c}
+\solution{Somme d'entiers}
+\inputminted{c}{solutions/int_sum.c}
+\subsubsection{Tableaux statiques}
+\solution{Affichage d'un tableau}
+\inputminted{c}{solutions/tab_display.c}
+\solution{Somme d'un tableau}
+\inputminted{c}{solutions/tab_sum.c}
+\solution{Maximum et minimum d'un tableau}
+\inputminted{c}{solutions/tab_max_min.c}
+\subsubsection{Tableaux dynamiques}
+\solution{Afficher un tableau \textit{2d} [COURS]}
+\inputminted{c}{solutions/tab_display_2d.c}
+\solution{Affichage du triangle [COURS]}\newline
+Version généralisée pour \textsf{N\_LINES} quelconque : 
+\inputminted{c}{solutions/triangle.c}
+\subsubsection{Structures}
+\solution{Listes chaînées}
+\inputminted{c}{solutions/linkedlist_1.c}
+\subsubsection{Modulation et entêtes}
+\solution{Un module de listes chaînées} \newline
+On écrit le code des fonctions de l'exercice précédent dans un fichier \textit{``linkedlist.c''}\footnote{Dans le répertoire de travail du fichier \textit{``main.c''}} que l'on fait débuter par la ligne \textsf{\#include "linkedlist.h"}. On écrit ensuite dans le même répertoire de travail le fichier \textit{``linkedlist.h''} suivant, qui contient les prototypes et les structures :
+\inputminted{c}{solutions/linkedlist_2.h}
+Il conserve la même fonction \textsf{main} du fichier \textit{``main.c''} avec une inclusion du module :
+\inputminted{c}{solutions/linkedlist_2.c}
+Et compilation puis exécution :
+\begin{minted}[frame=single]{bash}
+user@computer ~/working_directory> gcc main.c linkedlist.c -o main
+user@computer ~/working_directory> ./main
+->4->5->6
+user@computer ~/working_directory>
+\end{minted}
+\subsubsection{Chaînes de caractères}
+\solution{Traduction ASCII [COURS]} La chaîne de caractères décrite est : 
+\begin{center}
+``Minitel = GOAT''
+\end{center}
+\solution{Calculatrice}
+\inputminted{c}{solutions/calculatrice.c}
+\subsubsection{Interagir avec les flux de fichiers}
+\subsection{Concepts avancés}
+\subsubsection{Passage d'arguments au programme}
+\solution{Liste des arguments}
+\inputminted{c}{solutions/list_args.c}
+\solution{Un cat minimaliste}
+\inputminted{c}{solutions/cat.c}
+\end{document}

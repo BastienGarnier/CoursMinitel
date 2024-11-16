@@ -1,0 +1,173 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Cette section vient en continuité de la section précédente sur les unions. Les champs de bits constituent
+en effet un autre moyen d'optimiser le stockage des données en espace. Il s'agit cependant d'une perte
+en vitesse d'exécution car la plupart des processeurs ne peuvent pas manipuler directement les bits
+d'un octet mais doivent appliquer des opérations bit-à-bit dessus.
+\subsection{Motivation et principe}
+Toutes les données contenues dans une structure ou une union ne nécessitent pas un nombre entier
+d'octets pour être stockées. Par exemple, un jour du mois appartient à l'ensemble $\llbracket 0; 31\rrbracket$ et ne nécessite
+donc que 5 bits.
+
+De même un mois de l'année ne nécessite que 4 bits pour être stocké et une année n'en nécessite que
+12 pour l'instant (car $2^{12} = 4096$ semble suffisant). Il n'y a donc au total besoin que de $4 + 5 + 12 = 21$ bits pour stocker une date.
+
+Une première solution peut être de tout stocker dans un mot binaire de 4 octets, de type unsigned int
+et d'extraire ensuite les données stockées au format suivant :
+$$\underbrace{00000000000}_{\text{inutilisées}}\underbrace{aaaaaaaaaaaa}_{\text{12 bits pour l'année}}\underbrace{mmmm}_{\text{4 bits pour le mois}}\underbrace{ddddd}_{\text{5 bits pour le jour}}$$
+\begin{minted}{c}
+#include <stdio.h>
+
+unsigned short read_year(unsigned int date) {
+	return (date >> 9) & 0xFFF;
+}
+
+unsigned char read_month(unsigned int date) {
+	return (date >> 5) & 0b1111;
+}
+
+unsigned char read_day(unsigned int date) {
+	return date & 0b11111;
+}
+	unsigned int write_day(unsigned short year, char month, char day) {
+	return (year & 0xFFF) << 9 | (month & 0b1111) << 5 | (day & 0b11111);
+}
+
+int main(int argc, char *argv[]) {
+	unsigned d = write_day(2003, 12, 22);
+	printf("%u <=> %u/%u/%u\n", d, read_day(d), read_month(d), read_year(d));
+	return 0;
+}
+\end{minted}
+Cette solution est syntaxiquement très lourde, et il est assez facile de se tromper dans la lecture et
+l'écriture du mot binaire.
+
+Heureusement que le langage C est là et qu'entre en jeu le champ de bits !\footnote{Enfin, qu'entrent en jeu les champs de bits, parce-qu'a priori ils ne devraient pas souvent se balader seuls. Quoiqu'on sait jamais\dots}
+\subsection{Syntaxe}
+Les champs de bits \footnote{Bon, à partir de maintenant, je les remets ensemble. C'est rigolo parce-que les moutons isolés, on les perd dans des champs, alors que là ce sont les champs qui pourraient se perdre...dans des moutons ? Ça doit être moi qui me perd là :$|$} sont une facilité du langage C qui automatise les extractions de bits et les écritures
+de champs spécifiques d'un mot binaire. Il n'y a plus besoin d'écrire soi-même les fonctions de lecture
+et d'écriture de ces bits.
+
+L'utilisation de champs de bits induit la création d'un nouveau type. Il est donc intuitif qu'il s'agisse d'une fonctionnalité propre à la définition de structures et d'unions :
+\begin{minted}[linenos=false]{c}
+struct MyBitField {
+	int f1 : width_of_f1;
+	...
+	int fn : width_of_fn;
+};
+\end{minted}
+Ici, chaque champ $f_{i}$ utilisera exactement $w_{i}$ bits :
+$$\text{MyBitField }\equiv \underbrace{f_{1}}_{w_{1} \text{bits}}\dots \underbrace{f_{n}}_{w_{n} \text{bits}}$$
+et la structure sera donc stockée sur un nombre d'octets plus limité.\footnote{On a pas toujours $sizeof(\text{MyBitField}) = \displaystyle\left\lceil\frac{\sum_{i= 1}^{n}w_{i}}{8}\right\rceil$ à cause de l'alignement.}
+
+Pour revenir à l'exemple des dates :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Date {
+	unsigned year;
+	unsigned month;
+	unsigned day;
+};
+
+struct BFDate {
+	unsigned year : 12;
+	unsigned day : 5;
+	unsigned month : 4;
+};
+
+int main(int argc, char *argv[]) {
+	printf("%ld\n", sizeof(struct Date)); // prints 12
+	printf("%ld\n", sizeof(struct BFDate)); // prints 4
+
+	struct BFDate d = {.day=22, .month=12, .year=2003};
+	printf("%u/%u/%u\n", d.day, d.month, d.year); // prints 22/12/2003
+	return EXIT_SUCCESS;
+}
+\end{minted}
+La taille de la structure \textsf{struct BFDate} est bien celle d'un entier sur 4 octets, comme cela avait déjà été déterminé dans la sous-section précédente.
+
+Par ailleurs, l'accès en lecture/écriture des champs est bien plus aisée !
+\subsection{Le revers de la médaille}
+Il a été dit au premier paragraphe de cette section que les champs de bits constituaient une optimisation d'espace mais qu'on observait une perte en vitesse d'exécution. La nécessité d'opérations supplémentaires pour accéder aux données explique ce coût temporel supplémentaire.
+
+La question importante est de savoir à quel point ce ralentissement est notable.
+Pour cela, on peut simplement exécuter les deux codes suivants et les chronométrer :
+
+\begin{minipage}{0.5\textwidth}
+	\begin{minted}[linenos=false]{c}
+#include <stdlib.h>
+#include <stdio.h>
+
+struct BFDate {
+	unsigned year : 12;
+	unsigned day : 5;
+	unsigned month : 4;
+};
+
+int main(int argc, char *argv[]) {
+	struct BFDate d = {.day=22, .month=12, .year=2003};
+
+	for (unsigned int i = 0; i < 4294967295; i++) {
+		d.day += 1;
+		d.month += 1;
+		d.year += 1;
+	}
+	printf("%u/%u/%u", d.day, d.month, d.year);
+	return EXIT_SUCCESS;
+}
+	\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\begin{minted}[linenos=false]{c}
+#include <stdlib.h>
+#include <stdio.h>
+
+struct Date {
+	unsigned short int year;
+	unsigned char month;
+	unsigned char day;
+};
+
+int main(int argc, char *argv[]) {
+	struct Date d = {.day=22, .month=12, .year=2003};
+
+	for (unsigned int i = 0; i < 4294967295; i++) {
+		d.day += 1;
+		d.month += 1;
+		d.year += 1;
+	}
+	printf("%u/%u/%u", d.day, d.month, d.year);
+	return EXIT_SUCCESS;
+}
+	\end{minted}
+\end{minipage}
+
+Il s'agit exactement du même code à l'exception de l'utilisation des champs de bits dans un cas et pas dans l'autre.
+
+Le chronométrage a le défaut de dépendre de la machine utilisée. Celle-ci induit un coefficient de vitesse. Il faut donc mesurer le rapport du temps d'exécution de chaque programme l'un par rapport à l'autre. De plus, il faut avoir conscience que la différence de vitesse entre les deux programmes est dû à la manipulation par le processeur de mots \textit{élémentaires} de 8 bits. Un processeur manipulant des mots élémentaires de 1 bit serait probablement plus rapide avec le code utilisant les champs de bits.
+
+Sur un processeur \textit{11th Gen Intel Core i7-11800H}, en compilant sans optimisations (niveau 0)\footnote{Il s'agit du niveau d'optimisations par défaut, raison pour laquelle il n'y pas besoin de le spécifier habituellement. Compiler à un niveau zéro d'optimisation permet de plus grandes facilités de déboguage.} du compilateur par :
+\begin{minted}{bash}
+gcc main.c -o main -O0
+\end{minted}
+on obtient à l'exécution dans les mêmes conditions logiciels (mêmes autres processus en cours d'exécution) les deux temps suivants :
+\begin{itemize}
+	\item Sans champs de bits : $7.10\ s$
+	\item Avec champs de bits : $37.59\ s$
+\end{itemize}
+L'utilisation des champs de bits provoque un ralentissement de $528 \%$.
+En compilant avec différents niveaux d'optimisations (entre 1 et 3) :
+\begin{enumerate}
+	\item $rapport = \frac{2.42}{0.94332} = 257\%$
+	\item $rapport = \frac{2.15}{0.00299} = 71906\%$
+	\item $rapport = \frac{2.82}{0.00281} = 100356\%$
+\end{enumerate}
+Les rapports extraordinaires des optimisations de niveau 2 et 3 proviennent du fait que le compilateur ``précalcule'' logiquement les résultats des additions du fait d'un schéma dans le code qui a été repéré. En vérité, il n'y a même plus de boucle dans le code après la compilation.
+
+L'utilisation des champs de bits empêche le compilateur d'effectuer une telle optimisation car il ne peut assurer formellement que le résultat en sortie sera le même que celui qui aurait été obtenu dans modifications\footnote{Les détails de la manière dont les optimisations sont effectués n'ont que peu d'importance ici et sont par ailleurs extrêmement complexes puisque ces optimisations sont très dépendantes du processeur utilisé. Il faut noter que la production des processeurs et des compilateurs est extrêmement lié puisque les processeurs exécuteront des programmes compilés et optimisés par les compilateurs. Il faut donc \textit{designer} des processeurs optimaux vis-à-vis des optimisations des compilateurs et des compilateurs dont les optimisations prennent en compte les dernières fonctionnalités des processeurs.}, ce qui explique un plateau du temps d'exécution autour de $2.5\ s$.
+
+\textbf{Ce qu'il faut retenir :} Les champs de bits ne doivent être utilisés que pour de l'optimisation mémoire dans le cas où la machine exécutant le code n'en possède que peu (par exemple en systèmes embarqués). Il faut toutefois avoir conscience que l'utilisation des champs de bits pour d'autres raisons est particulièrement contreproductive.
+\end{document}

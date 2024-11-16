@@ -1,0 +1,345 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Dans le cas du développement d'une application complexe, il arrive très souvent que la division d'un programme informatique en routines dans un unique fichier soit insuffisante. En effet, ces routines peuvent couvrir des domaines très différents. Dans le cas d'un jeu-vidéo, cela peut aller des routines pour s'occuper de l'inventaire d'un personnage jusqu'aux routines s'occupant de la physique des objets du jeu en passant par les routines pour ouvrir, lire et écrire les fichiers de sauvegarde. Toutes ces routines très différentes ont besoins de structures de données différentes qui peuvent être accompagnés elles-mêmes d'une multitude de routines de manipulation.  
+Bref\dots Autant dire que mettre tout ça dans un seul et unique fichier de code, ça risque d'être un poil touffu. En particulier, la gestion de l'évolution d'un unique aspect du code source indépendamment du reste devient extrêmement confuse, sans parler de l'organisation en équipes quand les travaux de toute une équipe peuvent interférer. 
+ 
+La solution à cela est simple : écrire dans des fichiers différents les routines qui s'occupent d'aspects différents du programme/de l'application développé(e).
+ 
+Pour cela, on distingue en langage C deux catégories de fichiers :
+\begin{itemize}
+	\item les fichiers d'entêtes (\textit{headers} en anglais) d'extensions \textit{.h}
+	\item les fichiers de code source d'extensions \textit{.c}
+\end{itemize}
+\definition{Module et programmation modulaire}{Un module est la donnée d'un fichier d'entête et d'un fichier de code source. Un programme informatique \textit{modulaire} est un programme constitué de plusieurs modules. On appelle \textit{programmation modulaire} le développement d'un programme par modules. Un module est un composant du programme qui peut lui-même utiliser d'autres modules pour son bon fonctionnement.}
+ 
+On peut penser aux modules informatiques comme aux modules d'un vaisseau spatial. Chacun est indépendant dans son fonctionnement interne mais tous les modules sont interdépendants d'un point de vue abstrait puisqu'ils sont chacun constitutif du programme et ne peuvent pas résoudre le problème individuellement.\footnote{Si cela est le cas, le programme n'est plus modulaire. On peut alors s'interroger sur la qualité de la conception.}
+ 
+\begin{minted}{bash}
+user@computer ~/working_directory> ls
+main.c module1.c module1.h module2.c module2.h etc...
+user@computer ~/working_directory>
+\end{minted}
+\subsection{Fichier d'entête}
+L'objectif du fichier d'entête d'un module est de donner au compilateur toutes les informations relatives au module qui ne sont pas le code source des routines proprement dit. Il s'agit donc :
+\begin{itemize}
+	\item des instructions préprocesseurs (notamment les \textsf{\#define} et \textsf{\#include})
+	\item des structures
+	\item des prototypes de routines
+\end{itemize}
+Le fichier d'entête décrit donc l'interface du module, puisqu'il s'agit de toutes les fonctionnalités qui seront accessibles au programmeur qui inclut le module. En effet, il s'agit du fichier que l'on inclut par la directive de préprocesseur \textsf{\#include} :
+\begin{minted}[linenos=false]{c}
+#include "chemin/vers/mon/module.h"
+\end{minted}
+Le fichier peut se situer théoriquement n'importe où dans le système de fichiers du système d'exploitation.
+\subsection{Fichier de code source}
+Le fichier de code source, ou simplement fichier source, fournit le code des fonctions décrites par le fichier d'entête. Il peut également décrire des fonctions internes au module non présentes dans le fichier d'entête, qui ne pourront donc pas être utilisés en externe du module.
+ 
+L'unique particularité du fichier source est de devoir inclure, par la directive \textsf{\#include}, le fichier d'entête auquel il est associé :
+\begin{minted}[linenos=false]{c}
+#include "chemin/vers/mon/module.h"
+
+/*
+Code source des fonctions internes au module,
+non accessibles hors du module
+*/
+
+// Code source des fonctions déclarées dans l'entête
+\end{minted}
+\subsection{Un exemple simple}
+On se propose ici de coder un module \textit{vec2} qui contient des outils pour la manipulation de vecteurs en deux dimensions.\footnote{Il s'agit d'un exemple, et il n'y aura donc que le strict minimum pour la bonne compréhension de la programmation modulaire en langage C.}
+ 
+On suppose se situer dans un répertoire de travail \detokenize{<some_path>}. On considère trois fichiers dans ce répertoire :
+\begin{itemize}
+	\item ``main.c''
+	\item ``vec2.c''
+	\item ``vec2.h''
+\end{itemize}
+On nomme identiquement le fichier d'entête et le fichier source d'un module pour des raisons de lisibilités.\footnote{Cette pratique est d'ailleurs si répandue que certains tutoriels sur Internet vont jusqu'à affirmer qu'il est impossible que le fichier d'entête et le fichier source aient un radical différent.} Toutefois, la liaison d'un fichier source avec un fichier d'entête passe uniquement par l'inclusion en début de fichier source du fichier d'entête associé.
+ 
+Commençons par le fichier d'entête, puisque c'est ce que le fichier \textit{``main.c''} va inclure :
+\begin{lstlisting}[title=vec2.h]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h> // preprocessor directives are in the headers
+
+struct Vec2 {
+	double x;
+	double y;
+};
+
+struct Vec2 vec2_new(double x, double y);
+struct Vec2 vec2_copy(struct Vec2 p);
+
+void vec2_display(struct Vec2 p);
+struct Vec2 vec2_scalar_multiply(struct Vec2 p, double k);
+struct Vec2 vec2_add(struct Vec2 p1, struct Vec2 p2);
+struct Vec2 vec2_sub(struct Vec2 p1, struct Vec2 p2);
+\end{minted}
+\textit{``vec2.h''} décrit bien l'interface du module qui sera implanté réellement dans le fichier source :
+\begin{lstlisting}[title=vec2.c]
+\end{lstlisting}
+\begin{minted}{c}
+#include "vec2.h" // needed to access to the header interface
+
+struct Vec2 vec2_new(double x, double y) {
+	struct Vec2 v = {x, y};
+	return v;
+}
+struct Vec2 vec2_copy(struct Vec2 p) {
+	struct Vec2 v = {p.x, p.y};
+	return v;
+}
+
+void vec2_display(struct Vec2 p) {
+	printf("(%lf, %lf)", p.x, p.y);
+}
+
+struct Vec2 vec2_scalar_multiply(struct Vec2 p, double k) {
+	struct Vec2 v = {p.x * k, p.y * k};
+	return v;
+}
+
+struct Vec2 vec2_add(struct Vec2 p1, struct Vec2 p2) {
+	struct Vec2 v = {p1.x + p2.x, p1.y + p2.y};
+	return v;
+}
+
+struct Vec2 vec2_sub(struct Vec2 p1, struct Vec2 p2) {
+	struct Vec2 v = {p1.x - p2.x, p1.y - p2.y};
+	return v;
+}
+\end{minted}
+Finalement, le fichier \textit{``main.c''} peut inclure le module \textit{vec2} pour utiliser les structures et routines proposés :
+\begin{lstlisting}[title=main.c]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdlib.h>
+
+#include "vec2.h" // access to the header interface
+// -> allows to use the routines and structures described in it
+
+int main() {
+	struct Vec2 v = vec2_new(1.414, 3.14159);
+
+	vec2_display(v);
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Compilation modulaire}
+La compilation modulaire introduit quelques notions plus complexes relatives à la compilation d'un programme. En effet, compiler ``naïvement'' le programme comme à l'habitude en ne précisant que le fichier \textit{``main.c''} conduit à un dramatique message d'erreur, passablement incompréhensible sans plus d'informations :
+\begin{minted}{bash}
+user@computer ~/working_directory> ls # ou dir sous Windows
+main.c vec2.c vec2.h
+user@computer ~/working_directory> gcc main.c -o main
+# ou chemin/vers/gcc.exe main.c -o main.exe sous Windows
+/usr/bin/ld : /tmp/ccCAnFoX.o : in function "main" :
+main.c:(.text+0x25) : undefined reference to	"vec2_new"
+/usr/bin/ : main.c:(.text+0x4a) : undefined reference to "vec2_display"
+collect2: error: ld returned 1 exit status
+user@computer ~/working_directory>
+\end{minted}
+Pour mieux comprendre cette erreur, et surtout comprendre comment résoudre le problème, il faut d'abord comprendre les couches d'opérations effectuées par le compilateur pour générer le fichier exécutable final. Ces couches sont :
+\begin{enumerate}
+	\item l'exécution des directives préprocesseurs
+	\item la compilation \cite{Aho}
+	\item l'assemblage \cite{AL}
+	\item l'édition des liens \cite{AL}\cite{LL}
+\end{enumerate}
+\subsubsection{Exécution des directives préprocesseurs}
+Il s'agit principalement de déterminer quel est véritablement le code source qui sera compilé. Il peut s'agir d'ignorer certaines sections du code dépendamment du système d'exploitation considéré\footnote{Par exemple graĉe à \#ifdef}, ou de prendre en compte les interfaces décrites par les modules inclusent par \textsf{\#include}, de remplacer les constantes définies par \textsf{\#define}, etc\dots
+\subsubsection{Compilation}
+Une fois que le compilateur sait exactement quel est le code source à prendre en compte, il s'adonne à la pratique qui lui donne son nom.
+ 
+L'opération de compilation consiste à produire les codes \textit{assembleurs} correspondant aux fichiers sources (en relevant les erreurs rencontrés pour aider le programmeur). L'opération elle-même se décompose grossièrement en quatre phases :
+\begin{enumerate}
+	\item l'analyse lexicale : identifie dans le code source les différentes unités lexicales\footnote{Aussi appelés \textit{lexèmes}, il s'agit de tous les mots qui font sens pour le langage, comme par exemple : '+', 'if', ')', ou encore n'importe quel nom de variable ou de fonction}
+	\item l'analyse syntaxique : construit un arbre de la syntaxe du programme et vérifie que celle-ci est correcte.
+	\item l'analyse sémantique : après avoir validé la syntaxe, le compilateur construit le ``sens'' du programme, par exemple en vérifiant la validité des types des arguments vis-à-vis des paramètres d'une fonction par exemple. L'analyse sémantique constitue la part la plus complexe de la compilation.
+	\item la génération du programme assembleur : grâce aux résultats de l'analyse sémantique, le compilateur a construit le sens du programme et peut le reproduire en langage assembleur. Ce type de langage est le plus proche du langage machine. Le compilateur effectue au passage quelques optimisations de vitesse du code
+\end{enumerate}
+À ce niveau, est associé à chaque fichier source un fichier d'extension \textit{.s} qui correspond au langage assembleur \textit{gas} utilisé par \textit{gcc}\footnote{Pour plus de détails : \url{https://en.wikipedia.org/wiki/GNU_Assembler}}
+ 
+Il est vitale de comprendre que pour l'instant, les noms de fonctions du programme sont toujours écrits en clair dans le code assembleur et sont appelés via l'instruction \textit{call}.\footnote{Une fonction est simplement une adresse en mémoire qui contient des données au même titre qu'une variable. Simplement, ces données sont du code exécutable.}
+ 
+On peut générer le code assembleur d'un programme grâce à l'argument \textsf{-S} :
+\begin{minted}{bash}
+user@computer ~/working_directory> ls
+main.c vec2.c vec2.h
+user@computer ~/working_directory> gcc main.c -S
+user@computer ~/working_directory> ls
+main.c main.s vec2.c vec2.h
+user@computer ~/working_directory>
+\end{minted}
+qui peut être lu par un éditeur de texte classique.\footnote{Assez évident puisqu'un programme assembleur est un texte\dots Enfin je dis ça\dots}
+\subsubsection{Assemblage}
+\textit{gcc} fait appel à un programme tiers nommé \textit{assembleur} qui génère le code machine associé au code assembleur.\footnote{On distingue donc les \textit{langages assembleurs} qui sont les langages au sens linguistique et les \textit{programmes assembleurs} qui traduisent les programmes écrits en langage assembleur en code machine.}
+ 
+À ce niveau, est associé à chaque fichier source un fichier \textit{objet} (généralement d'extension \textit{.o}). Ce fichier contient le code machine qui sera exécuté par l'ordinateur, ainsi que les symboles utiles pour l'édition de liens que sont les noms de fonctions par exemple.
+ 
+On peut générer le fichier objet d'un programme grâce à l'argument \textsf{-c} :
+\begin{minted}{bash}
+user@computer ~/working_directory> ls
+main.c vec2.c vec2.h
+user@computer ~/working_directory> gcc main.c -c
+user@computer ~/working_directory> ls
+main.c main.o vec2.c vec2.h
+user@computer ~/working_directory>
+\end{minted}
+Cette fois-ci, le fichier objet devient assez illisible par un éditeur de texte puisqu'il contient du code machine.
+\subsubsection{Édition des liens}
+\textit{gcc} fait appel ici au programme \textit{ld}. Ce programme va analyser les liens existant entre les différents fichiers objets auquel il est soumis et va fusionner les fichiers objets en un seul fichier exécutable grâce à ces liens. Il peut au passage adapter le code en fonction de la machine vers laquelle est destiné le programme.
+ 
+C'est ici que l'erreur précédente apparaît :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c -c
+user@computer ~/working_directory> ls
+main.c main.o vec2.c vec2.h
+user@computer ~/working_directory> ld main.o
+# les autres erreurs sont dûes à l'absence de certains fichiers complémentaires
+main.c:(.text+0x25) : undefined reference to "vec2_new"
+ld : main.c:(.text+0x4a) : undefined reference to "vec2_display"
+user@computer ~/working_directory> 
+\end{minted}
+En effet, les appels par l'instruction \textit{call} des symboles \textit{vec2\_new} et \textit{vec2\_diplay} présents dans le fichier \textit{``main.o''} ne trouvent pas la définition des routines.
+\subsubsection{Solution à l'erreur}
+Pour permettre à l'éditeur de liens de trouver les définitions des routines, il faut les lui fournir. Pour cela, on compile le programme en fournissant tous les fichiers sources en paramètre :
+\begin{minted}{bash}
+user@computer ~/working_directory> ls
+main.c vec2.c vec2.h
+user@computer ~/working_directory> gcc main.c vec2.c -o main
+user@computer ~/working_directory> ./main
+(1.414000, 3.141590)
+user@computer ~/working_directory>
+\end{minted}
+\textbf{Remarque :} Dans le cas de très grands programmes, il peut y avoir une grande quantité de modules. Il devient alors vite fastidieux d'écrire la commande de compilation\footnote{Qui est en général beaucoup plus complexe, avec l'utilisation de plus de paramètres.}. Certains outils d'automatisation simplifient ces opérations et permettent de gagner en productivité (voir la section \textbf{Makefile}).
+ 
+De manière générale, on écrit :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c module1.c module2.c ... moduleN.c -o main
+user@computer ~/working_directory>
+\end{minted}
+\subsection{Problème des chaînes d'inclusions}
+Une erreur très courante chez les débutants en programmation modulaire est le problème de la \textit{double inclusion}. Il s'agit d'un bug lors de l'exécution des directives préprocesseurs provoqué par les chaînes d'inclusion. On l'illustre par l'exemple suivant, avec deux modules :
+\begin{itemize}
+	\item un module \textit{module1}
+	\item un module \textit{module2}
+\end{itemize}
+Le \textit{module1} est dépendant du \textit{module2} et le programme principal est lui-même dépendant des \textit{module1} et \textit{module2} :
+\begin{lstlisting}[title=module1.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+struct SomeStructure {
+	int thing;
+};
+\end{minted}
+\begin{lstlisting}[title=module2.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#include "module1.h" // access to the module1 interface
+
+/*
+Some interface
+*/
+\end{minted}
+\begin{lstlisting}[title=main.c]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#include "module1.h" // access to the module1 interface
+#include "module2.h" // access to the module2 interface
+
+int main() {
+	return 0;
+}
+\end{minted}
+L'inclusion dans \textit{``main.c''} des deux modules pour accéder aux deux interfaces dont le programme a besoin est tout à fait naturel. Cependant, le \textit{module2} a aussi besoin de l'interface du \textit{module1}. Vient alors le problème : la structure \textit{SomeStructure} apparaîtra comme définit deux fois du point de vue de \textit{``main.c''}.
+ 
+On peut construire un bug d'inclusion infinie en ajoutant au \textit{module1} l'inclusion du \textit{module2} :
+\begin{lstlisting}[title=module1.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#include "module2.h"
+struct SomeStructure {
+	int thing;
+};
+\end{minted}
+\begin{lstlisting}[title=module2.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#include "module1.h" // access to the module1 interface
+\end{minted}
+Il est possible de construire des garde-fous basés sur des directives préprocesseurs pour forcer l'inclusion à n'être considérée qu'une seule fois par le compilateur.
+\subsection{Garde-fous}
+On introduit de nouvelles directives de préprocesseur ici : 
+\begin{itemize}
+	\item \textsf{\#ifdef} et \textsf{\#ifndef}
+	\item \textsf{\#else}
+	\item \textsf{\#endif}
+\end{itemize}
+Il s'agit de directives de préprocesseurs qui permettent d'ignorer certaines sections du code lors de la compilation. L'utilisation est la suivante :
+
+\begin{minipage}{0.5\textwidth}
+	\begin{minted}[linenos=false]{c}
+#ifdef SOME_CONST
+/*
+Code executed if SOME_CONST is defined
+*/
+#else // not mandatory
+/*
+Code executed if not defined
+*/
+#endif
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+#ifndef SOME_CONST
+/*
+Code executed if SOME_CONST is NOT defined
+*/
+#else // not mandatory
+/*
+Code executed if defined
+*/
+#endif
+\end{minted}
+\end{minipage}
+
+On peut alors écrire des blocs de code qui ne seront jamais lus plus d'une fois par le compilateur grâce à l'astuce suivante :
+\begin{minted}[linenos=false]{c}
+#ifndef MODULE_INCLUDED // section can't be read more than once
+#define MODULE_INCLUDED // because the symbol is defined just below
+/*
+Module is read only once
+*/
+#endif
+\end{minted}
+On peut réécrire le \textit{module1} et le \textit{module2} de la façon suivante :
+\begin{lstlisting}[title=module1.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#ifndef MODULE1_H_INCLUDED
+#define MODULE1_H_INCLUDED
+
+#include "module2.h"
+
+struct SomeStructure {
+	int thing;
+};
+
+#endif
+\end{minted}
+\begin{lstlisting}[title=module2.h]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+#ifndef MODULE2_H_INCLUDED
+#define MODULE2_H_INCLUDED
+
+#include "module1.h" // access to the module1 interface
+
+#endif
+\end{minted}
+\subsection{Exercices}
+\exercise{Un module de listes chaînées} Écrire un module qui contiennent les structures et fonctions définies dans l'\refexercise{Listes chainées}.
+\end{document}

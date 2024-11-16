@@ -1,0 +1,160 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+L'objectif de cette section récréative est l'écriture de codes C illisibles, et même dirait-on particulièrement immondes. On utilisera pour cela divers outils du langage C plus ou moins peu inutilisés :
+\begin{itemize}
+	\item l'indexation inversée
+	\item la définition \textit{K\&R} de fonctions (première version du C)
+	\item les digraphes et trigraphes
+	\item la concaténation de symboles préprocesseurs
+	\item les tableaux anonymes (construction de littéraux)
+	\item etc\dots
+	\item un peu d'imagination
+\end{itemize}
+\subsection{Indexation inversée et boutisme}
+Il ne s'agit que d'un rappel :
+\begin{minted}[linenos=false]{c}
+int a = 0x12345678;
+char *b = (char *)&a;
+printf("%d", 1[b]);
+// same as :
+printf("%d", b[1]);
+\end{minted}
+On observe sur un processeur Intel que le programme ci-dessus affiche $86 = \textsf{0x56}$ au lieu de $52 = \textsf{0x34}$. En effet, les processeurs Intels inversent les octets des données en mémoire, bien qu'ils les interprétent correctement\footnote{Voir le boutisme en informatique : \url{https://fr.wikipedia.org/wiki/Boutisme}}.
+ 
+Cela ouvre des possibilités pour écrire des codes très moches.
+\subsection{Définition \textit{K\&R} de fonctions}
+La syntaxe \textit{K\&R} des fonctions n'est plus utilisée par les programmeurs mais elle appartient toujours au standard et est donc toujours utilisable. Les types sont donnés après les noms :
+\begin{minted}[linenos=false]{c}
+TYPE fonction(v1, v2, ..., vN) TYPE v1; TYPE v2; ... TYPE vN; {
+	// CODE
+}
+\end{minted}
+Par exemple, la déclaration suivante est correcte :
+\begin{minted}{c}
+int addition(a, b) int a; int b; {return a + b}
+\end{minted}
+\subsection{Digraphes et trigraphes}
+Les normes de caractères n'étaient pas aussi bien définies dans les années 80 que maintenant. En particulier, certaines normes régionales ne possédaient pas les caractères $\{$, $\}$, $[$, $]$ et \#. Cela empêchait les programmeurs de ces pays de programmer en C. Pour cette raison, des suites de caractères spéciales appelés digraphes ont été ajoutés au langage pour remplacer ces caractères :
+\begin{itemize}
+	\item $<$: pour $[$
+	\item :$>$ pour $]$
+	\item \%: pour \#
+	\item $<$\% pour $\{$
+	\item \%$>$ pour $\}$
+\end{itemize}
+Écrire un de ces couples de symboles hors d'un identifiant C ou d'une chaîne de caractères l'identifie par sa correspondance. Le code suivant est donc tout à fait valide :
+\begin{minted}{c}
+%:include <stdlib.h>
+%:include <stdio.h>
+
+int main(int argc, char **argv) {
+	printf("%c", "Salut"<:0:>);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Pour la même raison, le standard C inclue également des \textit{trigraphes}, des séquences de trois caractères remplacés par le préprocesseur par le caractère correspondant à la compilation :
+\begin{center}
+\begin{tabular}{l|l}
+Trigraphe & Caractère \\
+\hline
+	??= & \# \\
+	??/ & $\setminus$ \\
+	??' & $\wedge$ \\
+	??( & [ \\
+	??) & ] \\
+	??! & $|$ \\
+	??$<$ & $\{$ \\
+	??$>$ & $\}$ \\
+	??- & $\sim$ \\
+\end{tabular}
+\end{center}
+En particulier le programme suivant est tout à fait valide également :
+\begin{minted}{c}
+%:include <stdlib.h>
+%:include <stdio.h>
+
+int main(int argc, char **argv) ??<
+	// What's the fuck is happening ????????/
+	ceci fait toujours partie du commentaire ')=à- ç+qrh k poj )à-çtàç)'78320	É"'"??/
+	et ça aussi LTMY ,<SMFL, SDRM LJRST +98602....'@9ÇÇÇ$
+
+	printf("%c", "Salut"<:0:>);
+	return EXIT_SUCCESS;
+??>
+\end{minted}
+Toutefois, cette possibilité offerte par le langage pour d'excellentes raisons a été supprimé dans la version \textit{C23}\footnote{Malheureusement pour de pas si mauvaises raisons, mais certains n'ont visiblement pas le sens de l'humour\dots}. Il faut donc forcer le compilateur à utiliser une version plus ancienne du langage :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c -o main -std=c11 # version de 2011
+user@computer ~/working_directory> ./main
+S
+user@computer ~/working_directory>
+\end{minted}
+\subsection{Un peu d'imagination}
+Ici, un exemple écrit par Basile Tonlorenzi :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define AB int
+#define A ch
+%:define _ x
+#define B ar
+#define C A##B
+??=define P C
+
+int f(x, y)
+  int** _;
+  int** y; <%return *0[y:>*(*0<:x]);
+}
+
+int main(int argc, char** argv){
+  if(argc < 2){
+    printf("File UN chiffre entre 0 et 9 enculé \n"); // fleuri mais efficace
+      return EXIT_FAILURE;
+  } 
+
+  C y = 0[1<:argv]:> - '0';
+  auto* a = &y ; // A changer #include .virgule
+  printf("%d \n", f(&a,&a));
+}
+\end{minted}
+Et un équivalent un peu plus technique :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define AB int
+#define A ch
+#define $(A) A,A
+%:define _ x
+#define B ar
+??=define C A##B
+
+int f(x, y)
+	/* DO NOT DELETE THIS COMMENT LINE */
+	int** _; // What's the fuck is happening ????/
+	while (y) {goto 5; continue; 5: y = -y;}
+	int** y; <%return *'\0'[y:>*\
+	(*(__LINE__-2*putchar('\b'))<:x]);
+	static int very_useful = 0x000a6425;
+}
+
+int main(int _, char** argv){
+	if(_ = !!!!(_-2)){
+		printf("File UN chiffre entre 0 et 9 enculé"); // fleuri mais efficace
+		return !!!!(_-2);
+	}
+	C y = _[~-1+1<:argv]:> - '0'; 
+	volatile (*__[1])($(C**)) = {f};
+	auto* a = &y;
+	(*__)($(&a));
+	__asm__ inline (
+	"lea  0x2D93(%rip), %rdi\n\t"
+	"mov  %eax, %esi\n\t"
+	"xor %eax, %eax\n\t"
+	"call 0x1090\n\t"
+	);
+}
+\end{minted}
+\end{document}

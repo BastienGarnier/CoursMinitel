@@ -1,0 +1,249 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\definition{Structure de donnée}{Une structure de donnée est une manière de stocker les données. Il s'agit de la collection d'un ensemble de valeurs, de relations entre ces valeurs et de fonctions/d'opérations qui peuvent être appliquées à ces valeurs. Une structure de donnée peut être comparée ainsi à une structure algébrique en mathématiques.}
+ 
+Le \textit{tableau} est une des structures de donnée les plus simples. Il s'agit de l'équivalent informatique des $N$-uplets en mathématiques. Un tableau permet de stocker plusieurs variables sous une même étiquette de manière contigüe en mémoire : 
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.25\textwidth]{array}
+	\end{center}
+\end{minipage} 
+
+Un tableau est dit \textit{indicé}, c'est-à-dire que tous ses éléments sont numérotés, dans l'ordre, à partir de 0 :
+\begin{itemize}
+	\item élément 1 : indice 0
+	\item élément 2 : indice 1
+	\item \dots
+	\item élément $N$ : indice $N - 1$
+\end{itemize}
+Si on considère que chaque élément est codé sur $t$ bits, et que le premier élément est à l'adresse mémoire $a_{0}$, alors le $i^e$ élément est situé à l'adresse $a_{i} = a_{0} + (i - 1)t$. En particulier, vouloir accéder au $N^e$ et dernier élément du tableau par l'adresse $a_{0} + Nt$ provoque une erreur, car cette adresse mémoire est située hors du tableau et est potentiellement interdite d'accès.
+ 
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.4\textwidth]{array2}
+	\end{center}
+\end{minipage}
+ 
+En langage C, il existe deux manières principales d'\textit{implanter} un tableau :
+\begin{itemize}
+	\item Par allocation statique : allocation par le compilateur d'un tableau de taille fixé avant l'exécution du programme
+	\item Par allocation dynamique : allocation par le programmeur un tableau dont la taille dépend d'une variable du programme
+\end{itemize}
+\subsection{Définition}
+L'allocation sur la pile, dite statique, est effectuée en langage C par la syntaxe suivante :
+\begin{minted}[linenos=false]{c}
+TYPE array[SIZE]; // uninitialized array
+TYPE array[SIZE] = {v1, v2, ..., vSIZE}; // initialized array
+\end{minted}
+On appelle \textit{statique} ce type d'allocation de mémoire car $SIZE$ \underline{ne peut être une variable !} Ainsi, il est incorrect d'écrire :
+\begin{minted}[linenos=false]{c}
+int n = 5;
+int array[n]; // incorrect
+\end{minted}
+Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bugs, il est expressément recommandé d'éviter cette pratique douteuse.
+ 
+Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
+\begin{minted}[linenos=false]{c}
+#define N 5
+int array[N]; // before being compiled, every N in the code will be replaced by 5
+\end{minted}
+Voyons simplement quelques exemples pour se familiariser avec la notation :
+\begin{minted}[linenos=false]{c}
+unsigned int chiffres[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+char just_a_zero[1] = {0};
+short int numbers[4] = {-78, 52, 17, -10};
+\end{minted}
+On rappelle que les tableaux sont indicés de 0 à $(TAILLE - 1)$. On accède à un élément d'un tableau par la syntaxe suivante :
+\begin{minted}[linenos=false]{c}
+array[index];
+\end{minted}
+Ainsi, le code suivant ajoute 1 à tous les éléments d'un tableau de taille 50 :
+\begin{minted}[linenos=false]{c}
+#define N 50
+int main() {
+	int array[N] = {...}; // any values
+	for (int i = 0; i < N; i++) {
+		array[i]++;
+	}
+}
+\end{minted}
+\textbf{Remarque 1 :} tenter d'accéder au tableau par un indice supérieur ou égal à sa longueur provoque souvent une erreur. En effet, il n'est pas certain que la case juste hors du tableau ne soit pas utilisée par un autre programme de l'ordinateur et ne soit donc pas autorisée d'accès pour le programme.
+ 
+\textbf{Remarque 2 :} La syntaxe permettant d'initialiser \textit{toutes} les valeurs d'un tableau n'est valide qu'à sa déclaration. Il n'est ensuite possible de modifier les valeurs du tableau que \textit{une à une} !!!  
+
+\begin{minipage}{0.75\textwidth}
+\begin{minted}[linenos=false]{c}
+long int array[7];
+
+ // ERROR :
+array = {3141526535, 0xBEEF, 747, 0xC4, 713705, 666, 1414};
+
+// STILL ERROR :
+array[7] = {3141526535, 0xBEEF, 747, 0xC4, 713705, 666, 1414}; 
+
+// Python is not C :
+array = [i for i in range(7)]; // ERROR !!!
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+\begin{minted}[linenos=false]{c}
+long int array[7];
+
+// no errors :
+array[0] = 3141526535;
+array[1] = 0xBEEF;
+array[2] = 747;
+array[3] = 0xC4;
+array[4] = 713705;
+array[5] = 666;
+array[6] = 1414;
+\end{minted}
+\end{minipage}
+\subsection{Les tableaux statiques, kékoi pour de vrai ?}
+Les tableaux statiques sont à un certain point de vue très proches comportementalement des pointeurs. Ils en diffèrent pourtant du tout au tout.
+ 
+Pour mieux comprendre la nature d'un tableau, il faut exécuter le code suivant :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char **argv) {
+	int array[3] = {1, 2, 3};
+
+	printf("array = %p | &array = %p | &(array[0]) %p\n", array, &array, &(array[0]));
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Le résultat est assez surprenant, puisqu'on observe l'égalité des trois formules. Cela semble tout à fait étrange. En particulier, \textsf{tab} semble être égal à son premier élément, puisque \textsf{\&(tab[0]) == \&tab}, mais puisque \textsf{tab == \&tab}, cela ne peut pas être le cas, puisqu'alors on aurait alors un premier élément toujours égal à l'adresse de \textsf{tab}.
+ 
+Cette étrangeté tient en une phrase, d'apparence barbare : \textbf{les tableaux, en C, ne sont pas des entités de première classe}\footnote{Voir \url{https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Limitations-of-C-Arrays.html} ainsi que \url{https://en.wikipedia.org/wiki/First-class_citizen}}. On appelle, en programmation, une entité de première classe une entité informatique régit par les mêmes règles générales que les autres entités. Il peut s'agir par exemple d'être renvoyé par une fonction, d'être assigné à une variable, ou d'être passé en argument à une fonction par exemple.
+ 
+Il est absolument fondamentale de comprendre les conséquences de cette affirmation : les tableaux statiques ne sont pas régis par les mêmes règles que les autres entités du langage C. En particulier, il n'est pas possible de manipuler un tableau comme un tout de la même manière qu'une variable ``classique''. En particulier, un tableau suit la règle suivante :
+ 
+\textbf{Règle de la conversion :\footnote{L'appelation n'a rien d'officiel, mais je trouvais qu'elle décrivait bien l'état de fait.}}
+ 
+Tout identifiant référant à un tableau dans un code C subit une conversion comme pointeur vers l'adresse du premier élément du tableau. Aux exceptions suivantes :
+\begin{itemize}
+	\item l'opérateur $\&$ renvoie l'adresse du tableau au sens d'entité, pas l'adresse du tableau au sens de la première case de celui-ci. Ainsi, $*(\&array)$ est égal à $array$, c'est-à-dire à l'adresse de la première case. Pour autant, on a tout de même \textsf{\&array == array} car l'entité tableau se situe en mémoire au même endroit que les valeurs du tableau.\footnote{Si ça vous paraît tordu\dots À moi aussi pour être honnête.}
+	\item les opérateurs \textsf{sizeof}, \textsf{typeof} et \textsf{\_Alignof} ne convertissent pas l'identifiant en pointeur mais travaillent uniquement sur le type du tableau, puisque cela est suffisant.
+\end{itemize}
+Cette règle amène à plusieurs propriétés.
+\subsubsection{Accès aux éléments par incrémentation du pointeur}
+En considérant la définition d'un tableau quelconque :
+\begin{minted}[linenos=false]{c}
+TYPE array[N] = {...};
+\end{minted}
+L'égalité suivante est vraie pour tout indice positif strictement inférieur à $N$ :
+\begin{minted}[linenos=false]{c}
+array[indice] == *(array + index);
+\end{minted}
+En effet, \textsf{tab} est ici interprété comme un pointeur \textsf{TYPE*} vers la première case. Il est donc possible d'accéder aux cases du tableau comme pour un pointeur. En fait, il faut plutôt penser à cela dans le sens inverse : l'opération a été définie sur les pointeurs, et on retrouve cette facilité d'écriture pour manipuler les tableaux.
+ 
+\textbf{Remarque :} L'addition est une opération commutative\dots donc le code suivant est tout à fait correct :
+\begin{minted}[linenos=false]{c}
+index[array] == array[index]; // == *(array + index)
+\end{minted}
+Ainsi, le code suivant est correct :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int some_array[10];
+	for (unsigned int i = 0; i < 10; i++) {
+		i[some_array] = i;
+		printf("%d;", some_array[i]);
+	}
+	printf("\b \n");
+	return EXIT_SUCCESS;
+}
+\end{minted}
+La notation n'est pas utilisée car assez illisible.\footnote{Question d'habitude\dots}
+\subsubsection{Passage d'un tableau en argument à une routine}
+Le langage C autorise à passer un tableau en argument à une routine (voir \refexercise{Somme d'un tableau} et \refexercise{Maximum et minimum d'un tableau}). Mais cela cache en vérité une subtilité : ce n'est pas un tableau qui est passé en argument, mais un pointeur vers le tableau !\newline
+Un exemple :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+void procedure(int array[]) { // seems to be an array
+	printf("%ld", sizeof(array));
+}
+
+int main() {
+	int test[5] = {1, 2, 3, 4, 5};
+	
+	printf("%ld", sizeof(test)); // prints sizeof(int) * 5 = 20
+	procedure(test); // prints sizeof(int*) = 8
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\textsf{sizeof} renvoie la taille mémoire calculée à la compilation. Ainsi, dans la fonction \textsf{main}, \textsf{sizeof(test)} est calculable car le compilateur fait le lien avec le tableau de cinq éléments définit précédemment, de type \textsf{int}.
+ 
+Par contre, l'appel à \textsf{procedure} utilise une référence à un tableau, qui est donc interprétée comme un pointeur vers la première case. \textsf{procedure} recevra donc toujours un pointeur vers le premier élément du tableau. Un pointeur est stocké sur huit octets.
+ 
+Par ailleurs, cela signifie également que le tableau n'est pas copié en mémoire au passage en argument, et que les modifications d'un tableau dans une routine sont permanents :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+void incr_all(int array[], unsigned int length) {
+	for (int i = 0; i < length; i++) {
+		array[i]++;
+	}
+}
+
+int main() {
+	int test[5] = {1, 2, 3, 4, 5};
+	
+	incr_all(test, 5);
+	incr_all(test, 5);
+
+	printf("%d = %d\n", test[2], *(test + 2)); 
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+L'incrémentation de tous les éléments du tableau est permanente et subsiste dans la suite du programme. Cela est logique, puisque c'est un pointeur vers les éléments du tableau qui est donné à la procédure.
+\subsubsection{Renvoi d'un tableau par une fonction}
+Il a déjà été dit qu'un tableau ne pouvait être renvoyé par une fonction. Cependant, un pointeur peut l'être. Une première intuition serait donc de créer un tableau dans la fonction, puis de renvoyer un pointeur vers celui-ci :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+char *test_function() {
+	char test_array[10] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 4};
+	return test_array;
+}
+
+int main() {
+	// Declared as pointer because test_function returns a pointer :
+	char *ret_array = test_function();
+	
+	/* following declaration produces an error at compile time :
+	char ret_array[10] = test_function();
+	*/
+	
+	printf("Premier element (?) : %d\n", *ret_array);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Aucune erreur de compilation à signaler, mais à l'exécution\dots patatras. Le classique code $-11$ d'erreur de segmentation apparaît sur la console, dans l'incompréhension la plus totale\dots
+ 
+Il faut se rappeler d'un point technique pour comprendre l'erreur ici : les variables initialisés statiquement, dont l'allocation en mémoire est effecutée par le compilateur, sont libérées par le compilateur à la sortie de la routine !
+ 
+Le tableau déclaré et initialisé dans \textsf{fonction\_test} a été libéré dès la sortie de la fonction. L'accès mémoire à son adresse est donc interdit par le système d'exploitation puisque cette zone mémoire n'est plus ``fournie'' au programme.
+ 
+Une solution ? Oui, avec les tableaux dynamiques !
+\subsection{Exercices}
+\exercise{Affichage d'un tableau}Écrire une procédure \textsf{void afficher(int tab[], int taille);} qui affiche les éléments d'un tableau d'entiers.\newline
+\textit{\underline{Note} : cela pourra être utile pour vérifier le résultat de routines agissant sur des tableaux}
+ 
+\exercise{Somme d'un tableau}Écrire une fonction \textsf{int somme(int tab[], int taille);} qui renvoie la somme des éléments du tableau.
+ 
+\exercise{Maximum et minimum d'un tableau}Écrire deux fonctions \textsf{int max(int tab[], int taille);} et \textsf{int min(int tab[], int taille);} qui renvoient respectivement le maximum et le minimum des éléments d'un tableau.
+\end{document}

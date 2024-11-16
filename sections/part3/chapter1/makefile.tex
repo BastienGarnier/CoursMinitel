@@ -1,0 +1,263 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part3/images/}}
+\begin{document}
+\textit{make} est un logiciel installé par défaut sur les environnements Linux qui permet d'automatiser certaines tâches, en particulier des tâches de compilation de programmes. L'objectif de cette section est d'expliquer le principe général de fonctionnement de ce logiciel et de détailler son utilisation dans le cadre du développement logiciel en C.
+\subsection{Généralités}
+Les fichiers de production \textit{make} ont par convention un des noms suivants :
+\begin{enumerate}
+	\item GNUmakefile
+	\item make-file
+	\item Makefile
+\end{enumerate}
+Il est possible de préciser un autre nom au logiciel \textit{make}, mais par défaut, \textit{make} ne prendra en considération qu'un fichier ayant un de ces noms. Il choisira le premier trouvé dans la liste ci-dessus, qu'il cherchera dans le \textit{répertoire de travail}.
+\subsection{Principe et premiers exemples}
+\textit{make} fonctionne sur le principe de règles de production. Ces règles sont constitués :
+\begin{itemize}
+	\item d'une cible à produire
+	\item de ressources nécessaires à la production de la cible
+	\item d'actions à effectuer sur les ressources pour produire la cible
+\end{itemize}
+Un fichier \textit{make} classique est construit de la manière suivante :
+\begin{minted}{make}
+CIBLE: RESSOURCES # Un commentaire
+	ACTIONS
+\end{minted}
+\textbf{Remarque :} L'espacement avant les actions est une \textit{tabulation}. Une série d'espaces ne sera pas reconnue par \textit{make}.
+ 
+Pour utiliser \textit{make}, on se place dans le répertoire de travail et on écrit :
+\begin{minted}[frame=single]{bash}
+user@computer ~/working_directory> make CIBLE
+\end{minted}
+\textit{make} va alors :
+\begin{enumerate}
+	\item vérifier que les ressources nécessaires à la production de la cible sont bien présentes
+	\item si ce n'est pas le cas, il va les produire dans l'ordre les unes à la suite des autres
+	\item puis ensuite, il exécute les actions de productions de la cible
+\end{enumerate}
+\textbf{Remarque :} Si aucune cible n'est précisé, \textit{make} choisi la première du fichier \textit{Makefile}.
+ 
+Un exemple ultra-simple et inutile :
+\begin{minted}{make}
+main: main.o # commence par chercher à produire 'main.o'
+	gcc main.o -o main # Produit 'main'
+
+main.o: main.c # 'main.c' est déjà produit, donc inutile de le produire
+	gcc main.c -c # Produit 'main.o'
+\end{minted}
+Un deuxième un peu moins inutile\footnote{Mais toujours pas fou\dots} :
+\begin{minted}{make}
+main: main.o module1.o module2.o # commence par chercher à produire 'main.o'
+	gcc main.o module1.o module2.o -o main # Produit 'main'
+
+main.o: main.c # 'main.c' est déjà produit, donc inutile de le produire
+	gcc main.c -c # Produit 'main.o'
+
+module1.o: module1.c
+	gcc module1.c -c
+
+module2.o: module2.c
+	gcc module2.c -c
+\end{minted}
+qui donne l'exécution par \textit{make} suivante :
+\begin{minted}[frame=single]{bash}
+user@computer ~/working_directory> make
+gcc main.c -c
+gcc module1.c -c
+gcc module2.c -c
+gcc main.o module1.o module2.o -o main # Produit 'main'
+user@computer ~/working_directory>
+\end{minted}
+Il semble inutile à chaque fois de commencer par produire les fichiers \textit{objets} (d'extension \textit{.o}) avant de produire le fichier exécutable alors que l'on pourrait très bien écrire :
+\begin{minted}{make}
+main: main.c module1.c module2.c
+	gcc main.c module1.c module2.c -o main # Produit 'main'
+\end{minted}
+Une petite explication s'impose, en trois points :
+\begin{itemize}
+	\item \textit{make} ne produit pas une cible si celle-ci est déjà à jour. On entend par à jour que la date de modification de la cible est plus récente que la date de modification de chacune de ses ressources. Ainsi, il est inutile de produire une seconde fois ce qui l'a déjà été.
+	\item L'opération la plus lourde à la compilation est la génération des fichiers objets à partir des fichiers sources. L'édition de liens est très rapide en comparaison
+	\item En précisant des règles de production séparées pour les fichiers objets, on garantit que seules les modules ayant subis des modifications sont recompilés. Les autres n'ont pas besoin de l'être
+\end{itemize}
+Dans le cadre de très gros projets, le gain de temps à la compilation est significatif.
+\subsection{Personnaliser la production grâce aux variables}
+Il est possible dans un fichier \textit{make} de poser des \textit{variables} pour faciliter la personnalisation d'une production. Lorsque le \textit{Makefile} devient très complexe, il est plus facile de modifier ces ``variables'' plutôt que de chercher dans le \textit{Makefile} les endroits nécessitant la modification.
+ 
+On définit une variable comme ceci :
+\begin{minted}[linenos=false]{make}
+NOM = je suis un texte quelconque
+\end{minted}
+et on y accède par la syntaxe :
+\begin{minted}[linenos=false]{make}
+$(NOM)
+\end{minted}
+\textbf{Remarque : }Ces variables n'ont de variables que le nom puisque leur valeur n'évolue pas au cours des productions.
+ 
+Dans la pratique :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+OBJS = main.o module1.o module2.o
+
+$(EXE_NAME): $(OBJS)
+	$(COMPILER) $(OBJS) -o $(EXE_NAME) # Produit 'main'
+
+main.o: main.c
+	$(COMPILER) main.c -c
+
+module1.o: module1.c
+	$(COMPILER) module1.c -c
+
+module2.o: module2.c
+	$(COMPILER) module2.c -c
+\end{minted}
+\subsection{Variables automatiques}
+Les variables automatiques sont des variables automatiquement créées dans les règles de production, qui évitent de devoir écrire des variables soi-même pour tout et n'importe quoi. On distingue les variables automatiques les plus utiles\footnote{Voir \url{https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html} pour les autres.} :
+\begin{center}
+\begin{tabular}{c|l}
+Symbole & Signification \\
+\hline
+\$@ & Nom de la cible \\
+\$$<$ & Nom de la première ressource \\
+\$? & La liste des noms, séparés par des espaces, de toutes les ressources plus récentes que la cible \\
+\$\^ & La liste des noms de toutes les ressources, séparés par des espaces
+\end{tabular}
+\end{center}
+En utilisant ces variables, l'exemple ci-dessus se réécrit avec plus de concision :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+OBJS = main.o module1.o module2.o
+
+$(EXE_NAME): $(OBJS)
+	$(COMPILER) $^ -o $@ # Produit 'main'
+
+main.o: main.c
+	$(COMPILER) main.c -c
+
+module1.o: module1.c
+	$(COMPILER) module1.c -c
+
+module2.o: module2.c
+	$(COMPILER) module2.c -c
+\end{minted}
+\subsection{Réduire le nombre de règles avec la \textit{stem}}
+Le symbole \% désigne le ``radical'' \textit{quelconque} d'un mot (en anglais \textit{stem}, littéralement \textit{tige}\footnote{La traduction est de moi. Je ne sais pas comment traduire autrement}). L'idée est de pouvoir considérer des cibles et des ressources quelconques pour éviter d'écrire trop de règles de production. En utilisant le symbole de radical, l'exemple ci-dessus devient :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+OBJS = main.o module1.o module2.o
+
+$(EXE_NAME): $(OBJS)
+	$(COMPILER) $^ -o $@ # Produit 'main'
+
+%.o: %.c # cible finissant par .o qui utilise une ressource finissant par .c
+	$(COMPILER) $< -c
+\end{minted}
+Le fichier \textit{Makefile} donné ci-dessus commence à profiler un certain gain de temps. En effet, il suffit d'ajouter les noms des modules avec ``.o'' comme extension dans la variable \textit{OBJS} et il n'y a plus ensuite pour compiler qu'à écrire \textit{make}. Il n'y a donc plus à réécrire la liste des fichiers sources de module pour compiler.
+\subsection{Les caractères génériques}
+Il serait encore plus intéressant de ne rien avoir à faire du tout, c'est-à-dire que le \textit{Makefile} s'occupe tout seul de détecter les fichiers sources. C'est à cela que servent les caractères génériques.\textit{Ces caractères viennent du ô très ancien et honorable Bourne shell d'\textit{Unix}}
+ \urldef{\bourneshellurl}\url{https://www.grymoire.com/Unix/Bourne.html#uh-4}
+Les caractères génériques servent à identifier des fichiers quelconques d'un répertoire de travail. On décrit ici seulement le caractère $*$.\footnote{Voir \bourneshellurl pour les autres.}Celui-ci permet d'identifier n'importe quelle nom de fichier du répertoire de travail. Ainsi, ``$*$.c'' désigne la liste des fichiers du répertoire de travail qui finissent par les deux caractères ``.c''
+ 
+Dans un \textit{Makefile}, cela s'utilise de cette manière :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+
+$(EXE_NAME): *.c
+	$(COMPILER) $^ -o $@ # Produit 'main'
+\end{minted}
+\textbf{Remarque :} Tel que présenté, il n'est pas possible d'écrire ``$*$.o'' en ressources. En effet, aucun fichier objet n'est initialement présent. Le caractère générique $*$ ne détecte donc rien. Il n'y a pas de ressources, donc une erreur de production.
+ 
+Pour faciliter la personnalisation, on peut mettre la liste dans une variable. Une petite difficulté cependant car les textes dans les variables ne sont pas directement interprété. Ainsi :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+SRC = *.c
+
+$(EXE_NAME): $(SRC) # la généralisation est effectuée ici
+	$(COMPILER) $^ -o $@ # Produit 'main'
+\end{minted}
+effectue bien le travail demandé, mais pas de la manière dont on pourrait le penser. En effet, on voudrait :
+\begin{minted}[linenos=false]{make}
+SRC = main.c module1.c module2.c
+\end{minted}
+ce qui n'est pas le cas. En fait, l'interprétation de $*$ est effectué lorsque ``$*$.c'' remplace \textit{SRC} dans la ressource.
+ 
+Pour forcer l'interprétation de $*$, on utilise le mot-clé \textit{wildcard} :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+SRC = $(wildcard *.c) # la généralisation est effectuée ici
+
+$(EXE_NAME): $(SRC)
+	$(COMPILER) $^ -o $@
+\end{minted}
+\subsection{Substitution de chaînes}
+Le problème rencontré dans la sous-section précédente est la perte de l'optimisation dû à la conservation des fichiers objets déjà compilés.
+ 
+On aimerait pouvoir avoir la liste des fichiers objets à produire avant que ceux-ci ne le soit, et ce de manière automatisée. L'idée est alors simple :
+\begin{enumerate}
+	\item lister les fichiers sources grâce au caractère générique $*$
+	\item remplacer l'extension des noms de fichier dans la liste précédente par ``.o'' (au lieu de ``.c'')
+\end{enumerate}
+On utilise la syntaxe suivante :
+\begin{minted}[linenos=false]{make}
+SRC = *.c
+OBJS = $(SRC:%.c=%.o)
+\end{minted}
+qui signifie : \textit{``dans la variable SRC, chaque mot finissant par .c est remplacé par le même mot finit par .o''}
+ 
+Ce qui résoud effectivement le problème. On peut maintenant écrire le \textit{Makefile} suivant :
+\begin{minted}{make}
+EXE_NAME = main
+COMPILER = gcc
+SRC = $(wildcard *.c)
+OBJS = $(SRC:%c=%.o)
+
+$(EXE_NAME): $(OBJS)
+	$(COMPILER) $^ -o $@
+
+%.o: %.c
+	$(COMPILER) $< -c
+\end{minted}
+et ne plus jamais se préoccuper de quelle commande écrire pour compiler. Taper \textit{make} dans le répertoire de travail suffit !
+\subsection{Les règles virtuelles}
+Certaines règles d'un \textit{Makefile} peuvent simplement servir d'utilitaires pour le programmeur. Par exemple, on pourrait penser à une règle \textit{``clean''} qui supprimerait tous les fichiers objets et l'exécutable pour réinitialiser l'espace de travail :
+\begin{minted}[linenos=false]{make}
+clean:
+	rm -f *.o $(EXE_NAME)
+\end{minted}
+Si cette règle est par mégarde appelée par \textit{make}, celui-ci va croire qu'une erreur aura survenue puisque l'action ne produit pas la cible. Il faut donc préciser que cette règle est fausse à \textit{make} (\textit{phony} en anglais) :
+\begin{minted}[linenos=false]{make}
+clean:
+	rm -f *.o $(EXE_NAME)
+
+.PHONY: clean
+\end{minted}
+On peut alors appeler cette règle :
+\begin{minted}[frame=single]{bash}
+user@computer ~/working_directory> make clean
+rm -f *.o main
+user@computer ~/working_directory> make
+gcc main.c -c
+gcc module1.c -c
+gcc module2.c -c
+gcc main.o module1.o module2.o -o main
+user@computer ~/working_directory>
+\end{minted}
+\subsection{Idées pour aller plus loin}
+Cette sous-section ne présente pas des particularités de \textit{make} mais simplement quelques ``idées'' pour travailler dans un espace un peu plus propre.
+\subsubsection{Arborescence du répertoire de travail}
+Il peut être intéressant :
+\begin{itemize}
+	\item d'avoir un répertoire \textit{bin} qui contient la sortie binaire de la compilation, c'est-à-dire l'exécutable
+	\item de séparer les fichiers sources et les fichiers d'entêtes tant entre eux que vis-à-vis des autres fichiers du projet
+	\item de séparer les fichiers objets générés pour qu'ils ne gênent pas
+\end{itemize}
+On peut pour la séparation des fichiers sources et des fichiers d'entêtes utiliser le paramètre \textsf{-I} du compilateur, qui permet d'indiquer un répertoire de fichier d'entête supplémentaire au répertoire courant.
+\subsubsection{Ajout de la gestion de bibliothèques externes}
+On peut ajouter par défaut le paramètre \textit{-lm} pour utiliser la bibliothèque \textsf{math.h}.
+ 
+On peut ajouter un répertoire \textit{lib} au projet pour y stocker des bibliothèques externes (d'extension ``.a'' ou ``.so'')
+\end{document}

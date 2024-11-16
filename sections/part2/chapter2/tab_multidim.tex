@@ -1,0 +1,121 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Maintenant que sont acquis les concepts de tableaux statiques et dynamiques, il devient possible de contruire la structure de donnée un peu plus complexe qu'est le tableau multidimensionnel, au sens informatique de tableaux imbriquées. Voici l'exemple d'un tableau $2$-\text{dimensionnel} quelconque :
+\[
+T_{N} = \left[{\begin{array}{c}
+	t_{n_{0}}\\
+	\vdots\\
+	t_{n_{N}}
+\end{array}
+}\right] = \left[ {\begin{array}{ccccc}
+		t_{0}[0] & \hdots & t_{0}[n_{0}]\\
+		t_{1}[0] & \hdots & t_{1}[n_{1}]\\
+		\vdots & & \vdots\\
+		t_{N}[0] & \hdots & t_{N}[n_{N}]\\
+	\end{array} } \right]
+	\in{\mathbb{R}^{S}} \text{ où } S = \displaystyle\sum_{k=0}^{N}(n_{k} + 1)
+\]
+\textbf{Remarque :} Un tableau $2$-dimensionnel n'est pas nécessairement rectangulaire, puisque chaque ligne peut être de taille quelconque. Par exemple, on peut imaginer le tableau $2$-\text{dimensionnel} suivant :
+\begin{equation}
+	\label{math:triangle_2d_array}
+	\left[ {\begin{array}{ccccc}
+		1 \\
+		2 & 3 \\
+		4 & 5 & 6 \\
+		7 & 8 \\
+		9
+	\end{array} } \right]
+\end{equation}
+\subsection{Tableaux multidimensionnels statiques}
+Commençons par le moins utile. On ne peut définir statiquement que des tableaux multidimensionnels rectangulaire, c'est-à-dire dont chacune des lignes possède autant de colonnes que les autres.
+ 
+Dans le cas statique, la déclaration d'un tableau $D$-dimensionnel de taille $N_{1}\times{N_{2}}\dots\times{N_{D}}$ revient exactement à allouer statiquement en mémoire un ``grand'' tableau de $N_{1}\times{N_{2}}\dots\times{N_{D}}$ cases. Et c'est seulement lors de l'indexation du tableau que l'aspect multidimensionnel ressort.
+ 
+La syntaxe pour déclarer un tableau $D$-dimensionnel de taille $N_{1}\times{N_{2}}\dots\times{N_{D}}$ est la suivante :
+\begin{minted}[linenos=false]{c}
+#define N1 ...
+#define N2 ...
+...
+#define ND ...
+
+TYPE array[N1][N2]...[ND]; // D is the array's dimension
+\end{minted}
+Ainsi, un tableau $2d$ d'entiers de $5$ lignes et 8 colonnes est déclaré de la manière suivante :
+\begin{minted}[linenos=false]{c}
+int array[5][8];
+// OR
+int array[8][5];
+\end{minted}
+\textbf{Remarque 1 :} L'ordre des tailles n'importe pas. En effet, il suffit de poser comme convention :
+\begin{itemize}
+	\item dans le premier cas que la première dimension représente les lignes et la seconde les colonnes
+	\item dans le second cas que la première dimension représente les colonnes et la seconde les lignes
+\end{itemize}
+On accède ensuite naturellement aux éléments du tableau par une double indexation :
+\begin{minted}[linenos=false]{c}
+array[2][3]; // value on line 3 and column 4 of the array
+\end{minted}
+\exercise{Afficher un tableau $2d$ [COURS]} Écrire un programme (et pas une routine) qui affiche les éléments d'un tableau $2d$ d'entiers.
+ 
+Dans le cas d'un tableau à $D$ dimensions, on accède à un élément par $D$ indexations. Par exemple pour un tableau à 4 dimensions :
+\begin{minted}[linenos=false]{c}
+double spacetime_points[10][10][10][10];
+spacetime_points[1][4][2][7] = 3.14;
+printf("%lf", spacetime_points[1][4][2][7]);
+\end{minted}
+\textbf{Avantages des tableaux multidimensionnels statiques :}
+\begin{itemize}
+	\item Vitesse de lecture et d'écriture : comme la mémoire est allouée statiquement, il n'y a pas à accéder au tas pour créer le tableau, le lire ou l'écrire. On gagne ainsi en vitesse et on laisse au compilateur la possibilité d'optimiser le programme.
+	\item Simplicité de la déclaration
+\end{itemize}
+\textbf{Limitations/Inconvénients des tableaux multidimensionnels statiques :}
+\begin{itemize}
+	\item Impossibilité de passer le tableau en argument à une routine : le compilateur ne sait pas comment convertir en pointeur les sous-tableaux à l'intérieur du premier tableau.
+	\item Impossibilité de déclarer un tableau dont le nombre de colonnes est variable.
+\end{itemize}
+Pour outrepasser les deux limitations des tableaux multidimensionnels statiques, on utilise l'allocation dynamique.
+\subsection{Tableaux multidimensionnels dynamiques}
+L'idée de l'allocation dynamique de tableaux multidimensionnels est la suivante : on veut allouer dynamiquement un tableau qui va contenir des sous-tableaux que l'on va également allouer dynamiquement.
+ 
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.7\textwidth]{nd_array}
+	\end{center}
+\end{minipage}
+ 
+Si les sous-tableaux contiennent des valeurs de type $\textsf{TYPE}$, alors chacun d'entre-eux sera de type $\textsf{TYPE}^{*}$. Par conséquent, le tableau parent doit être de type $\textsf{TYPE}^{**}$. On en déduit le code suivant pour définir un tableau rectangulaire à $N_{lines}$ lignes et $N_{columns}$ colonnes :
+\begin{minted}[linenos=false]{c}
+TYPE** array2d = (TYPE**)(malloc(sizeof(TYPE*) * N_LINES));
+for (int i = 0; i < N_LINES; i++) {
+	array2d[i] = (TYPE*)(malloc(sizeof(TYPE) * N_COLUMNS));
+}
+\end{minted}
+Pour un tableau non rectangulaire, comme le tableau \ref{math:triangle_2d_array}, on peut imaginer le code suivant :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int min(int a, int b) {
+	return (a > b) ? b : a;
+}
+
+int main() {
+	int** triangle = (int**)(malloc(sizeof(int*) * 5));
+	for (int i = 0; i < 5; i++) {
+		triangle[i] = (int*)(malloc(sizeof(int) * (1 + min(5 - 1 - i, i))));
+		
+		// initialize the array to 0
+		for (int j = 0, j < (1 + min(5 - 1 - i, i)); j++) {
+			triangle[i][j] = 0;
+		}
+	}
+	
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\exercise{Affichage du triangle [COURS]} Compléter le programme ci-dessus pour remplir le tableau \ref{math:triangle_2d_array}. Écrire ensuite une procédure \textsf{print\_triangle(int **triangle, int n\_lines);} qui affiche ce tableau (où \textsf{n\_lines} désigne le nombre de lignes du tableau)
+ 
+\textbf{Remarque :} L'exercice ci-contre met en évidence la possibilité de passer en argument des tableaux multidimensionnels.
+\subsection{Exercices}
+\end{document}

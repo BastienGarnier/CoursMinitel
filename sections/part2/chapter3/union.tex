@@ -1,0 +1,91 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+\subsection{Motivation par un exemple}
+Il arrive régulièrement en programmation de manipuler des structures de données dont seules certains
+champs seront utilisés à un instant donné. Par exemple, on peut vouloir coder une structure stockant
+les données d’un évènement d’entrée utilisateur. Il peut s’agir :
+\begin{itemize}
+	\item de l’appui d’une touche
+	\item d’un mouvement de souris
+	\item de la fermeture d’une fenêtre graphique
+	\item etc\dots
+\end{itemize}
+Il faudrait une structure de donnée capable de stocker toutes les informations relatives à chaque type
+d’évènement. On pourrait imaginer la structure suivante :
+\begin{minted}[linenos=false]{c}
+struct Event {
+	struct {
+		unsigned x;
+		unsigned y;
+	} mouse;
+	struct {
+		int keycode;
+		char is_maj_enabled;
+		char is_ctrl_enabled;
+	} keyboard;
+};
+
+...
+
+struct Event e;
+some_update_function(&e);
+printf("Position souris : (%u, %u)\n", e.mouse.x, e.mouse.y);
+\end{minted}
+On observe alors que la structure \textsf{mouse} et la structure \textsf{keyboard} ne seront jamais utilisées en même
+temps. C’est-à-dire qu’une instance de la structure Event n’``utilisera'' jamais les deux sous-structures
+dans un même bloc de code. En effet, cette structure n’est destiné qu’à stocker un seul évènement.
+Analysons l’utilisation mémoire de la structure \textsf{Event} :
+\begin{itemize}
+	\item $4 + 4 = 8$ octets pour stocker la sous-structure \textsf{mouse}
+	\item $4 + 1 + 1 = 6$ octets pour stocker la sous-structure \textsf{keyboard}
+\end{itemize}
+pour un total de $8 + 6 = 14$ octets.
+
+En soi, il suffirait pourtant de seulement 8 octets pour stocker soit la sous-structure \textsf{mouse}, soit la
+sous-structure \textsf{keyboard}. C’est à cela que sert l’union.
+\subsection{Principe et syntaxe}
+L’idée de l’union est assez simple. Alors que la structure agrège les données\footnote{En respectant ou non l’alignement} les unes à la suite des autres en mémoire, l’union les superpose dans le même espace mémoire :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=0.25\textwidth]{union}
+	\end{center}
+\end{minipage}
+
+Ce qui en C s’écrit avec la même syntaxe que pour les structures, en utilisant à la place le mot-clé
+\textit{union} :
+\begin{minted}[linenos=false]{c}
+union Event {
+	struct {
+		unsigned x;
+		unsigned y;
+	} mouse;
+	struct {
+		int keycode;
+		char is_maj_enabled;
+		char is_ctrl_enabled;
+	} keyboard;
+};
+\end{minted}
+Et on observe qu’il s’agit bien du même espace mémoire :
+\begin{minted}[linenos=false]{c}
+union Event e;
+e.mouse.x = 42;
+printf("%u\n", e.keyboard.keycode); // prints 42
+\end{minted}
+Le bénéfice est bien visible au niveau de la taille de la zone mémoire :
+\begin{itemize}
+	\item 16 octets pour \textsf{struct Event}\footnote{Et pas 14 du fait de l’alignement mémoire, voir la section dédiée}
+	\item 8 octets pour \textsf{union Event}
+\end{itemize}
+Dans le cas de la programmation de systèmes embarquées ou pour des structures qui seront alloués un
+grand nombre de fois en mémoire, le gain de place est non négligeable. Il est ici d’un facteur 2 car il
+n’y a que deux évènements. La bibliothèque \textit{Xlib} qui sert d’interface au serveur de fenêtrage X11 de
+Linux utilise une union de 33 structures pour stocker les évènements.\footnote{Voir : \url{https://tronche.com/gui/x/xlib/events/structures.html}}
+
+Utiliser les unions à la place de structures quand cela est possible est une bonne pratique de programmation
+à assimiler.
+\subsection{Exercices}
+\exercise{Arbres binaires}
+\end{document}

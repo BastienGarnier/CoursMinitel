@@ -1,0 +1,248 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bogues en tous genres.
+ 
+L'idée est alors simple : il faut compartimenter, diviser le programme en sous-programmes qui effectuent chacun une action bien précise. C'est ensuite la fonction \textit{main} qui va s'occuper d'agencer ces sous-programmes. Le programme vu de manière globale devient alors :
+\begin{itemize}
+	\item très flexible, puisque chaque fonctionnalité est identifiée à un sous-programme précis et qu'il suffit d'appeler dans la fonction \textit{main} les sous-programmes utiles
+	\item facilement déboguable puisqu'il suffit de corriger chaque sous-programme, tous très simples, et de corriger l'agencement de ces sous-programmes dont on sait que chacun est correct
+\end{itemize}
+Nous allons voir un cas particulier de sous-programme appelé la \textit{routine}\footnote{Un autre type de sous-programme notable apparaissant par exemple en Python 	(et en C) est la \textit{coroutine}, qui possède la propriété de pouvoir être suspendu au cours de son exécution puis reprise là où elle s'est arrêtée.}, dont il n'existe que deux formes\footnote{Nativement. Il est possible d'en simuler d'autres, comme les méthodes par exemple en programmation orientée objet, qui ont comme particularité d'être partie d'une entité appelée un objet.} en langage C :
+\begin{itemize}
+	\item la procédure : effectue une action dépendante de ses entrées et ne renvoie rien
+	\item la fonction : effectue une action dépendante de ses entrées et renvoie une valeur de sortie
+\end{itemize}
+Ces deux formes en langage C se voient écrites de manière semblable par les syntaxes suivante :
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+void procedure_name(parametres) {
+	// Instructions block
+	return;
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+TYPE function_name(parametres) {
+	// Instructions block
+	return VALUE; // VALUE of type TYPE
+}
+\end{minted}
+\end{minipage}
+ 
+Les paramètres sont indiqués comme des variables non initialisées, séparées par des virgules :
+\begin{minted}[linenos=false]{c}
+int addition(int a, int b) {
+	int c = a + b;
+	return c;
+}
+\end{minted}
+Il est alors possible d'appeler cette fonction \textit{dans la suite du programme}. En effet, les instructions précédentes à la définition de la procédure/fonction n'en ont pas connaissance. C'est d'ailleurs pour cette raison que les directives \textsf{\#include} sont écrites au début du programme.
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int addition(int a, int b) {
+	int c = a + b;
+	return c;
+}
+
+int main() {
+	printf("%d + %d = %d\n", 2, 3, addition(2, 3));
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Il faut donc que les routines soient définies \textit{avant} tous leurs appels. Pour permettre une plus grande flexibilité dans l'écriture du code, il est cependant possible d'\textit{annoncer} la définition d'une routine avant de l'écrire réellement, grâce aux \textit{prototypes}.
+ 
+\textbf{Remarque :} L'instruction \textsf{return} peut en fait être placé n'importe où dans la routine. Elle y mettra fin :
+\begin{minted}[linenos=false]{c}
+void afficher_diff_0(int x) {
+	if (x == 0) {
+		return; // ends the routine
+	}
+	printf("x != 0\n"); // never executed
+}
+\end{minted}
+\subsection{Signature et prototype}
+\definition{Prototype}{Le prototype d'une routine est la donnée de :
+\begin{itemize}
+	\item son type de retour
+	\item son nom
+	\item les types de ses paramètres
+	\item l'ordre des paramètres
+\end{itemize}
+}
+
+En fait, un prototype se déclare en C comme une routine absente de code :
+\begin{minted}[linenos=false]{c}
+int addition(int a, int b); // Prototype of the 'addition' function
+
+int addition(int a, int b) { // Declaration of the 'addition' function
+	return a + b;
+}
+\end{minted}
+Le prototype permet de déclarer l'existence de la routine avant sa définition pour que le compilateur la reconnaisse avant sa définition. Il est ainsi possible de l'appeler avant la définition de la routine :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+// Both indicates the existence of the 'addition' function to the compiler
+int addition(int a, int b); // Prototype of the 'addition' function
+// OR
+int addition(int, int); // Parameters names are not necessary in the prototype
+
+int main() {
+	printf("%d + %d = %d", 2, 3, addition(2, 3));
+	return EXIT_SUCCESS;
+}
+
+int addition(int a, int b) { // Declaration of the 'addition' function
+	return a + b;
+}
+\end{minted}
+\definition{Signature}{La signature d'une routine consiste en son nom, les types de ses paramètres et l'ordre de ceux-ci. À la différence du prototype, le type de retour de la routine n'est pas donné.}
+ 
+\textbf{Remarque :} Si le concept de \textit{signature} de routine est général à une grande quantité de langages, celui de \textit{prototype} de routine tel que définit ci-avant est spécifique aux langages C, C++ et à ceux dérivant de C et C++.
+\subsection{Note relative à la copie des arguments}
+Notons que les identifiants à l'intérieur d'une routine évoluent dans un \textit{espace local} :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+void proc(int c) {
+	v = 48; // ERROR : v not declared in this function
+	return c;
+}
+
+int main() {
+	int v = 5;
+	proc(v+1);
+	v = c; // ERROR : c not declared in this function
+	return EXIT_SUCCESS;
+}
+\end{minted}
+En particulier :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int polynome(char p) { // Declaration of the 'addition' function
+	p = (p*p - p + 1);
+	return (int)p;
+}
+int main() {
+	char p = 3;
+	polynome(p);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+ne modifie jamais la valeur de la variable $p$ située dans le $main$.
+ 
+On arrive alors à la différentiation entre la variable passé en \textit{argument} de la routine et le \textit{paramètre} de la routine :  
+\definition{Argument}{Un argument est la valeur passée lors de l'appel de la routine pour un certain paramètre.}
+
+Ainsi, dans le code suivant :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int polynome(char p) { // Declaration of the 'addition' function
+	return (int)(p*p - p + 1);
+}
+int main() {
+	int a = 3;
+	polynome(a);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+$p$ désigne le paramètre de la fonction \textsf{polynome} tandis que $a$ est l'argument passé au paramètre $p$. On dit aussi que $a$ est passé en argument à la fonction \textsf{polynome} pour le paramètre $p$.
+ 
+Pour être techniquement plus précis, la valeur de $a$ est copiée en mémoire au moment de son passage à \textsf{polynome}. Ainsi, la modification de $p$ dans $f$ ne modifie jamais la valeur de $a$ :
+\begin{minted}{c}
+#include <stdlib.h>
+
+int polynome(char p) { // Declaration of the 'addition' function
+	p = (p*p - p + 1);
+	return p; // implicit static casting
+}
+int main() {
+	int a = 3;
+	polynome(a);
+	if (a == 3) {
+		printf("a non modifie\n");
+	}
+	a = polynome(a); // a = 3*3 - 3 + 1 = 7
+	if (a != 3) {
+		printf("a modifie\n");
+	}
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On trouve alors une limitation à l'action des fonctions, puisque celles-ci semblent ne pouvoir agir que sur une unique valeur, celle de retour. Grâce aux pointeurs, on pourra cependant abroger cette limitation\dots
+\subsection{La pile d'exécution}
+Lorsque le système charge en mémoire un programme informatique et l'exécute, il ne contient pas que le code. Il faut aussi pouvoir stocker les variables et enregistrer l'historique des appels de routines. En effet, il faut bien	gérer en mémoire le passage d'un argument à une routine, et également stocker l'adresse mémoire à laquelle le \textsf{return} doit revenir. On pourrait imaginer le code suivant :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define X ... // any value
+#define Y ... // any value
+
+unsigned int addition(int a, int b) {
+	for (; a-- > 0; b++);
+	return b;
+}
+
+unsigned int multiply(unsigned int a, unsigned int b) {
+	int sum = 0;
+	for (; a > 0; a--) {
+		sum = addition(sum, b);
+	}
+	return sum;
+}
+
+int main() {
+	printf("%u x %u = %u\n", X, Y, multiply(X, Y));
+	return EXIT_SUCCESS;
+}
+\end{minted}
+La \textit{pile d'exécution} est une zone mémoire allouée à un processus qui lui permet de stocker les paramètres de fonctions et les variables internes à la fonction. Il faut voir cette pile comme une pile d'assiettes (qui sont les paramètres, etc\dots). Les éléments ne peuvent être ajoutés à la pile d'exécution qu'en les empilant ou en les dépilant du dessus de la pile.
+ 
+Ainsi, l'appel à \textsf{multiply} va \textit{empiler} l'adresse mémoire de l'instruction suivant l'appel à la fonction, va empiler les arguments sur la pile puis va sauter à l'adresse mémoire de la fonction \textsf{multiply}. Cela sera réitéré pour chaque appel à la fonction \textsf{addition}.
+ 
+La pile contient \textit{entre autre} :
+\begin{itemize}
+	\item la mémorisation des appels de routine, des arguments des paramètres lors des appels et de l'adresse de retour. Il faut bien que le programme sache où revenir lors du \textsf{return}
+	\item les variables assignées dans les routines : celles-ci sont \textit{empilées} lors de leur assignation
+\end{itemize}
+Les variables contenues dans la pile ne sont accessibles que dans la routine qui les a créé. Par ailleurs, dès l'instant où une routine exécute l'instruction \textsf{return}, les variables utilisées dans cette routine sont libérées, c'est-à-dire que l'espace mémoire qui était réservé pour elles devient à nouveau libre de contenir n'importe quelle autre valeur (opération de \textit{dépilement} de la pile d'exécution).
+ 
+C'est pour cette raison qu'on essaye de compartimenter les programmes en une multitude de routines, surtout lorsque les calculs effectués par ces routines utilisent beaucoup de variables temporaires. En effet, au lieu de stocker toutes ces variables dans l'espace mémoire du programme principal même lorsqu'elles sont inutiles, l'espace mémoire n'est utilisé pour stocker ces variables que lors de l'exécution de la routine.
+ 
+\textbf{Remarque :}
+ 
+L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bogues.
+ 
+Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable.
+ 
+Il est cependant possible de gérer par soi-même l'allocation des variables en mémoire. C'est ce qu'on appelle l'\textit{allocation dynamique}. La pile n'est jamais\footnote{à deux trois détails près...} utilisée pour ce type d'allocation.
+\subsection{Exercices}
+\exercise{Encore Fibonacci}\newline Écrire une fonction de prototype \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
+ $$
+\left\{\begin{array}{llcl}
+& f_{0} & = & 0 \\
+& f_{1} & = & 1 \\
+\forall{n\in{\mathbb{N}}}, & f_{n+2} & = & f_{n+1} + f_{n}
+\end{array}\right.
+$$
+Tester ensuite cette fonction pour toutes les valeurs de $n\in{\llbracket 0; 100\rrbracket}$.
+ 
+\exercise{Puissances entières} Écrire une routine équivalente à la fonction :
+ $$
+ \begin{array}{lclcl}
+f & : & \llbracket-2^{31}, 2^{31}\llbracket\times{\llbracket0, 2^{32}\llbracket}& \rightarrow & \mathbb{Z} \\
+& & (x, n) & \mapsto & x^{n}
+\end{array}
+$$
+Dans quelle mesure cette fonction est-elle correcte ?
+\end{document}

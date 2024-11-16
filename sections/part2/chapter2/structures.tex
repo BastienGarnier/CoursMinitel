@@ -1,0 +1,336 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+Pour l'instant, seules les types élémentaires ont été vues, c'est-à-dire les nombres entiers et flottants, codés sur un, deux, quatre, huit ou dix octets. Il aussi été vu comment créer des tableaux de ces types, statiques ou dynamiques.
+ 
+Supposons cependant que l'on veuille modéliser informatiquement des structures complexes, comme par exemple :
+\begin{itemize}
+	\item la modélisation d'une lentille dans une simulation physique par une taille, la modélisation de sa forme par des courbes paramétriques, les propriétés du matériau, etc\dots
+	\item le bouton d'une application par une taille, une position dans l'espace, une couleur, un texte, etc\dots
+	\item un personnage d'un jeu vidéo. Celui-ci possède, par exemple, des points de vie, une vitesse, un modèle 3D qui est (grossièrement) un tableau de sommets, d'arêtes et de faces, etc\dots
+	\item etc\dots
+\end{itemize}
+On pourrait stocker tout ceci dans des tableaux toujours plus grands d'entiers dont on peut interpréter les valeurs. Il faudrait alors noter dans une documentation que pour un tableau de \textsf{double} dont on conviendrait d'une convention de nommage pour se souvenir qu'il s'agit d'une lentille, la valeur \textsf{tableau[37]} correspondrait à telle ou telle propriété de la lentille.
+ 
+C'est possible. Mais cela semble de manière évidente complètement tordu, et d'un sens pratique assez\dots comment dire\dots limité.
+ 
+C'est ici que les structures entrent en jeu.
+ 
+Une structure est un moyen de stocker dans une seule entité plusieurs types d'informations. Chacune de ces informations possédera sa propre étiquette au sein de cette entité, ainsi que son propre type. C'est un peu comme une boîte qui contient plusieurs variables : 
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.25\textwidth]{structure}
+	\end{center}
+\end{minipage}
+ 
+La syntaxe de définition d'une structure en C est la suivante :
+\begin{minted}[linenos=false]{c}
+struct NomStructure { // No objects are created, it's just a description
+	TYPE1 var1;
+	TYPE2 var2;
+	TYPE3 var3;
+	// etc...
+};
+\end{minted}
+Il s'agit d'une définition, et non d'une déclaration. Pour cette raison, aucune variable interne, ou \textit{membre}, de la structure ne peut être initialisée. Par ailleurs, une définition d'une structure est comme la définition d'un nouveau type de variable. Pour utiliser une structure, il faut au final créer des variables dont le type est cette structure :
+\begin{minted}[linenos=false]{c}
+struct NomStructure { // No objects are created, it's just a description
+	TYPE1 var1;
+	TYPE2 var2;
+	TYPE3 var3;
+	// etc...
+};
+struct NomStructure x; // 'x' is created with no members initialized
+\end{minted}
+Il est possible d'y penser un peu comme à la construction d'une maison : on commence par dessiner le plan de la maison et une fois cela fait il suffit de fabriquer plein de maisons grâce à ce plan.
+ 
+On peut ensuite accéder aux membres d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un membre noté ``.'' :
+\begin{minted}[linenos=false]{c}
+x.var1 = ...; // access to the 'var1' member of 'x'
+x.var2 = ...; // access to the 'var1' member of 'x'
+x.var3 = ...; // access to the 'var1' member of 'x'
+// etc...
+\end{minted}
+Un exemple :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Point3D {
+	double x;
+	double y;
+	double z;
+};
+
+int main() {
+	struct Point3D p;
+	p.x = 1.0;
+	p.y = 2.0;
+	p.z = -3.0;
+	printf("p = (%lf, %lf, %lf)\n", p.x, p.y, p.z);
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\textbf{Remarque 1 :} Une structure ne peut contenir au maximum que 127 membres.
+ 
+\textbf{Remarque 2 :} Au contraire des tableaux statiques, toute structure définie est considérée comme une entité de première classe. Ainsi, il est possible d'écrire des routines dont les paramètres sont des structures, et qui prennent en argument des structures identiques :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Point3D {
+	double x;
+	double y;
+	double z;
+};
+
+void afficher(struct Point3D p) {
+	printf("(%lf, %lf, %lf)\n", p.x, p.y, p.z);
+}
+
+int main() {
+	struct Point3D p;
+	p.x = 1.0;
+	p.y = 2.0;
+	p.z = -3.0;
+	afficher(p);
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\textbf{Remarque :} Il est aussi possible qu'un membre d'une structure soit lui-même une structure :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Couple {
+	double x;
+	double y;
+};
+
+struct Line {
+	struct Couple point;
+	struct Couple direction;
+};
+
+// or
+
+struct Line {
+	struct Couple {
+		double x;
+		double y;
+	} point;
+	struct Couple direction;
+};
+
+int main() {
+	struct Line l;
+	// . is an associative operator :
+	l.point.x = 0.0;
+	l.point.y = 1.0;
+	l.direction.x = 1.0;
+	l.direction.y = 2.5;
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Comme les structures définies sont considérés comme des entités de première classe, il est évidemment possible de créer statiquement ou dynamiquement des tableaux de ces structures :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Time {
+	short int milliseconds;
+	char hour;
+	char minutes;
+	char seconds;
+}
+
+int main() {
+	int i = ...;
+	struct Time running_times[10];
+	running_times[i].hour = ...;
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Il est également possible de travailler sur des pointeurs de structure :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Something {
+	int a;
+	char b;
+};
+
+int function(struct Something* s_ptr) {
+	(*s_ptr).a += (*s_ptr).b;
+	return (*s_ptr).a;
+}
+
+int main() {
+	struct Something s;
+	s.a = 0;
+	s.b = 1;
+	for (int i = 0; i < 10; i++) {
+		s.b = function(&s) / s.b;
+	}
+	printf("%d\n", s.a);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On observe que l'opérateur d'accès à un membre est prioritaire sur l'opérateur d'indirection $*$\footnote{En effet, l'opérateur d'indirection ne fait qu'ajouter un décalage à l'adresse de la variable structurée pour accéder au membre de la structure. Ce calcul est effectué par le compilateur. Pour cette raison, l'opérateur d'accès à un membre fait partie des opérateurs les plus prioritaires du langage.}. Oublier de parenthéser amène à une erreur puisque \textsf{ptr.member} n'existe pas. En effet, un pointeur n'est qu'une adresse vers la structure. Il n'a donc pas de membres. \newline
+La notation apparaît cependant très lourde à écrire, alors une notation purement facilitatrice existe en C, la flèche :
+ 
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	int b;
+};
+
+struct MyStruct *s = ...;
+
+printf("a = %d, b = %d\n", s->a, s->b);
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	int b;
+};
+
+struct MyStruct *s = ...;
+
+printf("a = %d, b = %d\n", (*s).a, (*s).b);
+\end{minted}
+\end{minipage}
+\subsection{Initialisation à la déclaration}
+L'initialisation de structures contenant une grande quantité de variables peut vite être fastidieuse. Le langage C propose deux facilités d'écriture pour initialiser les variables statiques (c.à.d obtenues sans allocation dynamique) d'une structure dès la déclaration d'une instance : 
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	char b;
+	void *c; // any pointer
+	long double d; 
+};
+
+ // Sequential initializing
+struct MyStruct s = {
+	2<<20,
+	6,
+	NULL,
+	3.141592653589
+};
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	char b;
+	void *c; // any pointer
+	long double d;
+};
+
+// Designated initializing
+struct MyStruct s = {
+	.d =	3.141592653589,
+	.a = 2<<20,
+	.c = NULL,
+	.b = 6
+}; 
+\end{minted}
+\end{minipage}
+
+L'initialisation séquentielle suit exactement l'ordre des membres de la structure.
+\newline
+L'initialisation sélective permet de choisir très exactement quel membre reçoit quelle valeur.
+ 
+\textbf{Remarque :} Les retours à la ligne sont optionnels et ne servent qu'à la lisibilité. Le code suivant est valide :
+\begin{minted}[linenos=false]{c}
+struct Point {
+	double x;
+	double y;
+};
+
+struct Point p = {.y = 4.5, 3.2}; // Point on x = 3.2, y = 4.5
+\end{minted}
+Il est parfaitement possible de mélanger les initialisations séquentielles et sélectives. Dans un tel cas, l’initialisation séquentielle reprend au dernier membre désigné par une initialisation sélective. Partant, le code suivant initialise le membre $a$ à 1 et le membre $d$ à 30.560.
+\begin{minted}[linenos=false]{c}
+struct MyStruct s = {1, .d = 30.560};
+\end{minted}
+Alors que le code ci-dessous initialise le membre $c$ à \textsf{NULL}, le membre $d$ à 48, le membre $b$ à 0 et le membre $c$ à $\&s$.
+\begin{minted}[linenos=false]{c}
+struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d not initialized
+\end{minted}
+\subsection{Exercices}
+\exercise{Listes chainées}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
+ 
+On commence par construire la structure permettant de stocker un \textit{noeud} de la liste, c'est-à-dire un de ses éléments. La valeur du noeud est la valeur de l'élément de la liste :
+ 
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{node}
+		\captionof{figure}{Noeud d'une liste}\label{img:node}
+	\end{center}
+\end{minipage}
+
+En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud à l'autre grâce aux pointeurs $next$ et $previous$.
+\begin{enumerate}
+	\item Définir une structure \textsf{struct Node} qui contient un entier $value$ (la valeur du noeud) et deux pointeurs vers une structure \textsf{struct Node} appelés $next$ et $previous$ (qui permettront de \textit{pointer} vers les noeuds suivant et précédent de la liste)
+	\item Écrire une fonction \textsf{struct Node* node\_new(int value);} qui alloue dynamiquement une structure \textsf{struct Node* nd} initialisée telle que :
+	\begin{itemize}
+		\item $nd\rightarrow next$ et $nd\rightarrow previous$ ne pointent sur rien
+		\item $nd\rightarrow value = value$
+	\end{itemize}
+	\item Définir une structure \textsf{struct LinkedList} qui contient un entier $length$ (le nombre de noeuds) et deux pointeurs vers une structure \textsf{struct Node} appelés $head$ et $queue$. La \textit{tête} de liste est le premier noeud de la liste. La \textit{queue} de liste est le dernier noeud de la liste.
+	\item Écrire une fonction \textsf{struct LinkedList* linkedlist\_new();} qui alloue dynamiquement une structure \textsf{struct LinkedList* lst} initialisée telle que :
+	\begin{itemize}
+		\item $lst\rightarrow head$ et $lst\rightarrow previous$ ne pointent sur rien
+		\item $lst\rightarrow length = 0$
+	\end{itemize}
+	\item Écrire une fonction \textsf{char linkedlist\_is\_empty(struct LinkedList *l);} qui renvoie \textsf{1} si la liste est vide, et renvoie \textsf{0} sinon.
+	\item Écrire une procédure \textsf{void linkedlist\_push\_on\_head(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en tête de liste}, c'est-à-dire qu'après insertion la valeur de la \textit{tête} sera $value$. On pensera à traiter séparément le cas où la liste est vide (c'est-à-dire $lst\rightarrow length = 0$). En effet, on rappelle que si $lst\rightarrow head$ ne pointe sur rien, le considérer comme un noeud provoque une erreur du fait de l'accès à une zone mémoire non autorisée. Par ailleurs, si la liste contient un unique élément, la \textit{tête} est égale à la \textit{queue}.
+	\item De même, écrire une procédure \textsf{void linkedlist\_push\_on\_queue(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en queue de liste}.
+	\item Écrire deux fonctions \textsf{int linkedlist\_pop\_from\_head(struct LinkedList *l);} et \textsf{int linkedlist\_pop\_from\_queue(struct LinkedList *l);} qui suppriment respectivement le noeud en tête et en queue de liste et renvoient la valeur de ce noeud. On pensera à libérer la mémoire associée à l'allocation dynamique de ce noeud (c'est-à-dire utiliser \textsf{free} sur le pointeur vers le noeud).
+	\item En utilisant un pointeur temporaire vers les noeuds, écrire une procédure \textsf{void linkedlist\_display(struct LinkedList *l);} qui affiche les valeurs des noeuds de la liste.
+\end{enumerate}
+% \exercise{Raymarching}Un environnement procédural est un environnement généré par des procédures, constitués de calculs mathématiques. L'algorithme de \textit{raymarching} permet de visualiser depuis un point de l'espace un tel environnement, comme le ferait une caméra\footnote{Voir \url{https://www.youtube.com/watch?v=BFld4EBO2RE} pour une démonstration de création d'un environnement procédural par un ancien ingénieur de Pixar.}
+% Cet exercice \textit{extrêmement guidé} présente, en deux dimensions, le principe de l'algorithme de \textit{raymarching} utilisé pour visualiser de tels environnements.
+% \begin{enumerate}
+%	 \item Définir une structure \textsf{struct Point} modélisant un point en coordonnées flottantes sur 64 bits dans un espace euclidien à deux dimensions
+%	 \item Écrire une fonction \textsf{struct Point point\_new(double, double);} qui renvoie un point situé aux coordonnées indiquées
+%	 \item En ajoutant l'option \textit{-lm} à la ligne de commande lors de la compilation avec \textsf{gcc}, on peut utiliser la bibliothèque \textsf{$<$math.h$>$} qui contient la fonction de calcul de racine carrée \textsf{double sqrt(double);}. \newline
+%				 Écrire une fonction \textsf{double point\_distance(struct Point, struct Point);} qui renvoie la distance euclidienne entre deux points.
+%	 \item Définir une structure \textsf{struct Circle} qui modélise un cercle.
+%	 \item Écrire une fonction \textsf{double point\_distance\_to\_circle\_center(struct Circle, struct Point);} qui renvoie la distance euclidienne entre le centre du cercle et le point passés en argument.
+%	 \item Écrire une fonction \textsf{char point\_in\_circle(struct Circle, struct Point);} qui renvoie :
+%				 \begin{itemize}
+%					 \item 1 si le point est à l'intérieur du cercle
+%					 \item 0 sinon
+%				 \end{itemize}
+%	 % \item Écrire une fonction \textsf{struct Point closest\_point\_of\_circle\_border(struct Circle, struct Point);} qui à tout point $A\in{\mathbb{R}^{2}_{f64}}$ et à tout cercle $\mathcal{C} = \{p\in{\mathbb{R}^{2}_{f64}}\ |\ \lVert{p - \omega}\rVert = r\}$ de centre $\omega$ et de rayon $r$ renvoie le point $p_{min}\in{\mathcal{C}}$ tel que $\lVert{A - p_{min}}\rVert = \underset{p\in{c}}{min}\left(\lVert{A - p}\rVert\right)$
+%	 \item Écrire une fonction \textsf{double point\_distance\_to\_circle\_border(struct Circle, struct Point);} qui renvoie la plus petite distance d'un point à la bordure d'un cercle.
+%	 \item Définir une structure \textsf{struct Ray} définissant une demi-droite.
+%	 \item Écrire une fonction \textsf{struct Ray ray\_from\_angle(struct Point origin, double angle);} qui génère une demi-droite à partir d'un point d'origine et d'un angle en radians.
+%	 \item Écrire une fonction \textsf{struct Point point\_on\_ray(struct Ray, double d);} qui renvoie le point de la demi-droite à la distance $d$ de l'origine.
+%	 \item Écrire une fonction \textsf{struct Point raymarch\_single(struct Ray, struct Circle* circles, unsigned int n);} qui a comme paramètres :
+%	 \begin{itemize}
+%		 \item un rayon
+%		 \item un tableau de \textsf{n} cercles qui représentent l'environnement procédural
+%	 \end{itemize}
+%	 et qui, en faisant avancer un point sur le rayon de la distance au bord de cercle le plus proche, calcul et renvoie le point d'``impact'' du rayon dans l'environnement. On peut supposer que :
+%	 \begin{itemize}
+%		 \item si la distance au bord de cercle le plus proche est inférieure à une constante $D_{min}$ arbitraire\footnote{par exemple 0.01} alors le rayon a touché un cercle
+%		 \item si la distance au bord de cercle le plus proche est supérieure à une constante $D_{max}$ arbitraire\footnote{par exemple 100.0} alors le rayon est ``sorti'' de l'environnement et ne peut pas toucher de cercles
+%	 \end{itemize}
+%	 Dans les deux cas on peut arrêter le calcul.
+%	 \item Écrire une fonction \textsf{struct Point* raymarching(struct Point origin, unsigned int rays\_number, struct Circle* circles, unsigned int n);} qui effectue l'algorithme de \textit{raymarching} pour \textsf{rays\_number} rayons équirépartis autour de l'origine et renvoie un tableau des \textsf{rays\_number} points d'impacts des rayons.
+% \end{enumerate}
+\end{document}

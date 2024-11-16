@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1200"
+   height="600"
+   viewBox="0 0 317.49998 158.75"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="system.svg"
+   inkscape:export-filename="/home/aurghnost/Documents/Travail/Personnel/Rayan/Introduction_informatique/img/system.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.97512882"
+     inkscape:cx="539.92866"
+     inkscape:cy="243.55756"
+     inkscape:window-width="1850"
+     inkscape:window-height="1016"
+     inkscape:window-x="70"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:pageshadow="2"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;stroke-width:0.265;stroke-dasharray:none"
+       id="rect1"
+       width="87.110062"
+       height="43.682453"
+       x="105.92006"
+       y="49.176037" />
+    <rect
+       style="fill:#fafafa;fill-opacity:1;stroke-width:0.265294"
+       id="rect2"
+       width="81.049568"
+       height="37.723152"
+       x="108.81521"
+       y="52.033382" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;white-space:pre;inline-size:23.724;fill:#000000;fill-opacity:1;stroke-width:0.264999;stroke-dasharray:none;-inkscape-font-specification:FreeMono;font-family:FreeMono;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+       x="82.406609"
+       y="84.956451"
+       id="text2"
+       inkscape:highlight-color="#909090"
+       transform="matrix(3.9489125,0,0,3.9489125,-202.05698,-260.97368)" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke-width:0.264999;stroke-dasharray:none"
+       d="m 69.23287,66.202947 33.72415,0.09391"
+       id="path2" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke-width:0.189646;stroke-dasharray:none"
+       d="m 82.324874,71.622796 17.447047,-0.428859 -1.870652,-2.798343 3.804711,3.646743 -3.62076,3.269509 1.671471,-2.619978 z"
+       id="path5"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke-width:0.189646;stroke-dasharray:none"
+       d="m 195.5989,71.917312 17.44705,-0.42886 -1.87065,-2.79834 3.80471,3.64674 -3.62076,3.26951 1.67147,-2.61998 z"
+       id="path5-5"
+       sodipodi:nodetypes="ccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.99355px;fill:#000000;fill-opacity:1;stroke-width:0.333319;stroke-dasharray:none"
+       x="21.392546"
+       y="67.290924"
+       id="text5"><tspan
+         sodipodi:role="line"
+         id="tspan5"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold';stroke-width:0.33332"
+         x="21.392546"
+         y="67.290924">Périphériques d'entrée :</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;stroke-width:0.33332"
+         x="21.392546"
+         y="72.443542"
+         id="tspan6">Clavier, souris, caméra,</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;stroke-width:0.33332"
+         x="21.392546"
+         y="77.596153"
+         id="tspan8">lecteur CD, microphone</tspan></text>
+    <g
+       id="g11"
+       transform="translate(0.09330338,-1.2065515)">
+      <text
+         xml:space="preserve"
+         style="font-size:3.99355px;fill:#000000;fill-opacity:1;stroke-width:0.333319;stroke-dasharray:none"
+         x="220.03799"
+         y="69.058571"
+         id="text5-2"><tspan
+           sodipodi:role="line"
+           id="tspan5-9"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold';stroke-width:0.33332"
+           x="220.03799"
+           y="69.058571">Périphériques de sortie :</tspan><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;stroke-width:0.33332"
+           x="220.03799"
+           y="74.211189"
+           id="tspan10">Ecran, câbles réseaux,</tspan><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:FreeMono;stroke-width:0.33332"
+           x="220.03799"
+           y="79.3638"
+           id="tspan12">LEDs, haut-parleurs</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:none;fill-opacity:1;stroke-width:0.264999;stroke-dasharray:none"
+       x="95.357445"
+       y="110.17892"
+       id="text11"><tspan
+         sodipodi:role="line"
+         id="tspan11"
+         style="stroke-width:0.265"
+         x="95.357445"
+         y="110.17892">*-</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="119.03846"
+       y="74.578308"
+       id="text7889"><tspan
+         sodipodi:role="line"
+         id="tspan7887"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold';stroke-width:0.264583"
+         x="119.03846"
+         y="74.578308">Ordinateur</tspan></text>
+  </g>
+</svg>
