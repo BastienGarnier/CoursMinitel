@@ -27,7 +27,9 @@ L'idée des pointeurs est simple : au lieu de stocker directement une valeur, on
 	\end{center}
 \end{minipage}
  
-Les pointeurs sont fondamentaux en programmation. En particulier, ils permettent une flexibilité très importante des programmes écrits. La raison est simple : une variable est définie dans un certain espace. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Une adresse mémoire peut potentiellement exister hors de routines spécifiques. Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
+Les pointeurs sont fondamentaux en programmation. En particulier, ils permettent une flexibilité très importante des programmes écrits. En effet, une variable est définie dans un certain espace. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques. Les possibilités des routines sont donc décuplées puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
+
+Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
  
 On dispose pour la manipulation des pointeurs de deux opérateurs en langage C : l'étoile $\ast$ et l'esperluette $\&$. On a également la constante \textsf{NULL} qui représente un pointeur ne pointant sur rien du tout. 
 Un pointeur est définit selon la syntaxe suivante :
@@ -60,6 +62,14 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
+Après exécution du code, on a le schéma suivant :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.7\textwidth]{pointeur4}
+	\end{center}
+\end{minipage}
+
 L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
  
 On peut décider également qu'un pointeur ne pointe sur rien :
@@ -92,9 +102,9 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\subsection{Une utilité : arguments de fonctions}
-Venons en à une utilité possible des pointeurs : le passage d'arguments à des fonctions. La limitation des fonctions est qu'elles ne peuvent agir sur le reste du programme que par une unique valeur, celle de retour. Imaginons par exemple une fonction qui doive effectuer l'échange des valeurs de	deux variables. Cela n'est pas possible tant que la fonction n'a aucun moyen d'action direct sur les variables elles-même.
- 
+\subsection{Les pointeurs en paramètres de routines}
+Venons en à une utilité possible des pointeurs : le passage d'arguments à des routines. La limitation des routines est qu'elles ne peuvent agir sur le reste du programme que par au maximum une unique valeur, celle de retour dans le cas des fonctions, aucune dans le cas des procédures. Imaginons par exemple une routine qui doive effectuer l'échange des valeurs de deux variables. Cela n'est pas possible tant que la routine n'a aucun moyen d'action direct sur les variables elles-même.
+
 C'est-ici qu'interviennent les pointeurs :
 \begin{minted}{c}
 #include <stdio.h>
