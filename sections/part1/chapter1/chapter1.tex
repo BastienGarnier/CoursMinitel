@@ -592,13 +592,13 @@ On distingue alors deux catégories selon la valeur de $N + biais$ pour le choix
 \end{itemize}
 La normalisation du nombre affecte en partie la valeur de la mantisse et de l'exposant encodé :
 
-\textbf{Nombre dénormalisé :} on garde pour la mantisse les chiffres $c_{N}\dots c_{N-23}$, et pour conserver des valeurs correctes, on ajoute 1 à N.\footnote{Il s'agit d'un décalage supplémentaire de l'écriture en base 2 de $x$}
+\textbf{Nombre normalisé :} on garde pour la mantisse les chiffres $c_{N-1}\dots c_{N-23}$.
 
-\textbf{Nombre normalisé :} on garde pour la mantisse les chiffres $c_{N-1}\dots c_{N-23}$. 
+\textbf{Nombre dénormalisé :} on effectue un décalage supplémentaire dans l'écriture de $x$ pour l'écrire sous la forme $x = (2^{-1}m)\times{2^{N + 1}}$
 
 Une fois qu'on a déterminé la représentation binaire de $N + biais$ et les chiffres à conserver de la mantisse, il suffit de ``coller'' le bit de signe, la représentation binaire de $N + biais$ et les chiffres conservés de la mantisse pour obtenir la représentation binaire finale du nombre.
 
-\textbf{Exemple : } Représentons le nombre $x = 21.125 = (10101.001)_{2}$ selon la norme \textit{IEEE 754} sur 32 bits. \newline
+\textbf{Exemple (normalisé) : } Représentons le nombre $x = 21.125 = (10101.001)_{2}$ selon la norme \textit{IEEE 754} sur 32 bits. \newline
 $x = (1.0101001)_{2}\times{2^{4}}$, donc $N = 4$. Comme on est sur 32 bits, la norme \textit{IEEE 754} spécifie que l'exposant est codé sur 8 bits. D'où $biais = 2^{7}-1 = 127$. Alors $N + biais =  (biais + 1) + (N-1) = 2^{7} + 2^{1} + 2^{0} = (10000011)_{2} > 0$ donc le nombre écrit sous forme normalisé. On a donc :
 \begin{itemize}
      \item signe : 0 car $21.125 \geq 0$
@@ -606,9 +606,23 @@ $x = (1.0101001)_{2}\times{2^{4}}$, donc $N = 4$. Comme on est sur 32 bits, la n
      \item le nombre est normalisé donc $m = (01010010000000000000000)_{2}$
 \end{itemize}
 Finalement, $x = 21.125$ est représenté selon la norme \textit{IEEE 754} par le mot binaire 32 bits : $$01000001101010010000000000000000$$
+
+\textbf{Exemple (dénormalisé) : } Représentons le nombre $x = -9.1688559\times{10^{-39}}$ selon la norme \textit{IEEE 754} sur 32 bits. \newline
+Il existe $p\in{\mathbb{Z}}$ tel que $2^{p}\leq x < 2^{p+1}$, c'est-à-dire $x = m\times{2^{\lfloor log_{2}(x)\rfloor}}$.\newline
+On cherche alors $m = x\times 2^{-\lfloor log_2(x)\rfloor} = -9.1688559\times10^{-39}2^{126} \approx 0.78 \approx (1.10001111010111000010100)_{2}\times{2^{-1}}$ \newline
+On veut donc écrire selon la norme \textit{IEEE 754} le nombre $x \approx 1.10001111010111000010100\times{2^{-127}}$
+
+Sur 32 bits, $biais = 127$, donc $N + biais = 0$. Le nombre est donc dénormalisé\footnote{Comme par hasard\dots}. On code alors :
+\begin{itemize}
+  \item signe : 1 car $x < 0$
+  \item le nombre est dénormalisé donc $e = (00000000)_2$
+  \item le nombre est dénormalisé donc $m = (11000111101011100001010)_2$
+\end{itemize}
+Finalement, $x = -9.1688559\times{10^{-39}}$ est représenté selon la norme \textit{IEEE 754} par le mot binaire 32 bits : $$10000000011000111101011100001010$$
 \subsection{Notation pour la suite du cours}
 On notera pour la suite $\mathbb{R}_{f32}$ (resp. $\mathbb{R}_{f64}$ et $\mathbb{R}_{f128
 }$) est les nombres réels dont il existe une représentation binaire sur 32 bits (resp. 64 et 128 bits) exacte selon la norme \textit{IEEE 754}.
+% \subsection{Pour le plaisir : approximer $log_{2}$}
 \section{Représentation hexadécimale}
 La représentation hexadécimale n'est qu'une compression de l'écriture de mots binaires en base 16 dans l'unique objectif de gagner de la place et de la lisibilité lors de l'écriture de mots binaires par des humains.
 

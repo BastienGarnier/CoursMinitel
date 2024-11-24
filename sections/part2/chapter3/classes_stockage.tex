@@ -1,4 +1,55 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+Cette section vient apporter des outils pour préciser la durée de vie d'une variable et sa portée d'utilisation. On appelle : 
+
+\definition{Portée d'une variable et durée de vie}{
+On définit ici deux notions qui ont été entrevues précédemment :
+\begin{itemize}
+	\item la portée (\textit{scope} en anglais) d'une variable est l'espace/l'ensemble des sections de code dans lesquels cette variable est déclarée et utilisable.
+	\item la durée de vie (\textit{lifetime} en anglais) d'une variable est la portion de l'exécution du programme durant laquelle l'espace de stockage de la variable est assuré comme réservé pour elle.
+\end{itemize}
+}
+
+Les classes de stockage permettent de définir avec plus de précision la portée et la durée de vie d'une variable au moment de sa déclaration.
+\subsection{Quelques détails de la structure d'un programme en mémoire}
+\textbf{Rappel :} Le processeur peut enregistrer les données soit dans la RAM (ou mémoire vive) soit dans les registres du processeur.
+
+On va détailler ici un peu plus l'organisation en mémoire vive d'un programme informatique. Un programme informatique est chargé en mémoire dans quatre différents types de zones mémoires :
+\begin{itemize}
+	\item section de code, aussi appelée section de texte : contient les instructions du programme, qui entre autre manipulent les registres.
+	\item section de données initialisées et non initialisées : contient les données globales ou \textit{statiques}\footnote{i.e. durables, la notion sera détaillée dans la suite.}
+	\item la pile : contient les variables temporaires, les arguments de routines, les adresses de retour des routines, etc\dots
+	\item le tas : contient les variables allouées dynamiquement
+\end{itemize}
+Schématiquement, cela ressemble\footnote{Les sections ne sont pas toujours dans le même ordre. Les données peuvent être mélangées au code, le tas pourrait évoluer au dessus du code, etc\dots} à ça :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=0.15\textwidth]{memoire}
+	\end{center}
+\end{minipage}
+
+Pour éviter une collision potentielle entre le tas et la pile, cette dernière possède une taille maximale dans la plupart des systèmes d'exploitation.
+
+La déclaration d'une variable peut alors avoir lieu dans, au choix :
+\begin{itemize}
+	\item une section de données
+	\item la pile
+	\item le tas
+	\item un registre
+\end{itemize}
+\subsubsection{Section de données}
+Les sections de données d'un programme sont présentes dans le fichier binaire du programme compilé. Les sections de données ne peuvent donc ni grandir ni rétrécir puisque le code source du programme (avant compilation) décrit entièrement la taille des données. Elles sont de taille fixe et certaines données peuvent avoir une valeur initiale. On distingue alors deux types de sections de données :
+\begin{itemize}
+	\item les sections initialisées : les valeurs initiales sont indiquées dans le fichier binaire du programme compilé
+	\item les sections non initialisées : seule la taille de la donnée est précisée.
+\end{itemize}
+Une conséquence très importante de l'impossibilité d'une section de données de changer de taille est que toutes les variables définies dans cette section ne peuvent être supprimées. C'est-à-dire que leur valeur est \textit{persistante}. Une variable de section de données présente dans une routine ne voit pas sa valeur réinitialisée à la sortie de la routine.
+\subsubsection{Variables allouées dynamiquement}
+Les données des variables allouées dynamiquement sont présentes dans le tas. Cependant, le pointeur vers ces données est lui stocké indépendamment de ces données. Il peut donc être stocké dans l'un des quatre lieux de stockage de variable décrits ci-dessus.
+\subsubsection{Registres}
+Les registres sont de très petites unités de mémoire, en général constituées de bascules \textit{RS} ou \textit{JK} en séries. Chaque bascule stocke un bit. Les processeurs ne possèdent pas une grande quantité de registres car ceux-ci sont très coûteux par rapport à la quantité de mémoire qu'ils proposent. Leur accès est toutefois extrêmement rapide, en écriture comme en lecture. Ils servent donc souvent\footnote{Cela dépend en vérité du type de registre. Certains registres sont spéciaux et ont un sens spécifique pour le processeur tandis que d'autres sont très généraux et peuvent servir à tout est n'importe quoi.} comme variables temporaires pour les calculs du processeur.
+
+Il est très difficile\footnote{Au sens informatique de complexité, il s'agit d'un problème d'ordonnancement $NP$-difficile.} d'accorder correctement les registres aux variables pendant les calculs. Cette opération est en général effectuée de manière automatisée par le compilateur.	
 \end{document}

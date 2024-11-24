@@ -133,7 +133,7 @@ Pour revenir à notre premier problème, on veut un affichage par défaut effica
  
 Par ailleurs, il est possible de rediriger les flux vers d'autres sorties que la console. On peut donc imaginer conserver \textit{stdout} pour afficher du texte dans notre programme, mais rediriger \textit{stderr} vers un fichier sur le disque dur qui servira de \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}.
 \subsection{Exemple pratique d'utilisation de \textit{stderr}}
-On rappel que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \hyperref[lst:prgm1]{ci-dessus}{}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
+On rappelle que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \hyperref[lst:prgm1]{ci-dessus}{}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
 	\begin{minted}{c}
 #include <stdlib.h>
 #include <stdio.h>

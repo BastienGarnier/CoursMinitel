@@ -3,9 +3,9 @@
 \begin{document}
 Les variables constituent la brique de base du langage. Une variable au sens informatique est un conteneur d'une donnée dont la valeur peut évoluer au cours de l'exécution du programme.
  
-Cette donnée représente de l'information. Elle est donc numérique, bien que l'interprétation puisse être de toute nature : image, vidéo, chaîne de caractère, nombre entier ou à virgule, arbre informatique, etc\dots On peut par exemple penser à la représentation d'une couleur comme un triplet $(r, g, b)\in{\llbracket 0, 255\rrbracket^{3}}$, c'est-à-dire un mot binaire de trois octets.
+Cette donnée représente de l'information. Elle est donc numérique, bien que l'interprétation puisse être de toute nature : image, vidéo, chaîne de caractère, nombre entier ou à virgule, arbre informatique, etc\dots On peut par exemple penser à la représentation d'une couleur comme un triplet $(r, g, b, a)\in{\llbracket 0, 255\rrbracket^{4}}$, c'est-à-dire un mot binaire de quatre octets, et donc définir une variable de quatre octets qui stocke ces informations.
  
-\textbf{Rapport entre variable informatique et variable mathématique :}
+\subsubsection{Rapport entre variable informatique et variable mathématique :}
  
 Une variable en mathématique désigne un objet indéterminé. Cela semble au premier abord faux car il peut arriver qu'on écrive les phrases suivantes :
 \begin{itemize}
@@ -21,7 +21,7 @@ Cet objet finit par ne plus être indéterminé du fait d'hypothèses à son pro
  
 D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. Elles peuvent donc potentiellement évoluer et changer de valeur au cours du temps. Cette notion de temporalité est tout à fait absente du concept de variable mathématique.
  
-\textbf{Approximation de stockage des variables :}
+\subsubsection{Approximation de stockage des variables}
  
 On considère dans un premier temps que les variables sont caractérisés par trois informations :
 \begin{itemize}
@@ -30,7 +30,7 @@ On considère dans un premier temps que les variables sont caractérisés par tr
 	\item une donnée sur $N$ octets (ou $8N$ bits) à cette adresse
 \end{itemize}
 Une variable peut être vue alors comme une ``case'' de $N$ octets dans la RAM, positionnée à une certaine adresse mémoire. Le langage C nous permet d'associer à cette adresse une étiquette, appelée le nom de la variable. Cette étiquette est oubliée après la compilation, et ne subsiste que l'adresse mémoire dans le programme en langage machine.\newline
-Visuellement : 
+Visuellement :
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -39,11 +39,10 @@ Visuellement :
 	\end{center}
 \end{minipage}
  
-\textbf{Type d'une variable :}
+\subsubsection{Type d'une variable}
+Pour définir le nombre d'octets sur lequel est stockée une variable, le langage C propose un certain nombre de ``types'' élémentaires directement intégrés au langage. Ces types représentent des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$\footnote{C'est-à-dire indiquent soit une représentation entière soit une représentation flottante par la norme \textit{IEEE 754}}. Définir une variable selon un type du langage C consiste donc à limiter les données qu'elle contient à un sous-ensemble de $\mathbb{Z}$ ou $\mathbb{R}$ en définissant une taille maximum, en octets, de la donnée. Le type permet donc \og d'interpréter \fg{} le mot binaire de $N$ octets sur lequel la variable est définit avec une fonction $btoi$ (\textit{\underline{b}inary \underline{to} \underline{i}nteger} ou $btof$ (\textit{\underline{b}inary \underline{to} \underline{f}loat}).
  
-Le langage C propose un certain nombre de types ``de base'' directement intégrés au langage. Ces types représentent des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$. Définir une variable selon un type de base du langage C consiste donc à limiter les données qu'elle contient à un sous-ensemble de $\mathbb{Z}$ ou $\mathbb{R}$, c'est-à-dire à interpréter le mot binaire de $N$ bits sur lequel la variable est définit avec une fonction $btoi$ (\textit{\underline{b}inary \underline{to} \underline{i}nteger} ou $btof$ (\textit{\underline{b}inary \underline{to} \underline{f}loat}).
- 
-On a les types de base suivants :
+Le langage C propose les types de base suivants :
 \begin{itemize}
 	\item \textsf{char} : donnée $d$ sur 1 octet (8 bits) $d\in{\llbracket-128; 127\rrbracket}$
 	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-32768; 32767\rrbracket}$
@@ -59,12 +58,12 @@ La syntaxe du langage C pour déclarer une variable d'un type quelconque \textsf
 TYPE any_variable; // uninitialized variable : undertermined value
 TYPE any_variable = ANY_VALUE; // initialized with value ANY_VALUE
 \end{minted}
-Il n'est pas possible en C de définir deux fois un même identifiant. Ainsi, le code suivant provoque une erreur à la compilation :
+Il n'est pas possible en C de déclarer deux fois un même identifiant. Ainsi, le code suivant provoque une erreur à la compilation :
 \begin{minted}[linenos=false]{c}
 int age = 20; // declare age as an int with value 20
 char age = 19; // ERROR : age is already in use
 \end{minted}
-Ainsi, un identifiant définit avec un certain type ne peut pas en changer jusqu'à ce qu'il ne soit plus définit (c'est-à-dire souvent jusqu'à la fin de l'exécution du programme). Après ne plus être définit, il pourra l'être à nouveau avec un autre type. Cela sera vu avec les \textit{espaces de noms}.
+Ainsi, un identifiant déclaré avec un certain type ne peut pas en changer jusqu'à ce qu'il ne soit plus définit (c'est-à-dire souvent jusqu'à la fin de l'exécution du programme). Après ne plus être défini, il pourra l'être à nouveau avec un autre type. Cela sera vu avec les \textit{espaces de noms}.
  
 \textbf{Remarque 1 :} L'exécution d'un programme en C est séquentielle. Pour cette raison, on ne peut référer à une variable qu'après l'avoir déclarée :
 \begin{minted}[linenos=false]{c}
@@ -107,7 +106,7 @@ Il est possible de récupérer la taille d'une variable après l'avoir déclaré
  
 Cela est effectué par les opérateurs unaires \textsf{sizeof} et \textsf{typeof}. L'opérateur d'alignement \textsf{\_Alignof} sera détaillé dans une section ultérieure.
  
-\textbf{Opérateur \textsf{sizeof} :}
+\subsubsection{Opérateur \textsf{sizeof}}
  
 L'opérateur \textsf{sizeof} est particulièrement commun. Son exécution est quasiment systématiquement effectuée \textit{à la compilation}. En effet, il retourne une valeur numérique précalculable. La valeur du résultat est donc remplacée dans le code à la génération de l'exécutable.
  
@@ -126,9 +125,8 @@ sizeof(a); // Bytes needed to save 'a' in memory
 sizeof(TYPE); // same
 \end{minted}
 \textbf{Remarque :} L'opérateur \textsf{sizeof} renvoie une valeur de type \textsf{size\_t}, équivalente à un \textsf{long int}.
- 
-\textbf{Opérateur \textsf{typeof} :}
- 
+
+\subsubsection{Opérateur \textsf{typeof}}
 L'opérateur \textsf{typeof}, tout comme \textsf{sizeof}, est calculé au moment de la compilation. D'ailleurs, effectuer un tel calcul durant l'exécution du programme n'a aucun sens. En effet, \textsf{typeof} renvoie le type d'une variable. Les deux codes suivants sont donc strictement équivalents : 
 
 \begin{minipage}{0.5\textwidth}
@@ -146,7 +144,7 @@ int c;
 \end{minted}
 \end{minipage}
 \subsection{Entiers signés et non signés}
-Il est possible en langage C de choisir pour les nombres entiers entre l'interprétation signée de sa représentation binaire, et l'interprétation non signée. Cela se fait par les mot-clés \textsf{signed} et \textsf{unsigned}. Par défaut, les variables entières sont interprétés comme signées. Ainsi, le mot-clé \textsf{signed} n'est pas utile au moment de la définition de la variable. Cela peut être cependant utile pour une réinterprétation ultérieure (voir \textbf{Projection de type}). La syntaxe est la suivante :
+Il est possible en langage C de choisir pour les nombres entiers entre l'interprétation signée de sa représentation binaire, et l'interprétation non signée. Cela se fait par les mot-clés \textsf{signed} et \textsf{unsigned}. Par défaut, les variables entières sont interprétés comme signées. Ainsi, le mot-clé \textsf{signed} n'est pas utile au moment de la déclaration de la variable. Cela peut être cependant utile pour une réinterprétation ultérieure (voir \textbf{Projection de type}). La syntaxe est la suivante :
 \begin{minted}[linenos=false]{c}
 char v = 130; // signed by default, truth is v = 2 - 128 = -126
 unsigned short int v2 = -1; // unsigned interpretation, truth is v2 = 65535
@@ -173,7 +171,7 @@ int main()
 \end{minted}
 Ces blocs peuvent être définis partout dans un code. Il est possible de déclarer des variables dans ou hors de ces blocs.
  
-En particulier, il est possible de définir des variables hors du bloc \textsf{main}. Ces variables sont dites globales car accessibles dans tous les blocs du programmes même ceux qui ne sont pas le bloc de la fonction \textsf{main}\footnote{On verra comment définir d'autres fonctions dans la section sur les \textbf{Routines}} :
+En particulier, il est possible de définir des variables hors du bloc \textsf{main}. Ces variables sont dites globales car accessibles dans tous les blocs du programmes même ceux qui ne sont pas le bloc de la fonction \textsf{main}\footnote{On verra comment définir d'autres fonctions dans la section sur les \textbf{Routines} et on détaillera les notions d'espaces locaux et d'espace global dans le prochain chapitre, dans la section sur les classes de stockage.} :
 \begin{minted}{c}
 #include <stdlib.h>
 

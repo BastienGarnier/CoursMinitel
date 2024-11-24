@@ -1,7 +1,7 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temps que l'on progresse le plus au niveau du raisonnement et des réflexes. N'hésitez pas !
-\\ \\ 
+ 
 La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre les deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est pas garanti que les programmes proposés ci-dessous soient optimales, que ce soit par l'optimisation des constantes, la taille du code, ou d'autres paramètres. Il est d'ailleurs rare de pouvoir optimiser un programme selon toutes les contraintes\footnote{Par exemple, un programme parfois plus gros en mémoire peut-être plus rapide à l'exécution.}
 \section{Première partie}
 On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
@@ -22,17 +22,17 @@ Il semble donc intuitif de retrouver des expressions semblables :
 \end{itemize}
 \solution{Universalité des fonctions logiques élémentaires}
 On considère un opérateur logique $\ast$ $N$-aire de $\mathcal{B}^{N}$ dans $\mathcal{B}^{M}$ où $M\in{\mathbb{N}^{*}}$. Soit $e\in{\mathcal{B}^{N}}$. On note $\ast(e) = \ast_{M-1}(e)\ast_{M-2}(e)\dots\ast_{0}(e)$. On observe que $\ast$ est entièrement définie par les fonctions $\ast_{i}, i\in{\llbracket0, M-1\rrbracket}$ de $\mathcal{B}^{N}$ dans $\mathcal{B}$.
-\\ \\
+
 Montrons donc que toute fonction logique de $\mathcal{B}^{N}$ dans $\mathcal{B}$ peut s'écrire comme une combinaison des fonctions $\vee$, $\wedge$ et $\neg$.
-\\ \\
+
 On peut partitionner $\mathcal{B}^{N}$ en deux ensembles disjoints $T$ et $F$ tels que $\ast = \mathbbm{1}_{T}$. C'est-à-dire que $T = \{e\in\mathcal{B}^{N}\ |\ \ast(e) = 1\} = \{t_{1}, \dots, t_{Card(T)}\}$.
-\\ \\
+
 D'où, en posant que l'égalité de deux éléments vaut 1 et leur différence vaut 0\footnote{On explicite dans la suite l'expression de $e = t_{i}$.} :
 \begin{equation}
 	\ast(e) = 1 \Leftrightarrow \displaystyle\bigvee_{i = 1}^{Card(T)}(e = t_i)
 \end{equation}
 On note $e = e_{N-1}\dots e_{0}$ et pour tout $i\in{\llbracket 1, k\rrbracket}$, $t_{i} = t_{i, N-1}\dots t_{i, 0}$.
-\\ \\
+
 On remarque que pour avoir $e = t_{i}$, il faut que :
 \begin{itemize}
 	\item les 1 de $e$ soient les 1 de $t_{i}$
@@ -55,9 +55,20 @@ Finalement, on arrive à la définition par compréhension de $\ast$ :
 \end{array}
 \end{displaymath}
 Les informations de la fonction sont contenues dans $T$.
-\\ \\
+
 \textbf{Remarque : }$\mathcal{B}^{N}$ est en bijection avec $\llbracket 0, 2^{N}-1\rrbracket$. Les opérations $\vee$, $\wedge$ et $\neg$ permettent donc de définir n'importe quelle fonction sur $\llbracket 0, 2^{N}-1\rrbracket$ d'arité finie, donc par exemple l'addition, la multiplication, etc\dots\footnote{On utilise évidemment pas cette formule pour définir les opérateurs arithmétiques. Il s'agit seulement de la preuve que ces opérateurs logiques sont capables de telles définitions.}
-\\ \\
+\begin{minitelbasicbox}{À propos des formes normales}
+Dans l'expression précédente, les $e_{k}$ sont appelées des variables propositionnels en logique propositionnelle (ou d'ordre 0). Elles n'ont que deux interprétations possibles, \textit{Vrai} ou \textit{Faux}, 1 ou 0. La proposition logique associée à l'expression de la fonction logique admet des valeurs de vérités qui sont les couples $V = (v_{N-1}, \dots, v_{0})$ appelés \textit{interprétations} tels que $\ast(V) = Vrai$.
+
+On peut montrer qu'une proposition logique en logique propositionnelle peut s'écrire de manière équivalente sous deux formes :
+\begin{itemize}
+	\item la forme normale disjonctive qui est une disjonction de conjonctions de variables :
+	$$\displaystyle\bigvee\left(\displaystyle\bigwedge x_{i}\right)$$
+	\item la forme normale conjonctive qui est une conjonction de disjonctions de variables :
+	$$\displaystyle\bigwedge\left(\displaystyle\bigvee x_{i}\right)$$
+\end{itemize}
+En électronique, ces deux formes sont nommés respectivement \textit{somme de produits} et \textit{produit de sommes} en raison des expressions trouvés à l'\refexercise{La compréhension pour mieux comprendre}.
+\end{minitelbasicbox}
 \solution{Porte NAND}
 La table de vérité de NAND est :
 \begin{center}
@@ -103,10 +114,11 @@ On a ensuite pour tout $a, b\in{\mathcal{B}}$ :
 	\item $\oplus$ est commutative
 \end{itemize}
 Donc $G$ est bien un groupe commutatif.
-\\ \\
+
 \solution{Inversibilité des décalages} Les décalages ne sont pas inversibles. En effet, quand des bits sont supprimés par un décalage de trop de bits, l'information est perdue. Un décalage dans l'autre sens ne produit que des 0. Par exemple : $(01000 \ll 2) \gg 2 = 00000 \neq 01000$
 \subsection{Opérations arithmétiques}
-\solution{Conversion en binaire} \\ \\
+\solution{Conversion en binaire} 
+
 \begin{minipage}{0.5\textwidth}
 \begin{itemize}
 	\item $(01001100)_{2}$
@@ -152,14 +164,14 @@ Donc $G$ est bien un groupe commutatif.
 \inputminted{c}{solutions/taille_types.c}
 \subsubsection{Opérateurs sur les variables}
 \solution{Valeur}
-\\ \\ 
+ 
 Le premier code est strictement équivalent au code suivant :
 \begin{minted}{c}
 int i = 10;
 i = i - i;
 i--;
 \end{minted}
-D'où $i = -1$ en fin d'exécution.\\ \\ 
+D'où $i = -1$ en fin d'exécution. 
 Le second code est strictement équivalent au code suivant :
 \begin{minted}{c}
 int i = 10;
@@ -167,7 +179,7 @@ i--;
 i = i - i;
 \end{minted}
 D'où $i = 0$ en fin d'exécution.
-\\ \\ 
+ 
 \solution{Calcul d'expressions}
 \begin{itemize}
 	\item $a = 55$
@@ -185,22 +197,22 @@ c = a = b + 10;
 \end{minted}
 \solution{Interversion sans effet de bord (1)}
 \inputminted{c}{solutions/inter_no_side_effect_1.c}
-On note $a_{p}$ et $b_{p}$ les valeurs de $a$ et $b$ précédent l'interversion, et $a_{s}$ et $b_{s}$ les valeurs de $a$ et $b$ succédant à l'interversion. \\ \\ 
-Les opérateurs $+$ et $-$ conservent l'écriture binaire des mots. L'échange est donc correct quelques soient les signatures de $a$ et $b$.\\ \\ 
+On note $a_{p}$ et $b_{p}$ les valeurs de $a$ et $b$ précédent l'interversion, et $a_{s}$ et $b_{s}$ les valeurs de $a$ et $b$ succédant à l'interversion.  
+Les opérateurs $+$ et $-$ conservent l'écriture binaire des mots. L'échange est donc correct quelques soient les signatures de $a$ et $b$. 
 Avec $a$ sur $N_{a}$ bits et $b$ sur $N_{b}$ bits avec $N_{a} > N_{b}$, on peut choisir $a = 2^{N_{b}}$ et $b$ quelconque. Alors $a + b = 2^{N_{b}}+b$ puis $b_{s} = 2^{N_{b}}+b_{p} - b_{p} = 2^{N_{b}} = -1 \neq{a}$. La permutation est donc incorrecte.
-\\ \\ 
+ 
 Cela peut être justifié sans calcul par l'observation suivante : les bits $a_{N_{a}-1}\dots a_{N_b}$ sont perdus par la modulation par $2^{N_{b}}$. La permutation ne peut donc être correcte.
-\\ \\ 
+ 
 \solution{Interversion sans effet de bord (2)}
 \inputminted{c}{solutions/inter_no_side_effect_2.c}
 En effet, on rappelle que pour tout ${x\in{\mathcal{B}^{N}}}$, $x\oplus{x} = 0$ et $x\oplus{0} = x$. Ainsi, $b_{s} = a\oplus{b}\oplus{b} = a$ et $a_{s} = a\oplus{b}\oplus{a} = b$.
-\\ \\ 
+ 
 \solution{Multiplication par décalage} On observe que $14 = (1110)_{2} = 2^{3} + 2^{2} + 2^{1} = (1 \ll 3) + (1 \ll 2) + (1 \ll 1)$. Il est toutefois possible de faire mieux en prêtant plus attention à la représentation binaire de 14. En effet, $14 + 1 = (1111)_{2} = 16 - 1$, c'est-à-dire $14 = 16 - 2 = 2^{4} - 2^{1} = (1 \ll 4) - (1 \ll 1)$
 \inputminted{c}{solutions/mult_decalage.c}
 Il est ainsi possible, parfois, d'optimiser l'opération de multiplication grâce à cette technique. La méthode classique de la multiplication est en effet plus lente à calculer, bien que plus générale. Cela est particulièrement visible lors de la multiplication de grands nombres :
 $$987654321\times{65534} = (987654321 \ll 16) - (987654321 \ll 1)$$
 Seules 2 décalages et une soustraction sont effectuées ($65534 = 65536 - 2 = 2^{16} - 2^{1}$)
-\\ \\ 
+ 
 \solution{Valeur absolue}On utilise la particularité qu'un décalage logique (effectué sur \textsf{unsigned int}) n'effectue pas d'extension du signe :
 \inputminted{c}{solutions/valeur_absolue.c}
 Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujours vrai et \textsf{0 \& x == 0} est toujours vrai.
@@ -216,7 +228,7 @@ Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujour
 \solution{[COURS]}
 \inputminted{c}{solutions/cours_structure_controle.c}
 À partir de $u_{4}$ inclut, les valeurs de la suite sont fausses. On observe ainsi que $u_{3} = 808602$, d'où $u_{4} = 3\times808602^{2} - 5\times{808602} + 2 = 1961507540204 > 2^{31} - 1 = 2147483647$. Il y a un dépassement de capacité car la variable $u$ est stocké sur trop peu de bits. Le résultat est donc correct modulo $2^{32}$
-\\ \\ 
+ 
 \solution{Question d'âge}
 \inputminted{c}{solutions/question_d_age.c}
 \solution{Suite de Fibonacci}
@@ -225,7 +237,7 @@ Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujour
 Par définition, un nombre $n$ est premier si il possède exactement deux diviseurs distincts : $n$ et $1$. On peut donc tester la primalité d'un nombre en vérifiant qu'il ne possède pas d'autres diviseurs positifs strictement supérieurs à 1 que lui-même. Un premier algorithme naïf\footnote{Enfin, pas tout à fait puisqu'en ignorant les nombres pairs, on obtient seulement $\dfrac{N}{2}$ tours. Mais cela est équivalent asymptotiquement (les constantes restant des constantes).} est donc le suivant :
 \inputminted{c}{solutions/nombres_premiers.c}
 Considérons maintenant un diviseur $d$ de $n$. Il existe donc $q$ tel que $n = dq$. On observe que si $d \geq \sqrt{n}$ alors $q \leq{\sqrt{n}}$. Par ailleurs, $q$ est un diviseur de $n$ lui aussi. Supposons que l'on ait vérifié que pour tout $1 < m \leq \sqrt{n}$, $m\nmid{n}$, alors il est absurde qu'il existe un diviseur de $n$ supérieur strictement à $\sqrt{n}$ car il existerait alors un diviseur $d$ strictement inférieur à $\sqrt{n}$.
-\\ \\ 
+ 
 Il suffit donc de vérifier la divisibilité de $n$ par les entiers $m\leq{\sqrt{n}}$ :
 \begin{minted}[firstnumber=10]{c}
 for (int i = 3; i*i <= n && is_primal; i++) {
@@ -245,7 +257,7 @@ On observe que $(2^{31}-1)^{2^{32}-1}\approx{2^{31\times{2^{32}}}}$ est très la
 \solution{Interversion sans effet de bord (3)}
 \inputminted{c}{solutions/inter_no_side_effect_3.c}
 En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *x = 0$. Les autres lignes sont inutiles, mais chacune a le même effet que la première.
-\\ \\ 
+ 
 \solution{Distance de Manhattan}
 \inputminted{c}{solutions/manhattan_dist.c}
 \subsubsection{Interagir avec les flux standards}
