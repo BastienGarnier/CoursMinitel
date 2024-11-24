@@ -1,6 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-user@computer\PYG{+w}{ }\PYGZti{}/working\PYGZus{}directory\PYGZgt{}\PYG{+w}{ }gcc\PYG{+w}{ }main.c\PYG{+w}{ }linkedlist.c\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }main
-user@computer\PYG{+w}{ }\PYGZti{}/working\PYGZus{}directory\PYGZgt{}\PYG{+w}{ }./main
-\PYGZhy{}\PYGZgt{}4\PYGZhy{}\PYGZgt{}5\PYGZhy{}\PYGZgt{}6
-user@computer\PYG{+w}{ }\PYGZti{}/working\PYGZus{}directory\PYGZgt{}
-\end{Verbatim}
