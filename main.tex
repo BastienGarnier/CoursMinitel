@@ -1,11 +1,12 @@
-\documentclass[french]{minitelreport}
+\documentclass{minitelreport}
 
 \graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part3/images/}}
 
-\usepackage[backend=biber,style=numeric, sorting=nty]{biblatex}
-\addbibresource{references/references.bib}
-\providecommand{\topdir}{.}
-\addglobalbib{\topdir/references/references.bib}
+\usepackage[backend=biber,style=numeric, sorting=nty, defernumbers=true]{biblatex}
+\addbibresource{references/bibliographie.bib}
+\addbibresource{references/webographie.bib}
+\addglobalbib{./references/bibliographie.bib}
+\addglobalbib{./references/webographie.bib}
 
 %%%%%%%%%%%%
 % Counters %
@@ -59,7 +60,9 @@
 \title{Informatique}
 \subtitle{Une introduction à la pratique}
 \variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
+\author{A. Nonyme}
 \maketitle
+\begin{refsection}
 \section*{Préface}
 \addcontentsline{toc}{section}{Préface}
 \subfile{sections/preface}
@@ -68,7 +71,8 @@
 \listofdefinition
 \newpage
 \part{Prolégomènes}
-	\section*{Introduction}
+	\phantomsection
+	\section*{Introduction de l'introduction}
 	\addcontentsline{toc}{section}{Introduction de l'introduction}
 	\subfile{sections/part1/introduction}
 	\chapter{Présentation du sujet}
@@ -76,6 +80,7 @@
 	\chapter{Programmer un ordinateur}
 		\subfile{sections/part1/chapter2/chapter2}
 \part{Du langage C}
+	\phantomsection
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part2/introduction}
@@ -119,10 +124,10 @@
 		\subfile{sections/part2/chapter3/union}
 		\section{Champs de bits}
 		\subfile{sections/part2/chapter3/champs_bits}
-		\section{Espaces locaux et espace global}
-		\subfile{sections/part2/chapter3/local_global}
 		\section{Classes de stockage}
 		\subfile{sections/part2/chapter3/classes_stockage}
+		\section{Espaces locaux et espace global}
+		\subfile{sections/part2/chapter3/volatile}
 		\section{Construction de littéraux}
 		\subfile{sections/part2/chapter3/litteraux}
 		\section{Pointeurs de routines}
@@ -139,16 +144,17 @@
 		\subfile{sections/part2/chapter3/assembly}
 		\section{La virgule}
 		\subfile{sections/part2/chapter3/comma}
-		\section{\textit{Tricks} récréatifs (ft. Basile)}
+		\section{Tricks récréatifs (ft. Basile)}
 		\subfile{sections/part2/chapter3/tricks}
 \part{Le vrai monde de la réalité réelle}
+	\phantomsection
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part3/introduction}
 	\chapter{Outils utiles à la programmation}
 		\section{La documentation}
 			\subsection{Liste des sites d'information}
-				\subsubsection{\textit{Wikipedia.org}}
+				\subsubsection{\textit{Wikipedia.org}}	
 				\subsubsection{\textit{man7.org}}
 				\subsubsection{Microsoft Doc}
 				\subsubsection{Zeste de Savoir}
@@ -179,9 +185,11 @@
 \part{Annexes}
 \chapter{Correction des \theexercisescounter\ exercices}
 	\subfile{sections/solutions}
+\phantomsection
 \printbibheading
 \printbibliography[type=book,heading=subbibliography,title={Livres}]
 \printbibliography[type=manual, heading=subbibliography, title={Manuels et documentation}]
 \printbibliography[type=online, heading=subbibliography, title={Autres liens}]
 \addcontentsline{toc}{chapter}{Bibliographie}
+\end{refsection}
 \end{document}

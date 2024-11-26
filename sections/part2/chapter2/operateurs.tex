@@ -186,7 +186,7 @@ int main() {
 \end{minted}
 Les différentes opérations présentent dans ce code sont expliqués dans la suite, bien qu'une exécution et quelques tests accompagnés d'un peu d'intuition pourraient suffire à comprendre.
  
-\textbf{Opérateur élémentaire d'assignation $=$ :}
+\subsubsection{Opérateur élémentaire d'assignation $=$}
  
 L'opérateur binaire $=$, dit d'assignation, n'effectue pas que l'assignation d'une valeur à une variable. Il renvoie également la valeur assignée.\newline
 Ainsi, l'opération $a = 2$ est égale à 2. On peut donc écrire de manière équivalente :
@@ -217,7 +217,7 @@ int main() {
 \end{minted}
 Il n'est pas particulièrement utile d'utiliser cette particularité de l'opérateur d'assignation sauf dans des cas très spécifiques. Mais c'est toujours bon à savoir lorsqu'on tombe sur le code d'un tiers qui l'utilise.
  
-\textbf{Combinaison de l'opérateur d'assignation et des opérateurs binaires de calcul}
+\subsubsection{Combinaison de l'opérateur d'assignation et des opérateurs binaires de calcul}
  
 Les opérateurs binaires arithmétiques et bit-à-bits peuvent être combinés avec l'opérateur d'assignation pour contracter le code :
 \begin{minted}[linenos=false]{c}
@@ -235,7 +235,7 @@ a >>= 3; // a = a >> 3
 \end{minted}
 L'équivalence à l'expression en commentaire est totale. Ainsi, ces combinaisons renvoient la nouvelle valeur de $a$.
  
-\textbf{Incrémentation et décrémentation}
+\subsubsection{Incrémentation et décrémentation}
  
 En raison de présence extraordinairement récurrente des deux opérations d'incrémentation et de décrémentation (c'est-à-dire l'ajout de 1 à la valeur d'une variable, ou sa diminution de 1), deux opérateurs spécifiques existent pour performer de manière optimisé ces opérations :
 \begin{itemize}

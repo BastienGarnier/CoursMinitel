@@ -543,7 +543,8 @@ On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x
 \subsection{Norme \textit{IEEE 754}}
 Ne seront décrits ici que les nombres à virgules suivant la norme \textit{IEEE 754} d'une taille $N = 32$. En effet, le principe est le même pour les autres tailles si ce n'est que certaines constantes diffèrent.
 
-\textbf{Rappel de vocabulaire en notation scientifique :} Un nombre $x\in{\mathbb{R}}$ en notation scientifique est écrit selon le format suivant :
+\subsubsection{Rappel de vocabulaire en notation scientifique}
+Un nombre $x\in{\mathbb{R}}$ en notation scientifique est écrit selon le format suivant :
 $$x = \pm\ mantisse \times{base^{exposant}}$$
 avec $mantisse\in{[1, base[}$ et $exposant\in{\mathbb{Z}}$
 
@@ -567,9 +568,10 @@ Selon la norme \textit{IEEE 754}, sur 32 bits :
 \end{itemize}
 Visuellement :
 $$\underbrace{0}_{s}\underbrace{00000000}_{e}\underbrace{00000000000000000000000}_{m}$$
-\textbf{Calcul du signe :} si $x < 0$, $s = 1$, et $s= 0$ sinon.
-
-\textbf{Calcul de la mantisse :} Soit $x\in{\mathbb{R}}$.\newline
+\subsubsection{Calcul du signe}
+Si $x < 0$, $s = 1$, et $s= 0$ sinon.
+\subsubsection{Calcul de la mantisse}
+Soit $x\in{\mathbb{R}}$.\newline
 En base 2, il existe $(c_{i})_{i\in{\mathbb{Z}}}\in{\{0, 1\}^{\mathbb{Z}}}$ une suite unique telle que $x = \pm \displaystyle\sum_{i = -\infty}^{N}\left(c_{i}2^{i}\right)$ où $N$ est minimal.\newline
 On a :
 $$x = \pm 2^{N}\displaystyle\sum_{i = -\infty}^{N}\left(c_{i}2^{i-N}\right) = \pm m\times{2^{N}}\text{où $1 \leq m < 2$}$$
@@ -577,14 +579,14 @@ Il s'agit très exactement de l'écriture de $x$ en notation scientifique en bas
 
 Par ailleurs, on sait que $m\geq{1}$, il n'y a donc pas besoin de stocker cette information. On ne conserve pour la mantisse dans la représentation en norme \textit{IEEE 754} que les bits après la virgule.
 
-\textbf{Calcul de l'exposant :} L'exposant peut être positif ou négatif. Cependant, on utilise pas ici la technique du complément à deux. En effet, cela rendrait plus complexe la comparaison entre deux nombres à virgules représentés selon cette norme.\footnote{La démonstration ne sera pas donnée mais la relation d'ordre sur les nombres réels représentés par les mots binaires est la même que celle sur les mots binaires réprésentant les nombres réels. C'est-à-dire qu'on peut indifférement comparer représentants ou représentés.} À la place, on utilise un \textit{biais}.
+\subsubsection{Calcul de l'exposant}
+L'exposant peut être positif ou négatif. Cependant, on utilise pas ici la technique du complément à deux. En effet, cela rendrait plus complexe la comparaison entre deux nombres à virgules représentés selon cette norme.\footnote{La démonstration ne sera pas donnée mais la relation d'ordre sur les nombres réels représentés par les mots binaires est la même que celle sur les mots binaires réprésentant les nombres réels. C'est-à-dire qu'on peut indifférement comparer représentants ou représentés.} À la place, on utilise un \textit{biais}.
 
 Si l'exposant est écrit sur $n$ bits, la valeur du biais est $2^{n-1} - 1$. Cette valeur est donc constante une fois la norme fixé (puisqu'on fixe le nombre de bits sur lesquels sera écrit l'exposant). On ajoute ce biais à la valeur $N$ trouvé lors du calcul de la mantisse. Ainsi, pour $N\in{\llbracket -2^{n-1} - 1; 2^{n-1}-1\rrbracket}$, on a $N + biais \geq{0}$ et donc représentable par un mot binaire interprété comme non signé.
 
 \textbf{Remarque :} On interdit $N = 2^{n-1}$ (pour pouvoir représenter les valeurs spéciales $\pm\infty$ et $NaN$)
 
-\textbf{Représentation finale :}
-
+\subsubsection{Représentation finale}
 On distingue alors deux catégories selon la valeur de $N + biais$ pour le choix de la mantisse :
 \begin{itemize}
      \item $N + biais = 0$ : le nombre est dit \textit{``dénormalisé''}
@@ -638,7 +640,7 @@ Par exemple, $(2\textsf{FA})_{16} = 2\times{16^{2}} + 15\times{16^{1}} + 10\time
 
 \textbf{Notation :} On note aussi $n = 0\textsf{x}c_{N-1}\dots c_{0}$. Par exemple, $0\textsf{x}2\textsf{FA} = (2\textsf{FA})_{16} = 762$
 
-\textbf{Lien entre binaire et hexadécimale}
+\subsubsection{Lien entre binaire et hexadécimale}
 
 Soit $i\in{\llbracket 0; N-1\rrbracket}$. On observe que $c_{i}\in{\llbracket 0; 15\rrbracket}$. C'est-à-dire que chaque $c_{i}$ peut s'écrire avec 4 bits. On note alors $c_{i} = (b_{i, 3}, b_{i, 2}, b_{i, 1}, b_{i, 0})_{2}$.
 $$
@@ -682,7 +684,7 @@ mais qui a le bénéfice d'être simple et suffisante dans un cadre purement pra
 
 \definition{Algorithme}{Un algorithme est une suite d'actions/d'instructions précises dont l'objectif est de résoudre un problème donné. Ces instructions doivent être les plus élémentaires possibles, et ne surtout pas être ambigües. C'est-à-dire qu'en lisant l'algorithme, il n'y ait qu'une seule possibilité d'action à chaque étape (ce qui ne signifie pas que le résultat soit prédéterminé puisqu'une action peut potentiellement avoir un résultat aléatoire, comme le lancer d'un dé par exemple).}
 
-\textbf{Par exemple :} "Changer la valeur d'un nombre" n'est pas une instruction possible pour un algorithme, puisque le lecteur peut toujours \textit{interpréter} l'instruction, et ne sait en fait toujours pas exactement ce qu'il doit faire. Par contre l'instruction "Ajouter 1 à la valeur de la variable $x$" est une instruction, à condition que $x$ soit connue, que $1$ soit bien définie et que ``Ajouter'' soit une opération binaire bien définie sur $1$ et $x$.
+\textbf{Exemple :} "Changer la valeur d'un nombre" n'est pas une instruction possible pour un algorithme, puisque le lecteur peut toujours \textit{interpréter} l'instruction, et ne sait en fait toujours pas exactement ce qu'il doit faire. Par contre l'instruction "Ajouter 1 à la valeur de la variable $x$" est une instruction, à condition que $x$ soit connue, que $1$ soit bien définie et que ``Ajouter'' soit une opération binaire bien définie sur $1$ et $x$.
 
 Tout simplement.
 

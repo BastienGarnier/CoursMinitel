@@ -67,7 +67,7 @@ Dans les deux cas, la transmission du code source à un tiers ne compilant pas s
  
 La plupart des IDEs permettent de choisir entre les différents standards du compilateur. Lors d'une compilation ``à la main'', le paramètre \textsf{-std} permet de spécifier le standard. Par exemple, \textsf{gcc main.c -o main -std=c23} va compiler selon le standard C23.
  
-\textbf{Internationalité des identifiants :}
+\subsubsection{Internationalité des identifiants}
  
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, tous les identifiants d'un code doivent être en anglais de préférence.\footnote{C'est triste mais c'est la vie.}
 \section{Commentaires}
@@ -78,7 +78,7 @@ Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ign
 	\item un développeur qui n'a plus touché à son code depuis six mois peut trouver extrêmement utile de l'avoir commenté lorsqu'il revient dessus
 	\item dans le cas d'un projet conséquent, le développement est effectué en équipe. Un développeur peut avoir besoin de comprendre/modifier ce qui a déjà été écrit par un autre.
 \end{itemize}
-\textbf{Internationalité des commentaires :}
+\subsubsection{Internationalité des commentaires}
  
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, les commentaires d'un programme doivent tous être écrits en anglais.\footnote{C'est triste mais c'est la vie\dots Comment ça je me répète ?}
  

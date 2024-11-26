@@ -30,8 +30,8 @@ Un ordinateur utilise les structures élémentaires de contrôle de flot suivant
 	\item le saut conditionnel
 \end{itemize}
 Les structures de contrôle plus abstraites sont ensuite construites par l'utilisation de ces structures élémentaires.
- 
-\textbf{Séquence :}
+
+\subsubsection{Séquence}
  
 La séquence est une structure de contrôle implicite, dont la gestion est réservée au processeur de l'ordinateur. Il s'agit simplement du passage d'une instruction à la suivante. En langage C, c'est le point-virgule indiquant la fin d'une instruction qui se charge d'indiquer le passage à la suivante.
  
@@ -39,11 +39,11 @@ La fin d'un instruction va donc amener à l'incrémentation du registre \textit{
  
 Certaines architectures de processeur utilisent une taille fixe pour les instructions. Dans ce cas, $\forall{i}, t_{i} = k\in{\mathbb{N}}$ est une constante. Cela accélére l'accès aux instructions par le processeur, mais limite le nombre possible d'instructions.\footnote{Par exemple, les processeurs Intels utilisent des instructions de taille variable tandis que les processeurs ARM utilisent des instructions de taille fixe}
  
-\textbf{Arrêt de programme :}
+\subsubsection{Arrêt de programme}
  
 La mise en pause d'un programme à un certain point de son exécution et sa reprise est nécessaire pour un système multi-tâches qui doit exécuter plus de programmes au même moment qu'il ne possède de processeurs. Il peut ainsi alterner l'exécutions des programmes pour simuler leur exécution parallèle aux yeux de l'utilisateur. On peut imaginer \textit{par exemple} deux programmes utilisant chacun pendant $10\ ms$ les ressources de l'ordinateur. Ils ne s'exécuteront que $500\ ms$ chacun pendant une seconde, mais l'utilisateur pensera du fait de l'alternance très rapide d'exécution des programmes que ceux-ci s'exécutent en même temps (deux fois plus lentement cependant que si ils avaient été seuls à utiliser les ressources du processeur).
  
-\textbf{Saut inconditionnel :}
+\subsubsection{Saut inconditionnel}
  
 Le saut inconditionnel consiste à attribuer au registre \textit{IP} une valeur précisée dès que l'instruction est lue, sans aucune condition. Le processeur passe donc immédiatement à l'instruction souhaitée.
  
@@ -65,7 +65,7 @@ end:
 \end{minted}
 Oubliez ça, c'était pour la culture\dots
  
-\textbf{Saut conditionnel}
+\subsubsection{Saut conditionnel}
  
 Le processeur contient un registre appelé le registre des \textit{drapeaux} (\textit{flags} en anglais), ou registre de statut. Ces \textit{drapeaux}, ou statuts, permettent d'indiquer des états du processeur vis-à-vis des actions qu'il a effectué. Chaque statut est stocké dans un bit du registre. On note $N$ le nombre de bits du registre ($N$ peut varier selon le processeur).
 $$R_{flags} = s_{N-1}\dots s_{0}$$
@@ -136,9 +136,11 @@ Grâce aux structures élémentaires de contrôle de flot d'exécution, le langa
 	\end{itemize}
 \end{itemize}
 Les détails de la construction de ces structures abstraites ne seront pas décrits ici. Cela peut en effet dépendre du compilateur.\footnote{Un exemple d'une possibilité d'implantation est cependant donné au dessus en langage assembleur}
-\subsubsection{Les conditions}
-\vspace*{2mm}
-\textbf{Branchement \textsf{if-else} :}
+
+Les \textit{conditions} permettent au programme d'effectuer des choix quant à son flot d'exécution et ainsi de ne pas être entièrement séquentiel.
+
+Les \textit{boucles} permettent d'effectuer un bloc d'instructions plusieurs fois de suite. Par exemple, trouver le minimum d'un ensemble de nombres nécessite de parcourir tous ces nombres, et il serait un peu ennuyant d'avoir à d'écrire autant d'instructions qu'il y a d'éléments de cet ensemble, surtout si celui-ci contient des milliers voire des millions de nombres.
+\subsubsection{Branchement \textsf{if-else} :}
  
 Le branchement \textsf{if-else} consiste à n'exécuter une partie du code que si une certaine condition est satisfaite, et en exécuter une autre si cette condition n'est pas satisfaite. On observe ainsi le pseudo-code suivant :
 \begin{algorithm}
@@ -231,7 +233,7 @@ if (a > b) { // or a != b != 0
 }
 printf("texte par defaut"); // always executed
 \end{minted}
-\textbf{Opérateur ternaire :}
+\subsubsection{Opérateur ternaire}
  
 L'opérateur ternaire permet d'écrire certaines conditions de manière compacte :
  
@@ -279,7 +281,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\textbf{Aiguillage :}
+\subsubsection{Aiguillage}
  
 L'aiguillage est une autre forme de branchement conditionnel. Il permet de diriger le flot d'exécution selon la valeur d'une variable entière. On peut vouloir associer à plusieurs nombres un bloc d'instructions différent. L'aiguillage permet de faire correspondre à des entiers des blocs d'instructions.
  
@@ -329,12 +331,7 @@ printf("apres le switch");
 L'exemple ci-dessus se veut exhaustif des cas possibles de l'instruction \textsf{switch}. On observe que le flot d'exécution va ``sauter'' au \textsf{case} correspondant à la valeur de $x$, et à \textsf{default} si cette valeur n'est pas présente dans l'aiguillage. \textit{L'exécution redevient séquentielle à partir de cet instant !} Une erreur régulièrement faite par les débutants est de penser qu'à la fin de l'exécution du \textsf{case}, le flot vient tout de suite après le switch. Cela n'est pas vrai sans le mot-clé \textsf{break} qui ``casse'' le bloc d'instructions en cours d'exécution et saute à la fin.
  
 Dans l'exemple ci-dessus, l'exécution du code pour $x = 3$ s'ensuite immédiatement par l'exécution du code pour $x = 4$ car il n'y a pas de \textsf{break}. De la même manière, si $x = 1$, le flot va sauter à la ligne \textsf{case 1} puis va séquentiellement avancer au bloc d'instructions pour $x = 2$.
-\subsubsection{Les boucles}
-\vspace*{2mm}
-Les boucles permettent d'effectuer un bloc d'instructions plusieurs fois de suite. Par exemple, trouver le minimum d'un ensemble de nombres nécessite de parcourir tous ces nombres, et il serait un peu ennuyant d'avoir à d'écrire autant d'instructions qu'il y a d'éléments de cet ensemble, surtout si celui-ci contient des milliers voire des millions de nombres.
- 
-\textbf{Boucle à pré-condition (ou boucle \textit{while}) :}
- 
+\subsubsection{Boucle à pré-condition (ou boucle \textit{while}) :}
 La boucle à pré-condition suit le pseudo-code suivant :
 \begin{algorithm}
 \caption{Boucle \textit{While}}
@@ -379,7 +376,7 @@ $$
 \exercise{[COURS]} Modifier le programme donné en exemple pour qu'il affiche toutes les valeurs $u_{1}, \dots, u_{N}$. \newline
 Expliquer pourquoi les valeurs deviennent fausses à partir d'un certain rang que l'on précisera.
  
-\textbf{Boucle à post-condition (ou boucle \textit{do-while}) :}
+\subsubsection{Boucle à post-condition (ou boucle \textit{do-while})}
  
 La boucle à post-condition est pratiquement identique à la boucle à pré-condition, à une nuance qui a son importance : la condition est effectuée à la fin de l'exécution de la boucle. Cela signifie qu'au contraire de la boucle à pré-condition, le bloc d'instructions d'une boucle à post-condition s'exécute au moins une fois. Les deux codes suivants sont donc équivalents :
  
@@ -402,7 +399,7 @@ while (condition) {
  
 Ce type de boucle est extrêmement utile quand on veut être certain qu'une action est effectuée au minimum une fois. Par exemple, il peut s'agir de demander à un utilisateur d'entrer des nombres jusqu'à ce que l'utilisateur entre le nombre $0$.
  
-\textbf{Boucle itérative (ou boucle \textit{for}) :}
+\subsubsection{Boucle itérative (ou boucle \textit{for})}
  
 La boucle itérative est un cas particulier de boucle à pré-condition. Elle est construite selon le format suivant en langage C :
 \begin{minted}[linenos=false]{c}
@@ -449,7 +446,7 @@ for (printf("Initialement, a = %d\n", a = 1);a < 10;printf("À présent : a = %d
 	\end{center}
 \end{minipage}
  
-Plus sérieusement, il est vraiment recommandé de ne jamais faire cela. En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur.
+Plus sérieusement, il est vraiment recommandé de ne jamais faire cela. En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions.
 \subsection{Exercices}
 \exercise{Question d'âge} Écrire un programme C contenant une variable $age$ de type \textsf{signed char} dont la valeur est initialisée. Le programme affiche :
 \begin{itemize}

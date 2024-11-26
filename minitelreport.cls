@@ -1,20 +1,20 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{minitelreport}[2024/11/13 Minitel Report Class]
 
-\LoadClass{report}
+\LoadClass[french]{report}
+	\setcounter{secnumdepth}{4}
 
 % Utilitaire LaTeX
 \RequirePackage{etoolbox}
 \RequirePackage{ifthen}
 
-\setcounter{secnumdepth}{4}
-
 \RequirePackage[top=3cm, bottom=3cm, left=3cm, right=3cm]{geometry}
 
-% Caractères et symboles de texte
-	\RequirePackage{csquotes}
-	\RequirePackage[french]{babel}
+% Caractères et symboles de texte (+ csquotes après minted pour éviter un warning)
+	\RequirePackage{lmodern}
 	\RequirePackage[T1]{fontenc}
+	\RequirePackage[french]{babel}
+	\RequirePackage{hyphenat}
 	\RequirePackage{textcomp}
 	\RequirePackage[normalem]{ulem}
 	\RequirePackage{pifont}
@@ -24,7 +24,7 @@
 %%%%%%%%%%%%%%
 
 % Ben tikz... pas besoin d'épiloguer
-\usepackage{tikz}
+\RequirePackage{tikz}
 
 % Couleurs de Minitel
 \RequirePackage[table, dvipsnames]{xcolor}
@@ -81,6 +81,9 @@
 		}}
 	}
 
+% Pour surtitrer et référencer les codes
+\usepackage{listings}
+
 % Pour les échantillons de codes colorés syntaxiquement
 \RequirePackage[newfloat]{minted2}
 	\definecolor{mintedsourcebackground}{rgb}{0.97,0.97,0.97}
@@ -135,6 +138,8 @@
 		fontsize=\small,
 	}
 
+\RequirePackage{csquotes}
+
 %%%%%%%%%%%%%%%%
 % Mise en page %
 %%%%%%%%%%%%%%%%
@@ -185,10 +190,10 @@
   {\color{minitelgreen3}\Large\bfseries}
 
   \titleformat{\subsubsection}
-  {\normalfont\large\bfseries}
+  {\normalfont\bfseries}
   {}
   {0pt}
-  {\color{minitelgreen3}\large\bfseries}
+  {\color{minitelgreen3}\normalfont\bfseries}
 
 % Jolis chapitres
 \RequirePackage[Rejne]{fncychap}
@@ -215,8 +220,8 @@
 
 % Pour multiplier les options d'énumération de type itemize ou enumerate
 \usepackage[shortlabels]{enumitem}
-	\setlist[itemize, 1]{font=\color{minitelgreen3}, label=\textbullet}
-	\setlist[itemize, 2]{font=\color{minitelgreen2}, label=\ding{110}}
+	\setlist[itemize, 1]{font=\color{minitelgreen3}, label=\ding{110}}
+	\setlist[itemize, 2]{font=\color{minitelgreen2}, label=\textbullet}
 	\setlist[itemize, 3]{font=\color{minitelgreen1}, label=\ding{117}}
 
 % Page de garde
@@ -236,6 +241,11 @@
     \end{tikzpicture}
     \color{white}
 	\pagenumbering{gobble}
+	\begin{minipage}{\textwidth}
+	\raggedleft
+	\large
+	\textbf{\@author}
+	\end{minipage}
 	\vspace*{0.5\fill}
 	\begin{center}
 		\linespread{3}
@@ -275,18 +285,15 @@
 % Miscellaneous %
 %%%%%%%%%%%%%%%%%
 
+% Pour sous-titrer les images et autres figures
+\RequirePackage{caption}
+	\captionsetup{hypcap=false}
+
 % Liens hypertexte
-\RequirePackage[hidelinks]{hyperref}
+\RequirePackage{bookmark} % Inclut hyperref par défaut
 \hypersetup{
 	colorlinks=true,
 	urlcolor=blue!80!black,
 	citecolor=PineGreen,
 	linkcolor=minitelgreen2!70!black
 }
-
-% Pour surtitrer les codes
-\usepackage{listings}
-
-% Pour sous-titrer les images et autres figures
-\usepackage{caption}
-
