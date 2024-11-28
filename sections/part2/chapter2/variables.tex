@@ -45,9 +45,9 @@ Pour définir le nombre d'octets sur lequel est stockée une variable, le langag
 Le langage C propose les types de base suivants :
 \begin{itemize}
 	\item \textsf{char} : donnée $d$ sur 1 octet (8 bits) $d\in{\llbracket-128; 127\rrbracket}$
-	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-32768; 32767\rrbracket}$
-	\item \textsf{int} : donnée $d$ sur 4 octets (32 bits) $d\in{\llbracket-2147483648; 2147483647\rrbracket}$
-	\item \textsf{long int} : donnée $d$ sur 8 octets (64 bits) $d\in{\llbracket-9223372036854775808; 9223372036854775807\rrbracket}$
+	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-2^{15}; 2^{15}-1\rrbracket}$
+	\item \textsf{int} : donnée $d$ sur 4 octets (32 bits) $d\in{\llbracket-2^{31}; 2^{31}-1\rrbracket}$
+	\item \textsf{long int} : donnée $d$ sur 8 octets (64 bits) $d\in{\llbracket-2^{63}; 2^{63}-1\rrbracket}$
 	\item \textsf{float} : donnée $d$ sur 4 octets (32 bits) $d\in{\mathbb{R}_{f32}}$
 	\item \textsf{double} : donnée $d$ sur 8 octets (64 bits) $d\in{\mathbb{R}_{f64}}$
 	\item \textsf{long double} : donnée $d$ sur 16 octets (128 bits) $d\in{\mathbb{R}_{f128}}$

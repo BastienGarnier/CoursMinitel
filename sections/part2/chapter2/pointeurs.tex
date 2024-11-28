@@ -31,14 +31,21 @@ Les pointeurs sont fondamentaux en programmation. En particulier, ils permettent
 
 Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
  
-On dispose pour la manipulation des pointeurs de deux opérateurs en langage C : l'étoile $\ast$ et l'esperluette $\&$. On a également la constante \textsf{NULL} qui représente un pointeur ne pointant sur rien du tout. 
 Un pointeur est définit selon la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
 TYPE* ptr;
 \end{minted}
 On sait alors que $ptr$ contiendra l'adresse d'autres variables.
  
-Viens alors l'utilisation de l'esperluette. Ce caractère en tant qu'opérateur binaire permet de signifier l'opération $ET$, qu'elle soit logique ou bit-à-bit. Il est cependant possible de l'utiliser comme opérateur unaire. Sa signification est alors tout autre. \textsf{\&v} renvoie l'adresse mémoire à laquelle se situe la variable \textsf{v}. On peut donc écrire :
+On dispose pour la manipulation des pointeurs de deux opérateurs en langage C : l'étoile $\ast$ et l'esperluette $\&$. L'esperluette en tant qu'opérateur binaire permet de signifier l'opération $ET$, qu'elle soit logique ou bit-à-bit. Il est cependant possible de l'utiliser comme opérateur unaire. Sa signification est alors tout autre. \textsf{\&v} renvoie l'adresse mémoire à laquelle se situe la variable \textsf{v}. 
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=0.6\textwidth]{indirection}
+	\end{center}
+\end{minipage}
+
+On peut donc écrire :
 \begin{minted}[linenos=false]{c}
 TYPE v = ...;
 TYPE* ptr = &v;
@@ -72,7 +79,7 @@ Après exécution du code, on a le schéma suivant :
 
 L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
  
-On peut décider également qu'un pointeur ne pointe sur rien :
+On peut décider également qu'un pointeur ne pointe sur rien grâce à la constante $\textsf{NULL} = 0$ :
 \begin{minted}[linenos=false]{c}
 int *pointeur = NULL; // points on nothing
 \end{minted}
@@ -187,7 +194,11 @@ char_ptr + 2 == sint_ptr + 1;
 sint_ptr + 2 == int_ptr + 1;
 int_ptr + 2 == lint_ptr + 1;
 \end{minted}
-
+Et de manière plus générale pour tout \textsf{TYPE} et pour tout $n$ :
+\begin{minted}[linenos=false]{c}
+TYPE* ptr = char_ptr;
+ptr + n == char_ptr + sizeof(TYPE) * n
+\end{minted}
 Toutefois, un détail reste troublant\dots l'inversion des octets 1 et 2 sur le schéma ci-dessus, que l'on observe à l'exécution du programme sur n'importe quel ordinateur possédant un UCC \textit{Intel}. 
 Aucune reformulation ici, l'explication sur Wikipédia suffit : \url{https://fr.wikipedia.org/wiki/Boutisme}\footnote{Ce document n'est pas un cours d'histoire de l'informatique :`$|$}.
  
@@ -246,4 +257,12 @@ Si cela induit une erreur de comportement de la procédure, corriger cette erreu
 	\item En déduire une fonction \textsf{float distance(double pA, double pB);} qui renvoie la distance entre deux points $p_{A}$ et $p_{B}$ associée à la norme 1. Cette distance est appelée \textit{distance de Manhattan}\footnote{Souvent utilisée en informatique du fait de sa vitesse d'exécution.}
 \end{enumerate}
 \textbf{Remarque : }On pourra éviter les avertissements à la compilation en effectuant des projections de type explicites.
+
+\exercise{Matrices} L'objet de cet exercice est l'implantation de matrices en langage C. 
+
+ Soient $n, m\in\mathbb{N}^{*}$. Une matrice $mat\in\mathcal{M}_{n, m}(\textsf{TYPE})$ est basiquement un tableau de lignes $(L_{i})_{i\in{\llbracket{0; n\llbracket}}}$ et chacune de ces lignes est un tableau de valeurs typées :
+$$\left\{ \begin{array}{llcl}
+& mat & = & \left( L_{0}, L_{1}, \dots, L_{n-1} \right) \\
+\forall i \in \llbracket{0; n\llbracket & L_{i} & = & \left(a_{i, 0}, \dots, a_{i, m-1} \right)}
+\end{array}$$
 \end{document}
