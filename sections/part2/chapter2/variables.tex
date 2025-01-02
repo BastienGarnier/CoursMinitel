@@ -10,16 +10,16 @@ Cette donnée représente de l'information. Elle est donc numérique, bien que l
 Une variable en mathématique désigne un objet indéterminé. Cela semble au premier abord faux car il peut arriver qu'on écrive les phrases suivantes :
 \begin{itemize}
 	\item ``Soit $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
-	\item ``$\forall{x\in{E}}, \mathcal{P}(x)$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat quelconque à un seul paramètre
+	\item ``$\forall{x\in{E}}, \mathcal{P}(x)$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
 \end{itemize}
 En y regardant de plus près, on observe qu'il s'agit en fait simplement de facilités d'écriture équivalentes aux phrases suivantes :
 \begin{itemize}
 	\item ``Soit $e$ un objet indéterminé. Supposons $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
-	\item ``$\forall{x}, x\in{E}\implies{\mathcal{P}(e)}$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat quelconque à un seul paramètre
+	\item ``$\forall{x}, x\in{E}\implies{\mathcal{P}(e)}$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
 \end{itemize}
 Cet objet finit par ne plus être indéterminé du fait d'hypothèses à son propos.
  
-D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. Elles peuvent donc potentiellement évoluer et changer de valeur au cours du temps. Cette notion de temporalité est tout à fait absente du concept de variable mathématique.
+D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. Elles peuvent donc potentiellement évoluer et changer de valeur au cours du temps. Cette notion de temporalité logique est tout à fait absente du concept de variable mathématique.
  
 \subsubsection{Approximation de stockage des variables}
  
@@ -39,35 +39,50 @@ Visuellement :
 	\end{center}
 \end{minipage}
  
-\subsubsection{Type d'une variable}
-Pour définir le nombre d'octets sur lequel est stockée une variable, le langage C propose un certain nombre de ``types'' élémentaires directement intégrés au langage. Ces types représentent des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$\footnote{C'est-à-dire indiquent soit une représentation entière soit une représentation flottante par la norme \textit{IEEE 754}}. Définir une variable selon un type du langage C consiste donc à limiter les données qu'elle contient à un sous-ensemble de $\mathbb{Z}$ ou $\mathbb{R}$ en définissant une taille maximum, en octets, de la donnée. Le type permet donc \og d'interpréter \fg{} le mot binaire de $N$ octets sur lequel la variable est définit avec une fonction $btoi$ (\textit{\underline{b}inary \underline{to} \underline{i}nteger} ou $btof$ (\textit{\underline{b}inary \underline{to} \underline{f}loat}).
+\subsubsection{Type d'une valeur de variable}
+\definition{Type}{
+Une donnée est une séquence finie de bits (0 ou 1). Il faut interpréter cette donnée pour qu'elle soit utilisable dans un contexte de programmation. L'interprétation de données établit une correspondance entre un ensemble de données\footnote{Donc un ensemble de séquences de 0 et de 1} et un ensemble quelconque d'éléments. Cette correspondance est appelée un \textit{type}. 
+
+On a vu un certain nombre d'interprétations dans le premier chapitre de la première partie ($btoi_{u}$, $btoi_{s}$, norme \textit{IEEE 754} et caractères ASCII).
+}
+Le langage C propose un certain nombre de types élémentaires directement intégrés au langage. Définir une variable selon un type du langage C consiste à délimiter une séquence de bits en mémoire qui seront mis en correspondance vers un ensemble donné.
+
+Les ensembles mis en correspondances avec ces données en langage C sont des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$\footnote{Ce qui indique soit une interprétation entière soit une interprétation flottante par la norme \textit{IEEE 754}}. 
+
+Le type permet donc de délimiter les $N$ octets d'un mot binaire et de l'interpréter.
  
 Le langage C propose les types de base suivants :
+\begin{itemize}
+\item Pour représenter des entiers 
 \begin{itemize}
 	\item \textsf{char} : donnée $d$ sur 1 octet (8 bits) $d\in{\llbracket-128; 127\rrbracket}$
 	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-2^{15}; 2^{15}-1\rrbracket}$
 	\item \textsf{int} : donnée $d$ sur 4 octets (32 bits) $d\in{\llbracket-2^{31}; 2^{31}-1\rrbracket}$
 	\item \textsf{long int} : donnée $d$ sur 8 octets (64 bits) $d\in{\llbracket-2^{63}; 2^{63}-1\rrbracket}$
+\end{itemize}
+\item Pour représenter des nombres à virgule :
+\begin{itemize}
 	\item \textsf{float} : donnée $d$ sur 4 octets (32 bits) $d\in{\mathbb{R}_{f32}}$
 	\item \textsf{double} : donnée $d$ sur 8 octets (64 bits) $d\in{\mathbb{R}_{f64}}$
 	\item \textsf{long double} : donnée $d$ sur 16 octets (128 bits) $d\in{\mathbb{R}_{f128}}$
-	\item \textsf{TYPE*} : donnée $d$ sur 8 octets qui est l'adresse mémoire d'une donnée de type \textsf{TYPE} quelconque
+\end{itemize}
+\item Pour représenter une adresse mémoire : \textsf{TYPE*} : donnée $d$ sur 8 octets contenant l'adresse d'une autre variable de type \textsf{TYPE}
 \end{itemize}
 La syntaxe du langage C pour déclarer une variable d'un type quelconque \textsf{TYPE} est la suivante :
 \begin{minted}[linenos=false]{c}
-TYPE any_variable; // uninitialized variable : undertermined value
-TYPE any_variable = ANY_VALUE; // initialized with value ANY_VALUE
+TYPE any_variable; // variable non initialisée : valeur indéterminée
+TYPE any_variable = ANY_VALUE; // initialisée à la valeur ANY_VALUE
 \end{minted}
 Il n'est pas possible en C de déclarer deux fois un même identifiant. Ainsi, le code suivant provoque une erreur à la compilation :
 \begin{minted}[linenos=false]{c}
-int age = 20; // declare age as an int with value 20
-char age = 19; // ERROR : age is already in use
+int age = 20; // déclare age comme un entier de valeur 20
+char age = 19; // ERREUR : age déjà déclaré
 \end{minted}
 Ainsi, un identifiant déclaré avec un certain type ne peut pas en changer jusqu'à ce qu'il ne soit plus définit (c'est-à-dire souvent jusqu'à la fin de l'exécution du programme). Après ne plus être défini, il pourra l'être à nouveau avec un autre type. Cela sera vu avec les \textit{espaces de noms}.
  
 \textbf{Remarque 1 :} L'exécution d'un programme en C est séquentielle. Pour cette raison, on ne peut référer à une variable qu'après l'avoir déclarée :
 \begin{minted}[linenos=false]{c}
-test = 2; // ERROR : 'test' is not declared yet
+test = 2; // ERREUR : 'test' n'est pas encore déclaré
 int test;
 \end{minted}
 Pour cette raison, toutes les variables doivent être déclarées avant tous les lieux du code où elles se trouvent référencées.
@@ -77,19 +92,33 @@ Pour cette raison, toutes les variables doivent être déclarées avant tous les
 int nombre_de_feuilles = 2000;
 nombre_de_feuilles = 1000; // Assigne à la variable nombre_de_feuilles la valeur 1000
 \end{minted}
+
+\begin{minitelbasicbox}{\textbf{Petit apparté} : le type \textsf{char}}
+Les caractères ASCII ont été abordés dans la première partie. \textsf{char} signifie \textit{character} en anglais, c'est-à-dire \textit{caractère} en français.
+
+Le langage C propose le même type pour pour faire correspondre le sous-ensemble des entiers $\llbracket-128; 127\rrbracket$ et l'ensemble des caractères ASCII, bien que l'interprétation soit différente. Cela est compréhensible puisque les mots binaires utiles pour ces deux interprétations sont les mêmes, il s'agit cependant d'une petite bizarrerie conceptuelle du langage\footnote{Et ce n'est pas la seule, le C n'ayant peut-être pas été conçu "à l'arrache" mais en tout cas certainement pas de manière super carrée\dots il suffit de voir les tableaux statiques.}. On peut écrire un caractère ASCII grâce aux guillements simples :
+\begin{minted}{c}
+char carac = 'z';
+\end{minted}
+ce qui revient strictement à écrire :
+\begin{minted}{c}
+char carac = 122;
+\end{minted}
+\end{minitelbasicbox}
+
 On observe une équivalence stricte entre les expressions suivantes : 
 
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
-// First expression :
+// Première expression :
 TYPE variable = valeur;
 
 \end{minted}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
-// Second expression :
-TYPE variable; // undetermined value
+// Deuxième expression :
+TYPE variable; // valeur indéterminée
 variable = valeur;
 \end{minted}
 \end{minipage}
@@ -98,7 +127,7 @@ La première expression est une facilité d'écriture très largement utilisée\
  
 En conséquence, le code suivant est tout à fait correct, bien qu'inutile sous cette forme :
 \begin{minted}[linenos=false]{c}
-int a = a; // a's value is still undetermined
+int a = a; // La valeur de 'a' est toujours indéterminée
 \end{minted}
 En effet, le symbole $a$ est définit avant l'assignation.
 \subsection{Taille et type d'une variable}
@@ -121,8 +150,8 @@ sizeof(double); // 8
 sizeof(long double); // 16
 
 TYPE a;
-sizeof(a); // Bytes needed to save 'a' in memory
-sizeof(TYPE); // same
+sizeof(a); // Nombre d'octets pour stocker 'a' en mémoire
+sizeof(TYPE); // idem
 \end{minted}
 \textbf{Remarque :} L'opérateur \textsf{sizeof} renvoie une valeur de type \textsf{size\_t}, équivalente à un \textsf{long int}.
 
@@ -143,12 +172,14 @@ int b;
 int c;
 \end{minted}
 \end{minipage}
+
+On préférera le code de droite pour des raisons d'élégance et de simplicité. Plus un code est lisible, mieux cela est. Par ailleurs, le programme de droite sera compilé un peu plus vite que celui de gauche. \textit{Il est inutile d'être trop intelligent.}\footnote{Enfin, la bêtise c'est quand même très rigolo. C'est une question d'humour au fond :)}
 \subsection{Entiers signés et non signés}
 Il est possible en langage C de choisir pour les nombres entiers entre l'interprétation signée de sa représentation binaire, et l'interprétation non signée. Cela se fait par les mot-clés \textsf{signed} et \textsf{unsigned}. Par défaut, les variables entières sont interprétés comme signées. Ainsi, le mot-clé \textsf{signed} n'est pas utile au moment de la déclaration de la variable. Cela peut être cependant utile pour une réinterprétation ultérieure (voir \textbf{Projection de type}). La syntaxe est la suivante :
 \begin{minted}[linenos=false]{c}
-char v = 130; // signed by default, truth is v = 2 - 128 = -126
-unsigned short int v2 = -1; // unsigned interpretation, truth is v2 = 65535
-signed int v3 = -4; // 'signed' is useless because it's implicit
+char v = 130; // signé par défaut. La vérité est que v = 2 - 128 = -126
+unsigned short int v2 = -1; // interpretation non signée, la vérité est que v2 = 65535
+signed int v3 = -4; // 'signed' est inutile car implicite
 // etc...
 \end{minted}
 \textbf{Remarque :} Le langage C ne propose pas de nombres flottants non signés car le standard de représentation des nombres flottants implique directement la présence du signe.
@@ -158,14 +189,14 @@ Les variables sont déclarés dans des blocs de portée. Ces blocs de portée so
 #include <stdlib.h>
 
 int main()
-{ // First bloc
-	int a = 5; // declared in the upper 'main' bloc
-	{ // Second bloc nested in the first one
-		// at this point, 'a' is still equal to 5
-		double a = 3.14; // Not the same 'a'
-		// at this point, 'a' is equal to 3.14
+{ // Premier bloc
+	int a = 5; // déclaré dans le bloc le plus haut de 'main'
+	{ // Deuxième bloc inséré dans celui de 'main'
+		// ici, 'a' vaut toujours 5
+		double a = 3.14; // Pas le même 'a'
+		// ici, 'a' vaut 3.14
 	}
-	// 'a' get back to 5
+	// ici, 'a' vaut à nouveau 5
 	return EXIT_SUCCESS;
 }
 \end{minted}
@@ -178,10 +209,10 @@ En particulier, il est possible de définir des variables hors du bloc \textsf{m
 int some_global_variable = VALUE;
 int main() {
 	char some_global_variable = OTHER_VALUE;
-	// some code
+	// du code
 }
 
-// Some other code may access to 'some_global_variable'
+// Un autre code peut aussi accéder à 'some_global_variable'
 \end{minted}
 \textbf{Remarque :} Maîtriser la portée des variables et ne pas garder déclarée une variable alors qu'elle n'est plus utile permet au compilateur d'optimiser le code machine produit. Par exemple, dans le code suivant :
 \begin{minted}{c}
@@ -190,12 +221,12 @@ int main() {
 int main() {
 	{
 		int v = VALUE;
-		// using 'v'
+		// utilisation de 'v'
 	}
-	// Some big code
+	// Un gros code
 	{
 		int v = ANOTHER_VALUE;
-		// using 'v'
+		// utilisation de 'v'
 	}
 	return EXIT_SUCCESS;
 }

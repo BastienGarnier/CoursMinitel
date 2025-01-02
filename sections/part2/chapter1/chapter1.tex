@@ -70,6 +70,8 @@ La plupart des IDEs permettent de choisir entre les différents standards du com
 \subsubsection{Internationalité des identifiants}
  
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, tous les identifiants d'un code doivent être en anglais de préférence.\footnote{C'est triste mais c'est la vie.}
+
+\textbf{Remarque :} Ce livre est en français pour être accessible et lisible par des francophones. Cependant, les identifiants sont très souvent standards dans les codes. Il est utile d'avoir l'habitude de lire et d'écrire des identifiants en anglais.
 \section{Commentaires}
 Les commentaires sont présents dans l'immense majorité des langages de programmation. Ils permettent d'annoter un code pour en expliquer certaines composantes ou pour exprimer certaines métadonnées vis-à-vis de celui-ci. Il peut s'agir par exemple de copier la licence utilisée dans le programme, de noter le nom de l'auteur du programme, d'expliquer le but d'un bloc de code, d'expliquer l'implantation pratique d'un objet théorique ou encore d'expliquer un aspect technique particulier du programme.
  
@@ -81,7 +83,9 @@ Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ign
 \subsubsection{Internationalité des commentaires}
  
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, les commentaires d'un programme doivent tous être écrits en anglais.\footnote{C'est triste mais c'est la vie\dots Comment ça je me répète ?}
- 
+
+\textbf{Remarque :} Ce livre est en français pour être accessible et lisible par des francophones. En conséquence de quoi les commentaires seront écrits en français dans tous les codes écrits dans ce livre\footnote{Qui est déjà en français, donc ça ne change rien à l'absence d'internationalité.}. Les commentaires ont une vertu explicative, il n'y a aucune utilité à s'entraîner à lire des commentaires écrits en anglais (il suffit d'apprendre l'anglais).
+
 En C, on distingue deux types de commentaires :
 \begin{itemize}
 	\item les commentaires sur une ligne
@@ -93,7 +97,7 @@ Tous les caractères d'une ligne qui suivent un double slash sont considérés c
 \begin{lstlisting}[title=Exemple]
 \end{lstlisting}
 \begin{minted}[linenos=false]{c}
-printf("Salut les gens !\n"); // \n represents the line feed symbol
+printf("Salut les gens !\n"); // \n représente le symbole de retour à la ligne
 \end{minted}
 \textbf{Remarque :} Le commentaire ne peut pas être inséré à l'intérieur d'une chaîne de caractères. Ainsi :
 \begin{minted}[linenos=false]{c}
@@ -106,16 +110,16 @@ Les commentaires par bloc permettent d'écrire des commentaires sur plusieurs li
 \end{lstlisting}
 \begin{minted}{c}
 /*
-MINITEL Association
-An example to illustrate comments
+Association Minitel
+Un exemple pour illustrer les commentaires
 
-#include <stdio.h> // this line will never be read
+#include <stdio.h> // Cette ligne ne sera jamais lue
 */
 
-#include <stdio.h> // Include the 'stdio' library
+#include <stdio.h> // Inclue la biliothèque 'stdio'
 
-int main() { // Defines the main function of the program
-	return 0; // Means a successful running of the program
+int main() { // Définit la fonction principale du programme
+	return 0; // Signifie une exécution réussie du programme
 }
 \end{minted}
 \section{Le point-virgule}
@@ -123,10 +127,10 @@ Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer 
  
 Le point-virgule ne peut en aucun cas être remplacé par un retour à la ligne (comme on le ferait en Python). Cependant, il permet d'écrire plusieurs instructions sur une seule et même ligne (comme en Python) :
 \begin{minted}{c}
-#include <stdio.h> // preprocessor directives do not end with a semicolon character
+#include <stdio.h> // Les instructions de préprocesseurs ne finissent pas par un point-virgule
 
 int main() {
-	// instructions end with semicolon but not comments
+	// Les instructions finissent par des point-virgules mais pas les commentaires
 	printf("Salut !\n"); printf("Deuxieme Salut !\n"); 
 	return 0;
 }
@@ -156,12 +160,12 @@ On peut donc écrire :
 \begin{lstlisting}[title=Exemple]
 \end{lstlisting}
 \begin{minted}{c}
-// the order of libraries includes does'nt matter
-#include <stdlib.h> // EXIT_SUCCESS and EXIT_FAILURE (among others)
-#include <stdio.h> // printf (among others)
+// L'ordre d'inclusion des bibliothèques est (presque) sans importance
+#include <stdlib.h> // EXIT_SUCCESS et EXIT_FAILURE (entre autre)
+#include <stdio.h> // printf (entre autre)
 
 int main() {
-	return EXIT_SUCCESS; // Means a successful running of the program
+	return EXIT_SUCCESS; // Signifie une exécution réussie du programme
 }
 \end{minted}
 \section{Directives préprocesseurs (1)}

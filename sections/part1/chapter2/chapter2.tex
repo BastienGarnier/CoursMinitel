@@ -1,6 +1,94 @@
 \documentclass[../../main.tex]{subfiles}
 \graphicspath{{sections/part1/images/}}
 \begin{document}
+\section{Algorithmes et programmation}
+La définition rigoureuse d'un algorithme se trouve n'être absolument pas trivial, ni même simple.
+Une première raison à cela est qu'il s'agit d'un concept au départ considéré comme intuitif, et que la
+formalisation d'un concept qui semble humainement intuitif pose immédiatement la question du bien
+fondé et de la rigueur de cette formalisation : un mot est toujours interprété, et deux humains peuvent
+utiliser le même mot, et ne pas en avoir la même utilisation, voir la même compréhension fine.
+
+La difficulté sous-jacente à une telle définition sera tout à fait esquivé ici puisqu'elle nécessiterait
+de poser une théorie du calcul pour définir ce qu'est un problème, ce que signifie la résolution d'un
+problème, ainsi que la résolution en temps fini d'un problème, ce qu'est une instruction élémentaire,
+etc\dots
+
+On s'en passera en conservant une définition \og avec les mains \fg{} qui manque cruellement de rigueur
+mais qui a le bénéfice d'être simple et suffisante dans un cadre purement pratique.
+
+\definition{Algorithme}{Un algorithme est une suite d'actions/d'instructions précises dont l'objectif est de résoudre un problème donné. Ces instructions doivent être les plus élémentaires possibles, et ne surtout pas être ambigües. C'est-à-dire qu'en lisant l'algorithme, il n'y ait qu'une seule possibilité d'action à chaque étape (ce qui ne signifie pas que le résultat soit prédéterminé puisqu'une action peut potentiellement avoir un résultat aléatoire, comme le lancer d'un dé par exemple).}
+
+\textbf{Exemple :} "Changer la valeur d'un nombre" n'est pas une instruction possible pour un algorithme, puisque le lecteur peut toujours \textit{interpréter} l'instruction, et ne sait en fait toujours pas exactement ce qu'il doit faire. Par contre l'instruction "Ajouter 1 à la valeur de la variable $x$" est une instruction, à condition que $x$ soit connue, que $1$ soit bien définie et que ``Ajouter'' soit une opération binaire bien définie sur $1$ et $x$.
+
+Tout simplement.
+
+\begin{algorithm}
+\caption{Premier exemple simple}\label{alg:hello}
+Afficher("Bonjour !")\;
+Afficher("Au revoir !")\;
+\end{algorithm}
+Cette algorithme n'est valable que si l'opération "Afficher" a été décrite de manière super précise avant. C'est-à-dire que même l'endroit où il faut afficher (par exemple, la feuille sur laquelle est écrite ce chapitre d'algorithmique) est indiqué auparavant au lecteur, \textit{pour éviter l'interprétation}. La donnée d'une chaîne de caractère doit également être connue.
+
+Un algorithme peut ensuite être exécuté par un \textit{agent}, et il produira alors un résultat donné.
+
+\definition{Agent algorithmique}{Actionneur capable de communication qui lira l'algorithme écrit et effectuera les actions les unes à la suite des autres. Ce peut être un être humain, ou encore un chat ou un chien (par exemple en apprenant l'algorithme à haute voix au chien)}
+
+L'\textbf{Algorithme 1} produira donc le résultat suivant :
+
+\begin{minipage}{1.\textwidth} \fontfamily{pcr}\selectfont
+	Bonjour !\newline
+	Au revoir !
+\end{minipage}
+
+L'intérêt d'algorithmes est notamment d'automatiser des tâches. On peut notamment imaginer l'algorithme suivant :
+\newline
+\begin{algorithm}
+\caption{Aller chercher le journal}\label{alg:letters}
+Aller à la boîte aux lettres\;
+\eSi{la boîte est ouverte} {
+	Ramasser le contenu de la boîte aux lettres\;
+	Fermer la boîte aux lettres\;
+} {
+	Ouvrir la boîte aux lettres\;
+	Ramasser le contenu de la boîte aux lettres\;
+	Fermer la boîte aux lettres\;
+}
+Revenir à la maison\;
+\end{algorithm}
+
+On peut imaginer apprendre cet algorithme à notre corbeau de compagnie (c'est très intelligent les corbeaux\dots), et simplement lui ordonner d'exécuter cet algorithme par l'instruction "Va chercher le journal !".
+
+\textbf{Remarque :} En petit malin, le lecteur attentif peut observer deux choses :
+\begin{itemize}
+	\item que l'\textit{agent} qui exécute cet algorithme doit déjà savoir de quelle boîte aux lettres et de quelle maison il est question, pour qu'il n'y ait pas d'interprétation (et pour aller plus loin, il faut aussi qu'il comprenne le langage dans lequel est exprimé l'algorithme et le sens de chaque verbe/action).
+	\item que l'instruction "Fermer la boîte aux lettres" est présente deux fois, et surtout qu'on est certain qu'elle s'exécute. En effet, cette instruction est présente que la condition "\textit{la boîte est ouverte}" soit vérifiée ou non ! \textit{idem} pour l'instruction "Ramasser le journal". On peut donc les mettre une seule fois à la fin.
+\end{itemize}
+\begin{algorithm}
+\caption{Aller chercher le journal}\label{alg:optletters}
+Aller à la boîte aux lettres\;
+\eSi{la boîte est ouverte} {
+	\Comment*[r]{Il n'y a rien à faire !}
+} {
+	Ouvrir la boîte aux lettres\;
+}
+Ramasser le contenu de la boîte aux lettres\;
+Fermer la boîte aux lettres\;
+Revenir à la maison\;
+\end{algorithm}
+L'algorithme est alors plus court à lire, mais aussi plus court à apprendre, à enregistrer. Si il faut le stocker sur un ordinateur par exemple, la quantité de mémoire de l'ordinateur n'est pas infinie ! Il est donc \textbf{parfois}\footnote{Mais pas systématiquement, cela dépend de si l'on cherche à optimiser la vitesse d'exécution ou la taille en mémoire} important que cet algorithme soit le plus court possible. C'est ce qu'on appellera de l'\textit{optimisation d'espace}\footnote{Dual de l'\textit{optimisation temporelle} qui cherche à optimiser la vitesse d'exécution. Il n'est parfois pas possible d'avoir les deux, détail sur lequel on reviendra dans trèèèès longtemps}.
+\subsection{Algorithmes et programmes}
+\definition{Programme}{Un programme informatique est un algorithme pouvant être exécuté par un ordinateur (qui est donc l'agent exécutant). Il doit donc être écrit dans un langage compréhensible par l'ordinateur appelé \textit{langage de programmation}.}
+
+Dans la suite du chapitre, l'entièreté des algorithmes seront exécutés sur ordinateur, pour la principale raison que cela permet de visualiser les résultats et d'expérimenter par soi-même.
+
+On va donc considérer pour toute la suite des programmes. Il faut cependant garder à l'esprit la distinction entre les deux, puisqu'un algorithme englobe beaucoup plus de choses qu'un programme informatique (il est difficile de programmer un ordinateur pour aller chercher le journal dans la boîte aux lettres).
+
+Pour qu'un programme puisse être exécuté par un ordinateur, il doit être connu de celui-ci, et est donc stocké dans la mémoire de l'ordinateur. L'ordinateur va ensuite le lire instructions par instructions et exécuter chacune de ces instructions.
+
+La représentation de l'algorithme doit donc être accessible à un ordinateur. On peut considérer une écriture de cette algorithme en langage binaire, c'est-à-dire comme une suite finie de 0 et de 1. La traduction du langage naturel (c'est-à-dire humain) en langage binaire est appellée \textit{compilation}. Elle est effectuée par des programmes appellées des \textit{compilateurs}.
+
+On peut cependant généraliser un peu la notion de \textit{compilation} : on peut dire que compiler c'est lire une suite de caractères obéissant à une certaine syntaxe, en construisant une (autre) représentation de l'information que ces caractères expriment. De ce point
+de vue, beaucoup d'opérations apparaissent comme étant de la compilation; à la limite, la lecture d'un nombre est déjà de la compilation, puisqu'il s'agit de lire des caractères constituant l'écriture d'une valeur selon la syntaxe des nombres décimaux et de fabriquer une autre représentation de la même information, à savoir sa valeur numérique \og dans notre tête \fg
 \section{Un peu de vocabulaire}
 Cette table de vocabulaire est donné en préambule pour ne pas trop surcharger le texte ci-après.
 

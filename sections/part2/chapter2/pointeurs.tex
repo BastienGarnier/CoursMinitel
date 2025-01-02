@@ -60,11 +60,11 @@ C'est l'opérateur $*$ qui lui aussi, lorsqu'il est utilisé commme opérateur u
 int main() {
 	int a = 58;
 	int b = 67;
-	int* ptr = &a; // points on a
-	*ptr = 17; // same as a = 17
+	int* ptr = &a; // pointe vers a
+	*ptr = 17; // pareil que a = 17
 	printf("a = %d\n", a);
-	ptr = &b; // points on b
-	*ptr = 2; // same as b = 2
+	ptr = &b; // pointe vers b
+	*ptr = 2; // pareil que b = 2
 	printf("b = %d", b);
 	return EXIT_SUCCESS;
 }
@@ -81,15 +81,15 @@ L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une 
  
 On peut décider également qu'un pointeur ne pointe sur rien grâce à la constante $\textsf{NULL} = 0$ :
 \begin{minted}[linenos=false]{c}
-int *pointeur = NULL; // points on nothing
+int *pointeur = NULL; // pointe sur rien
 \end{minted}
 \textbf{Remarque/Avertissement :} Lorsqu'un pointeur ne pointe sur rien, ou pointe sur une adresse dont l'accès n'est pas autorisé, c'est-à-dire qui est potentiellement utilisé par un autre programme, l'accès à la valeur en mémoire conduira très probablement le système d'exploitation, pour des raisons de sécurité, à arrêter prématurément l'exécution du programme en indiquant le code d'erreur $-11$ dit d'\textit{erreur de segmentation} (\textit{segmentation fault} en anglais) :
 \begin{minted}[linenos=false]{c}
-int *pointeur = NULL; // points on nothing
-char *pointeur2 = (char *)0x12345678; // a priori an invalid address 
+int *pointeur = NULL; // pointe sur rien
+char *pointeur2 = (char *)0x12345678; // a priori une adresse invalide 
 
-printf("%d\n", *pointeur); // -11 error code
-printf("%d\n", *pointeur2); // -11 error code
+printf("%d\n", *pointeur); // code d'erreur -11
+printf("%d\n", *pointeur2); // code d'erreur -11
 \end{minted}
 \subsection{Formatage en chaîne de caractères}
 Une adresse mémoire peut être affichée grâce au formatage des chaînes de caractères. Il faut pour cela utiliser le caractère spécial ``\%p'' :
@@ -100,7 +100,7 @@ Une adresse mémoire peut être affichée grâce au formatage des chaînes de ca
 int main() {
 	int a = 58;
 	int b = 67;
-	int* ptr = &a; // points on a
+	int* ptr = &a; // pointe vers a
 	printf("&a = %p et a = %d\n", &a, a);
 	printf("&ptr = %p, ptr = %p et *ptr = %d\n", &ptr, ptr, *ptr);
 	ptr = &b; // pointe vers b
@@ -154,7 +154,7 @@ int main() {
 	short int a = 7187;
 	short int *int_ptr = &a;
 	printf("%d\n", *int_ptr);
-	char *char_ptr = (char *)int_ptr; // explicit static casting
+	char *char_ptr = (char *)int_ptr; // projection de type explicite
 	printf("%d\n", *char_ptr);
 	printf("%d\n", *(char_ptr + 1));
 }
@@ -185,7 +185,7 @@ short int *sint_ptr = char_ptr;
 int *int_ptr = char_ptr;
 long int *lint_ptr = char_ptr;
 
-// every following equality test is true :
+// tous les tests d'égalité suivants sont vrais :
 char_ptr == sint_ptr;
 char_ptr == int_ptr;
 char_ptr == lint_ptr;
@@ -204,12 +204,12 @@ Aucune reformulation ici, l'explication sur Wikipédia suffit : \url{https://fr.
  
 \textbf{Notation :} Avant de partir dans quelques exercices, voyons simplement une facilité d'écriture du langage C, valide pour tout pointeur \textsf{ptr} et tout entier \textsf{i} :
 \begin{minted}{c}
-// result of the equality test is always true :
+// le résultat du test suivant est toujours vrai
 ptr[i] == *(ptr + i);
 \end{minted}
 Plus un petit \textit{trick} inutile mais rigolo : comme l'addition est commutative on peut aussi écrire :
 \begin{minted}{c}
-// result of the equality test is always true :
+// le résultat du test suivant est toujours vrai
 (i - 1)[ptr + 1] == *(ptr + i);
 \end{minted}
 Les raisons de l'existence de cette facilité d'écriture seront détaillées dans la section sur les tableaux.
@@ -222,13 +222,13 @@ La projection de type sur un pointeur non typé \textsf{void*} permet de faire r
 \begin{minted}{c}
 void *pointeur_quelconque = NULL;
 
-// explicit static casting to avoid warnings at compile time :
+// projection de type explicite pour éviter les avertissements à la compilation
 int *int_ptr = (int*)pointeur_quelconque; 
 \end{minted}
 Par ailleurs, l'addition sur un pointeur non typé est ``classique'' :
 \begin{minted}{c}
 void *pointeur_quelconque = NULL;
-printf("%p\n", pointeur_quelconque + 5); // prints 0x5
+printf("%p\n", pointeur_quelconque + 5); // -> 0x5
 \end{minted}
 Si pour l'instant l'utilisation de tels pointeurs peut rester assez absconse, cela s'éclairera dans le chapitre sur les concepts avancés du langage C. On trouvera déjà un premier exemple dans la section sur les tableaux dynamiques qui montre une application essentielle des pointeurs.
 \subsection{Pointeurs itérés}
@@ -257,12 +257,4 @@ Si cela induit une erreur de comportement de la procédure, corriger cette erreu
 	\item En déduire une fonction \textsf{float distance(double pA, double pB);} qui renvoie la distance entre deux points $p_{A}$ et $p_{B}$ associée à la norme 1. Cette distance est appelée \textit{distance de Manhattan}\footnote{Souvent utilisée en informatique du fait de sa vitesse d'exécution.}
 \end{enumerate}
 \textbf{Remarque : }On pourra éviter les avertissements à la compilation en effectuant des projections de type explicites.
-
-\exercise{Matrices} L'objet de cet exercice est l'implantation de matrices en langage C. 
-
- Soient $n, m\in\mathbb{N}^{*}$. Une matrice $mat\in\mathcal{M}_{n, m}(\textsf{TYPE})$ est basiquement un tableau de lignes $(L_{i})_{i\in{\llbracket{0; n\llbracket}}}$ et chacune de ces lignes est un tableau de valeurs typées :
-$$\left\{ \begin{array}{llcl}
-& mat & = & \left( L_{0}, L_{1}, \dots, L_{n-1} \right) \\
-\forall i \in \llbracket{0; n\llbracket & L_{i} & = & \left(a_{i, 0}, \dots, a_{i, m-1} \right)}
-\end{array}$$
 \end{document}

@@ -17,7 +17,7 @@ struct Node* node_new(int value) {
 
 struct LinkedList {
 	struct Node *head;
-	struct Node *queue;
+	struct Node *tail;
 	unsigned int length;
 };
 
@@ -25,7 +25,7 @@ struct LinkedList* linkedlist_new() {
 	struct LinkedList* lst = malloc(sizeof(struct LinkedList));
 	lst->length = 0;
 	lst->head = NULL;
-	lst->queue = NULL;
+	lst->tail = NULL;
 	return lst;
 }
 
@@ -36,7 +36,7 @@ char linkedlist_is_empty(struct LinkedList* l) {
 void linkedlist_push_on_head(struct LinkedList *l, int value) {
 	struct Node *nd = node_new(value);
 	if (linkedlist_is_empty(l)) {
-		l->head = l->queue = nd;
+		l->head = l->tail = nd;
 	} else {
 		l->head->previous = nd;
 		nd->next = l->head;
@@ -45,14 +45,14 @@ void linkedlist_push_on_head(struct LinkedList *l, int value) {
 	l->length++;
 }
 
-void linkedlist_push_on_queue(struct LinkedList *l, int value) {
+void linkedlist_push_on_tail(struct LinkedList *l, int value) {
 	struct Node *nd = node_new(value);
 	if (linkedlist_is_empty(l)) {
-		l->head = l->queue = nd;
+		l->head = l->tail = nd;
 	} else {
-		l->queue->next = nd;
-		nd->previous = l->queue;
-		l->queue = nd;
+		l->tail->next = nd;
+		nd->previous = l->tail;
+		l->tail = nd;
 	}
 	l->length++;
 }
@@ -74,13 +74,13 @@ int linkedlist_pop_from_head(struct LinkedList *l) {
 	return to_return;
 }
 
-int linkedlist_pop_from_queue(struct LinkedList *l) {
+int linkedlist_pop_from_tail(struct LinkedList *l) {
 	int to_return = -1;
 	if (!linkedlist_is_empty(l)) {
-		struct Node *to_delete = l->queue;
-		l->queue = to_delete->previous;
-		if (l->queue != NULL) { // if l->length == 1
-			l->queue->next = NULL;
+		struct Node *to_delete = l->tail;
+		l->tail = to_delete->previous;
+		if (l->tail != NULL) { // if l->length == 1
+			l->tail->next = NULL;
 		}
 		to_return = to_delete->value;
 		free(to_delete);
@@ -106,7 +106,7 @@ int main() {
 
 	linkedlist_push_on_head(l, 5);
 	linkedlist_push_on_head(l, 4);
-	linkedlist_push_on_queue(l, 6);
+	linkedlist_push_on_tail(l, 6);
 
 	linkedlist_display(l);
 

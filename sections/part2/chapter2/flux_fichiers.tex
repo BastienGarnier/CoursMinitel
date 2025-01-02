@@ -38,17 +38,14 @@ total 20
 -rwxrwxr-x 1 user user 15960 sept. 21 18:38 main
 -rw-rw-r-- 1 user user	 105 sept. 21 18:37 main.c
 \end{minted}
-\textbf{Petit aparté :}
- 
+\begin{minitelbasicbox}{\textbf{Petit apparté :} Taille virtuelle et taille sur disque des fichiers}
 Le total indiqué est le nombre de ko utilisés ($1\ ko = 1024\ octets$) pour stocker en mémoire les données affichés par \textit{ls}. Observe que le total d'octets utilisés est $20\times{1024} = 20480>15960 + 105$ qui est la taille réelle des fichiers présents. En effet, le système de fichiers utilise des zones mémoires par blocs de $4\ ko$ appelés \textit{pages}. On a :
 \begin{itemize}
 	\item \textit{``main''} avec $\left\lceil\dfrac{15960}{4096}\right\rceil = 4 \text{ pages}$
 	\item \textit{``main.c''} avec $\left\lceil\dfrac{105}{4096}\right\rceil = 1\text{\ page}$
 \end{itemize}
 Donc au total 5 pages.
- 
-\textbf{Fin de l'aparté\dots}
- 
+\end{minitelbasicbox}
 Les droits d'utilisateurs sont indiqués à gauche. Le format est le suivant :
 $$\underbrace{-}_{\text{type}}\underbrace{---}_{\text{propriétaire}}\underbrace{---}_{\text{groupe}}\underbrace{---}_{\text{autres}}$$
 Le type peut indiquer si un fichier est spécial. Par exemple, les répertoires sont considérés comme des fichiers spéciaux de type \textit{`d'}. Un fichier classique n'a pas de type précisé (un simple trait horizontal).
@@ -78,8 +75,10 @@ Pour manipuler des fichiers en C, il faut fondamentalement quatre routines :
 Heureusement, \textit{$<$stdio.h$>$} fournit toutes ces routines :
 \begin{itemize}
 	\item \textsf{fopen} pour ouvrir/créer un flux de fichier
-	\item \textsf{fwrite} pour écrire dans un flux de fichier
-	\item \textsf{fread} pour écrire dans un flux de fichier
+	\item \textsf{fprintf} pour écrire dans un flux de fichier \textit{textuel}
+	\item \textsf{fscanf} pour lire dans un flux de fichier \textit{textuel}
+	\item \textsf{fwrite} pour écrire dans un flux de fichier \textit{binaire}
+	\item \textsf{fread} pour lire dans un flux de fichier \textit{binaire}
 	\item \textsf{fclose} pour fermer un flux de fichier
 \end{itemize}
 Les prototypes sont les suivants :
@@ -108,6 +107,8 @@ L'ajout du caractère `b' après la lettre ouvre le fichier avec un flux \textit
 \textit{nmemb} est le nombre d'objets à lire de \textit{size} octets depuis le flux \textit{stream}. Ces objets sont stockés consécutivement à l'adresse \textit{ptr}.
  
 \textbf{Sortie :} La fonction renvoie le nombre d'objets effectivement lus. En cas d'erreur ou d'arrivée à la fin du fichier (auquel il y a moins à lire que voulu), ce nombre est strictement inférieur à \textit{nmemb}.
+\subsubsection{Les fonctions \textsf{fprintf} et \textsf{fscanf}}
+Elles s'utilisent comme vu précédemment dans la section sur les flux standards. Le flux à préciser est le pointeur de type \textsf{FILE*}.
 \subsubsection{\detokenize{int fclose(FILE *stream);}}
 \textbf{Entrée :} \textit{stream} est le flux à fermer
  
@@ -142,7 +143,7 @@ void person_add_to_file(const char *pathname, struct Person p) {
 	if (!fwrite(&p, sizeof(struct Person), 1, fd)) {
 		fprintf(stderr, "Erreur d'ecriture dans annuaire.data\n");
 	}
-	fclose(fd); // necessary : allows the file to be opened again
+	fclose(fd); // nécessaire : permet au fichier d'être réouvert plus tard
 }
 
 void person_print_numbers_from_file(const char *pathname) {

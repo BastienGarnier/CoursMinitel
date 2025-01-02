@@ -36,6 +36,6 @@ float distance(double pA, double pB) {
 int main() {
 	double pA = coords_to_point(3.0, 4.0);
 	double pB = coords_to_point(-1.0, -1.0);
-	printf("%f\n", distance(pA, pB)); // prints 9.000000
+	printf("%f\n", distance(pA, pB)); // -> 9.000000
 	return EXIT_SUCCESS;
 }

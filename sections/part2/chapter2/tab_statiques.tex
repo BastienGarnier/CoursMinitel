@@ -34,8 +34,8 @@ En langage C, il existe deux manières principales d'\textit{implanter} un table
 \subsection{Définition}
 L'allocation sur la pile, dite statique, est effectuée en langage C par la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
-TYPE array[SIZE]; // uninitialized array
-TYPE array[SIZE] = {v1, v2, ..., vSIZE}; // initialized array
+TYPE array[SIZE]; // tableau non initialisé
+TYPE array[SIZE] = {v1, v2, ..., vSIZE}; // tableau initialisé
 \end{minted}
 On appelle \textit{statique} ce type d'allocation de mémoire car $SIZE$ \underline{ne peut être une variable !} Ainsi, il est incorrect d'écrire :
 \begin{minted}[linenos=false]{c}
@@ -47,7 +47,7 @@ Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conf
 Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
 \begin{minted}[linenos=false]{c}
 #define N 5
-int array[N]; // before being compiled, every N in the code will be replaced by 5
+int array[N]; // à la compilation, chaque N sera remplacé par le symbole 5 dans le code
 \end{minted}
 Voyons simplement quelques exemples pour se familiariser avec la notation :
 \begin{minted}[linenos=false]{c}
@@ -63,7 +63,7 @@ Ainsi, le code suivant ajoute 1 à tous les éléments d'un tableau de taille 50
 \begin{minted}[linenos=false]{c}
 #define N 50
 int main() {
-	int array[N] = {...}; // any values
+	int array[N] = {...}; // valeurs quelconques
 	for (int i = 0; i < N; i++) {
 		array[i]++;
 	}
@@ -77,21 +77,21 @@ int main() {
 \begin{minted}[linenos=false]{c}
 long int array[7];
 
- // ERROR :
+ // ERREUR :
 array = {3141526535, 0xBEEF, 747, 0xC4, 713705, 666, 1414};
 
-// STILL ERROR :
+// ERREUR à nouveau :
 array[7] = {3141526535, 0xBEEF, 747, 0xC4, 713705, 666, 1414}; 
 
-// Python is not C :
-array = [i for i in range(7)]; // ERROR !!!
+// Python n'est pas C :
+array = [i for i in range(7)]; // ERREUR !!!
 \end{minted}
 \end{minipage}
 \begin{minipage}{0.25\textwidth}
 \begin{minted}[linenos=false]{c}
 long int array[7];
 
-// no errors :
+// pas d'erreurs :
 array[0] = 3141526535;
 array[1] = 0xBEEF;
 array[2] = 747;
@@ -169,15 +169,15 @@ Un exemple :
 #include <stdio.h>
 #include <stdlib.h>
 
-void procedure(int array[]) { // seems to be an array
+void procedure(int array[]) { // donne l'impression d'être un tableau
 	printf("%ld", sizeof(array));
 }
 
 int main() {
 	int test[5] = {1, 2, 3, 4, 5};
 	
-	printf("%ld", sizeof(test)); // prints sizeof(int) * 5 = 20
-	procedure(test); // prints sizeof(int*) = 8
+	printf("%ld", sizeof(test)); // -> sizeof(int) * 5 = 20
+	procedure(test); // -> sizeof(int*) = 8
 
 	return EXIT_SUCCESS;
 }
@@ -221,10 +221,10 @@ char *test_function() {
 }
 
 int main() {
-	// Declared as pointer because test_function returns a pointer :
+	// Déclaré comme un pointeur car test_function renvoie un pointeur :
 	char *ret_array = test_function();
 	
-	/* following declaration produces an error at compile time :
+	/* la ligne suivante produit une erreur À LA COMPILATION :
 	char ret_array[10] = test_function();
 	*/
 	

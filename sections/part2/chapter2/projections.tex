@@ -50,8 +50,8 @@ Le résultat après exécution est bien : $78.51$
 
 int main() {
 	unsigned short int v = -1;
-	printf("%d\n", v); // prints 65535
-	printf("%d\n", (signed short int)(v)); // prints -1 but it's the same binary word
+	printf("%d\n", v); // -> 65535
+	printf("%d\n", (signed short int)(v)); // -> -1 mais il s'agit du même mot binaire
 	return EXIT_SUCCESS;
 }
 \end{minted}

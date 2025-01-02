@@ -59,8 +59,8 @@ Par exemple, l'ouverture d'un fichier grâce à \textsf{fopen} peut échouer car
 par le chemin indiqué ou encore car un autre programme utilise déjà ce fichier. Le test :
 \begin{minted}[linenos=false]{c}
 const char* filename = ...;
-FILE *f = fopen(filename, "mode");
-if (!f) {
+FILE *fd = fopen(filename, "mode");
+if (!fd) {
 	fprintf(stderr, "Erreur d'ouverture du fichier %s\n", filename);
 } else {
 	...

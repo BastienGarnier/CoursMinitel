@@ -56,10 +56,10 @@ Un exemple :
 #include <truc.h>
 
 int main() {
-	goto end;
-	// operations never executed
-end:
-	some_end_operations();
+	goto fin;
+	// ici : opérations jamais exécutées
+fin:
+	operations_de_fin();
 	return EXIT_SUCCESS;
 }
 \end{minted}
@@ -81,18 +81,18 @@ Le saut conditionnel consiste à attribuer au registre \textit{IP} une valeur pr
 \end{itemize}
 Il est ainsi possible de former des conditions pour contrôler le flot d'exécution. L'exemple suivant est écrit en NASM pour un processeur Intel 64 bits. Il s'agit d'un langage assembleur, dont chaque instruction correspond donc de manière directe à une instruction exécutée par le processeur :
 \begin{minted}{nasm}
-; semicolons are comments
+; point-virgules pour les commentaires
 
-section .text ; beginning of the code
+section .text ; début du programme
 	global _start
 
-_start: ; same as main function in C
+_start: ; pareil que fonction 'main' en C
 
-mov al, 200 ; al is a 8 bits register, and 2^8 = 256
-add al, 100 ; 200 + 100 > 256, so CF = 1
-jc end ; JC stands for Jump if Carry
-	; all of the code here will be missed because CF != 0
-end: ; following code ends the program running
+mov al, 200 ; al est un registre 8 bits, et 2^8 = 256
+add al, 100 ; 200 + 100 > 256, donc CF = 1
+jc fin ; JC signifie Jump if Carry -> saute si retenue
+	; le code ici est ignoré car CF != 0
+fin: ; le code qui suit clôt l'exécution du programme
 mov rax, 231
 mov rdi, 0
 syscall
@@ -113,11 +113,11 @@ On pourrait alors imaginer la boucle suivante : (voir \textit{boucle for} dans l
 \begin{minted}{nasm}
 ; ...
 mov al, 10
-simple_loop:
-; things to repeat 10 times
+boucle:
+; trucs à répéter 10 fois
 sub al, 1
-jnc simple_loop ; jump if al - 1 >= 0
-loop_end:
+jnc boucle ; saute si al - 1 >= 0
+fin_de_boucle:
 ; ...
 \end{minted}
 \subsection{Structures complexes}
@@ -203,7 +203,7 @@ if (a != b) {
 \begin{minted}[linenos=false]{c}
 int a = 4;
 int b = 6;
-if ((a != b) != 0) { // or a != b != 0
+if ((a != b) != 0) { // ou a != b != 0
 	printf("a different de b.");
 } else {
 	printf("a = b");
@@ -215,7 +215,7 @@ Par ailleurs, l'instruction \textit{else} est tout à fait optionnelle. L'omettr
 \begin{minted}[linenos=false]{c}
 int a = 4;
 int b = 6;
-if (a > b) { // or a != b != 0
+if (a > b) { // ou a != b != 0
 	printf("?");
 }
 printf("texte par defaut"); // sera toujours exécuté
@@ -224,14 +224,14 @@ Il est également possible d'enchaîner plusieurs blocs de branchements conditio
 \begin{minted}[linenos=false]{c}
 int a = 4;
 int b = 6;
-if (a > b) { // or a != b != 0
+if (a > b) { // ou a != b != 0
 	printf("%d > %d\n", a, b);
 } else if (a == b) {
 	printf("egaux\n");
 } else {
 	printf("%d > %d\n", b, a);
 }
-printf("texte par defaut"); // always executed
+printf("texte par defaut"); // sera toujours exécuté
 \end{minted}
 \subsubsection{Opérateur ternaire}
  
@@ -262,18 +262,18 @@ La raison, assez technique,\footnote{Pour les curieux, voir \url{https://drive.g
  
 Un petit exemple :
 \begin{minted}{c}
-// <math.h> needs you to compile this code with -lm option
-// at the end of gcc command line :
+// <math.h> nécessite l'option -lm
+// à la fin de la ligne de commande pour compiler :
 // gcc main.c -o main -lm
 #include <stdlib.h>
-#include <math.h> // NaN : Not A Number, sqrt
+#include <math.h> // NaN (Not A Number), sqrt
 
 int main() {
-	double a = ...; // any value
-	double b = ...;
+	double a = ...; // valeurs
+	double b = ...; // quelconques
 	double c = ...;
 
-	// Resolve the polynom equation
+	// Résoud une équation à solutions réelles de degré 2
 	double d = b*b - 4*a*c;
 	double x1 = (d < 0) ? NAN : (-b - sqrt(d))/(2*a);
 	double x2 = (d < 0) ? NAN : (-b + sqrt(d))/(2*a);
@@ -307,23 +307,23 @@ unsigned int x;
 switch (x) {
 case 0:
 	printf("Choix 0");
-	// and other instructions
+	// et d'autres instructions
 	break;
 case 1:
 case 2:
 	printf("Choix 1 ou 2");
-	// and other instructions
+	// et d'autres instructions
 	break;
 case 3:
 	printf("Choix 3 puis 4");
-	// and other instructions
+	// et d'autres instructions
 case 4:
 	printf("Choix 4");
-	// and other instructions
+	// et d'autres instructions
 	break;
 default:
 	printf("Autre");
-	// and other instructions
+	// et d'autres instructions
 	break;
 }
 printf("apres le switch");
@@ -343,7 +343,7 @@ La boucle à pré-condition suit le pseudo-code suivant :
 Il s'agit d'une boucle qui vérifie \textit{avant} l'exécution du bloc d'instructions qu'une certaine condition est vérifiée, et exécute ainsi le bloc d'instruction jusqu'à ce que la condition ne soit plus vérifiée. C'est le contenu de ce bloc d'instructions qui va amener à ce que la condition ne soit plus satisfaite.
 \begin{minted}[linenos=false]{c}
 while (condition) {
-	// instructions block executed while condition != 0
+	// bloc d'instructions exécutés tant que (condition != 0)
 }
 \end{minted}
 Comme pour le branchement \textsf{if-else}, la différence à 0 de la condition est implicite.
@@ -383,16 +383,16 @@ La boucle à post-condition est pratiquement identique à la boucle à pré-cond
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
 do {
-	// Instructions block
+	// Bloc d'instructions
 } while (condition);
 
 \end{minted}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
-// Instructions block
+// Bloc d'instructions
 while (condition) {
-	// Same instructions block
+	// Même bloc d'instructions
 }
 \end{minted}
 \end{minipage}
@@ -404,7 +404,7 @@ Ce type de boucle est extrêmement utile quand on veut être certain qu'une acti
 La boucle itérative est un cas particulier de boucle à pré-condition. Elle est construite selon le format suivant en langage C :
 \begin{minted}[linenos=false]{c}
 for (initial; condition; pas) {
-	// Instructions block
+	// Bloc d'instructions
 }
 \end{minted}
 et est équivalente au pseudo-code suivant :
@@ -424,19 +424,19 @@ L'idée est en générale d'utiliser l'instruction de \textit{pas} pour parcouri
  
 Quelques exemples :
 \begin{minted}[linenos=false]{c}
-// Infinite loop :
+// Boucle infinie :
 for (;;) {
 	
 }
 
-// Infinite loop incrementing a variable :
-for (int a = 0;;a++) { // a++ <=> a += 1
+// Boucle infinie incrémentant une variable :
+for (int a = 0; ; a++) { // a++ <=> a += 1
 	
 }
 
-// Finite loop which starts printing a text :
+// Boucle finie qui démarre en affichant du texte
 int a;
-for (printf("Initialement, a = %d\n", a = 1);a < 10;printf("À présent : a = %d\n", ++a));
+for (printf("Initialement, a = %d\n", a = 1); a < 10; printf("À présent : a = %d\n", ++a));
 \end{minted}
 \textbf{Mais pourquoi on utilise jamais \textsf{goto} ? C'est plus basique donc c'est mieux ?}
  

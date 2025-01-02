@@ -5,7 +5,7 @@ int main() {
 	int a = 8;
 	int b = 6;
 
-	// the swap :
+	// l'échange :
 	int tmp = a;
 	a = b;
 	b = tmp;

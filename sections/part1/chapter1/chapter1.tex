@@ -23,7 +23,6 @@ modèle de la machine de Turing.
 Sans plus de détail\footnote{Pour plus de détail, voir le livre \cite{XFI}} car cela serait tout à fait hors-sujet, la machine de Turing est basiquement une bande infinie de caractères munit d'une tête de lecture/écriture qui se déplace latéralement
 sur cette bande et agit selon la valeur des caractères lues grâce à une fonction de transition.
 \end{minitelbasicbox}
-
 Le symbole \textit{I/O} est extrêmement récurrent puisqu'il apparaît dans tous les cas où existe un système d'entrée et de sortie d'informations.
 \subsection{À l'intérieur}
 Les périphériques permettent l'interaction avec le système de l'ordinateur. Pourtant, celui-ci peut très bien fonctionner sans. Par exemple, on lisait les résultats des premiers ordinateurs directement à l'intérieur, et on y entrait les programmes ``à la main'', en modifiant les branchements des câbles pour ``écrire le programme''. En soi, cette notion d'écriture est assez récente, puisqu'elle date des ordinateurs disposant d'un clavier et d'un écran, périphériques d'entrée/sortie fondamentales pour une interaction ``facile'' avec un ordinateur.
@@ -667,93 +666,63 @@ Trouver les représentations binaires puis hexadécimale des nombres suivants. O
      \item $-1.1$
      \item $101$
 \end{itemize}
-\newpage
-\section{Algorithmes et programmation}
-La définition rigoureuse d'un algorithme se trouve n'être absolument pas trivial, ni même simple.
-Une première raison à cela est qu'il s'agit d'un concept au départ considéré comme intuitif, et que la
-formalisation d'un concept qui semble humainement intuitif pose immédiatement la question du bien
-fondé et de la rigueur de cette formalisation : un mot est toujours interprété, et deux humains peuvent
-utiliser le même mot, et ne pas en avoir la même utilisation, voir la même compréhension fine.
-
-La difficulté sous-jacente à une telle définition sera tout à fait esquivé ici puisqu'elle nécessiterait
-de poser une théorie du calcul pour définir ce qu'est un problème, ce que signifie la résolution d'un
-problème, ainsi que la résolution en temps fini d'un problème, ce qu'est une instruction élémentaire,
-etc\dots
-
-On s'en passera en conservant une définition \og avec les mains \fg{} qui manque cruellement de rigueur
-mais qui a le bénéfice d'être simple et suffisante dans un cadre purement pratique.
-
-\definition{Algorithme}{Un algorithme est une suite d'actions/d'instructions précises dont l'objectif est de résoudre un problème donné. Ces instructions doivent être les plus élémentaires possibles, et ne surtout pas être ambigües. C'est-à-dire qu'en lisant l'algorithme, il n'y ait qu'une seule possibilité d'action à chaque étape (ce qui ne signifie pas que le résultat soit prédéterminé puisqu'une action peut potentiellement avoir un résultat aléatoire, comme le lancer d'un dé par exemple).}
-
-\textbf{Exemple :} "Changer la valeur d'un nombre" n'est pas une instruction possible pour un algorithme, puisque le lecteur peut toujours \textit{interpréter} l'instruction, et ne sait en fait toujours pas exactement ce qu'il doit faire. Par contre l'instruction "Ajouter 1 à la valeur de la variable $x$" est une instruction, à condition que $x$ soit connue, que $1$ soit bien définie et que ``Ajouter'' soit une opération binaire bien définie sur $1$ et $x$.
-
-Tout simplement.
-
-\begin{algorithm}
-\caption{Premier exemple simple}\label{alg:hello}
-Afficher("Bonjour !")\;
-Afficher("Au revoir !")\;
-\end{algorithm}
-Cette algorithme n'est valable que si l'opération "Afficher" a été décrite de manière super précise avant. C'est-à-dire que même l'endroit où il faut afficher (par exemple, la feuille sur laquelle est écrite ce chapitre d'algorithmique) est indiqué auparavant au lecteur, \textit{pour éviter l'interprétation}. La donnée d'une chaîne de caractère doit également être connue.
-
-Un algorithme peut ensuite être exécuté par un \textit{agent}, et il produira alors un résultat donné.
-
-\definition{Agent algorithmique}{Actionneur capable de communication qui lira l'algorithme écrit et effectuera les actions les unes à la suite des autres. Ce peut être un être humain, ou encore un chat ou un chien (par exemple en apprenant l'algorithme à haute voix au chien)}
-
-L'\textbf{Algorithme 1} produira donc le résultat suivant :
-
-\begin{minipage}{1.\textwidth} \fontfamily{pcr}\selectfont
-	Bonjour !\newline
-	Au revoir !
-\end{minipage}
-
-L'intérêt d'algorithmes est notamment d'automatiser des tâches. On peut notamment imaginer l'algorithme suivant :
-\newline
-\begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:letters}
-Aller à la boîte aux lettres\;
-\eSi{la boîte est ouverte} {
-	Ramasser le contenu de la boîte aux lettres\;
-	Fermer la boîte aux lettres\;
-} {
-	Ouvrir la boîte aux lettres\;
-	Ramasser le contenu de la boîte aux lettres\;
-	Fermer la boîte aux lettres\;
-}
-Revenir à la maison\;
-\end{algorithm}
-
-On peut imaginer apprendre cet algorithme à notre corbeau de compagnie (c'est très intelligent les corbeaux\dots), et simplement lui ordonner d'exécuter cet algorithme par l'instruction "Va chercher le journal !".
-
-\textbf{Remarque :} En petit malin, le lecteur attentif peut observer deux choses :
-\begin{itemize}
-	\item que l'\textit{agent} qui exécute cet algorithme doit déjà savoir de quelle boîte aux lettres et de quelle maison il est question, pour qu'il n'y ait pas d'interprétation (et pour aller plus loin, il faut aussi qu'il comprenne le langage dans lequel est exprimé l'algorithme et le sens de chaque verbe/action).
-	\item que l'instruction "Fermer la boîte aux lettres" est présente deux fois, et surtout qu'on est certain qu'elle s'exécute. En effet, cette instruction est présente que la condition "\textit{la boîte est ouverte}" soit vérifiée ou non ! \textit{idem} pour l'instruction "Ramasser le journal". On peut donc les mettre une seule fois à la fin.
-\end{itemize}
-\begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:optletters}
-Aller à la boîte aux lettres\;
-\eSi{la boîte est ouverte} {
-	\Comment*[r]{Il n'y a rien à faire !}
-} {
-	Ouvrir la boîte aux lettres\;
-}
-Ramasser le contenu de la boîte aux lettres\;
-Fermer la boîte aux lettres\;
-Revenir à la maison\;
-\end{algorithm}
-L'algorithme est alors plus court à lire, mais aussi plus court à apprendre, à enregistrer. Si il faut le stocker sur un ordinateur par exemple, la quantité de mémoire de l'ordinateur n'est pas infinie ! Il est donc \textbf{parfois}\footnote{Mais pas systématiquement, cela dépend de si l'on cherche à optimiser la vitesse d'exécution ou la taille en mémoire} important que cet algorithme soit le plus court possible. C'est ce qu'on appellera de l'\textit{optimisation d'espace}\footnote{Dual de l'\textit{optimisation temporelle} qui cherche à optimiser la vitesse d'exécution. Il n'est parfois pas possible d'avoir les deux, détail sur lequel on reviendra dans trèèèès longtemps}.
-\subsection{Algorithmes et programmes}
-\definition{Programme}{Un programme informatique est un algorithme pouvant être exécuté par un ordinateur (qui est donc l'agent exécutant). Il doit donc être écrit dans un langage compréhensible par l'ordinateur appelé \textit{langage de programmation}.}
-
-Dans la suite du chapitre, l'entièreté des algorithmes seront exécutés sur ordinateur, pour la principale raison que cela permet de visualiser les résultats et d'expérimenter par soi-même.
-
-On va donc considérer pour toute la suite des programmes. Il faut cependant garder à l'esprit la distinction entre les deux, puisqu'un algorithme englobe beaucoup plus de choses qu'un programme informatique (il est difficile de programmer un ordinateur pour aller chercher le journal dans la boîte aux lettres).
-
-Pour qu'un programme puisse être exécuté par un ordinateur, il doit être connu de celui-ci, et est donc stocké dans la mémoire de l'ordinateur. L'ordinateur va ensuite le lire instructions par instructions et exécuter chacune de ces instructions.
-
-La représentation de l'algorithme doit donc être accessible à un ordinateur. On peut considérer une écriture de cette algorithme en langage binaire, c'est-à-dire comme une suite finie de 0 et de 1. La traduction du langage naturel (c'est-à-dire humain) en langage binaire est appellée \textit{compilation}. Elle est effectuée par des programmes appellées des \textit{compilateurs}.
-
-On peut cependant généraliser un peu la notion de \textit{compilation} : on peut dire que compiler c'est lire une suite de caractères obéissant à une certaine syntaxe, en construisant une (autre) représentation de l'information que ces caractères expriment. De ce point
-de vue, beaucoup d'opérations apparaissent comme étant de la compilation; à la limite, la lecture d'un nombre est déjà de la compilation, puisqu'il s'agit de lire des caractères constituant l'écriture d'une valeur selon la syntaxe des nombres décimaux et de fabriquer une autre représentation de la même information, à savoir sa valeur numérique \og dans notre tête \fg
+\section{Données textuelles}
+\definecolor{asciigreen}{rgb}{0, 0.52, 0.51}
+\definecolor{asciiblue}{rgb}{0.16, 0, 0.46}
+\definecolor{asciired}{rgb}{0.6, 0, 0}
+La manipulation de texte au sens humain du terme n'est pas une fonctionnalité naturelle pour un ordinateur.
+ 
+Pour pouvoir manipuler du texte, il faut représenter ce texte, donc poser une correspondance entre des caractères et des mots binaires. 
+\subsection{Caractères ASCII}
+Le premier standard international largement utilisé est apparu avec l'ANSI (\textit{\underline{A}merican \underline{N}ational \underline{S}tandards \underline{I}nstitute}). Celle-ci a posé une norme de correspondance entre les caractères de la langue anglaise et les mots binaires codés sur 7 bits. Cela définit donc $2^{7} = 128$ caractères :
+\begin{center}
+  \tiny
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l|>{\color{asciiblue}}l>{\color{asciired}}l>{\color{asciigreen}}l}
+  \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} & \small\textcolor{black}{Dec} & \small\textcolor{black}{Hex} & \small\textcolor{black}{Char} \\
+  \hline
+  0 & 0 & [NULL] & 32 & 20 & [SPACE] & 64 & 40 & @ & 96 & 60 & ` \\
+  1 & 1 & [START OF HEADING] & 33 & 21 & ! & 65 & 41 & A & 97 & 61 & a \\
+  2 & 2 & [START OF TEXT] & 34 & 22 & " & 66 & 42 & B & 98 & 62 & b \\
+  3 & 3 & [END OF TEXT] & 35 & 23 & \# & 67 & 43 & C & 99 & 63 & c \\
+  4 & 4 & [END OF TRANSMISSION] & 36 & 24 & \$ & 68 & 44 & D & 100 & 64 & d \\
+  5 & 5 & [ENQUIRY] & 37 & 25 & \% & 69 & 45 & E & 101 & 65 & e \\
+  6 & 6 & [ACKNOWLEDGE] & 38 & 26 & \& & 70 & 46 & F & 102 & 66 & f \\
+  7 & 7 & [BELL] & 39 & 27 & ' & 71 & 47 & G & 103 & 67 & g \\
+  8 & 8 & [BACKSPACE] & 40 & 28 & ( & 72 & 48 & H & 104 & 68 & h \\
+  9 & 9 & [HORIZONTAL TAB] & 41 & 29 & ) & 73 & 49 & I & 105 & 69 & i \\
+  10 & A & [LINE FEED] & 42 & 2A & \* & 74 & 4A & J & 106 & 6A & j\\
+  11 & B & [VERTICAL TAB] & 43 & 2B & + & 75 & 4B & K & 107 & 6B & k \\
+  12 & C & [FORM FEED] & 44 & 2C & , & 76 & 4C & L & 108 & 6C & l\\
+  13 & D & [CARRIAGE RETURN] & 45 & 2D & - & 77 & 4D & M & 109 & 6D & m\\
+  14 & E & [SHIFT OUT] & 46 & 2E & . & 78 & 4E & N & 110 & 6E & n\\
+  15 & F & [SHIFT IN] & 47 & 2F & / & 79 & 4F & O & 111 & 6F & o\\
+  16 & 10 & [DATA LINK ESCAPE] & 48 & 30 & 0 & 80 & 50 & P & 112 & 70&p\\
+  17 & 11 & [DEVICE CONTROL 1] & 49 & 31 & 1 & 81 & 51 & Q & 113 & 71&q\\
+  18 & 12 & [DEVICE CONTROL 2] & 50 & 32 & 2 & 82 & 52 & R & 114 & 72&r\\
+  19 & 13 & [DEVICE CONTROL 3] & 51 & 33 & 3 & 83 & 53 & S & 115 & 73&s\\
+  20 & 14 & [DEVICE CONTROL 4] & 52 & 34 & 4 & 84 & 54 & T & 116 & 74&t\\
+  21 & 15 & [NEGATIVE ACKNOWLEDGE] & 53 & 35 & 5 & 85 & 55 & U & 117 & 75&u\\
+  22 & 16 & [SYNCHRONOUS IDLE] & 54 & 36 & 6 & 86 & 56 & V  & 118 & 76&v\\
+  23 & 17 & [END FOF TRANS. BLOCK] & 55 & 37 & 7 & 87 & 57 & W & 119 & 77&w\\
+  24 & 18 & [CANCEL] & 56 & 38 & 8 & 88 & 58 & X & 120 & 78&x\\
+  25 & 19 & [END OF MEDIUM] & 57 & 39 & 9 & 89 & 59 & Y & 121 & 79&y\\
+  26 & 1A & [SUBSTITUTE] & 58 & 3A & : & 90 & 5A & Z & 122 & 7A&z\\
+  27 & 1B & [ESCAPE] & 59 & 3B & ; & 91 & 5B & [ & 123 & 7B&\{\\
+  28 & 1C & [FILE SEPARATOR] & 60 & 3C & $<$ & 92 & 5C & \textbackslash & 124 & 7C&$|$\\
+  29 & 1D & [GROUP SEPARATOR] & 61 & 3D & = & 93 & 5D & ] & 125 & 7D&\}\\
+  30 & 1E & [RECORD SEPARATOR] & 62 & 3E & $>$ & 94 & 5E & $\wedge$ & 126 & 7E&$\sim$\\
+  31 & 1F & [UNIT SEPARATOR] & 63 & 3F & ? & 95 & 5F & \_ & 127 & 7F&[DEL]\\
+  \end{tabular}
+  \captionof{table}{Table de vérité de l'opérateur $\neg$} \label{tab:ascii}
+\end{center}
+\textbf{Remarque :} On peut trouver cette table en écrivant \textit{man ascii} dans un terminal de commande sous Linux.
+ 
+La plupart des systèmes manipulent des mots binaires dont le nombre de bits est multiple de $8$. Par défaut, certains systèmes posent le bit de poids fort à la valeur 0. Il est toutefois possible d'étendre le codage ASCII en une version étendu (\textit{extended ASCII}). Il existe plusieurs standards d'ASCII étendu et il n'en sera pas discuté ici.
+ 
+\textbf{Exemple :} Selon l'ASCII, le caractère `a' est décrit par le mot binaire : $(1100001)_{2} = 0\textsf{x}61 = 97$. On peut également effectuer la correspondance dans l'autre sens, en réécrivant sous forme de caractères des mots binaires de 8 bits. Ainsi, \textsf{0x2B} décrit le caractère `$+$'
+ 
+\exercise{Traduction ASCII [COURS]}Trouver la chaîne de caractères décrite par la chaîne de mots binaires suivante :
+$$\textsf{0x4D696E6974656C203D20474F41540A0D00}$$
+\textit{\underline{Indication} : on pourra segmenter en mots de 8 bits la chaîne.}
 \end{document}

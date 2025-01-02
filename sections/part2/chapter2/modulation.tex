@@ -61,7 +61,7 @@ Commençons par le fichier d'entête, puisque c'est ce que le fichier \textit{``
 \begin{lstlisting}[title=vec2.h]
 \end{lstlisting}
 \begin{minted}{c}
-#include <stdio.h> // preprocessor directives are in the headers
+#include <stdio.h> // Les directives de préprocesseurs sont écrites dans l'entête
 
 struct Vec2 {
 	double x;
@@ -80,7 +80,7 @@ struct Vec2 vec2_sub(struct Vec2 p1, struct Vec2 p2);
 \begin{lstlisting}[title=vec2.c]
 \end{lstlisting}
 \begin{minted}{c}
-#include "vec2.h" // needed to access to the header interface
+#include "vec2.h" // Nécessaire pour accéder à l'interface (décrite dans l'entête)
 
 struct Vec2 vec2_new(double x, double y) {
 	struct Vec2 v = {x, y};
@@ -116,8 +116,8 @@ Finalement, le fichier \textit{``main.c''} peut inclure le module \textit{vec2} 
 \begin{minted}{c}
 #include <stdlib.h>
 
-#include "vec2.h" // access to the header interface
-// -> allows to use the routines and structures described in it
+#include "vec2.h" // Accède à l'interface décrite
+// -> permet d'utiliser les routines et structures décrites
 
 int main() {
 	struct Vec2 v = vec2_new(1.414, 3.14159);
@@ -237,17 +237,17 @@ struct SomeStructure {
 \begin{lstlisting}[title=module2.h]
 \end{lstlisting}
 \begin{minted}[linenos=false]{c}
-#include "module1.h" // access to the module1 interface
+#include "module1.h" // Accède à l'interface de "module1"
 
 /*
-Some interface
+Ici : Une interface quelconque
 */
 \end{minted}
 \begin{lstlisting}[title=main.c]
 \end{lstlisting}
 \begin{minted}[linenos=false]{c}
-#include "module1.h" // access to the module1 interface
-#include "module2.h" // access to the module2 interface
+#include "module1.h" // Accède à l'interface de "module1"
+#include "module2.h" // Accède à l'interface de "module2"
 
 int main() {
 	return 0;
@@ -267,7 +267,7 @@ struct SomeStructure {
 \begin{lstlisting}[title=module2.h]
 \end{lstlisting}
 \begin{minted}[linenos=false]{c}
-#include "module1.h" // access to the module1 interface
+#include "module1.h" // Accède à l'interface de "module1"
 \end{minted}
 Il est possible de construire des garde-fous basés sur des directives préprocesseurs pour forcer l'inclusion à n'être considérée qu'une seule fois par le compilateur.
 \subsection{Garde-fous}
@@ -283,11 +283,11 @@ Il s'agit de directives de préprocesseurs qui permettent d'ignorer certaines se
 	\begin{minted}[linenos=false]{c}
 #ifdef SOME_CONST
 /*
-Code executed if SOME_CONST is defined
+Code exécuté si SOME_CONST est définie
 */
-#else // not mandatory
+#else // pas obligatoire
 /*
-Code executed if not defined
+Code exécuté si SOME_CONST n'est pas définie
 */
 #endif
 \end{minted}
@@ -296,11 +296,11 @@ Code executed if not defined
 \begin{minted}[linenos=false]{c}
 #ifndef SOME_CONST
 /*
-Code executed if SOME_CONST is NOT defined
+Code exécuté si SOME_CONST n'est pas définie
 */
-#else // not mandatory
+#else // pas obligatoire
 /*
-Code executed if defined
+Code exécuté si SOME_CONST est définie
 */
 #endif
 \end{minted}
@@ -308,10 +308,10 @@ Code executed if defined
 
 On peut alors écrire des blocs de code qui ne seront jamais lus plus d'une fois par le compilateur grâce à l'astuce suivante :
 \begin{minted}[linenos=false]{c}
-#ifndef MODULE_INCLUDED // section can't be read more than once
-#define MODULE_INCLUDED // because the symbol is defined just below
+#ifndef MODULE_INCLUDED // Cette section ne peut être lu plus d'une fois
+#define MODULE_INCLUDED // car le symbole est définie juste en dessous
 /*
-Module is read only once
+Le module n'est lu qu'une fois
 */
 #endif
 \end{minted}
@@ -336,7 +336,7 @@ struct SomeStructure {
 #ifndef MODULE2_H_INCLUDED
 #define MODULE2_H_INCLUDED
 
-#include "module1.h" // access to the module1 interface
+#include "module1.h" // Accède à l'interface de "module1"
 
 #endif
 \end{minted}

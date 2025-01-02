@@ -39,7 +39,7 @@ La syntaxe pour déclarer un tableau $D$-dimensionnel de taille $N_{1}\times{N_{
 ...
 #define ND ...
 
-TYPE array[N1][N2]...[ND]; // D is the array's dimension
+TYPE array[N1][N2]...[ND]; // D est la dimension du tableau
 \end{minted}
 Ainsi, un tableau $2d$ d'entiers de $5$ lignes et 8 colonnes est déclaré de la manière suivante :
 \begin{minted}[linenos=false]{c}
@@ -54,7 +54,7 @@ int array[8][5];
 \end{itemize}
 On accède ensuite naturellement aux éléments du tableau par une double indexation :
 \begin{minted}[linenos=false]{c}
-array[2][3]; // value on line 3 and column 4 of the array
+array[2][3]; // valeur en 3ème ligne et 4ème colonne du tableau
 \end{minted}
 \exercise{Afficher un tableau $2d$ [COURS]} Écrire un programme (et pas une routine) qui affiche les éléments d'un tableau $2d$ d'entiers.
  
@@ -105,7 +105,7 @@ int main() {
 	for (int i = 0; i < 5; i++) {
 		triangle[i] = (int*)(malloc(sizeof(int) * (1 + min(5 - 1 - i, i))));
 		
-		// initialize the array to 0
+		// initialise le tableau avec des 0
 		for (int j = 0, j < (1 + min(5 - 1 - i, i)); j++) {
 			triangle[i][j] = 0;
 		}
@@ -118,4 +118,18 @@ int main() {
  
 \textbf{Remarque :} L'exercice ci-contre met en évidence la possibilité de passer en argument des tableaux multidimensionnels.
 \subsection{Exercices}
+\exercise{Matrices (1)} L'objet de cet exercice est l'implantation de matrices en langage C. 
+
+Soient $n, m\in\mathbb{N}^{*}$. Une matrice $mat\in\mathcal{M}_{n, m}(\textsf{TYPE})$ est basiquement un tableau de lignes $(L_{i})_{i\in{\llbracket{0; n\llbracket}}}$ et chacune de ces lignes est un tableau de valeurs typées :
+$$\left\{ \begin{array}{llcl}
+& mat & = & \left( L_{0}, L_{1}, \dots, L_{n-1} \right) \\
+\forall i \in \llbracket0; n\llbracket & L_{i} & = & \left(a_{i, 0}, \dots, a_{i, m-1} \right)
+\end{array}\right.$$
+\begin{enumerate}
+	\item Écrire une fonction \textsf{\detokenize{double** matrix_new(unsigned int n, unsigned int m);}} qui alloue dynamiquement un tableau \textsf{double** mat} de $n$ lignes de \textsf{double*} elles-mêmes alloués dynamiquement comme $m$ cases de \textsf{double} et renvoie cette matrice.
+	\item Écrire une procédure \textsf{\detokenize{void matrix_destroy(double** mat, unsigned int n);}} qui libère la mémoire associée à une matrice de $n$ lignes. \textit{Il faut que les $n\times{m}$ cases soient libérées à la fin.}
+	\item En utilisant l'équivalence $t[i] \equiv *((char*)t + i*sizeof(*t))$, déterminer l'expression permettant d'accéder à la valeur $mat_{i, j}$ de la matrice.
+	\item Écrire une procédure d'affichage d'une matrice de $mat\in\mathcal{M}_{n, m}(\textsf{TYPE})$ \textsf{\detokenize{void matrix_display(double** mat, unsigned int n);}}
+	\item Écrire une fonction \textsf{\detokenize{double** matrix_mul(double** a, double** b, unsigned int n, unsigned int k, unsigned int m);}} qui effectue et renvoie le produit de deux matrices $a\in\mathcal{M}_{n, k}$ et $b\in\mathcal{M}_{k, m}$
+\end{enumerate}
 \end{document}

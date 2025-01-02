@@ -1,5 +1,5 @@
-// stdio is not needed here
-#include <stdlib.h> // just for EXIT_SUCCESS
+// stdio est non nécessaire ici
+#include <stdlib.h> // juste pour EXIT_SUCCESS
 
 #include "linkedlist.h"
 
@@ -9,7 +9,7 @@ int main() {
 
 	linkedlist_push_on_head(l, 5);
 	linkedlist_push_on_head(l, 4);
-	linkedlist_push_on_queue(l, 6);
+	linkedlist_push_on_tail(l, 6);
 
 	linkedlist_display(l);
 

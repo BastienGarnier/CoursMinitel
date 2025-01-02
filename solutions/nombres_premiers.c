@@ -6,7 +6,7 @@ int main() {
 	printf("Saisir un nombre entier : ");
 	scanf("%u", &n);
 
-	char is_primal = n == 2 || (n > 2 && n % 2 != 0); // necessary
+	char is_primal = n == 2 || (n > 2 && n % 2 != 0); // nécessaire
 	for (int i = 3; i < n-1 && is_primal; i += 2) {
 		is_primal = (n % i == 0) ? 0 : is_primal;
 	}

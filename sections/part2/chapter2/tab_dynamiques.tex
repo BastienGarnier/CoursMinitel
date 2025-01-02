@@ -33,31 +33,31 @@ On observe ici une première utilisation des pointeurs quelconques \textsf{void*
 En particulier, tout accès ultérieur à cet espace mémoire peut \textbf{potentiellement} provoquer l'erreur de segmentation de code $-11$. Il ne s'agit que d'une potentialité car tant que l'espace mémoire libéré n'est pas réutilisé par un autre programme, le système d'exploitation peut ne pas relever d'erreur.
 \begin{minted}{c}
 #include <stdio.h> // printf
-#include <stdlib.h> // malloc and free
+#include <stdlib.h> // malloc et free
 
 int main() {
-	int* array = (int*)malloc(sizeof(int) * 5); // Allocates 4 * 5 = 20 octets.
+	int* array = (int*)malloc(sizeof(int) * 5); // Alloue 4 * 5 = 20 octets.
 
 	for (int i = 0; i < 5; i++) {
 		printf("%d\n", *(array + i));
 	}
 
-	free(array); // authorize future allocation of this address
+	free(array); // Autorise de futures allocations à cette adresse
 }
 \end{minted}
 Il s'agit d'un pointeur vers un espace mémoire de 20 octets. On peut y accéder de la même manière que pour un tableau.
  
 \textbf{Remarque 1 :} La projection de type peut être conservé comme implicite :
 \begin{minted}[linenos=false]{c}
-short int* array = malloc(sizeof(short int) * 10); // Allocates 2 * 10 = 20 octets
+short int* array = malloc(sizeof(short int) * 10); // Alloue 2 * 10 = 20 octets
 \end{minted}
 \textbf{Remarque 2 :} Il est à présent possible d'allouer en mémoire un tableau dont la taille dépend des variables du programme, et de le renvoyer par une fonction !
 \begin{minted}{c}
 #include <stdio.h> // printf
-#include <stdlib.h> // malloc and free
+#include <stdlib.h> // malloc et free
 
 int* make_array(unsigned int n) {
-	int *array = (int*)malloc(sizeof(int) * n); // Allocates (4 * n) bytes
+	int *array = (int*)malloc(sizeof(int) * n); // Alloue (4 * n) octets
 	for (unsigned int i = 0; i < n; i++) {
 		array[i] = i;
 	}
@@ -65,14 +65,15 @@ int* make_array(unsigned int n) {
 }
 
 int main() {
-	int* array = make_array(10); //	4 * 10 = 40 bytes array
+	int* array = make_array(10); //	tableau de 4 * 10 = 40 octets
 
 	for (unsigned int i = 0; i < 10; i++) {
 		printf("%d\n", array[i]);
 	}
 
-	free(array); // memory always have to be freed
+	free(array); // la mémoire doit toujours être libérée
 }
 \end{minted}
 \subsection{Exercices}
+
 \end{document}

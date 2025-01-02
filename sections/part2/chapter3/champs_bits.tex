@@ -79,11 +79,11 @@ struct BFDate {
 };
 
 int main(int argc, char *argv[]) {
-	printf("%ld\n", sizeof(struct Date)); // prints 12
-	printf("%ld\n", sizeof(struct BFDate)); // prints 4
+	printf("%ld\n", sizeof(struct Date)); // -> 12
+	printf("%ld\n", sizeof(struct BFDate)); // -> 4
 
 	struct BFDate d = {.day=22, .month=12, .year=2003};
-	printf("%u/%u/%u\n", d.day, d.month, d.year); // prints 22/12/2003
+	printf("%u/%u/%u\n", d.day, d.month, d.year); // -> 22/12/2003
 	return EXIT_SUCCESS;
 }
 \end{minted}
@@ -170,4 +170,6 @@ Les rapports extraordinaires des optimisations de niveau 2 et 3 proviennent du f
 L'utilisation des champs de bits empêche le compilateur d'effectuer une telle optimisation car il ne peut assurer formellement que le résultat en sortie sera le même que celui qui aurait été obtenu dans modifications\footnote{Les détails de la manière dont les optimisations sont effectués n'ont que peu d'importance ici et sont par ailleurs extrêmement complexes puisque ces optimisations sont très dépendantes du processeur utilisé. Il faut noter que la production des processeurs et des compilateurs est extrêmement lié puisque les processeurs exécuteront des programmes compilés et optimisés par les compilateurs. Il faut donc \textit{designer} des processeurs optimaux vis-à-vis des optimisations des compilateurs et des compilateurs dont les optimisations prennent en compte les dernières fonctionnalités des processeurs.}, ce qui explique un plateau du temps d'exécution autour de $2.5\ s$.
 
 \textbf{Ce qu'il faut retenir :} Les champs de bits ne doivent être utilisés que pour de l'optimisation mémoire dans le cas où la machine exécutant le code n'en possède que peu (par exemple en systèmes embarqués). Il faut toutefois avoir conscience que l'utilisation des champs de bits pour d'autres raisons est particulièrement contreproductive.
+
+\textbf{Remarque :} Les mesures de performance sont appelés des \textit{benchmarks}. Il peut s'agir de mesurer la qualité de la sortie du programme, son temps d'exécution, la quantité de mémoire utilisée, etc\dots Le \textit{benchmarking} sera abordé plus proprement\footnote{Je veux dire que le ``benchmarking'' dans cette section est fait complètement à l'arrache pour simplifier. Juste histoire de rassurer ceux qui seraient un peu plus puristes.} dans la troisième partie.
 \end{document}

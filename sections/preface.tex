@@ -1,23 +1,46 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-Ce document a été écrit dans le but premier d'offrir aux étudiants de l'École Nationale Supérieure des
+Ce livre a été écrit dans le but premier d'offrir aux étudiants de l'École Nationale Supérieure des
 Mines de St-Étienne en cursus ISMIN un support de cours solide pour la programmation en C. De fil
 en aiguille, il a finit par couvrir une part plus large de l'informatique qui se trouvait nécessaire à la
 bonne compréhension de la programmation et ne pouvait être considérée comme acquise par toutes les
 filières de CPGE.
 
+Certains demanderont -- avec raison -- pourquoi écrire un nouveau livre de programmation quand tant d'autres existent déjà. La première raison, et la principale, est celle de la langue. Exiger la connaissance de la langue anglaise pour apprendre l'informatique ou la programmation constitue un frein sévère pour une grande quantité d'individus. Au lieu de dépenser son énergie à la compréhension, l'assimilation et la maîtrise de connaissances parfois ardûes, on se fatigue et trébuche sur la langue dans laquelle sont exprimées ces connaissances. Il est évident que la maîtrise de l'anglais est nécessaire dans l'industrie informatique, mais tout un chacun devrait pouvoir apprendre si il ou elle le veut sans devoir passer quelques années avant à travailler une langue étrangère qui ne constitue que la forme sous laquelle est exprimé le savoir. La seconde raison tient au fait que peu de livres abordent avec précision la programmation en C en considérant que l'étudiant lecteur a un niveau de sortie de classes préparatoires. En effet, dans un premier cas les livres vont considérer une absence totale de connaissances même en mathématique, ce qui amène inévitablement à un manque de rigueur dérangeant. Dans un deuxième cas ces livres peuvent présupposer un savoir préalable de nombre de concepts informatiques dont de nombreux étudiants de classes préparatoires n'ont pas connaissances. Par ailleurs, de nombreux livres apportant une réflexion théorique, plus orienté informatique que programmation, partent du postulat que le lecteur est déjà à l'aise avec la programmation.
+
+L'idée de ce livre est donc d'apporter un alliage de connaissances théoriques et pratiques orientées vers la programmation qui ne réintroduise pas l'intégralité des mathématiques de classes préparatoires, tout en conservant une certaine rigueur.
+
+L'objectif est aussi d'apporter une préparation pour les examens de programmation en C de l'ISMIN, avec une certaine quantité d'exercices corrigés.
+
+% Il est étrangement faux de considérer que savoir programmer est équivalent à savoir la grammaire de nombreux langages de programmation, à savoir une -- relativement -- grande quantitée de structures de données et d'algorithmes, à savoir comment fonctionne précisement un ordinateur. Ainsi, Alexander Stepanov\footnote{Celui qui a écrit la bibliothèque standard du C++, c'est-à-dire pas la moitié d'un imbécile comme aurait dit mon professeur d'informatique de classes préparatoires.} dit, à propos de cette noble discipline :
+% \begin{center}
+% \textit{At Stanford there’s one guy who knows, but he’s an emeritus (Donald Knuth).}
+% \end{center}
+
+\hrulefill
+
 Une bibliographie est disponible en \textbf{Annexe} qui propose de manière thématique certains ouvrages spécialisés\footnote{Je n'ai pas tout lu\dots Pas que l'envie m'en manque, mais classes préparatoires et ISMIN obligent, il n'y a pas toujours le temps de se marrer autant qu'on le voudrait ;(}. Cette bibliographie couvre les thèmes suivants :
 \begin{itemize}
 	\item Représentation binaire des nombres \cite{MullerEtAl2018}\cite{BitHacks}
-	\item Programmation générale en C \cite{KR}\cite{c11}
+	\item Programmation de manière générale \cite{TAOCP}\cite{EoP}\footnote{Pas très spécialisé me direz-vous, mais \textit{The Art of Computer Programming} est si extraordinaire que je ne peux qu'en recommander vivement la lecture.}
+	\item Programmation en C \cite{KR}\cite{c11}
 	\item Programmation sous Linux \cite{LPI}
 	\item Compilation \cite{gnumake}\cite{LL}\cite{AL}\cite{Aho}
 	\item Programmation système \cite{CSaPP}
 	\item Informatique théorique \cite{XFI}
 \end{itemize}
 
-Toutes coquilles relevées\footnote{MINITEL n'est pas assez riche pour récompenser en dollars hexadécimales ces braves efforts, mais ce serait gentil malgré tout de bien vouloir nous faire part de ces erreurs ;)}, suggestions d'amélioration ou autres remarques quelconques peuvent être envoyées à la section ``Formation'' du serveur Discord de l'association Minitel de l'ISMIN.
+Toutes coquilles relevées\footnote{MINITEL n'est pas assez riche pour récompenser en dollars hexadécimales ces braves efforts, mais ce serait gentil malgré tout de bien vouloir nous faire part des erreurs techniques ;)}, suggestions d'amélioration ou autres remarques quelconques peuvent être envoyées à la section ``Formation'' du serveur Discord de l'association Minitel de l'ISMIN.
+
+\begin{minitelbasicbox}{\textbf{Premier petit apparté}}
+Je ne tiens pas à faire la preuve ici d'un égocentrisme mal placé, mais simplement à expliquer la parenté de l'\oe{}uvre. Originellement, ce livre devait, du moins dans mon esprit, être entièrement affilié à l'association étudiante d'informatique de l'école, Minitel. Je considérais, et considère encore, qu'il est mal placé de se mettre en avant dans le cadre d'un travail associatif, puisque l'on travaille pour les autres avant toute chose, pour soi en dernier.
+
+Pourtant, c'est la conscience assez aigüe de mon ignorance de nombreuses choses en matière de programmation et d'informatique qui a changé radicalement l'application de ce point de vue vis-à-vis de ce livre. Cela provient de la certitude que mon travail pouvait être entaché de bévues d'importances assez grandes. Par exemple, à ne signer que du nom de l'association, les erreurs lui seraient attribuées. Certains vont alléguer que la relecture permet la correction de ces erreurs. Cela est vrai seulement dans le cas d'erreurs locales, purement techniques. Certaines erreurs sont d'un ordre plus large, et n'apparaissent pas clairement. Elles fondent la vision que l'on peut avoir de concepts généraux -- comme l'informatique ou la programmation. En fait, ces \textit{erreurs} dont j'ai pu entrevoir les possibles existences par la lecture de certaines \oe{}uvres extraordinaires \cite{EoP}\cite{TAOCP} ont parfois amenés à la réécriture -- encore très imparfaite -- d'immenses pans de ce livre. C'est parce-que je ne tiens pas à infliger la responsabilité d'autres inévitables erreurs à l'association Minitel que mon nom est écrit sur la couverture.
+
+Par ailleurs, la qualité stylistique comme pédagogique varie d'une section à une autre, que ce soit dû à la fatigue ou au fait que certaines sections écrites d'abord souffrent d'un manque d'expérience dans la rédaction.
+\end{minitelbasicbox}
 
 \hrulefill
+
 \newpage
 \end{document}

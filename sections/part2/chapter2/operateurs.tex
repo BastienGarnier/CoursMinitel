@@ -15,18 +15,18 @@ La syntaxe générale des opérateurs sur les variables est la suivante (selon l
 TYPE v1 = VALEUR1;
 TYPE v2 = VALEUR2;
 
-// unary operator :
-<OPERATION> v1; // result is not saved
+// opérateur unaire :
+<OPERATION> v1; // le résultat n'est pas stocké
 
-// binary operator :
-v1 <OPERATION> v2; // result is not saved
+// opérateur binaire :
+v1 <OPERATION> v2; // le résultat n'est pas stocké
 \end{minted}
 Par ailleurs, certains opérateurs sont prioritaires sur d'autres. Pour forcer une opération à être évaluée avant une autre, il est possible de parenthéser les expressions :
 \begin{minted}[linenos=false]{c}
 TYPE v1 = VALEUR1;
 TYPE v2 = VALEUR2;
 
-TYPE v3 = (v2 <OP2> (v1 <OP1> v2)); // operator OP1 is evaluated before OP2
+TYPE v3 = (v2 <OP2> (v1 <OP1> v2)); // l'opérateur OP1 est calculé avant OP2
 \end{minted}
 Par ailleurs, le langage organise les opérations selon une priorité par défaut. Si on écrit :
 \begin{minted}[linenos=false]{c}
@@ -160,14 +160,14 @@ Quelques exemples :
 \begin{minted}[frame=single]{c}
 int a = 5;
 int b = 7;
-printf("%d\n", !(b-a)); // b-a = 2 is true so !(b-a) is false : prints 0
-printf("%d\n", !!(a + b)); // prints !0, so prints 1
-printf("%d\n", a != b); // prints 1
-printf("%d\n" a == b); // prints 0
-printf("%d\n", !!(a+b) == (a != b)); // prints 1 == 1 so prints 1
-printf("%d\n", a != b && a == b); // prints 0
-printf("%d\n", a == b || (a + b)); // prints 1
-printf("%d\n", a-b && (a != b)); // prints 1 because both are true
+printf("%d\n", !(b-a)); // b-a = 2 est vrai donc !(b-a) est faux -> 0
+printf("%d\n", !!(a + b)); // -> !0 = 1
+printf("%d\n", a != b); // -> 1
+printf("%d\n" a == b); // -> 0
+printf("%d\n", !!(a+b) == (a != b)); // -> 1
+printf("%d\n", a != b && a == b); // -> 0
+printf("%d\n", a == b || (a + b)); // -> 1
+printf("%d\n", a-b && (a != b)); // -> 1 car les deux propositions sont vraies
 \end{minted}
 \textbf{Remarque :} On observe que pour tout entiers $a$ et $b$, $a-b\equiv a \neq b$. En effet, $a \neq b \Leftrightarrow a - b \neq{0}$
 \subsection{Opérateurs d'assignation}
@@ -221,7 +221,7 @@ Il n'est pas particulièrement utile d'utiliser cette particularité de l'opéra
  
 Les opérateurs binaires arithmétiques et bit-à-bits peuvent être combinés avec l'opérateur d'assignation pour contracter le code :
 \begin{minted}[linenos=false]{c}
-int a = ...; // any value
+int a = ...; // valeur quelconque
 a += 3; // a = a + 3
 a -= 3; // a = a - 3
 a *= 3; // a = a * 3
@@ -254,8 +254,8 @@ a -= 1;
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
 int a = 0;
-++a; // returns 1
---a; // returns 0
+++a; // renvoie 1
+--a; // renvoie 0
 \end{minted}
 \end{minipage}
 
@@ -264,9 +264,9 @@ Ainsi, $++a$ renvoie la valeur de $a$ \textit{après} incrémentation et $--a$ r
 Toutefois, la forme la plus connue de l'incrémentation et de la décrémentation est la suivante :
 \begin{minted}[linenos=false]{c}
 int a = 0;
-a++; // returns 0
-a--; // returns 1
-a; // returns 0
+a++; // renvoie 0
+a--; // renvoie 1
+a; // renvoie 0
 \end{minted}
 Dans ce cas, la valeur renvoyée est celle \textit{avant} l'incrémentation ou la décrémentation. Ce qui explique le décalage dans le code juste ci-dessus.
  
@@ -322,7 +322,7 @@ On remarque que pour entiers $n, m\in{\mathbb{N}}$, $n\ll{m} = n\times2^{m}$. En
 int main() {
 	int a = 57;
 	int r;
-	// code to determinate
+	// ici : code à déterminer
 	printf("57x14 = %d", r);
 	return EXIT_SUCCESS;
 }
@@ -335,9 +335,9 @@ Minimiser le nombre de décalages et d'additions/soustractions (objectif : 2 dé
 #include <stdlib.h>
 
 int main() {
-	int x = ...; // any positive or negative value
+	int x = ...; // valeur quelconque, positive comme négative
 	unsigned int abs_x;
-	// code to determinate
+	// ici : code à déterminer
 	printf("|%d| = %u", x, abs_x);
 	return EXIT_SUCCESS;
 }

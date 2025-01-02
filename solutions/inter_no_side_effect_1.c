@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 int main() {
-	int a = ...; // any value
-	int b = ...; // any value
+	int a = ...; // valeur quelconque
+	int b = ...; // valeur quelconque
 
-	// the swap :
+	// l'échange :
 	a = a + b;
 	b = a - b; // b = a + b - b = a
 	a = a - b; // a = a + b - a = b

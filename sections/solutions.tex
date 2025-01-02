@@ -2,7 +2,7 @@
 \begin{document}
 Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temps que l'on progresse le plus au niveau du raisonnement et des réflexes. N'hésitez pas !
  
-La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre les deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est pas garanti que les programmes proposés ci-dessous soient optimales, que ce soit par l'optimisation des constantes, la taille du code, ou d'autres paramètres. Il est d'ailleurs rare de pouvoir optimiser un programme selon toutes les contraintes\footnote{Par exemple, un programme parfois plus gros en mémoire peut-être plus rapide à l'exécution.}
+La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est pas garanti que les programmes proposés ci-dessous soient optimaux, que ce soit par l'optimisation des constantes, la taille du code, ou d'autres paramètres. Il est d'ailleurs rare de pouvoir optimiser un programme selon toutes les contraintes\footnote{Par exemple, un programme parfois plus gros en mémoire peut-être plus rapide à l'exécution. Par ailleurs, la vitesse d'exécution dépend de la taille des entrées d'un algorithme. Certains algorithmes seront plus rapides sur des entrées de petite taille et d'autres plus rapides sur des entrées de grande taille. Il faut faire des choix.}
 \section{Première partie}
 On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 \subsection{Opérations logiques sur les mots binaires}
@@ -154,6 +154,11 @@ Donc $G$ est bien un groupe commutatif.
 	\item $-1.1 = -(1.00010010010010010010010)_2\times{2^1} = 1100\ 0000\ 0000\ 1001\ 0010\ 0100\ 1001\ 0010 = 0\textsf{xC}0092492$
 	\item $101 = (0110\ 0101)_2 = 0\textsf{x}65$
 \end{itemize}
+\subsection{Caractères ASCII}
+\solution{Traduction ASCII [COURS]} La chaîne de caractères décrite est : 
+\begin{center}
+``Minitel = GOAT''
+\end{center}
 \section{Deuxième partie}
 \subsection{Bases du langage}
 \subsubsection{Variables}
@@ -272,13 +277,20 @@ En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *
 \inputminted{c}{solutions/tab_sum.c}
 \solution{Maximum et minimum d'un tableau}
 \inputminted{c}{solutions/tab_max_min.c}
-\subsubsection{Tableaux dynamiques}
+\subsubsection{Tableaux multidimensionnels}
 \solution{Afficher un tableau \textit{2d} [COURS]}
 \inputminted{c}{solutions/tab_display_2d.c}
 \solution{Affichage du triangle [COURS]}\newline
 Version généralisée pour \textsf{N\_LINES} quelconque : 
 \inputminted{c}{solutions/triangle.c}
+\solution{Matrices (1)} \newline
+Soit $m$ une matrice implantée en C. Il faut d'abord déterminer ce que signifie $mat[i] \equiv ^*((char^*)m + i\times sizeof(double^*))$. Le $double^*$ est le type d'une ligne. Donc $l_{i} = mat[i]$ est le pointeur vers la $i^{e}$ ligne. On a alors $l_{i}[j]$ le $j^e$ élément de la $i^e$ ligne. En remplaçant $l_{i}$ par son expression, on a :
+$$mat[i][j] \equiv\ ^*(^*(mat + i) + j) \equiv (^*((char^*)mat + i\times sizeof(double^*)) + j\times sizeof(double)) $$
+\inputminted{c}{solutions/matrix.c}
 \subsubsection{Structures}
+\solution{Matrices (2)} \newline
+Il suffit d'utiliser l'interface suivante, les modifications des routines sont assez triviales :
+\inputminted{c}{solutions/matrix.h}
 \solution{Listes chaînées}
 \inputminted{c}{solutions/linkedlist_1.c}
 \subsubsection{Modulation et entêtes}
@@ -294,11 +306,6 @@ user@computer ~/working_directory> ./main
 ->4->5->6
 user@computer ~/working_directory>
 \end{minted}
-\subsubsection{Chaînes de caractères}
-\solution{Traduction ASCII [COURS]} La chaîne de caractères décrite est : 
-\begin{center}
-``Minitel = GOAT''
-\end{center}
 \solution{Calculatrice}
 \inputminted{c}{solutions/calculatrice.c}
 \subsubsection{Interagir avec les flux de fichiers}

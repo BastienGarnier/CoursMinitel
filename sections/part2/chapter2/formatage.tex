@@ -14,9 +14,9 @@ Aucun de ces deux caractères ne peut être affiché directement dans une chaîn
 #include <stdlib.h>
 
 int main() {
-// produces a compilation warning and prints "'est pas affichable." :
+// produit un avertissement à la compilation et affiche "'est pas affichable." :
 	printf("% n'est pas affichable."); 
-// compilation error :
+// erreur de compilation :
 	printf("\ non plus.");
 	return EXIT_SUCCESS;
 }
@@ -81,9 +81,9 @@ int main() {
 \end{minted}
 Il est possible de mettre autant de modificateurs qu'on le souhaite dans la chaîne de caractère. Il faut cependant respecter le nombre de modificateurs et mettre précisément le même nombre de variables :
 \begin{minted}[linenos=false]{c}
-// Error : no integer is given :
+// Erreur : aucun entier n'est donné ici :
 printf("%u est un entier non signé"); 
- // Error : 42 should not be there :
+ // Erreur : 42 est en trop :
 printf("%lf : 64 bits, %f : 32 bits.", 3.1415926358, 2,718281828, 42);
 \end{minted}
 Bien sûr, les entrées peuvent être des variables :

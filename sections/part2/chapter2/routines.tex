@@ -18,7 +18,7 @@ Ces deux formes en langage C se voient écrites de manière semblable par les sy
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
 void procedure_name(parametres) {
-	// Instructions block
+	// bloc d'instructions
 	return;
 }
 \end{minted}
@@ -26,8 +26,8 @@ void procedure_name(parametres) {
 \begin{minipage}{0.5\textwidth}
 \begin{minted}[linenos=false]{c}
 TYPE function_name(parametres) {
-	// Instructions block
-	return VALUE; // VALUE of type TYPE
+	// bloc d'instructions
+	return VALUE; // VALUE de type TYPE
 }
 \end{minted}
 \end{minipage}
@@ -60,9 +60,9 @@ Il faut donc que les routines soient définies \textit{avant} tous leurs appels.
 \begin{minted}[linenos=false]{c}
 void afficher_diff_0(int x) {
 	if (x == 0) {
-		return; // ends the routine
+		return; // termine la routine
 	}
-	printf("x != 0\n"); // never executed
+	printf("x != 0\n"); // jamais exécuté si x = 0
 }
 \end{minted}
 \subsection{Signature et prototype}
@@ -77,9 +77,9 @@ void afficher_diff_0(int x) {
 
 En fait, un prototype se déclare en C comme une routine absente de code :
 \begin{minted}[linenos=false]{c}
-int addition(int a, int b); // Prototype of the 'addition' function
+int addition(int a, int b); // Prototype de la fonction 'addition'
 
-int addition(int a, int b) { // Declaration of the 'addition' function
+int addition(int a, int b) { // Déclaration de la fonction 'addition'
 	return a + b;
 }
 \end{minted}
@@ -88,17 +88,17 @@ Le prototype permet de déclarer l'existence de la routine avant sa définition 
 #include <stdio.h>
 #include <stdlib.h>
 
-// Both indicates the existence of the 'addition' function to the compiler
-int addition(int a, int b); // Prototype of the 'addition' function
-// OR
-int addition(int, int); // Parameters names are not necessary in the prototype
+// Chaque ligne ci-dessous montre l'existence de la fonction 'addition' au compilateur
+int addition(int a, int b); // Prototype de la fonction 'addition'
+// OU
+int addition(int, int); // Les noms des paramètres sont optionnels dans le prototype
 
 int main() {
 	printf("%d + %d = %d", 2, 3, addition(2, 3));
 	return EXIT_SUCCESS;
 }
 
-int addition(int a, int b) { // Declaration of the 'addition' function
+int addition(int a, int b) { // Déclaration de la fonction 'addition'
 	return a + b;
 }
 \end{minted}
@@ -112,14 +112,14 @@ Notons que les identifiants à l'intérieur d'une routine évoluent dans un \tex
 #include <stdlib.h>
 
 void proc(int c) {
-	v = 48; // ERROR : v not declared in this function
+	v = 48; // ERREUR : v non déclarée dans cette fonction
 	return c;
 }
 
 int main() {
 	int v = 5;
 	proc(v+1);
-	v = c; // ERROR : c not declared in this function
+	v = c;// ERREUR : c non déclarée dans cette fonction
 	return EXIT_SUCCESS;
 }
 \end{minted}
@@ -127,7 +127,7 @@ En particulier :
 \begin{minted}{c}
 #include <stdlib.h>
 
-int polynome(char p) { // Declaration of the 'addition' function
+int polynome(char p) { // Déclaration de la fonction 'addition'
 	p = (p*p - p + 1);
 	return (int)p;
 }
@@ -146,7 +146,7 @@ Ainsi, dans le code suivant :
 \begin{minted}{c}
 #include <stdlib.h>
 
-int polynome(char p) { // Declaration of the 'addition' function
+int polynome(char p) { // Déclaration de la fonction 'addition'
 	return (int)(p*p - p + 1);
 }
 int main() {
@@ -161,9 +161,9 @@ Pour être techniquement plus précis, la valeur de $a$ est copiée en mémoire 
 \begin{minted}{c}
 #include <stdlib.h>
 
-int polynome(char p) { // Declaration of the 'addition' function
+int polynome(char p) { // Déclaration de la fonction 'addition'
 	p = (p*p - p + 1);
-	return p; // implicit static casting
+	return p; // projection de type implicite
 }
 int main() {
 	int a = 3;
@@ -185,8 +185,8 @@ Lorsque le système charge en mémoire un programme informatique et l'exécute, 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define X ... // any value
-#define Y ... // any value
+#define X ... // valeur quelconque
+#define Y ... // valeur quelconque
 
 unsigned int addition(int a, int b) {
 	for (; a-- > 0; b++);

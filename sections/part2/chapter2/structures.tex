@@ -26,7 +26,7 @@ Une structure est un moyen de stocker dans une seule entité plusieurs types d'i
  
 La syntaxe de définition d'une structure en C est la suivante :
 \begin{minted}[linenos=false]{c}
-struct NomStructure { // No objects are created, it's just a description
+struct NomStructure { // Aucun objet n'est créé, il s'agit d'une description
 	TYPE1 var1;
 	TYPE2 var2;
 	TYPE3 var3;
@@ -35,21 +35,21 @@ struct NomStructure { // No objects are created, it's just a description
 \end{minted}
 Il s'agit d'une définition, et non d'une déclaration. Pour cette raison, aucune variable interne, ou \textit{membre}, de la structure ne peut être initialisée. Par ailleurs, une définition d'une structure est comme la définition d'un nouveau type de variable. Pour utiliser une structure, il faut au final créer des variables dont le type est cette structure :
 \begin{minted}[linenos=false]{c}
-struct NomStructure { // No objects are created, it's just a description
+struct NomStructure { // Aucun objet n'est créé, il s'agit d'une description
 	TYPE1 var1;
 	TYPE2 var2;
 	TYPE3 var3;
 	// etc...
 };
-struct NomStructure x; // 'x' is created with no members initialized
+struct NomStructure x; // 'x' est créé sans membres initialisés
 \end{minted}
 Il est possible d'y penser un peu comme à la construction d'une maison : on commence par dessiner le plan de la maison et une fois cela fait il suffit de fabriquer plein de maisons grâce à ce plan.
  
 On peut ensuite accéder aux membres d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un membre noté ``.'' :
 \begin{minted}[linenos=false]{c}
-x.var1 = ...; // access to the 'var1' member of 'x'
-x.var2 = ...; // access to the 'var1' member of 'x'
-x.var3 = ...; // access to the 'var1' member of 'x'
+x.var1 = ...; // accède au membre 'var1' de 'x'
+x.var2 = ...; // accède au membre 'var1' de 'x'
+x.var3 = ...; // accède au membre 'var1' de 'x'
 // etc...
 \end{minted}
 Un exemple :
@@ -127,7 +127,7 @@ struct Line {
 
 int main() {
 	struct Line l;
-	// . is an associative operator :
+	// . est un opérateur associatif :
 	l.point.x = 0.0;
 	l.point.y = 1.0;
 	l.direction.x = 1.0;
@@ -216,11 +216,11 @@ L'initialisation de structures contenant une grande quantité de variables peut 
 struct MyStruct {
 	int a;
 	char b;
-	void *c; // any pointer
+	void *c; // pointeur quelconque
 	long double d; 
 };
 
- // Sequential initializing
+ // Initialisation séquentielle
 struct MyStruct s = {
 	2<<20,
 	6,
@@ -234,11 +234,11 @@ struct MyStruct s = {
 struct MyStruct {
 	int a;
 	char b;
-	void *c; // any pointer
+	void *c; // pointeur quelconque
 	long double d;
 };
 
-// Designated initializing
+// Initialisation sélective
 struct MyStruct s = {
 	.d =	3.141592653589,
 	.a = 2<<20,
@@ -259,7 +259,7 @@ struct Point {
 	double y;
 };
 
-struct Point p = {.y = 4.5, 3.2}; // Point on x = 3.2, y = 4.5
+struct Point p = {.y = 4.5, 3.2}; // Pointe vers x = 3.2, y = 4.5
 \end{minted}
 Il est parfaitement possible de mélanger les initialisations séquentielles et sélectives. Dans un tel cas, l’initialisation séquentielle reprend au dernier membre désigné par une initialisation sélective. Partant, le code suivant initialise le membre $a$ à 1 et le membre $d$ à 30.560.
 \begin{minted}[linenos=false]{c}
@@ -267,9 +267,17 @@ struct MyStruct s = {1, .d = 30.560};
 \end{minted}
 Alors que le code ci-dessous initialise le membre $c$ à \textsf{NULL}, le membre $d$ à 48, le membre $b$ à 0 et le membre $c$ à $\&s$.
 \begin{minted}[linenos=false]{c}
-struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d not initialized
+struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 \end{minted}
 \subsection{Exercices}
+\exercise{Matrices (2)} Écrire une structure \textsf{struct Matrix} qui contient trois champs :
+\begin{itemize}
+	\item \textit{double** mat};
+	\item \textit{unsigned int n};
+	\item \textit{unsigned int m};
+\end{itemize}
+et modifier les routines de l'\refexercise{Matrices (1)} pour qu'elles utilisent la structure \textsf{struct Matrix}.
+
 \exercise{Listes chainées}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
  
 On commence par construire la structure permettant de stocker un \textit{noeud} de la liste, c'est-à-dire un de ses éléments. La valeur du noeud est la valeur de l'élément de la liste :
@@ -281,6 +289,8 @@ On commence par construire la structure permettant de stocker un \textit{noeud} 
 	\end{center}
 \end{minipage}
 
+L'idée fondamentale des listes chaînées est que chaque noeud sera alloué dynamiquement et sera donc situé dans un espace mémoire indépendant de celui des autres noeuds. Cela permet de libérer la mémoire allouée pour un noeud en conservant les autres noeuds, ou encore d'allouer de nouveaux noeuds sans avoir à s'occuper des adresses des autres noeuds.
+
 En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud à l'autre grâce aux pointeurs $next$ et $previous$.
 \begin{enumerate}
 	\item Définir une structure \textsf{struct Node} qui contient un entier $value$ (la valeur du noeud) et deux pointeurs vers une structure \textsf{struct Node} appelés $next$ et $previous$ (qui permettront de \textit{pointer} vers les noeuds suivant et précédent de la liste)
@@ -289,7 +299,13 @@ En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud �
 		\item $nd\rightarrow next$ et $nd\rightarrow previous$ ne pointent sur rien
 		\item $nd\rightarrow value = value$
 	\end{itemize}
-	\item Définir une structure \textsf{struct LinkedList} qui contient un entier $length$ (le nombre de noeuds) et deux pointeurs vers une structure \textsf{struct Node} appelés $head$ et $queue$. La \textit{tête} de liste est le premier noeud de la liste. La \textit{queue} de liste est le dernier noeud de la liste.
+	\item Définir une structure \textsf{struct LinkedList} qui contient un entier $length$ (le nombre de noeuds) et deux pointeurs vers une structure \textsf{struct Node} appelés $head$ et $tail$. La \textit{tête} de liste est le premier noeud de la liste. La \textit{queue} de liste est le dernier noeud de la liste. On obtient grâce à cette structure de liste le schéma suivant (ici, une liste de trois éléments de valeurs $V_{1}$, $V_{2}$ et $V_{3}$) :
+
+	\begin{minipage}{\textwidth}
+	\begin{center}
+	\includesvg[width=\textwidth]{liste}
+	\end{center}
+	\end{minipage}
 	\item Écrire une fonction \textsf{struct LinkedList* linkedlist\_new();} qui alloue dynamiquement une structure \textsf{struct LinkedList* lst} initialisée telle que :
 	\begin{itemize}
 		\item $lst\rightarrow head$ et $lst\rightarrow previous$ ne pointent sur rien
@@ -297,8 +313,10 @@ En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud �
 	\end{itemize}
 	\item Écrire une fonction \textsf{char linkedlist\_is\_empty(struct LinkedList *l);} qui renvoie \textsf{1} si la liste est vide, et renvoie \textsf{0} sinon.
 	\item Écrire une procédure \textsf{void linkedlist\_push\_on\_head(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en tête de liste}, c'est-à-dire qu'après insertion la valeur de la \textit{tête} sera $value$. On pensera à traiter séparément le cas où la liste est vide (c'est-à-dire $lst\rightarrow length = 0$). En effet, on rappelle que si $lst\rightarrow head$ ne pointe sur rien, le considérer comme un noeud provoque une erreur du fait de l'accès à une zone mémoire non autorisée. Par ailleurs, si la liste contient un unique élément, la \textit{tête} est égale à la \textit{queue}.
-	\item De même, écrire une procédure \textsf{void linkedlist\_push\_on\_queue(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en queue de liste}.
-	\item Écrire deux fonctions \textsf{int linkedlist\_pop\_from\_head(struct LinkedList *l);} et \textsf{int linkedlist\_pop\_from\_queue(struct LinkedList *l);} qui suppriment respectivement le noeud en tête et en queue de liste et renvoient la valeur de ce noeud. On pensera à libérer la mémoire associée à l'allocation dynamique de ce noeud (c'est-à-dire utiliser \textsf{free} sur le pointeur vers le noeud).
+
+	\textbf{Attention :} la difficulté principale réside dans le fait de relier correctement les noeuds entre eux grâce aux pointeurs. Il faut faire preuve de rigueur pour qu'après exécution de la fonction on ait bien le schéma ci-dessus.
+	\item De même, écrire une procédure \textsf{void linkedlist\_push\_on\_tail(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en queue de liste}.
+	\item Écrire deux fonctions \textsf{int linkedlist\_pop\_from\_head(struct LinkedList *l);} et \textsf{int linkedlist\_pop\_from\_tail(struct LinkedList *l);} qui suppriment respectivement le noeud en tête et en queue de liste et renvoient la valeur de ce noeud. On pensera à libérer la mémoire associée à l'allocation dynamique de ce noeud (c'est-à-dire utiliser \textsf{free} sur le pointeur vers le noeud).
 	\item En utilisant un pointeur temporaire vers les noeuds, écrire une procédure \textsf{void linkedlist\_display(struct LinkedList *l);} qui affiche les valeurs des noeuds de la liste.
 \end{enumerate}
 % \exercise{Raymarching}Un environnement procédural est un environnement généré par des procédures, constitués de calculs mathématiques. L'algorithme de \textit{raymarching} permet de visualiser depuis un point de l'espace un tel environnement, comme le ferait une caméra\footnote{Voir \url{https://www.youtube.com/watch?v=BFld4EBO2RE} pour une démonstration de création d'un environnement procédural par un ancien ingénieur de Pixar.}

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N_LINES 5 // we assum it's always odd
+#define N_LINES 5 // hypothèse : toujours impair
 
 int min(int a, int b) {
 	return (a > b) ? b : a;

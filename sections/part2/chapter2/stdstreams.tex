@@ -46,7 +46,7 @@ On s'intéresse ici à la manipulation du flux d'entrée \textit{stdin}. Il est 
 \begin{minted}[linenos=false]{c}
 int x;
 printf("Entrer un nombre : ");
-int counter = scanf("%d", &x); // press enter to valid the entry
+int counter = scanf("%d", &x); // appuyer sur "Entrée" pour valider la saisie
 printf("%d valeurs saisies.", counter);
 printf("Le nombre saisi est %d", x);
 \end{minted}
@@ -59,7 +59,7 @@ Par ailleurs, on peut également formater plusieurs données d'un coup avec \tex
 	\begin{minted}[mathescape, linenos=false]{c}
 int x, y;
 printf("Entrer deux nombres : ");
-int counter = scanf("%d %d", &x, &y); // press enter to valid the entry
+int counter = scanf("%d %d", &x, &y); // appuyer sur "Entrée" pour valider la saisie
 printf("%d valeurs saisies.", counter);
 printf("Les deux nombres saisis sont %d et %d", x, y);
 	\end{minted}
@@ -141,9 +141,9 @@ On rappelle que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ain
 int main() {
 	int x, y, counter;
 	printf("Entrer deux nombres : ");
-	if ((counter = scanf("%d %d", &x, &y)) != 2) // press enter to valid the entry
+	if ((counter = scanf("%d %d", &x, &y)) != 2) // appuyer sur "Entrée" pour valider la saisie
 	{
-		fprintf(stderr, "Erreur saisie incorrecte.\n"); // \n only for readability
+		fprintf(stderr, "Erreur saisie incorrecte.\n"); // \n seulement pour lisibilité
 	} else {
 		printf("%d valeurs saisies.", counter);
 		printf("Les deux nombres saisis sont %d et %d", x, y);
