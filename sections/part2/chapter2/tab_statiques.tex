@@ -246,4 +246,17 @@ Une solution ? Oui, avec les tableaux dynamiques !
 \exercise{Somme d'un tableau}Écrire une fonction \textsf{int somme(int tab[], int taille);} qui renvoie la somme des éléments du tableau.
  
 \exercise{Maximum et minimum d'un tableau}Écrire deux fonctions \textsf{int max(int tab[], int taille);} et \textsf{int min(int tab[], int taille);} qui renvoient respectivement le maximum et le minimum des éléments d'un tableau.
+
+\exercise{Liste des nombres premiers}
+On pourra librement utiliser dans cet exercice les résultats suivants ($\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$) :
+\begin{itemize}
+	\item Théorème fondamentale de l'arithmétique\footnote{que je ne fais l'insulte à personne de rappeler ;)}
+	\item Théorème des nombres premiers : $\pi(x)\underset{+\infty}{\sim} \dfrac{x}{ln(x)}$
+	\item Pour tout $x > 1$, $\dfrac{x}{ln(x)} < \pi(x) < 1.25506\dfrac{x}{ln(x)}$ \cite{PrimeFunctions}
+\end{itemize}
+\begin{enumerate}
+	\item Écrire un programme qui liste les nombres premiers inférieurs à $N$ en effectuant un nombre de tours de boucle (qu'il s'agisse ou non d'une boucle imbriquée) d'au maximum $N\pi(N)$. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
+	\item Démontrer que l'algorithme qui parcourt tous les entiers inférieurs à $N$ et leur applique le test de primalité de l'\refexercise{Test de primalité} est asymptotiquement plus rapide que l'algorithme trouvé ci-avant.
+	\item Déduire des deux algorithmes un nouvel algorithme plus rapide que les deux précédents.
+\end{enumerate}
 \end{document}

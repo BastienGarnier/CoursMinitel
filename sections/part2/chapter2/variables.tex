@@ -5,22 +5,6 @@ Les variables constituent la brique de base du langage. Une variable au sens inf
  
 Cette donnée représente de l'information. Elle est donc numérique, bien que l'interprétation puisse être de toute nature : image, vidéo, chaîne de caractère, nombre entier ou à virgule, arbre informatique, etc\dots On peut par exemple penser à la représentation d'une couleur comme un triplet $(r, g, b, a)\in{\llbracket 0, 255\rrbracket^{4}}$, c'est-à-dire un mot binaire de quatre octets, et donc définir une variable de quatre octets qui stocke ces informations.
  
-\subsubsection{Rapport entre variable informatique et variable mathématique :}
- 
-Une variable en mathématique désigne un objet indéterminé. Cela semble au premier abord faux car il peut arriver qu'on écrive les phrases suivantes :
-\begin{itemize}
-	\item ``Soit $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
-	\item ``$\forall{x\in{E}}, \mathcal{P}(x)$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
-\end{itemize}
-En y regardant de plus près, on observe qu'il s'agit en fait simplement de facilités d'écriture équivalentes aux phrases suivantes :
-\begin{itemize}
-	\item ``Soit $e$ un objet indéterminé. Supposons $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
-	\item ``$\forall{x}, x\in{E}\implies{\mathcal{P}(e)}$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
-\end{itemize}
-Cet objet finit par ne plus être indéterminé du fait d'hypothèses à son propos.
- 
-D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. Elles peuvent donc potentiellement évoluer et changer de valeur au cours du temps. Cette notion de temporalité logique est tout à fait absente du concept de variable mathématique.
- 
 \subsubsection{Approximation de stockage des variables}
  
 On considère dans un premier temps que les variables sont caractérisés par trois informations :
@@ -50,24 +34,44 @@ Le langage C propose un certain nombre de types élémentaires directement inté
 Les ensembles mis en correspondances avec ces données en langage C sont des sous-ensembles de $\mathbb{Z}$ ou de $\mathbb{R}$\footnote{Ce qui indique soit une interprétation entière soit une interprétation flottante par la norme \textit{IEEE 754}}. 
 
 Le type permet donc de délimiter les $N$ octets d'un mot binaire et de l'interpréter.
- 
+
 Le langage C propose les types de base suivants :
 \begin{itemize}
 \item Pour représenter des entiers 
 \begin{itemize}
-	\item \textsf{char} : donnée $d$ sur 1 octet (8 bits) $d\in{\llbracket-128; 127\rrbracket}$
-	\item \textsf{short int} : donnée $d$ sur 2 octets (16 bits) $d\in{\llbracket-2^{15}; 2^{15}-1\rrbracket}$
-	\item \textsf{int} : donnée $d$ sur 4 octets (32 bits) $d\in{\llbracket-2^{31}; 2^{31}-1\rrbracket}$
-	\item \textsf{long int} : donnée $d$ sur 8 octets (64 bits) $d\in{\llbracket-2^{63}; 2^{63}-1\rrbracket}$
+	\item \textsf{char} : valeur $v\in{\llbracket-128; 127\rrbracket}$ représentée par une donnée sur 1 octet (8 bits) 
+	\item \textsf{short int} : valeur $v\in{\llbracket-2^{15}; 2^{15}-1\rrbracket}$ représentée par une donnée sur 2 octets (16 bits) 
+	\item \textsf{int} : valeur $v\in{\llbracket-2^{31}; 2^{31}-1\rrbracket}$ représentée par une donnée sur 4 octets (32 bits) 
+	\item \textsf{long int} : valeur $v\in{\llbracket-2^{63}; 2^{63}-1\rrbracket}$ représentée par une donnée sur 8 octets (64 bits)
 \end{itemize}
 \item Pour représenter des nombres à virgule :
 \begin{itemize}
-	\item \textsf{float} : donnée $d$ sur 4 octets (32 bits) $d\in{\mathbb{R}_{f32}}$
-	\item \textsf{double} : donnée $d$ sur 8 octets (64 bits) $d\in{\mathbb{R}_{f64}}$
-	\item \textsf{long double} : donnée $d$ sur 16 octets (128 bits) $d\in{\mathbb{R}_{f128}}$
+	\item \textsf{float} : valeur $v\in{\mathbb{R}_{f32}}$ représentée par une donnée sur 4 octets (32 bits)
+	\item \textsf{double} : valeur $v\in{\mathbb{R}_{f64}}$ représentée par une donnée sur 8 octets (64 bits)
+	\item \textsf{long double} : valeur $v\in{\mathbb{R}_{f128}}$ représentée par une donnée sur 16 octets (128 bits)
 \end{itemize}
 \item Pour représenter une adresse mémoire : \textsf{TYPE*} : donnée $d$ sur 8 octets contenant l'adresse d'une autre variable de type \textsf{TYPE}
 \end{itemize}
+\begin{minitelbasicbox}{\textbf{Petit apparté :} Rapport entre variable informatique et variable mathématique :}
+
+Une variable en mathématique désigne un objet indéterminé et sans représentation. Cela semble au premier abord faux car il peut arriver qu'on écrive les phrases suivantes :
+\begin{itemize}
+	\item ``Soit $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
+	\item ``$\forall{x\in{E}}, \mathcal{P}(x)$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
+\end{itemize}
+En y regardant de plus près, on observe qu'il s'agit en fait simplement de facilités d'écriture équivalentes aux phrases suivantes :
+\begin{itemize}
+	\item ``Soit $e$ un objet indéterminé. Supposons $e\in{E}$. \dots'', où $E$ désigne un ensemble quelconque
+	\item ``$\underset{x \text{ indéterminé}}{\forall{x}}, x\in{E}\implies{\mathcal{P}(x)}$'', où $E$ désigne un ensemble quelconque et $\mathcal{P}$ un prédicat monadique quelconque
+\end{itemize}
+Cet objet finit par ne plus être indéterminé du fait d'hypothèses à son propos.
+
+Par ailleurs, la représentation de cet objet ne lui est pas intrinsèque mais dû à des conventions d'écriture et de notation.
+ 
+D'un autre côté, les variables informatiques n'évoluent pas dans le contexte d'une démonstration. Elles sont en fait directement liés au concept physique d'un ordinateur comme des identifiants associées à des adresses mémoire. À cette adresse mémoire est stockée une donnée sous forme d'un mot binaire. Les mots binaires dans la mémoire d'un ordinateur fournissent une représentation intrinsèque des variables informatique (et en fait de tous les objets manipulés sur un ordinateur).
+
+Les variables peuvent alors potentiellement évoluer et changer de valeur -- par la modification des données qui leurs sont associées -- au cours du temps. Cette notion de temporalité logique est tout à fait absente du concept de variable mathématique.
+\end{minitelbasicbox}
 La syntaxe du langage C pour déclarer une variable d'un type quelconque \textsf{TYPE} est la suivante :
 \begin{minted}[linenos=false]{c}
 TYPE any_variable; // variable non initialisée : valeur indéterminée
@@ -155,7 +159,7 @@ sizeof(TYPE); // idem
 \end{minted}
 \textbf{Remarque :} L'opérateur \textsf{sizeof} renvoie une valeur de type \textsf{size\_t}, équivalente à un \textsf{long int}.
 
-\subsubsection{Opérateur \textsf{typeof}}
+\subsubsection{Opérateur \textsf{typeof} (pour la culture uniquement)}
 L'opérateur \textsf{typeof}, tout comme \textsf{sizeof}, est calculé au moment de la compilation. D'ailleurs, effectuer un tel calcul durant l'exécution du programme n'a aucun sens. En effet, \textsf{typeof} renvoie le type d'une variable. Les deux codes suivants sont donc strictement équivalents : 
 
 \begin{minipage}{0.5\textwidth}
@@ -183,6 +187,7 @@ signed int v3 = -4; // 'signed' est inutile car implicite
 // etc...
 \end{minted}
 \textbf{Remarque :} Le langage C ne propose pas de nombres flottants non signés car le standard de représentation des nombres flottants implique directement la présence du signe.
+
 \subsection{Introduction à la portée des variables : les blocs}
 Les variables sont déclarés dans des blocs de portée. Ces blocs de portée sont indiqués par les accolades gauche et droite $\{$ et $\}$. Ils indiquent dans quelle région du programme les variables sont déclarés. En particulier, il est possible d'imbriquer les blocs entre eux. Cela permet de remplacer dans une certaine partie du code une variable par une autre du même. Cela peut être intéressant pour rester lisible et utiliser des variables qui correspondent toujours à leur utilité :
 \begin{minted}{c}
@@ -233,5 +238,5 @@ int main() {
 \end{minted}
 $v$ possède une valeur particulière d'initialisation dans une région du code, puis une autre valeur particulière d'initialisation dans une autre région du code très éloignée de la première. Indiquer cela avec les blocs de portés permet d'indiquer au compilateur qu'il est inutile de stocker la valeur de $v$ entre les deux régions.
 \subsection{Exercices}
-\exercise{Interversion de variables par effet de bord} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. En initialisant au maximum une seule variable supplémentaire, échanger les valeurs des deux premières variables. Ainsi, si $a = 8$ et $b = 6$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = 8$ et $a = 6$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas à être modifié si les valeurs de $a$ et $b$ sont changées.
+\exercise{Interversion de variables par effet de bord} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. En déclarant au maximum une seule variable supplémentaire, échanger les valeurs des deux premières variables. Ainsi, si $a = 8$ et $b = 6$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = 8$ et $a = 6$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas avoir à être modifié si les valeurs de $a$ et $b$ sont changées.
 \end{document}

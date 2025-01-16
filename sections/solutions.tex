@@ -222,7 +222,7 @@ Seules 2 décalages et une soustraction sont effectuées ($65534 = 65536 - 2 = 2
 \inputminted{c}{solutions/valeur_absolue.c}
 Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujours vrai et \textsf{0 \& x == 0} est toujours vrai.
 \subsubsection{Projection de type}
-\solution{Quelques évaluations}
+\solution{Quelques évaluations entières}
 \begin{enumerate}
 	\item \textit{vraie} car $0\textsf{xFFFFFFFF} + 1 = 0$ ($e1$ est sur 32 bits)
 	\item \textit{faux} car $\textsf{(unsigned char)(-1)} = 255 = 0\textsf{xFF}$, d'où l'expression est égale à 0.
@@ -238,15 +238,15 @@ Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujour
 \inputminted{c}{solutions/question_d_age.c}
 \solution{Suite de Fibonacci}
 \inputminted{c}{solutions/suite_fibonacci_1.c}
-\solution{Nombres premiers}\newline
+\solution{Test de primalité}\newline
 Par définition, un nombre $n$ est premier si il possède exactement deux diviseurs distincts : $n$ et $1$. On peut donc tester la primalité d'un nombre en vérifiant qu'il ne possède pas d'autres diviseurs positifs strictement supérieurs à 1 que lui-même. Un premier algorithme naïf\footnote{Enfin, pas tout à fait puisqu'en ignorant les nombres pairs, on obtient seulement $\dfrac{N}{2}$ tours. Mais cela est équivalent asymptotiquement (les constantes restant des constantes).} est donc le suivant :
-\inputminted{c}{solutions/nombres_premiers.c}
+\inputminted{c}{solutions/primal_test.c}
 Considérons maintenant un diviseur $d$ de $n$. Il existe donc $q$ tel que $n = dq$. On observe que si $d \geq \sqrt{n}$ alors $q \leq{\sqrt{n}}$. Par ailleurs, $q$ est un diviseur de $n$ lui aussi. Supposons que l'on ait vérifié que pour tout $1 < m \leq \sqrt{n}$, $m\nmid{n}$, alors il est absurde qu'il existe un diviseur de $n$ supérieur strictement à $\sqrt{n}$ car il existerait alors un diviseur $d$ strictement inférieur à $\sqrt{n}$.
  
-Il suffit donc de vérifier la divisibilité de $n$ par les entiers $m\leq{\sqrt{n}}$ :
+Il suffit donc de vérifier la divisibilité de $n$ par les entiers impairs $m\leq{\sqrt{n}}$ :
 \begin{minted}[firstnumber=10]{c}
-for (int i = 3; i*i <= n && is_primal; i++) {
-	is_primal = (n % i == 0) ? 0 : is_primal;
+for (int i = 3; i*i <= N && is_primal; i += 2) {
+	is_primal = (N % i == 0) ? 0 : is_primal;
 }
 \end{minted}
 On a $\dfrac{n}{\sqrt{n}}\underset{n\rightarrow{\infty}}{\rightarrow}\infty$, l'algorithme est donc plus efficace (et il ne s'agit pas d'une constante).
@@ -277,6 +277,27 @@ En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *
 \inputminted{c}{solutions/tab_sum.c}
 \solution{Maximum et minimum d'un tableau}
 \inputminted{c}{solutions/tab_max_min.c}
+\solution{Liste des nombres premiers} 
+
+\textbf{Question 1 :} On peut appliquer le très connu \textit{crible d'Eratosthène}.
+
+Soit $n > 1$. D'après le théorème fondamentale de l'arithmétique, $n$ s'écrit comme produit de nombres premiers inférieurs ou égaux à $n$ : $$n = \displaystyle\underset{v_{p_{k}}(n) > 0}{\prod_{k = 1}^{\pi(n)}}p_{k}^{v_{p_{k}}(n)}$$
+
+On remarque alors que $n$ est premier si et seulement si pour tout $p_k < n$, $p_k \nmid n$. Le programme est donc correct et effectue $T(N)$ tours de boucles au plus, où :
+$$T(N) < \underset{2\nmid i}{\sum_{i=3}^{N}}\sum_{k = 0}^{\pi(i)}1 = \dfrac{N}{2} - 1 + \underset{2\nmid i}{\sum_{i=3}^{N}}\pi(i) \leq (\dfrac{N}{2} - 1)(\pi(N) + 1) = \mathcal{O}(N\pi(N))$$
+avec la première inégalité grâce au \textsf{break}.
+\inputminted{c}{solutions/eratosthene.c}
+
+\textbf{Question 2 :}
+
+Si on utilise l'algorithme de l'\refexercise{Test de primalité} pour calculer les nombres premiers inférieurs à $N$, on obtient un algorithme pour lister les nombres premiers en $\displaystyle\underset{2\nmid i}{\sum_{i = 3}^{N}}\sqrt{i} \underset{n\rightarrow+\infty}{\sim}\dfrac{2}{3}N^{\frac{3}{2}}$ tours de boucle, par comparaison série-intégrale. 
+
+Comparons avec l'algorithme précédent : d'après le résultat admis, $\pi(N)>\dfrac{N}{ln(N)}$.
+
+\textbf{Question 3 :}
+
+On utilise pour le test de primalité les deux idées :
+\inputminted{c}{solutions/list_primal_optimized.c}
 \subsubsection{Tableaux multidimensionnels}
 \solution{Afficher un tableau \textit{2d} [COURS]}
 \inputminted{c}{solutions/tab_display_2d.c}

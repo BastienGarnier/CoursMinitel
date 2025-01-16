@@ -32,7 +32,7 @@ Par ailleurs, le langage organise les opérations selon une priorité par défau
 \begin{minted}[linenos=false]{c}
 TYPE v3 = v2 <OP2> v1 <OP1> v2;
 \end{minted}
-, alors dans le cas où \textsf{$<$OP1$>$} est prioritaire sur \textsf{$<$OP2$>$}, il n'y a pas modification par rapport à l'expression parenthésée. Dans le cas où \textsf{$<$OP2$>$} est prioritaire sur \textsf{$<$OP1$>$}, cela diffère.
+, alors dans le cas où \textsf{$<$OP1$>$} est prioritaire sur \textsf{$<$OP2$>$}, il n'y a pas modification par rapport à l'expression parenthésée ci-dessus. Dans le cas où \textsf{$<$OP2$>$} est prioritaire sur \textsf{$<$OP1$>$}, cela diffère.
  
 Pour tous les opérateurs présentés dans la suite, on pourra se référer à la table de priorités suivante\footnote{Copiée de \url{https://en.cppreference.com/w/c/language/operator_precedence} parce-que sur ce genre de chose, inutile d'être original.} :
 \begin{center}
@@ -268,7 +268,7 @@ a++; // renvoie 0
 a--; // renvoie 1
 a; // renvoie 0
 \end{minted}
-Dans ce cas, la valeur renvoyée est celle \textit{avant} l'incrémentation ou la décrémentation. Ce qui explique le décalage dans le code juste ci-dessus.
+Dans ce cas, la valeur renvoyée est celle \textit{avant} l'incrémentation ou la décrémentation. Ce qui explique le décalage par rapport au code juste ci-dessus.
  
 \textbf{Remarque :} Chaque opération d'assignation renvoie une valeur numérique, et non une variable. Ainsi, chacune des lignes du code suivant provoque une erreur car n'a aucun sens :
 \begin{minted}[linenos=false]{c}

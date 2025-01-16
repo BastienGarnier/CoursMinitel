@@ -1,14 +1,20 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
-Cette section ne détaille pas ce qu'est techniquement une chaîne de caractères. Elle présente seulement le \textit{formatage d'une chaîne de caractères}, c'est-à-dire la mise en forme. Il est sous-entendu en programmation que le formatage d'une chaîne de caractères est effectué selon des variables. De manière générale, le système de formatage d'une chaîne de caractères en C permet d'inclure dans une chaîne de caractères les valeurs de variables quelconques.
+Cette section ne détaille pas ce qu'est techniquement une chaîne de caractères. Elle présente seulement le \textit{formatage d'une chaîne de caractères}, c'est-à-dire la mise en forme. Il est sous-entendu en programmation que le formatage d'une chaîne de caractères est effectué selon des variables. De manière générale, le système de formatage d'une chaîne de caractères dans la bibliothèque standard du C permet d'inclure dans une chaîne de caractères les valeurs de variables quelconques.
  
-Le formatage d'une chaîne est effectué à l'aide de deux caractères spéciaux :
+Ce chapitre est introduit pour des raisons purement pratique, pour permettre à tout(e) lecteur/rice de tester ses programmes ou d'afficher les résultats d'exécution d'un programme.\footnote{Par ailleurs, le formatage de chaîne de caractère tel que présenté n'est pas une caractéristiques du langage C à proprement parler mais bien plutôt une caractéristique de la bibliothèque standard du langage C.}
+
+Le formatage d'une chaîne dans la bibliothèque standard du C est effectué à l'aide de deux caractères spéciaux :
 \begin{itemize}
-	\item le caractère de formatage des caractères spéciaux $\setminus$
+	\item le caractère d'insertion de caractères spéciaux $\setminus$\footnote{La description de caractères spéciaux fait partie du langage C et n'est pas spécifique à une bibliothèque. Il ne s'agit pas de formatage}
 	\item le caractère de formatage de variables $\%$
 \end{itemize}
 Aucun de ces deux caractères ne peut être affiché directement dans une chaîne de caractère :
+\begin{itemize}
+	\item $\setminus$ est lui-même un caractère spécial en C
+	\item $\%$ n'est pas un caractère spécial mais les fonctions de la bibliothèque standard du C le considère comme spécial puisqu'utilisé pour le formatage.
+\end{itemize}
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +22,7 @@ Aucun de ces deux caractères ne peut être affiché directement dans une chaîn
 int main() {
 // produit un avertissement à la compilation et affiche "'est pas affichable." :
 	printf("% n'est pas affichable."); 
-// erreur de compilation :
+// erreur de compilation  car '\ ' n'est pas un caractère
 	printf("\ non plus.");
 	return EXIT_SUCCESS;
 }
@@ -32,6 +38,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
+\textbf{Remarque :} Comme $\%$ n'est pas un caractère spécial spécifique au langage C mais seulement à la bibliothèque standard, le caractère spécial '$\setminus \%$' n'existe pas, et l'échappement de $\%$ est lui aussi spécifique à la bibliothèque standard.
 \subsection{Formatage des caractères spéciaux}
 Les caractères considérés comme spéciaux sont :
 \begin{itemize}

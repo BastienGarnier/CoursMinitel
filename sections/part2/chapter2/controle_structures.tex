@@ -63,7 +63,7 @@ fin:
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Oubliez ça, c'était pour la culture\dots
+Pensez à oublier ça, c'était pour la culture, mais sauf à faire de l'assembleur, il faut éviter\dots
  
 \subsubsection{Saut conditionnel}
  
@@ -258,9 +258,9 @@ if (condition) {
  
 Il y a stricte équivalence sémantique entre la syntaxe à gauche et celle à droite. Cela questionne évidemment les raisons de l'existence d'une telle syntaxe en C, mise à part la compacité de l'écriture.
  
-La raison, assez technique,\footnote{Pour les curieux, voir \url{https://drive.google.com/file/d/1bkLb3OByL_UaBNz-ksr03WliZ6mnuiy-/view?usp=drive_link}} sera simplement réduite à ses conséquences : l'utilisation d'une condition ternaire permet d'optimiser la vitesse d'exécution des instructions par l'UCC.
+La raison, assez technique\footnote{Pour les curieux, voir \url{https://drive.google.com/file/d/1bkLb3OByL_UaBNz-ksr03WliZ6mnuiy-/view?usp=drive_link}}, sera simplement réduite à ses conséquences : l'utilisation d'une condition ternaire permet d'optimiser la vitesse d'exécution des instructions par l'UCC\footnote{Il faut préciser que le compilateur effectue le plus souvent lui-même l'optimisation si vous oubliez d'utiliser une condition ternaire.}.
  
-Un petit exemple :
+Un petit exemple d'utilisation :
 \begin{minted}{c}
 // <math.h> nécessite l'option -lm
 // à la fin de la ligne de commande pour compiler :
@@ -330,7 +330,7 @@ printf("apres le switch");
 \end{minted}
 L'exemple ci-dessus se veut exhaustif des cas possibles de l'instruction \textsf{switch}. On observe que le flot d'exécution va ``sauter'' au \textsf{case} correspondant à la valeur de $x$, et à \textsf{default} si cette valeur n'est pas présente dans l'aiguillage. \textit{L'exécution redevient séquentielle à partir de cet instant !} Une erreur régulièrement faite par les débutants est de penser qu'à la fin de l'exécution du \textsf{case}, le flot vient tout de suite après le switch. Cela n'est pas vrai sans le mot-clé \textsf{break} qui ``casse'' le bloc d'instructions en cours d'exécution et saute à la fin.
  
-Dans l'exemple ci-dessus, l'exécution du code pour $x = 3$ s'ensuite immédiatement par l'exécution du code pour $x = 4$ car il n'y a pas de \textsf{break}. De la même manière, si $x = 1$, le flot va sauter à la ligne \textsf{case 1} puis va séquentiellement avancer au bloc d'instructions pour $x = 2$.
+Dans l'exemple ci-dessus, l'exécution du code pour $x = 3$ est suivie immédiatement par l'exécution du code pour $x = 4$ car il n'y a pas de \textsf{break}. De la même manière, si $x = 1$, le flot va sauter à la ligne \textsf{case 1} puis va séquentiellement avancer au bloc d'instructions pour $x = 2$.
 \subsubsection{Boucle à pré-condition (ou boucle \textit{while}) :}
 La boucle à pré-condition suit le pseudo-code suivant :
 \begin{algorithm}
@@ -438,8 +438,30 @@ for (int a = 0; ; a++) { // a++ <=> a += 1
 int a;
 for (printf("Initialement, a = %d\n", a = 1); a < 10; printf("À présent : a = %d\n", ++a));
 \end{minted}
-\textbf{Mais pourquoi on utilise jamais \textsf{goto} ? C'est plus basique donc c'est mieux ?}
- 
+
+\subsection{Détails sur l'instruction \textbf{break} (et l'instruction \textbf{continue})}
+L'instruction \textsf{break} a été rapidement vue pour l'aiguillage. Mais une question -- légitime -- subsiste quand aux blocs d'instructions qui peuvent être "cassés" et ceux qui ne peuvent l'être.
+
+La réponse tient simplement : l'instruction \textsf{break} casse les blocs d'instructions \textsf{while}, \textsf{do-while}, \textsf{for} et \textsf{switch}, sans aucune exception. Le contrôle du programme est ensuite directement rendu à la première instruction suivant le bloc. Par exemple :
+\begin{minted}[linenos=false]{c}
+#define N 28
+
+...
+
+unsigned int i = 0;
+while (1) {
+	if (i*i >= N) {
+		break;
+	}
+	i++;
+}
+printf("Plus petit i tel que i*i >= %u : %u", N, i); // -> 6
+\end{minted}
+
+L'instruction \textsf{continue} est le dual de l'instruction \textsf{break} pour les blocs \textsf{while}, \textsf{do-while} et \textsf{for} -- mais pas pour les \textsf{switch}. L'instruction \textsf{continue} permet de sauter à la première instruction de la boucle, \textit{sans exécuter le test de boucle}\footnote{Ce qui rend compatible l'instruction avec les boucles \textsf{do-while}}.
+
+\textbf{\color{red}Mais pourquoi on utilise jamais \textsf{goto} ? C'est plus basique donc c'est mieux ?}
+
 \begin{minipage}{\textwidth}
 	\begin{center}
 		\includegraphics[width=\textwidth]{meme2}
@@ -447,7 +469,10 @@ for (printf("Initialement, a = %d\n", a = 1); a < 10; printf("À présent : a = 
 \end{minipage}
  
 Plus sérieusement, il est vraiment recommandé de ne jamais faire cela. En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions.
+
 \subsection{Exercices}
+Dans la suite, $N$ désigne une constante définie par un \textsf{\#define}.
+
 \exercise{Question d'âge} Écrire un programme C contenant une variable $age$ de type \textsf{signed char} dont la valeur est initialisée. Le programme affiche :
 \begin{itemize}
 	\item ``Soyez patient(e), votre tour arrive'' si $age < 0$
@@ -466,5 +491,5 @@ $$
 \forall{n\in{\mathbb{N}}}, & f_{n+2} & = & f_{n+1} + f_{n}
 \end{array}\right.
 $$
-\exercise{Nombres premiers}Écrire un programme qui demande à l'utilisateur de saisir un nombre $N$ et vérifie si $N$ est premier. On essaiera d'avoir un maximum de $\sqrt{N}$ tours de boucle. On justifiera la correction du programme.\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}
+\exercise{Test de primalité}Écrire un programme qui vérifie si $N$ est premier. On essaiera d'avoir un maximum de $\sqrt{N}$ tours de boucle. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
 \end{document}

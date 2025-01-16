@@ -61,7 +61,7 @@ Les mots clés du langage C sont les suivants :
 \end{center}
 \textbf{Remarque 1 :} Quelque soit le standard utilisé pour votre propre compilation, il extrêmement conseillé, dans un souci de compatibilité quand la convention n'est pas officiellement posé dans le cadre du projet, de ne jamais utiliser un mot-clé de ce tableau comme identifiant personnel quel que soit le standard utilisé.
  
-\textbf{Remarque 2 :} Dans un souci de compatibilité quand la convention n'est pas officiellement posé dans le cadre du projet, il est conseillé de n'utiliser que les outils fournis par les standards chronologiquement inférieurs ou égales à C99 (c'est-à-dire sans utiliser d'outils des standards C11 et supérieur). Cela inclut les bibliothèques ajoutés dans les standards suivants du langage.
+\textbf{Remarque 2 :} Dans un souci de compatibilité quand la convention n'est pas officiellement posé dans le cadre du projet, il est conseillé de n'utiliser que les outils fournis par les standards chronologiquement inférieurs ou égales à C99 (c'est-à-dire sans utiliser d'outils des standards C11 et supérieur). Cela inclut les modules ajoutés dans les standards suivants du langage.
  
 Dans les deux cas, la transmission du code source à un tiers ne compilant pas selon le même standard peut être potentiellement source d'erreurs et de bogues à la compilation.
  
@@ -116,7 +116,7 @@ Un exemple pour illustrer les commentaires
 #include <stdio.h> // Cette ligne ne sera jamais lue
 */
 
-#include <stdio.h> // Inclue la biliothèque 'stdio'
+#include <stdio.h> // Inclue le module 'stdio' de la bibliothèque standard
 
 int main() { // Définit la fonction principale du programme
 	return 0; // Signifie une exécution réussie du programme
@@ -147,7 +147,7 @@ Lors de la compilation, pour que le compilateur sache quel est le point d'entré
 	\item \textsf{EXIT\_SUCCESS} : l'exécution du programme a réussi
 	\item \textsf{EXIT\_FAILURE} : l'exécution du programme a échoué
 \end{itemize}
-\textbf{Remarque :} Ces deux identifiants sont définis dans la bibliothèque \textsf{stdlib} qu'il faut donc inclure par la ligne :
+\textbf{Remarque :} Ces deux identifiants sont définis dans le module de la bibliothèque standard \textsf{stdlib} qu'il faut donc inclure par la ligne :
 \begin{minted}{c}
 #include <stdlib.h>
 \end{minted}
@@ -160,7 +160,7 @@ On peut donc écrire :
 \begin{lstlisting}[title=Exemple]
 \end{lstlisting}
 \begin{minted}{c}
-// L'ordre d'inclusion des bibliothèques est (presque) sans importance
+// L'ordre d'inclusion des modules est (presque) sans importance
 #include <stdlib.h> // EXIT_SUCCESS et EXIT_FAILURE (entre autre)
 #include <stdio.h> // printf (entre autre)
 
@@ -171,7 +171,7 @@ int main() {
 \section{Directives préprocesseurs (1)}
 Les directives préprocesseurs sont des instructions qui seront exécutés par le compilateur. Elles ne font donc pas partie du programme lui-même mais permettent de ``diriger'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes.
  
-Les directives de préprocesseurs débutent par le caractère \#. Seules les directives de préprocesseur commencent par ce caractère. Ainsi, \textsf{\#include} est une directive de préprocesseur, qui va copier \textit{avant la compilation proprement dite} le contenu de la bibliothèque ciblé dans le code du fichier qui effectue l'inclusion.
+Les directives de préprocesseurs débutent par le caractère \#. Seules les directives de préprocesseur commencent par ce caractère. Ainsi, \textsf{\#include} est une directive de préprocesseur, qui va copier \textit{avant la compilation proprement dite} le contenu du module ciblé dans le code du fichier qui effectue l'inclusion.
  
 On peut aussi considérer la directive \textsf{\#define} qui va permettre de définir des constantes (comme \textsf{EXIT\_SUCCESS} et \textsf{EXIT\_FAILURE}):
 \begin{lstlisting}[title=Exemple]
