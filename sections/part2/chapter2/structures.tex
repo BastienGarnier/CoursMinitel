@@ -136,7 +136,8 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Comme les structures définies sont considérés comme des entités de première classe, il est évidemment possible de créer statiquement ou dynamiquement des tableaux de ces structures :
+\subsection{Tableaux de structures}
+Comme les structures définies sont considérés comme des entités de première classe, il est évidemment possible de créer statiquement des tableaux de ces structures :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -155,7 +156,18 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Il est également possible de travailler sur des pointeurs de structure :
+On peut également effectuer des allocations dynamiques avec les pointeurs par le \textsf{malloc}. Son utilisation est identique à celle permettant l'allocation dynamique de tableaux de types intrinsèques au langage :
+\begin{minted}{c}
+...
+
+int main() {
+	int i = ...;
+	struct Time* running_times = malloc(sizeof(struct Time) * 10);
+	running_times[i].hour = ...;
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Il est ainsi possible de travailler sur des pointeurs de structure :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>

@@ -31,6 +31,7 @@ En langage C, il existe deux manières principales d'\textit{implanter} un table
 	\item Par allocation statique : allocation par le compilateur d'un tableau de taille fixé avant l'exécution du programme
 	\item Par allocation dynamique : allocation par le programmeur un tableau dont la taille dépend d'une variable du programme
 \end{itemize}
+Cette section ne décrit que l'allocation statique.
 \subsection{Définition}
 L'allocation sur la pile, dite statique, est effectuée en langage C par la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
@@ -42,7 +43,7 @@ On appelle \textit{statique} ce type d'allocation de mémoire car $SIZE$ \underl
 int n = 5;
 int array[n]; // incorrect
 \end{minted}
-Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bugs, il est expressément recommandé d'éviter cette pratique douteuse.
+Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
  
 Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
 \begin{minted}[linenos=false]{c}
@@ -75,7 +76,7 @@ int main() {
 
 \begin{minipage}{0.75\textwidth}
 \begin{minted}[linenos=false]{c}
-long int array[7];
+long int array[7]; // déclaration non initialisée
 
  // ERREUR :
 array = {3141526535, 0xBEEF, 747, 0xC4, 713705, 666, 1414};
@@ -101,6 +102,7 @@ array[5] = 666;
 array[6] = 1414;
 \end{minted}
 \end{minipage}
+La raison, qui \og expliquera \fg au passage l'utilisation des accolades $\{\dots\}$ sera vue dans la section sur la construction de littéraux dans le chapitre sur les concepts avancés du langage.
 \subsection{Les tableaux statiques, kékoi pour de vrai ?}
 Les tableaux statiques sont à un certain point de vue très proches comportementalement des pointeurs. Ils en diffèrent pourtant du tout au tout.
  
@@ -119,8 +121,12 @@ int main(int argc, char **argv) {
 \end{minted}
 Le résultat est assez surprenant, puisqu'on observe l'égalité des trois formules. Cela semble tout à fait étrange. En particulier, \textsf{tab} semble être égal à son premier élément, puisque \textsf{\&(tab[0]) == \&tab}, mais puisque \textsf{tab == \&tab}, cela ne peut pas être le cas, puisqu'alors on aurait alors un premier élément toujours égal à l'adresse de \textsf{tab}.
  
-Cette étrangeté tient en une phrase, d'apparence barbare : \textbf{les tableaux, en C, ne sont pas des entités de première classe}\footnote{Voir \url{https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Limitations-of-C-Arrays.html} ainsi que \url{https://en.wikipedia.org/wiki/First-class_citizen}}. On appelle, en programmation, une entité de première classe une entité informatique régit par les mêmes règles générales que les autres entités. Il peut s'agir par exemple d'être renvoyé par une fonction, d'être assigné à une variable, ou d'être passé en argument à une fonction par exemple.
- 
+Cette étrangeté tient en une phrase, d'apparence barbare : \textbf{les tableaux, en C, ne sont pas des entités de première classe}\footnote{Voir \url{https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Limitations-of-C-Arrays.html} ainsi que \url{https://en.wikipedia.org/wiki/First-class_citizen}}. On appelle, en programmation, une entité de première classe une entité informatique régit par les mêmes règles générales que les autres entités fondamentales du langage. Il peut s'agir par exemple de pouvoir :
+\begin{itemize}
+	\item être renvoyé par une fonction
+	\item être assigné à une variable
+	\item être passé en argument à une fonction
+\end{itemize} 
 Il est absolument fondamentale de comprendre les conséquences de cette affirmation : les tableaux statiques ne sont pas régis par les mêmes règles que les autres entités du langage C. En particulier, il n'est pas possible de manipuler un tableau comme un tout de la même manière qu'une variable ``classique''. En particulier, un tableau suit la règle suivante :
  
 \textbf{Règle de la conversion :\footnote{L'appelation n'a rien d'officiel, mais je trouvais qu'elle décrivait bien l'état de fait.}}
@@ -163,7 +169,7 @@ int main() {
 \end{minted}
 La notation n'est pas utilisée car assez illisible.\footnote{Question d'habitude\dots}
 \subsubsection{Passage d'un tableau en argument à une routine}
-Le langage C autorise à passer un tableau en argument à une routine (voir \refexercise{Somme d'un tableau} et \refexercise{Maximum et minimum d'un tableau}). Mais cela cache en vérité une subtilité : ce n'est pas un tableau qui est passé en argument, mais un pointeur vers le tableau !\newline
+Le langage C autorise à passer un tableau en argument à une routine (voir \refexercise{Routines classiques de manipulation de tableaux}). Mais cela cache en vérité une subtilité : ce n'est pas un tableau qui est passé en argument, mais un pointeur vers le tableau !\newline
 Un exemple :
 \begin{minted}{c}
 #include <stdio.h>
@@ -234,29 +240,52 @@ int main() {
 \end{minted}
 Aucune erreur de compilation à signaler, mais à l'exécution\dots patatras. Le classique code $-11$ d'erreur de segmentation apparaît sur la console, dans l'incompréhension la plus totale\dots
  
-Il faut se rappeler d'un point technique pour comprendre l'erreur ici : les variables initialisés statiquement, dont l'allocation en mémoire est effecutée par le compilateur, sont libérées par le compilateur à la sortie de la routine !
+Il faut se rappeler d'un point technique pour comprendre l'erreur ici : les variables initialisés statiquement, dont l'allocation en mémoire est effectuée par le compilateur, sont libérées par le compilateur à la sortie de la routine !\footnote{C'est-à-dire que la région de la pile utilisée pour l'environnement local de la fonction est vidée pour laisser la place à d'autres environnements locaux d'autres fonctions.}
  
 Le tableau déclaré et initialisé dans \textsf{fonction\_test} a été libéré dès la sortie de la fonction. L'accès mémoire à son adresse est donc interdit par le système d'exploitation puisque cette zone mémoire n'est plus ``fournie'' au programme.
  
-Une solution ? Oui, avec les tableaux dynamiques !
+Une solution ? Oui, avec les tableaux dynamiques !\footnote{Pour celles et ceux qui se demandent : oui, il y a une suite à cette phrase, mais ceci est une autre histoire\dots}
 \subsection{Exercices}
-\exercise{Affichage d'un tableau}Écrire une procédure \textsf{void afficher(int tab[], int taille);} qui affiche les éléments d'un tableau d'entiers.\newline
-\textit{\underline{Note} : cela pourra être utile pour vérifier le résultat de routines agissant sur des tableaux}
- 
-\exercise{Somme d'un tableau}Écrire une fonction \textsf{int somme(int tab[], int taille);} qui renvoie la somme des éléments du tableau.
- 
-\exercise{Maximum et minimum d'un tableau}Écrire deux fonctions \textsf{int max(int tab[], int taille);} et \textsf{int min(int tab[], int taille);} qui renvoient respectivement le maximum et le minimum des éléments d'un tableau.
-
-\exercise{Liste des nombres premiers}
-On pourra librement utiliser dans cet exercice les résultats suivants ($\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$) :
+\exercise{Routines classiques de manipulation de tableaux}
+Soit $T$ un tableau de $l(T)\in\mathbb{N}$ éléments. On note pour $i, j\in{\llbracket 0; l(T)-1}\rrbracket$ :
 \begin{itemize}
-	\item Théorème fondamentale de l'arithmétique\footnote{que je ne fais l'insulte à personne de rappeler ;)}
-	\item Théorème des nombres premiers : $\pi(x)\underset{+\infty}{\sim} \dfrac{x}{ln(x)}$
-	\item Pour tout $x > 1$, $\dfrac{x}{ln(x)} < \pi(x) < 1.25506\dfrac{x}{ln(x)}$ \cite{PrimeFunctions}
+	\item $T[i]$ : l'élément de $T$ d'indice $i$
+	\item $T[i:j]$ : le sous-tableau de $T$ d'adresse $T + i$ et de $l(T[i:j]) = j - i$ éléments, c'est-à-dire que $T[0:l(T)] = T$.
+	\item Pour $k\in\llbracket 0; l(T[i:j]) - 1 \rrbracket$, on a donc $T[i:j][k] = T[i + k]$
 \end{itemize}
 \begin{enumerate}
-	\item Écrire un programme qui liste les nombres premiers inférieurs à $N$ en effectuant un nombre de tours de boucle (qu'il s'agisse ou non d'une boucle imbriquée) d'au maximum $N\pi(N)$. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
-	\item Démontrer que l'algorithme qui parcourt tous les entiers inférieurs à $N$ et leur applique le test de primalité de l'\refexercise{Test de primalité} est asymptotiquement plus rapide que l'algorithme trouvé ci-avant.
-	\item Déduire des deux algorithmes un nouvel algorithme plus rapide que les deux précédents.
+	\item écrire une fonction \textsf{int somme(int array[], unsigned int length);} qui renvoie la somme des éléments du tableau.
+	\item écrire une procédure \textsf{void display(int array[], unsigned int length);} qui affiche les éléments d'un tableau d'entiers.\newline
+		\textit{\underline{Note} : cela pourra être utile pour vérifier le résultat de routines agissant sur des tableaux}
+ 	\item écrire deux fonctions \textsf{unsigned int max(int array[], unsigned int length);} et \textsf{unsigned int min(int tab[], int taille);} qui renvoient respectivement l'indice du maximum et l'indice du minimum des éléments d'un tableau.
+	\item écrire une fonction \textsf{void swap(int array[], int i, int j);} qui échange par la méthode de votre choix les valeurs du tableau d'indices $i$ et $j$.
+	\item en utilisant les questions précédentes, écrire une procédure \textsf{void selection\_sort(int array[], unsigned int length);} qui trie dans l'ordre croissant et par effet de bord un tableau $A$ de $n\in\mathbb{N}$ éléments selon l'algorithme ci-dessous.
+\begin{algorithm}
+\caption{Algorithme de tri de tableau par sélection}\label{alg:select_sort}
+\textbf{Entrées :} tableau $A$ et $l(A)$ le nombre d'éléments de $A$\;
+\textbf{Sortie :} tableau $A$ trié par effet de bord\;
+
+$i\leftarrow 0$\;
+\Tq{$i < l(A)$} {
+	Trouver l'indice $i_{min}$ du minimum de $A[i:l(A)]$\;
+	Échanger dans $A$ les éléments d'indices $i$ et $i_{min} + i$\;
+	$i\leftarrow i+1$\;
+}
+\end{algorithm}
+\item démontrer par récurrence la correction de l'algorithme précédent, c'est-à-dire une démonstration que cet algorithme trie effectivement le tableau dans l'ordre croissant.
 \end{enumerate}
+\exercise{Liste des nombres premiers}
+\begin{enumerate}
+	\item Écrire un programme qui liste les nombres premiers inférieurs à $N$ en effectuant un nombre de tours de boucle (qu'il s'agisse ou non d'une boucle imbriquée) d'au maximum $N\pi(N)$. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
+	\item \textbf{(difficile)}Démontrer que l'algorithme qui parcourt tous les entiers inférieurs à $N$ et leur applique le test de primalité de l'\refexercise{Test de primalité} (en $\mathcal{O}(\sqrt(N))$) est asymptotiquement plus rapide que l'algorithme trouvé ci-avant.
+	\item Déduire des deux algorithmes un nouvel algorithme plus rapide que les deux précédents.\footnote{La démonstration n'est pas exigée.}
+\end{enumerate}
+\textit{
+	\underline{Remarque :} On pourra librement utiliser dans cet exercice les résultats suivants ($\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$) :
+	\begin{itemize}
+		\item Théorème fondamentale de l'arithmétique\footnote{Que je ne fais l'insulte à personne de rappeler ;)}
+		\item Pour tout $x > 1$, $\dfrac{x}{ln(x)} < \pi(x) < 1.25506\dfrac{x}{ln(x)}$ \cite{PrimeFunctions}
+		\item par une équivalence du Théorème des nombres premiers, d'après le point précédent, $p_n > n.ln(n)$, où $p_n$ est le $n^e$ premier nombre premier
+	\end{itemize}
+}
 \end{document}

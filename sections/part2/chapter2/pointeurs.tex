@@ -27,7 +27,7 @@ L'idée des pointeurs est simple : au lieu de stocker directement une valeur, on
 	\end{center}
 \end{minipage}
  
-Les pointeurs sont fondamentaux en programmation. En particulier, ils permettent une flexibilité très importante des programmes écrits. En effet, une variable est définie dans un certain espace. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques. Les possibilités des routines sont donc décuplées puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
+Les pointeurs sont fondamentaux en C\footnote{Et presque seulement en C\dots}. En particulier, ils permettent une flexibilité très importante des programmes écrits. En effet, une variable est définie dans un certain espace. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques. Les possibilités des routines sont donc décuplées puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
 
 Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
  
@@ -91,6 +91,19 @@ char *pointeur2 = (char *)0x12345678; // a priori une adresse invalide
 printf("%d\n", *pointeur); // code d'erreur -11
 printf("%d\n", *pointeur2); // code d'erreur -11
 \end{minted}
+\begin{minitelbasicbox}{\textbf{Petit apparté :} Segments d'un programme}
+Un programme informatique d'ordinateur est généralement composé de plusieurs segments en mémoire dont les significations diffèrent.
+
+On distingue principalement :
+\begin{itemize}
+	\item les segments de code : contiennent les instructions exécutables du programme
+	\item les segments de donnée : contiennent les variables globales du programme\footnote{à peu près}
+	\item le segment de pile : contient la pile d'exécution
+\end{itemize}
+Une erreur de segmentation provient principalement de la tentative d'accès à un segment de manière non autorisée. Il peut s'agir d'un segment du programme propre ou d'un autre programme. Dans tous les cas, cela est représentatif de l'accès non autorisé par le système d'exploitation ou par le processeur à une adresse mémoire de la RAM.
+
+Il faut alors vérifier que chaque utilisation de pointeur est valide dans la zone du code d'où provient l'erreur.
+\end{minitelbasicbox}
 \subsection{Formatage en chaîne de caractères}
 Une adresse mémoire peut être affichée grâce au formatage des chaînes de caractères. Il faut pour cela utiliser le caractère spécial ``\%p'' :
 \begin{minted}{c}

@@ -1,8 +1,8 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
-La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bogues en tous genres.
- 
+La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bogues en tous genres, dont les origines sont humaine.
+
 L'idée est alors simple : il faut compartimenter, diviser le programme en sous-programmes qui effectuent chacun une action bien précise. C'est ensuite la fonction \textit{main} qui va s'occuper d'agencer ces sous-programmes. Le programme vu de manière globale devient alors :
 \begin{itemize}
 	\item très flexible, puisque chaque fonctionnalité est identifiée à un sous-programme précis et qu'il suffit d'appeler dans la fonction \textit{main} les sous-programmes utiles
@@ -19,7 +19,7 @@ Ces deux formes en langage C se voient écrites de manière semblable par les sy
 \begin{minted}[linenos=false]{c}
 void procedure_name(parametres) {
 	// bloc d'instructions
-	return;
+	return; // termine la routine, c'est-à-dire saute à la suite de l'instruction ayant appelée la routine
 }
 \end{minted}
 \end{minipage}
@@ -39,7 +39,15 @@ int addition(int a, int b) {
 	return c;
 }
 \end{minted}
-Il est alors possible d'appeler cette fonction \textit{dans la suite du programme}. En effet, les instructions précédentes à la définition de la procédure/fonction n'en ont pas connaissance. C'est d'ailleurs pour cette raison que les directives \textsf{\#include} sont écrites au début du programme.
+On observe que comme pour une fonction mathématique, les paramètres d'une routine appartiennent chacun à un ensemble qui peut être différent. Les fonctions ne renvoient qu'une seule valeur. La fonction d'addition ci-dessus est équivalente à la fonction mathématique suivante :
+$$
+\begin{array}{ccccl}
+addition & : & \llbracket{-2^{31}}; 2^{31}-1\rrbracket^{2} & \rightarrow & \llbracket{-2^{31}}; 2^{31}-1\rrbracket \\
+ & & (a, b) & \mapsto & a + b
+\end{array}
+$$
+
+Il est alors possible d'appeler cette fonction \textit{dans la suite du programme}. En effet, les instructions précédentes à la définition de la procédure/fonction n'en ont pas connaissance. C'est d'ailleurs pour cette raison que les directives \textsf{\#include} sont écrites au début du programme et pas à la fin.
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,6 +91,8 @@ int addition(int a, int b) { // Déclaration de la fonction 'addition'
 	return a + b;
 }
 \end{minted}
+\textbf{Attention !} Il ne faut pas oublier le point-virgule à la fin de la déclaration d'un prototype.
+
 Le prototype permet de déclarer l'existence de la routine avant sa définition pour que le compilateur la reconnaisse avant sa définition. Il est ainsi possible de l'appeler avant la définition de la routine :
 \begin{minted}{c}
 #include <stdio.h>
@@ -216,16 +226,41 @@ La pile contient \textit{entre autre} :
 	\item les variables assignées dans les routines : celles-ci sont \textit{empilées} lors de leur assignation
 \end{itemize}
 Les variables contenues dans la pile ne sont accessibles que dans la routine qui les a créé. Par ailleurs, dès l'instant où une routine exécute l'instruction \textsf{return}, les variables utilisées dans cette routine sont libérées, c'est-à-dire que l'espace mémoire qui était réservé pour elles devient à nouveau libre de contenir n'importe quelle autre valeur (opération de \textit{dépilement} de la pile d'exécution).
+
+\begin{minitelbasicbox}{\textbf{Petit apparté :} À propos de l'allocation de la mémoire}
+	L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bogues.
  
-C'est pour cette raison qu'on essaye de compartimenter les programmes en une multitude de routines, surtout lorsque les calculs effectués par ces routines utilisent beaucoup de variables temporaires. En effet, au lieu de stocker toutes ces variables dans l'espace mémoire du programme principal même lorsqu'elles sont inutiles, l'espace mémoire n'est utilisé pour stocker ces variables que lors de l'exécution de la routine.
- 
-\textbf{Remarque :}
- 
-L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bogues.
- 
-Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable.
- 
-Il est cependant possible de gérer par soi-même l'allocation des variables en mémoire. C'est ce qu'on appelle l'\textit{allocation dynamique}. La pile n'est jamais\footnote{à deux trois détails près...} utilisée pour ce type d'allocation.
+	Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable.
+
+	Il est cependant possible de gérer par soi-même l'allocation des variables en mémoire. C'est ce qu'on appelle l'\textit{allocation dynamique}. La pile n'est jamais\footnote{à deux trois détails près...} utilisée pour ce type d'allocation.
+\end{minitelbasicbox}
+
+Pour la raison précité, on essaye de compartimenter les programmes en une multitude de routines, surtout lorsque les calculs effectués par ces routines utilisent beaucoup de variables temporaires. En effet, au lieu de stocker toutes ces variables dans l'espace mémoire du programme principal même lorsqu'elles sont inutiles, l'espace mémoire n'est utilisé pour stocker ces variables que lors de l'exécution de la routine.
+
+\textbf{Remarque 1 :} l'utilisation de blocs de code fait aussi bien le travail. Il s'agit donc d'abord de structuration du code et de facilité d'utilisation par un tiers.
+
+\textbf{Remarque 2 :} si un calcul n'utilise que peu de variables temporaires, il n'est pas intéressant de compartimenter le programme en trop de routines car ces routines utiliseront la mémoire pour stocker les paramètres et pour stocker l'appel de fonction. Un exemple\footnote{Extrême et peu réaliste, certes} est le suivant :
+\begin{minted}{c}
+int sum(int a, int b, int c, int d, int e, int f, int g, int h, int i) {
+	return a + b + c + d + e + f + g + h + i;
+}
+
+...
+
+int result = sum(1, 2, 3, 4, 5, 6, 7, 8, 9);
+\end{minted}
+
+Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel.\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines.}
+\subsection{Effet de bord}
+Une fonction peut agir sur son environnement, c'est-à-dire sur le résultat de l'exécution d'un programme, grâce à sa valeur de retour. Toutefois, une procédure ne le peut pas. Cela ne signifie pour autant pas qu'une procédure ne puisse pas agir sur son environnement. Ainsi, une procédure peut, sans renvoyer de valeur, agir sur les valeurs d'adresses mémoires extérieurs à sa région propre de code. Par exemple :
+\begin{minted}{c}
+void print_number(int x) {
+	printf("%d\n", x);
+}
+\end{minted}
+est une procédure agissant sur son environnement. Elle interagit avec la console sur laquelle s'exécute le programme\footnote{Voir la section sur les flux standards pour plus de détails.}.
+
+Une action d'une routine différente d'un renvoi de valeur hors de son environnement local est nommée un \textit{effet de bord}.
 \subsection{Exercices}
 \exercise{Encore Fibonacci}\newline Écrire une fonction de prototype \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
  $$

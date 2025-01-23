@@ -2,7 +2,9 @@
 \begin{document}
 Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temps que l'on progresse le plus au niveau du raisonnement et des réflexes. N'hésitez pas !
  
-La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est pas garanti que les programmes proposés ci-dessous soient optimaux, que ce soit par l'optimisation des constantes, la taille du code, ou d'autres paramètres. Il est d'ailleurs rare de pouvoir optimiser un programme selon toutes les contraintes\footnote{Par exemple, un programme parfois plus gros en mémoire peut-être plus rapide à l'exécution. Par ailleurs, la vitesse d'exécution dépend de la taille des entrées d'un algorithme. Certains algorithmes seront plus rapides sur des entrées de petite taille et d'autres plus rapides sur des entrées de grande taille. Il faut faire des choix.}
+La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est ni garanti que les programmes proposés soient optimaux, ni que les démonstrations proposées soient les plus élégantes.
+
+Toute proposition de démonstration ou de code peut être envoyé par mail à l'adresse \textit{bastiengarnier17@gmail.com} dans l'optique d'amélioration des futures éditions.
 \section{Première partie}
 On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 \subsection{Opérations logiques sur les mots binaires}
@@ -249,7 +251,7 @@ for (int i = 3; i*i <= N && is_primal; i += 2) {
 	is_primal = (N % i == 0) ? 0 : is_primal;
 }
 \end{minted}
-On a $\dfrac{n}{\sqrt{n}}\underset{n\rightarrow{\infty}}{\rightarrow}\infty$, l'algorithme est donc plus efficace (et il ne s'agit pas d'une constante).
+On a $\dfrac{n}{\sqrt{n}}\underset{n\rightarrow{\infty}}{\rightarrow}\infty$, l'algorithme est donc plus efficace (il ne s'agit pas d'une constante).
 \subsubsection{Routines}
 \solution{Encore Fibonacci}
 \inputminted{c}{solutions/suite_fibonacci_2.c}
@@ -271,12 +273,24 @@ En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *
 \solution{Somme d'entiers}
 \inputminted{c}{solutions/int_sum.c}
 \subsubsection{Tableaux statiques}
-\solution{Affichage d'un tableau}
-\inputminted{c}{solutions/tab_display.c}
-\solution{Somme d'un tableau}
-\inputminted{c}{solutions/tab_sum.c}
-\solution{Maximum et minimum d'un tableau}
-\inputminted{c}{solutions/tab_max_min.c}
+\solution{Routines classiques de manipulation de tableaux}
+\inputminted{c}{solutions/tab_select_sort.c}
+On pose pour $i\in\llbracket 0; l(T)\rrbracket$ l'hypothèse de récurrence $P(i)$ : \textit{\og après le $i^e$ tour de boucle, on a les invariants suivants :
+\begin{itemize}
+	\item $T[0:i]$ est trié dans l'ordre croissant
+	\item $T[0:i]$ contient les $i$ plus petits éléments de $T$.
+\end{itemize}
+\fg}
+
+\underline{Initialisation} : le tableau $T[0:0]$ est vide. Les deux propositions constitutives de $P(0)$ sont trivialement vraies.
+
+\underline{Hérédité} : Soit $i\in\llbracket 0; l(T) - 1\rrbracket$. Supposons $P(i)$. Au $(i + 1)^e$ tour de boucle, on a $i_{min}$ l'indice de l'élément minimal dans $T[i:l(A)]$. Comme par HR, tous les éléments de $T[0:i]$ sont inférieurs à ceux de $T[i:l(A)]$ et donc à $T[i + i_{min}]$. Après le $(i+1)^e$ tour de boucle, on a échangé $T[i]$ et $T[i + i_{min}]$ donc $T[0:i+1]$ contient des éléments tous inférieurs à ceux de $T[i+1:l(A)]$ et $T[i]$ majore $T[0:i+1]$ qui est donc trié par ordre croissant. \newline
+Donc les deux propositions de $P(i+1)$ sont vraies.
+
+\underline{Conclusion} : L'hypothèse de récurrence est initialisée et héréditaire. Donc par principe de raisonnement par récurrence, pour tout $i\in\llbracket 0; l(T)\rrbracket$, $P(i)$ est vraie.
+
+En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:l(T)] = T$ est trié à la fin de l'exécution de l'algorithme.
+
 \solution{Liste des nombres premiers} 
 
 \textbf{Question 1 :} On peut appliquer le très connu \textit{crible d'Eratosthène}.
@@ -285,19 +299,51 @@ Soit $n > 1$. D'après le théorème fondamentale de l'arithmétique, $n$ s'écr
 
 On remarque alors que $n$ est premier si et seulement si pour tout $p_k < n$, $p_k \nmid n$. Le programme est donc correct et effectue $T(N)$ tours de boucles au plus, où :
 $$T(N) < \underset{2\nmid i}{\sum_{i=3}^{N}}\sum_{k = 0}^{\pi(i)}1 = \dfrac{N}{2} - 1 + \underset{2\nmid i}{\sum_{i=3}^{N}}\pi(i) \leq (\dfrac{N}{2} - 1)(\pi(N) + 1) = \mathcal{O}(N\pi(N))$$
-avec la première inégalité grâce au \textsf{break}.
-\inputminted{c}{solutions/eratosthene.c}
+avec la première inégalité grâce à la sortie de boucle lors de la rencontre du premier modulo égal à 0.
+
+Il s'agit d'une version naïve qui peut être optimisée en utilisant l'\refexercise{Test de primalité} (voir la \textbf{Question 3}).
+
+\inputminted{c}{solutions/list_primal_naive_eratosthene.c}
 
 \textbf{Question 2 :}
 
 Si on utilise l'algorithme de l'\refexercise{Test de primalité} pour calculer les nombres premiers inférieurs à $N$, on obtient un algorithme pour lister les nombres premiers en $\displaystyle\underset{2\nmid i}{\sum_{i = 3}^{N}}\sqrt{i} \underset{n\rightarrow+\infty}{\sim}\dfrac{2}{3}N^{\frac{3}{2}}$ tours de boucle, par comparaison série-intégrale. 
 
-Comparons avec l'algorithme précédent : d'après le résultat admis, $\pi(N)>\dfrac{N}{ln(N)}$.
+Comparons avec l'algorithme précédent, il faut d'abord déterminer le nombre de tours de boucle effectué par le test de primalité :
+
+Si $n, p\in\mathbb{N}$ avec $p$ premier, en se restreignant au groupe $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$, $\mathbb{P}(p\ |\ n) = \dfrac{1}{p}$ (car il n'y a qu'un élément égal à 0 modulo $p$ dans un ensemble à $p$ éléments). Si on sait que $n$ n'est pas divisible par $p_2$ un autre nombre premier, on sait qu'une autre des valeurs de $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$ ne peut être prise par $n$. Ainsi, $\mathbb{P}_{(p_{2}\ \nmid\ n)}(p\ |\ n) = \dfrac{1}{p-1}$. On note $B_N$ la variable aléatoire dénotant le nombre de tours de boucle atteint par le programme pour le  test de primalité de l'entier $N$. Alors, la probabilité que le test de primalité ait atteint le tour de boucle $k\in{\llbracket1; \pi(n)\rrbracket}$ est :
+$$\mathbb{P}(B_N = k) = \displaystyle\prod_{i = 1}^{k-1}\mathbb{P}_{\left(\bigcap_{j=1}^{i-1}(p_j\ \nmid\ n)\right)}(p_i\ \nmid\ n)\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
+C'est-à-dire :
+$$\mathbb{P}(B_N = k) = \displaystyle\prod_{i = 1}^{k-1}\dfrac{p_i - i}{p_i - i + 1}\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
+L'espérance du nombre de tours de boucle atteint est donc :
+$$\mathbb{E}(B_N) = \displaystyle\sum_{k = 1}^{\pi(N)}k\prod_{i = 1}^{k-1}\left(1 - \dfrac{1}{p_i - i + 1}\right)$$
+Comme pour $i \geq 2$, on a $p_i \geq i.ln(i)$, alors :
+$$\mathbb{E}(B_N) \geq \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{1}{2}k\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$$
+
+On observe que $\sqrt{N}$ minore $\displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}}$ à partir d'un certain rang. En effet, par comparaison série intégrale :
+$$\begin{array}{lcll}
+\displaystyle\sum_{k = 2}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}} & \geq & \displaystyle\int_{1}^{\pi(N)}\dfrac{ln(x)}{\sqrt{x}}\mathrm{d}x \\
+ & \geq & \sqrt{\frac{N}{ln(N)}}(2(ln(N) - ln(ln(N))) - 4) + 4 & \text{ car }\pi(N)\geq \frac{N}{ln(N)} \\
+ & \sim_{+\infty} & 2\sqrt{Nln(N)}
+\end{array}$$
+et donc plus grand que $\sqrt{N}$ à partir d'un certain rang. Ainsi, si à partir d'un certain rang, la suite des $\frac{ln(k)}{\sqrt{k}}$ minore  la suite des $\frac{1}{2}k\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$, alors le test de primalité est plus lent que celui en $\sqrt{N}$, et on  a donc $T(N) > N^{\frac{3}{2}}$ à partir d'un certain rang.
+
+On veut ainsi montrer qu'à partir d'un certain rang :
+$$\frac{1}{2}k^{\frac{3}{2}}\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} \geq ln(k)$$
+On pose $C = \frac{1}{2}\frac{2.ln(2)}{2.ln(2) + 1}$.
+
+On remarque que pour $i \geq 3$, $\dfrac{iln(i)}{iln(i) + 1}\geq \dfrac{iln(i)}{(i+1)ln(i+1)}$
+D'où :
+$$\begin{array}{lcll}
+Ck^{\frac{3}{2}}\displaystyle\prod_{i = 3}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} & \geq & Ck^{\frac{3}{2}}\times\dfrac{3ln(3)}{kln(k)} & \text{ par produit télescopique} \\
+& \geq & C'\dfrac{\sqrt{k}}{ln(k)} & \text{ où }C'=3ln(3)C
+\end{array}$$
+Comme $\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$, on a bien l'inégalité recherchée à partir d'un certain rang.
 
 \textbf{Question 3 :}
 
 On utilise pour le test de primalité les deux idées :
-\inputminted{c}{solutions/list_primal_optimized.c}
+\inputminted{c}{solutions/list_primal_optimized_eratosthene.c}
 \subsubsection{Tableaux multidimensionnels}
 \solution{Afficher un tableau \textit{2d} [COURS]}
 \inputminted{c}{solutions/tab_display_2d.c}

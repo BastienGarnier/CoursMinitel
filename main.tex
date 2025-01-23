@@ -1,8 +1,8 @@
 \documentclass{minitelreport}
 
-\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part3/images/}}
+\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part4/images/}}
 
-\usepackage[backend=biber,style=numeric, sorting=nty, defernumbers=true]{biblatex}
+\usepackage[backend=biber,style=numeric, sorting=nty]{biblatex}
 \addbibresource{references/bibliographie.bib}
 \addbibresource{references/webographie.bib}
 \addglobalbib{./references/bibliographie.bib}
@@ -58,7 +58,7 @@
 \usepackage{subfiles}
 \begin{document}
 \title{Informatique}
-\subtitle{Une introduction à la pratique}
+\subtitle{Une introduction à la programmation}
 \variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
 \author{B. Garnier}
 \maketitle
@@ -146,11 +146,16 @@
 		\subfile{sections/part2/chapter3/comma}
 		\section{Tricks récréatifs (ft. Basile)}
 		\subfile{sections/part2/chapter3/tricks}
-\part{Le vrai monde de la réalité réelle}
+\part{Petite parenthèse théorique}
 	\phantomsection
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part3/introduction}
+\part{Le vrai monde de la réalité réelle}
+	\phantomsection
+	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction}
+	\subfile{sections/part4/introduction}
 	\chapter{Outils utiles à la programmation}
 		\section{La documentation}
 			\subsection{Liste des sites d'information}
@@ -169,39 +174,40 @@
 				\subsubsection{Stack Overflow}
 				\subsubsection{developpez.com}
 			\subsection{À propos des GPTs}
-			\subfile{sections/part3/chapter1/gpt}
+			\subfile{sections/part4/chapter1/gpt}
 		\section{Makefiles}
-		\subfile{sections/part3/chapter1/makefile}
+		\subfile{sections/part4/chapter1/makefile}
 		\section{Créer sa bibliothèque externe}
 		\section{Utiliser un débogueur}
 		Le déboguage est une composante fondamentale du développement logiciel. En effet, il est fondamentale de pouvoir identifier les fautes dans un code, en particulier si celui-ci rencontre des erreurs fatales à son fonctionnement (i.e. \textit{crash}). \textit{GDB} (\textit{\underline{G}NU \underline{D}e\underline{B}ugger}) est un logiciel qui permet d'opérer le déboguage de programmes complexes. Seront détaillés dans la suite les fonctionnalités basiques qu'il propose.
 	\chapter{Méthodes de programmation propre}
 		\section{La gestion des erreurs}
-		\subfile{sections/part3/chapter2/erreurs}
+		\subfile{sections/part4/chapter2/erreurs}
 		\section{Tests unitaires}
-		\subfile{sections/part3/chapter2/unittests}
+		\subfile{sections/part4/chapter2/unittests}
 		\section{Benchmarks}
-		\subfile{sections/part3/chapter2/benchmarks}
+		\subfile{sections/part4/chapter2/benchmarks}
 		\section{À propos du style}
-		\subfile{sections/part3/chapter2/style}
-	\chapter{Pour s'entraîner et s'amuser}
-		Cette section propose une batterie de sujets plus difficiles. Aucune correction complète de ne sera donnée, seulement des indications. L'objectif est de mettre en pratique tout ce qui a été vu durant cette partie pour se préparer efficacement aux examens d'informatique de l'ISMIN.
+		\subfile{sections/part4/chapter2/style}
+	% \chapter{Pour s'entraîner et s'amuser}
+	% 	Cette section propose une batterie de sujets plus difficiles. Aucune correction complète de ne sera donnée, seulement des indications. L'objectif est de mettre en pratique tout ce qui a été vu durant cette partie pour se préparer efficacement aux examens d'informatique de l'ISMIN.
 
-		\textbf{Remarque 1 :} Les sujets ci-dessous sont en moyenne plus difficiles que ceux donnés en examen, dans le but d'une prise de hauteur sur les notions exigées. Il est donc normal de devoir passer du temps à chercher.
+	% 	\textbf{Remarque 1 :} Les sujets ci-dessous sont en moyenne plus difficiles que ceux donnés en examen, dans le but d'une prise de hauteur sur les notions exigées. Il est donc normal de devoir passer du temps à chercher.
 
-		\textbf{Remarque 2 :} Ces sujets ont un objectif ludique, c'est-à-dire qu'ils essaient de montrer quelques aspects amusants ou intéressants de l'informatique. Il pourrait s'agir de véritables projets. Il est d'ailleurs tout à fait possible de les développer et aller plus loin que ce qui est proposé ici.
-		\section{Rogue-Like}
-			\subfile{sections/part3/chapter3/roguelike}
-		\section{Allocation dynamique}
-			\subfile{sections/part3/chapter3/allocationdynamique}
-		\section{Reseaux neuronaux}
-			\subfile{sections/part3/chapter3/reseauxneuronaux}
+	% 	\textbf{Remarque 2 :} Ces sujets ont un objectif ludique, c'est-à-dire qu'ils essaient de montrer quelques aspects amusants ou intéressants de l'informatique. Il pourrait s'agir de véritables projets. Il est d'ailleurs tout à fait possible de les développer et aller plus loin que ce qui est proposé ici.
+	% 	\section{Rogue-Like}
+	% 		\subfile{sections/part4/chapter3/roguelike}
+	% 	\section{Allocation dynamique}
+	% 		\subfile{sections/part4/chapter3/allocationdynamique}
+	% 	\section{Reseaux neuronaux}
+	% 		\subfile{sections/part4/chapter3/reseauxneuronaux}
 \part{Annexes}
 \chapter{Correction des \theexercisescounter\ exercices}
 	\subfile{sections/solutions}
 \phantomsection
 \printbibheading
 \printbibliography[type=book,heading=subbibliography,title={Livres}]
+\printbibliography[type=article,heading=subbibliography, title={Articles}]
 \printbibliography[type=manual, heading=subbibliography, title={Manuels et documentation}]
 \printbibliography[type=online, heading=subbibliography, title={Autres liens}]
 \addcontentsline{toc}{chapter}{Bibliographie}
