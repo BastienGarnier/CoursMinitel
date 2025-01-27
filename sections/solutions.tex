@@ -272,6 +272,9 @@ En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *
 \inputminted{c}{solutions/euclidian_dist.c}
 \solution{Somme d'entiers}
 \inputminted{c}{solutions/int_sum.c}
+\solution{Jeu du plus ou moins}
+\inputminted{c}{solutions/plus_ou_moins.c}
+La stratégie optimale est identique à celle de l'\refexercise{Recherche dichotomique} pour les mêmes raisons. Il faudra au maximum $\lceil log_2(N)\rceil$ tentatives pour trouver le nombre mystère.
 \subsubsection{Tableaux statiques}
 \solution{Routines classiques de manipulation de tableaux}
 \inputminted{c}{solutions/tab_select_sort.c}
@@ -291,59 +294,100 @@ Donc les deux propositions de $P(i+1)$ sont vraies.
 
 En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:l(T)] = T$ est trié à la fin de l'exécution de l'algorithme.
 
-\solution{Liste des nombres premiers} 
+\solution{Recherche dichotomique}
 
-\textbf{Question 1 :} On peut appliquer le très connu \textit{crible d'Eratosthène}.
+\textbf{Question 1 :} La démonstration est presque trivivale. Supposons que $x\in T$. Il existe donc $i_x\in \llbracket{0; l(T)-1}\rrbracket$ tel que $T[i_x] = x$. 
+\begin{itemize}
+	\item Supposons $x\leq T[i]$. Comme $T$ est trié par ordre croissant, $i_x \leq i$
+	\item Supposons $x > T[i]$. Comme $T$ est trié par ordre croissant, $i_x > i$ 
+\end{itemize}
+\textbf{Question 2 :} À chaque tour de boucle, on pose $i_m = \left\lfloor \frac{l(T)}{2}\right\rfloor$, et alors :
+\begin{itemize}
+	\item si $l(T) = 0$, renvoyer \textit{Faux}
+	\item si $l(T) = 1$ et $T[0] = x$, renvoyer \textit{Vrai}
+	\item si $x\leq T[i_m]$, $T\leftarrow T[0; i_m]$ et boucler
+	\item si $x > T[i_m]$, $T\leftarrow T[i_m:l(T)]$ et boucler
+\end{itemize}
+Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \geq 1$ et le programme termine.
 
-Soit $n > 1$. D'après le théorème fondamentale de l'arithmétique, $n$ s'écrit comme produit de nombres premiers inférieurs ou égaux à $n$ : $$n = \displaystyle\underset{v_{p_{k}}(n) > 0}{\prod_{k = 1}^{\pi(n)}}p_{k}^{v_{p_{k}}(n)}$$
+% \solution{Liste des nombres premiers} 
 
-On remarque alors que $n$ est premier si et seulement si pour tout $p_k < n$, $p_k \nmid n$. Le programme est donc correct et effectue $T(N)$ tours de boucles au plus, où :
-$$T(N) < \underset{2\nmid i}{\sum_{i=3}^{N}}\sum_{k = 0}^{\pi(i)}1 = \dfrac{N}{2} - 1 + \underset{2\nmid i}{\sum_{i=3}^{N}}\pi(i) \leq (\dfrac{N}{2} - 1)(\pi(N) + 1) = \mathcal{O}(N\pi(N))$$
-avec la première inégalité grâce à la sortie de boucle lors de la rencontre du premier modulo égal à 0.
+% \textbf{Questions 1 et 2 :}
+% La structure du code est la même dans les deux cas :
+% \begin{minted}{c}
+% #include <stdio.h>
 
-Il s'agit d'une version naïve qui peut être optimisée en utilisant l'\refexercise{Test de primalité} (voir la \textbf{Question 3}).
+% #define N ...
 
-\inputminted{c}{solutions/list_primal_naive_eratosthene.c}
+% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter);
 
-\textbf{Question 2 :}
+% int main() {
+% 	unsigned int primes[N];
+% 	unsigned int i = 3;
+% 	unsigned int counter = 0;
+% 	primes[0] = 2;
+% 	while (i <= N) {
+% 		if (primal_test(i, primes, counter)) {
+% 			primes[++counter] = i;
+% 			printf("%u;", primes[counter]);
+% 		}
+% 		i += 2;
+% 	}
+% }
+% \end{minted}
+% Les paramètres $primes$ et $counter$ sont inutiles pour la première question :
+% \begin{minted}{c}
+% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
+% 	char is_primal = n == 2 || (n > 2 && n % 2 != 0); // nécessaire
+% 	for (int i = 3; i*i <= n && is_primal; i += 2) {
+% 		is_primal = (n % i == 0) ? 0 : is_primal;
+% 	}
+% 	return is_primal;
+% }
+% \end{minted}
+% Pour la seconde :
+% \begin{minted}{c}
+% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
+% 	char is_primal = 1; // premier par défaut
+% 	for (unsigned int k = 0; k <= counter && is_primal && primes[k] * primes[k] <= i; k++) {
+% 		is_primal = (i % primes[k] == 0 ? 0 : is_primal);
+% 	}
+% 	return is_primal;
+% }
+% \end{minted}
+% \textbf{Question 3 :} L'algorithme décrit ne suit pas la même structure. Cette structure semble seulement plus complexe à écrire pour aboutir au même résultat. On montre à la dernière question que tel n'est pas le cas et que le crible d'Eratosthène est plus rapide que l'algorithme "naïf" précédent.
+% \inputminted{c}{solutions/eratosthene.c}
+% \textbf{Question 4 :}
+% Comparons avec l'algorithme précédent, il faut d'abord déterminer le nombre de tours de boucle effectué par le test de primalité :
 
-Si on utilise l'algorithme de l'\refexercise{Test de primalité} pour calculer les nombres premiers inférieurs à $N$, on obtient un algorithme pour lister les nombres premiers en $\displaystyle\underset{2\nmid i}{\sum_{i = 3}^{N}}\sqrt{i} \underset{n\rightarrow+\infty}{\sim}\dfrac{2}{3}N^{\frac{3}{2}}$ tours de boucle, par comparaison série-intégrale. 
+% Si $n, p\in\mathbb{N}$ avec $p$ premier, en se restreignant au groupe $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$, $\mathbb{P}(p\ |\ n) = \dfrac{1}{p}$ (car il n'y a qu'un élément égal à 0 modulo $p$ dans un ensemble à $p$ éléments). Si on sait que $n$ n'est pas divisible par $p_2$ un autre nombre premier, on sait qu'une autre des valeurs de $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$ ne peut être prise par $n$. Ainsi, $\mathbb{P}_{(p_{2}\ \nmid\ n)}(p\ |\ n) = \dfrac{1}{p-1}$. On note $B_N$ la variable aléatoire dénotant le nombre de tours de boucle atteint par le programme pour le test de primalité de l'entier $N$. Alors, la probabilité que le test de primalité effectue $k\in{\llbracket1; \pi(n)\rrbracket}$  tours de boucle est :
+% $$\mathbb{P}(B_N = k) = \mathbb{P}_{\left(\bigcap_{j=1}^{k-1}(p_j\ \nmid\ n)\right)}(p_k\ |\ n)\displaystyle\prod_{i = 1}^{k-1}\mathbb{P}_{\left(\bigcap_{j=1}^{i-1}(p_j\ \nmid\ n)\right)}(p_i\ \nmid\ n)\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
+% C'est-à-dire :
+% $$\mathbb{P}(B_N = k) = \dfrac{1}{p_k - k}\displaystyle\prod_{i = 1}^{k-1}\dfrac{p_i - i}{p_i - i + 1}\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
+% L'espérance du nombre de tours de boucle atteint est donc :
+% $$\mathbb{E}(B_N) = \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{k}{p_k - k}\prod_{i = 1}^{k-1}\left(1 - \dfrac{1}{p_i - i + 1}\right)$$
+% Comme pour $i \geq 2$, on a $p_i \geq i.ln(i)$, alors :
+% $$\mathbb{E}(B_N) \geq \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{k}{2(p_k - k)}\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$$
 
-Comparons avec l'algorithme précédent, il faut d'abord déterminer le nombre de tours de boucle effectué par le test de primalité :
+% On observe que $\sqrt{N}$ minore $\displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}}$ à partir d'un certain rang. En effet, par comparaison série intégrale :
+% $$\begin{array}{lcll}
+% \displaystyle\sum_{k = 2}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}} & \geq & \displaystyle\int_{1}^{\pi(N)}\dfrac{ln(x)}{\sqrt{x}}\mathrm{d}x \\
+%  & \geq & \sqrt{\frac{N}{ln(N)}}(2(ln(N) - ln(ln(N))) - 4) + 4 & \text{ car }\pi(N)\geq \frac{N}{ln(N)} \\
+%  & \sim_{+\infty} & 2\sqrt{Nln(N)}
+% \end{array}$$
+% et donc plus grand que $\sqrt{N}$ à partir d'un certain rang. Ainsi, si à partir d'un certain rang, la suite des $\frac{ln(k)}{\sqrt{k}}$ minore  la suite des $\frac{1}{2(p_k - k)}k\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$, alors le test de primalité est plus lent que celui en $\sqrt{N}$, et on  a donc $T(N) > N^{\frac{3}{2}}$ à partir d'un certain rang.
 
-Si $n, p\in\mathbb{N}$ avec $p$ premier, en se restreignant au groupe $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$, $\mathbb{P}(p\ |\ n) = \dfrac{1}{p}$ (car il n'y a qu'un élément égal à 0 modulo $p$ dans un ensemble à $p$ éléments). Si on sait que $n$ n'est pas divisible par $p_2$ un autre nombre premier, on sait qu'une autre des valeurs de $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$ ne peut être prise par $n$. Ainsi, $\mathbb{P}_{(p_{2}\ \nmid\ n)}(p\ |\ n) = \dfrac{1}{p-1}$. On note $B_N$ la variable aléatoire dénotant le nombre de tours de boucle atteint par le programme pour le  test de primalité de l'entier $N$. Alors, la probabilité que le test de primalité ait atteint le tour de boucle $k\in{\llbracket1; \pi(n)\rrbracket}$ est :
-$$\mathbb{P}(B_N = k) = \displaystyle\prod_{i = 1}^{k-1}\mathbb{P}_{\left(\bigcap_{j=1}^{i-1}(p_j\ \nmid\ n)\right)}(p_i\ \nmid\ n)\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
-C'est-à-dire :
-$$\mathbb{P}(B_N = k) = \displaystyle\prod_{i = 1}^{k-1}\dfrac{p_i - i}{p_i - i + 1}\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
-L'espérance du nombre de tours de boucle atteint est donc :
-$$\mathbb{E}(B_N) = \displaystyle\sum_{k = 1}^{\pi(N)}k\prod_{i = 1}^{k-1}\left(1 - \dfrac{1}{p_i - i + 1}\right)$$
-Comme pour $i \geq 2$, on a $p_i \geq i.ln(i)$, alors :
-$$\mathbb{E}(B_N) \geq \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{1}{2}k\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$$
+% On veut ainsi montrer qu'à partir d'un certain rang :
+% $$\frac{1}{2(p_k - k)}k^{\frac{3}{2}}\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} \geq ln(k)$$
+% On pose $C = \frac{1}{2}\frac{2.ln(2)}{2.ln(2) + 1}$.
 
-On observe que $\sqrt{N}$ minore $\displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}}$ à partir d'un certain rang. En effet, par comparaison série intégrale :
-$$\begin{array}{lcll}
-\displaystyle\sum_{k = 2}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}} & \geq & \displaystyle\int_{1}^{\pi(N)}\dfrac{ln(x)}{\sqrt{x}}\mathrm{d}x \\
- & \geq & \sqrt{\frac{N}{ln(N)}}(2(ln(N) - ln(ln(N))) - 4) + 4 & \text{ car }\pi(N)\geq \frac{N}{ln(N)} \\
- & \sim_{+\infty} & 2\sqrt{Nln(N)}
-\end{array}$$
-et donc plus grand que $\sqrt{N}$ à partir d'un certain rang. Ainsi, si à partir d'un certain rang, la suite des $\frac{ln(k)}{\sqrt{k}}$ minore  la suite des $\frac{1}{2}k\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$, alors le test de primalité est plus lent que celui en $\sqrt{N}$, et on  a donc $T(N) > N^{\frac{3}{2}}$ à partir d'un certain rang.
-
-On veut ainsi montrer qu'à partir d'un certain rang :
-$$\frac{1}{2}k^{\frac{3}{2}}\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} \geq ln(k)$$
-On pose $C = \frac{1}{2}\frac{2.ln(2)}{2.ln(2) + 1}$.
-
-On remarque que pour $i \geq 3$, $\dfrac{iln(i)}{iln(i) + 1}\geq \dfrac{iln(i)}{(i+1)ln(i+1)}$
-D'où :
-$$\begin{array}{lcll}
-Ck^{\frac{3}{2}}\displaystyle\prod_{i = 3}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} & \geq & Ck^{\frac{3}{2}}\times\dfrac{3ln(3)}{kln(k)} & \text{ par produit télescopique} \\
-& \geq & C'\dfrac{\sqrt{k}}{ln(k)} & \text{ où }C'=3ln(3)C
-\end{array}$$
-Comme $\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$, on a bien l'inégalité recherchée à partir d'un certain rang.
-
-\textbf{Question 3 :}
-
-On utilise pour le test de primalité les deux idées :
-\inputminted{c}{solutions/list_primal_optimized_eratosthene.c}
+% On remarque que pour $i \geq 3$, $\dfrac{iln(i)}{iln(i) + 1}\geq \dfrac{iln(i)}{(i+1)ln(i+1)}$
+% D'où :
+% $$\begin{array}{lcll}
+% Ck^{\frac{3}{2}}\displaystyle\prod_{i = 3}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} & \geq & C\dfrac{k^{\frac{3}{2}}}{p_k - k}\times\dfrac{3ln(3)}{kln(k)} & \text{ par produit télescopique} \\
+% & \geq & C'\dfrac{\sqrt{k}}{ln(k)} & \text{ où }C'=3ln(3)C
+% \end{array}$$
+% Comme $$\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$$, on a bien l'inégalité recherchée à partir d'un certain rang.
 \subsubsection{Tableaux multidimensionnels}
 \solution{Afficher un tableau \textit{2d} [COURS]}
 \inputminted{c}{solutions/tab_display_2d.c}

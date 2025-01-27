@@ -155,14 +155,14 @@ Une fois que le compilateur sait exactement quel est le code source à prendre e
 L'opération de compilation consiste à produire les codes \textit{assembleurs} correspondant aux fichiers sources (en relevant les erreurs rencontrés pour aider le programmeur). L'opération elle-même se décompose grossièrement en quatre phases :
 \begin{enumerate}
 	\item l'analyse lexicale : identifie dans le code source les différentes unités lexicales\footnote{Aussi appelés \textit{lexèmes}, il s'agit de tous les mots qui font sens pour le langage, comme par exemple : '+', 'if', ')', ou encore n'importe quel nom de variable ou de fonction}
-	\item l'analyse syntaxique : construit un arbre de la syntaxe du programme et vérifie que celle-ci est correcte.
-	\item l'analyse sémantique : après avoir validé la syntaxe, le compilateur construit le ``sens'' du programme, par exemple en vérifiant la validité des types des arguments vis-à-vis des paramètres d'une fonction par exemple. L'analyse sémantique constitue la part la plus complexe de la compilation.
-	\item la génération du programme assembleur : grâce aux résultats de l'analyse sémantique, le compilateur a construit le sens du programme et peut le reproduire en langage assembleur. Ce type de langage est le plus proche du langage machine. Le compilateur effectue au passage quelques optimisations de vitesse du code
+	\item l'analyse syntaxique : construit un arbre de la syntaxe du programme et vérifie que celle-ci est correcte vis-à-vis d'une grammaire définie formellement
+	\item l'analyse sémantique : après avoir validé la syntaxe, le compilateur construit le ``sens'' du programme, par exemple en vérifiant la validité des types des arguments vis-à-vis des paramètres d'une fonction par exemple.
+	\item la génération du programme assembleur : grâce aux résultats de l'analyse sémantique, le compilateur a construit le sens du programme et peut le reproduire en langage assembleur. Ce type de langage est le plus proche du langage machine. Le compilateur effectue au passage quelques optimisations de vitesse du code\footnote{Il ne faut pas comprendre le \og au passage \fg comme si ces opérations d'optimisations étaient triviales. Il s'agit de la partie la plus complexe du compilateur.}
 \end{enumerate}
 À ce niveau, est associé à chaque fichier source un fichier d'extension \textit{.s} qui correspond au langage assembleur \textit{gas} utilisé par \textit{gcc}\footnote{Pour plus de détails : \url{https://en.wikipedia.org/wiki/GNU_Assembler}}
- 
+
 Il est vitale de comprendre que pour l'instant, les noms de fonctions du programme sont toujours écrits en clair dans le code assembleur et sont appelés via l'instruction \textit{call}.\footnote{Une fonction est simplement une adresse en mémoire qui contient des données au même titre qu'une variable. Simplement, ces données sont du code exécutable.}
- 
+
 On peut générer le code assembleur d'un programme grâce à l'argument \textsf{-S} :
 \begin{minted}{bash}
 user@computer ~/working_directory> ls

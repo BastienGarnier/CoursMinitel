@@ -120,7 +120,13 @@ int main(int argc, char** argv){
   printf("%d \n", f(&a,&a));
 }
 \end{minted}
-Et un équivalent un peu plus technique :
+Et un équivalent un peu plus technique, ne fonctionnant que sur architecture petit-boutiste, à compiler par la ligne de commande :
+\begin{minted}{bash}
+user@computer ~/working_directory> gcc main.c -o main -std=c11
+user@computer ~/working_directory> ./main 1
+1
+user@computer ~/working_directory>
+\end{minted}
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -158,4 +164,5 @@ int main(int _, char** argv){
 	);
 }
 \end{minted}
+Le défi est évidemment de comprendre ce que fait ce programme, et comment il le fait, hihihi !\footnote{(rire vraiment très diabolique)}
 \end{document}

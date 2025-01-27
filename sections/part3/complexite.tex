@@ -1,0 +1,38 @@
+\exercise{Liste des nombres premiers} Cet exercice tient à montrer, dans un exemple particulier, l'importance fondamentale du détail, et comment ce qui semble une infime différence dans la manière d'écrire un code peut changer fondamentalement l'efficacité de l'algorithme mis en oeuvre.
+\begin{enumerate}
+	\item En programmant une routine du test de primalité l'\refexercise{Test de primalité}, écrire un programme qui liste les nombres premiers inférieurs à $N$ en au plus $N^{\frac{3}{2}}$ tours de boucles.
+	\item En utilisant un tableau de taille $N$ qui stocke les nombres premiers déjà trouvés, utiliser cette fois-ci un test de primalité en au plus $\pi(\sqrt{N})$ tours de boucle
+	\item Programmer l'algorithme du \textit{crible d'Eratosthène} décrit ci-dessous.
+	\item \textbf{(difficile)}Démontrer que l'algorithme de la \textbf{Question 2.} est asymptotiquement plus lent que le crible d'Eratosthène
+\end{enumerate}
+\textit{
+	\underline{Remarque :} $\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$. On pourra librement utiliser dans cet exercice les résultats suivants :
+	\begin{itemize}
+		\item $\sum_{p\in{\mathbb{P}\wedge p\leq x}}\dfrac{1}{p} = ln(ln(x)) + \mathcal{O}(1)$
+		\item Pour tout $x > 1$, $\dfrac{x}{ln(x)} < \pi(x) < 1.25506\dfrac{x}{ln(x)}$ \cite{PrimeFunctions}
+		\item par une équivalence du Théorème des nombres premiers, d'après le point précédent, $p_n > n.ln(n)$, où $p_n$ est le $n^e$ premier nombre premier
+	\end{itemize}
+}
+\begin{algorithm}
+\caption{Algorithme du crible d'Eratosthène}
+\Entree{$N > 0$ un entier naturel}\;
+\Sortie{les entiers naturels inférieurs à $N$}\;
+
+\textit{Initialisation}
+
+Déclarer un tableau $P$ de $N$ booléens\;
+Initialiser : $P[0] = Faux$ et $\forall i\in\llbracket 1; l(P)-1\rrbracket, P[i] = Vrai$\;
+
+\textit{Boucle}
+
+On pose $p := 2$\;
+\Tq{$p^2\leq N$} {
+	\Pour{($f := p$ to $\left\lceil \dfrac{N}{p}\right\rceil$)}{
+		$P[pf] = Faux$\;
+	}
+	\Tq{$P[p] = Faux$}{
+		$p \leftarrow p + 1$\;
+	}
+}
+
+\end{algorithm}

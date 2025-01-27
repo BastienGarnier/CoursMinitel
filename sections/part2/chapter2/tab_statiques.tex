@@ -262,8 +262,8 @@ Soit $T$ un tableau de $l(T)\in\mathbb{N}$ éléments. On note pour $i, j\in{\ll
 	\item en utilisant les questions précédentes, écrire une procédure \textsf{void selection\_sort(int array[], unsigned int length);} qui trie dans l'ordre croissant et par effet de bord un tableau $A$ de $n\in\mathbb{N}$ éléments selon l'algorithme ci-dessous.
 \begin{algorithm}
 \caption{Algorithme de tri de tableau par sélection}\label{alg:select_sort}
-\textbf{Entrées :} tableau $A$ et $l(A)$ le nombre d'éléments de $A$\;
-\textbf{Sortie :} tableau $A$ trié par effet de bord\;
+\Entree{tableau $A$ et $l(A)$ le nombre d'éléments de $A$}\;
+\Sortie{tableau $A$ trié par effet de bord}\;
 
 $i\leftarrow 0$\;
 \Tq{$i < l(A)$} {
@@ -274,18 +274,13 @@ $i\leftarrow 0$\;
 \end{algorithm}
 \item démontrer par récurrence la correction de l'algorithme précédent, c'est-à-dire une démonstration que cet algorithme trie effectivement le tableau dans l'ordre croissant.
 \end{enumerate}
-\exercise{Liste des nombres premiers}
+\newpage
+\exercise{Recherche dichotomique} On reprend les notations introduites dans l'\refexercise{Routines classiques de manipulation de tableaux}.
 \begin{enumerate}
-	\item Écrire un programme qui liste les nombres premiers inférieurs à $N$ en effectuant un nombre de tours de boucle (qu'il s'agisse ou non d'une boucle imbriquée) d'au maximum $N\pi(N)$. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
-	\item \textbf{(difficile)}Démontrer que l'algorithme qui parcourt tous les entiers inférieurs à $N$ et leur applique le test de primalité de l'\refexercise{Test de primalité} (en $\mathcal{O}(\sqrt(N))$) est asymptotiquement plus rapide que l'algorithme trouvé ci-avant.
-	\item Déduire des deux algorithmes un nouvel algorithme plus rapide que les deux précédents.\footnote{La démonstration n'est pas exigée.}
+	\item Soit $T$ un tableau d'entiers trié par ordre croissant. Soit $i\in \llbracket 0; l(T)-1\rrbracket$.Soit $x\in\mathbb{Z}$. Montrer que :
+	$$x\in T\Rightarrow \left\{\begin{array}{lcl}
+	x\leq T[i] & \Rightarrow & x\in T[0:i] \\
+	x> T[i] & \Rightarrow & x\in T[i:l(T)]\end{array}\right.$$
+	\item Écrire une fonction \textsf{char is\_in(int x, int array[], unsigned int length);} qui renvoie \textit{Vrai} sur $x$ appartient au tableau, et \textit{Faux} sinon. Cette fonction devra au pire effectuer $\lceil log_2(length)\rceil$ tours de boucle. On le démontrera grâce à la question 1, en choisissant judicieusement $i$ à chaque tour de boucle.
 \end{enumerate}
-\textit{
-	\underline{Remarque :} On pourra librement utiliser dans cet exercice les résultats suivants ($\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$) :
-	\begin{itemize}
-		\item Théorème fondamentale de l'arithmétique\footnote{Que je ne fais l'insulte à personne de rappeler ;)}
-		\item Pour tout $x > 1$, $\dfrac{x}{ln(x)} < \pi(x) < 1.25506\dfrac{x}{ln(x)}$ \cite{PrimeFunctions}
-		\item par une équivalence du Théorème des nombres premiers, d'après le point précédent, $p_n > n.ln(n)$, où $p_n$ est le $n^e$ premier nombre premier
-	\end{itemize}
-}
 \end{document}

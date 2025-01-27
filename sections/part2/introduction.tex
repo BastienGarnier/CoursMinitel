@@ -5,19 +5,18 @@
 Cette deuxième partie du cours d'informatique porte sur la programmation en langage C, pour les raisons susdites dans la partie précédente.
  
 L'objectif est d'offrir une vue qui se veut assez complète afin d'amener le lecteur à une maîtrise du langage suffisante pour l'écriture de programmes quelconques sur un ordinateur personnel. Le cours ne cherche donc pas à se spécialiser dans un domaine particulier et aborde de manière générale la programmation en C\footnote{Rien ne sera donc dit vis-à-vis des spécificités de la programmation de systèmes embarquées bien qu'il s'agisse d'une spécialité de la formation ISMIN, ou d'autres domaines importants aux règles spécifiques comme la programmation hautes performances.}.
- 
+
 Dans cette optique, la progression se veut tout à fait linéaire et progressive dans le sens où chaque concept présenté ne nécessite pour sa bonne compréhension que les concepts présentés précédemment.
- 
+
 La structure générale du texte est thématique et chaque thème est suivi d'exercices pour assurer l'assimilation des notions abordées. On distingue quatre classes de thèmes :
 \begin{itemize}
 	\item les fondamentaux relatifs à la syntaxe très générale du langage C et à quelques points généraux nécessaires à une vue d'ensemble
 	\item les bases qui présentent l'essentiel du langage C, c'est-à-dire ce qui suffit à écrire des programmes quelconques en langage C
-	\item les concepts avancées qui abordent certaines subtilités et particularités de première nécessité douteuse mais d'utilité parfois avéré
+	\item les concepts avancées\footnote{Le terme \og avancé \fg ne sous-entend aucune difficulté supplémentaire, il s'agit simplement de la présentation de notions non directement nécessaires.} qui abordent certaines subtilités et particularités de première nécessité douteuse mais d'utilité parfois avéré
 \end{itemize}
-\textbf{Remarque à destination des étudiants de l'ISMIN : } l'assimilation des deux premiers chapitres de cette partie est suffisante pour réussir les examens d'algorithmie et de programmation exigés en première année.
+À la fin de cette partie, le lecteur connaîtra tous les aspects du C et saura réaliser n'importe quel algorithme en C. Dans le cadre de l'ISMIN, il ne sera plus en difficulté pour aucune matière nécessitant la maîtrise de ce langage. Pour être plus précis, les deux premiers chapitres sont suffisant dans ce but.
 
-\textbf{Remarque quant à l'adjectif \og avancé \fg} : le terme ne sous-entend aucune difficulté supplémentaire, il s'agit simplement de la présentation de notions non directement nécessaires.
-
+\subsubsection{Limitations}
 Un langage de programmation est désigné avant tout par sa grammaire, sa syntaxe. Toutefois, celle-ci est profondément lié à la sémantique, c'est-à-dire au sens du programme et plus particulièrement à la manière dont on pense un programme informatique. De ce fait, le simple fait de se limiter au langage C limite fortement la vision de la programmation qui va être développée. De même, il est dommage de n'apprendre que les règles de grammaires du langage et penser savoir programmer de ce fait. D'ailleurs, il suffirait pour cela de lire les 200 pages de spécification syntaxique du langage \cite{c11}, bourrage de crâne tout à fait inutile, puisque rien ne pourra en être fait\footnote{Cette spécification n'est destiné qu'à la lecture de certains points particuliers lors de l'écriture d'un programme pour la précision technique, ou dans le cadre très spécfique de l'écriture d'un compilateur du langage}.
 \subsubsection{De l'universalité ou de la particularité des langages et notamment du C}
 Il peut venir à l'esprit à la lecture de ce livre deux idées opposées. D'abord que les concepts présentés à propos du langage sont présents dans d'autres langages comme le Python, et semblent présenter un caractère universel à la programmation (on pensera par exemple au concept de \textit{variable}). Ensuite que certaines particularités pourraient n'être que spécifiques au C et généralisable à aucun autre langage, comme cela peut être pensé des \textit{classes de stockage} -- ce qui est évidemment faux puisque des langages comme le Rust le permettent.

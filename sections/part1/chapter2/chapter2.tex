@@ -58,7 +58,7 @@ Revenir à la maison\;
 
 On peut imaginer apprendre cet algorithme à notre corbeau de compagnie (c'est très intelligent les corbeaux\dots), et simplement lui ordonner d'exécuter cet algorithme par l'instruction "Va chercher le journal !".
 
-\textbf{Remarque :} En petit malin, le lecteur attentif peut observer deux choses :
+\textbf{Remarque :} En petit malin, le lecteur attentif peut observer deux choses\footnote{C'est la technique classique de "Nan mais t'inquiètes, tu vois l'erreur là ? C'est juste pour voir si tu suis, et pas parce-que j'ai oublié."\dots \textit{a priori} là ça va :)} :
 \begin{itemize}
 	\item que l'\textit{agent} qui exécute cet algorithme doit déjà savoir de quelle boîte aux lettres et de quelle maison il est question, pour qu'il n'y ait pas d'interprétation (et pour aller plus loin, il faut aussi qu'il comprenne le langage dans lequel est exprimé l'algorithme et le sens de chaque verbe/action).
 	\item que l'instruction "Fermer la boîte aux lettres" est présente deux fois, et surtout qu'on est certain qu'elle s'exécute. En effet, cette instruction est présente que la condition "\textit{la boîte est ouverte}" soit vérifiée ou non ! \textit{idem} pour l'instruction "Ramasser le journal". On peut donc les mettre une seule fois à la fin.
@@ -146,6 +146,7 @@ Parmi les langages impératifs les plus importants\footnote{Un peu moins subject
 	\item Python : langage généraliste à très haut niveau d'abstraction destiné au prototypage rapide d'applications
 	\item Java : langage généraliste à très haut niveau d'abstraction, très utilisé dans le développement d'applications
 	\item JavaScript : langage à très haut niveau d'abstraction permettant de dynamiser des pages internets. Sert au développement d'applications Webs. Il manipule et génère des pages internets sous forme de texte HTML.
+	\item Fortran : langage de haut niveau d'abstraction utilisé pour le calcul scientifique
 	\item R : langage à très haut niveau d'abstraction spécialisé pour le calcul statistique et les visualisations de données
 	\item PHP : langage à très haut niveau d'abstraction spécialisé pour la programmation de serveurs Web
 	\item C : langage généraliste à niveau relativement bas d'abstraction (par rapport à la plupart des autres, mais très haut tout de même par rapport à l'Assembleur). Il est utilisé notamment dans le développement de programmes dans des systèmes embarqués, ou pour tout ce qui se rapproche de l'ordinateur, comme les systèmes d'exploitation par exemple.
@@ -168,7 +169,7 @@ L'autre catégorie de langages, dits interprétés, n'est jamais traduite en lan
 \section{Le langage C}
 Le langage C est un langage de bas niveau. Il permet donc de mieux comprendre le fonctionnement interne de l'ordinateur puisqu'il permet la manipulation de la mémoire. D'un autre côté, il traduit assez bien dans sa syntaxe l'intuition algorithmique humaine et se trouve donc un moyen efficace d'apprendreà à programmer. Il est de plus très simple et présente peu de technicité langagière pure (au contraire de langages comme le Rust ou le Java par exemple). En cela, l'apprentissage du C permet de basculer ensuite vers un très grand nombre d'autres langages de programmation.
 
-Le C a été inventé dans les années 70 dans l'objectif particulier de développer des systèmes d'exploitation. En effet, son rapprochement avec la machine, son extrême modularité, sa syntaxe claire et précise et la possibilité d'inclure des fragments de programmes écrits en assembleur à l'intérieur de programmes écrits en C permettent de développer n'importe quel type d'application complexe avec une certaine facilité pour l'époque. Le C reste très utilisé dans les systèmes embarquées et le développement de systèmes d'exploitation. Pour tout un tas de raisons allant du manque de souplesse abstraite du langage à certaines failles de sécurité introduites par les programmeurs rêveurs\footnote{Qui se trouvent être suffisamment nombreux pour avoir une mauvaise influence sur la réputation du langage\dots}, le langage C a tendance à être remplacé pour le développement d'applications complexes par d'autres langages qui proposent certaines solutions abstraites\footnote{comme la programmation orientée objets}, tiennent plus la main au programmeur en terme de sécurité et de stabilité de développement\footnote{On pourra penser au \textit{garbage collector} introduit dans une quantité phénoménale de langages}, proposent plus de fonctionnalités pré-écrites\footnote{Il n'y a qu'à voir la taille de la bibliothèque standard du C++ par rapport à celle du C}, etc\dots
+Le C a été inventé dans les années 70 dans l'objectif particulier de développer des systèmes d'exploitation. En effet, son rapprochement avec la machine, son extrême modularité, sa syntaxe claire et précise\footnote{Là j'avoue j'abuse\dots y a des trucs en C qui ont été \textit{designed} avec les pieds. Genre les tableaux statiques par exemple\dots Mais chuuut !} et la possibilité d'inclure des fragments de programmes écrits en assembleur à l'intérieur de programmes écrits en C permettent de développer n'importe quel type d'application complexe avec une certaine facilité pour l'époque. Le C reste très utilisé dans les systèmes embarquées et le développement de systèmes d'exploitation. Pour tout un tas de raisons allant du manque de souplesse abstraite du langage à certaines failles de sécurité introduites par les programmeurs rêveurs\footnote{Qui se trouvent être suffisamment nombreux pour avoir une mauvaise influence sur la réputation du langage\dots}, le langage C a tendance à être remplacé pour le développement d'applications complexes par d'autres langages qui proposent certaines solutions abstraites\footnote{comme la programmation orientée objets}, tiennent plus la main au programmeur en terme de sécurité\footnote{On pourra penser au \textit{garbage collector} introduit dans une quantité phénoménale de langages} et/ou de stabilité de développement\footnote{Il faut entendre : cette fois-ci le \textit{design} de base du langage est correct.}, proposent plus de fonctionnalités pré-écrites\footnote{Il n'y a qu'à voir la taille de la bibliothèque standard du C++ par rapport à celle du C}, etc\dots
 \subsection{Installer un éditeur et un compilateur}
 Avant de pouvoir programmer en C, il est nécessaire d'installer certains outils de base.
 \subsubsection{Éditeur de texte}
@@ -197,23 +198,28 @@ Il existe plusieurs EDIs/éditeurs de code connus qui permettent d'éditer des p
 	\item Code::Blocks : un EDI pour programmer en langages C et C++ sous Windows (\url{https://www.codeblocks.org/downloads/binaries/})
 	\item Visual Studio Code : un éditeur de texte pouvant être étendu en EDI, probablement le plus connu et le plus utilisé (\url{https://code.visualstudio.com/})
 	\item Visual Studio Community : un EDI pouvant être étendu sur plusieurs langages (extrêmement lourd, seulement utile pour de très gros projets professionnels)
-	\item EMACS : un éditeur de texte pouvant être étendu en EDI pour n'importe quel langage de programmation, envoyer des mails, naviguer sur Internet, ouvrir des PDFs, etc\dots, etc\dots (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (\url{https://www.gnu.org/software/emacs/}).\newline
-		Il s'agit en vérité de beaucoup plus que d'un simple EDI/éditeur. On ne le sait pas au moment où on l'installe, c'est tout\dots
+	\item EMACS\footnote{Il s'agit en vérité de beaucoup plus que d'un simple EDI/éditeur. On ne le sait pas au moment où on l'installe, c'est tout\dots} : un éditeur de texte pouvant être étendu en EDI pour n'importe quel langage de programmation, envoyer des mails, naviguer sur Internet, ouvrir des PDFs, etc\dots, etc\dots (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (\url{https://www.gnu.org/software/emacs/}).\newline
 	\item vim : un éditeur de texte pour les systèmes d'exploitation Linux uniquement (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (installé par défaut)
 \end{itemize}
 \subsubsection{Compilateur}
+Il faut pour compiler ce premier programme connaître le principe d'un \textit{terminal de commande}. Un terminal de commande permet d'exécuter les fonctionnalités du système d'exploitation sans passer par une interface graphique (c'est-à-dire des boutons, des fenêtres, etc\dots). Toutes les actions sont effectués par \textit{lignes de commande}. À une époque où l'interface graphique n'existait pas, ces terminaux de commande étaient les seuls moyens de manipuler un ordinateur.
+
 \textbf{Sous Windows :}
 
-Pour installer un compilateur indépendant sous Windows, il faut télécharger l'archive à l'adresse : \url{https://github.com/brechtsanders/winlibs_mingw/releases/download/14.1.0posix-18.1.5-11.0.1-ucrt-r1/winlibs-x86_64-posix-seh-gcc-14.1.0-llvm-18.1.5-mingw-w64ucrt-11.0.1-r1.zip} puis extraire l'archive dans \textsf{C:/} de sorte à avoir un répertoire \textsf{C:/mingw64/}.
+Pour installer un compilateur indépendant sous Windows, il n'y a pas besoin d'utiliser le terminal de commande Windows. Il suffit de télécharger l'archive à l'adresse : \url{https://github.com/brechtsanders/winlibs_mingw/releases/download/14.1.0posix-18.1.5-11.0.1-ucrt-r1/winlibs-x86_64-posix-seh-gcc-14.1.0-llvm-18.1.5-mingw-w64ucrt-11.0.1-r1.zip} puis d'extraire l'archive dans \textsf{C:/} de sorte à avoir un répertoire \textsf{C:/mingw64/}.
 
 Le compilateur est alors dans le répertoire \textsf{C:/mingw64/bin/} et pourra être utilisé pour compiler les programmes écrits en C ou en C++.
 
 \textbf{Sous Linux :}
 
-Un compilateur du langage C est présent par défaut dans le système d'exploitation. Seul l'EDI/éditeur de texte doit être installé
+Il n'existe qu'un seul type de terminal sous Linux\footnote{Pour simplifier\dots que les puristes pardonnent.}. On ouvre ce terminal par les touches $\textsf{CTRL} + \textsf{ALT} + \textsf{T}$. Un compilateur du langage C peut-être installé \textit{via} le terminal :
+\begin{minted}[linenos]{bash}
+user@computer ~> sudo apt-get update && sudo apt-get upgrade
+user@computer ~> sudo apt-get install gcc
+user@computer ~> gcc -v
+NUMERO DE VERSION AFFICHÉE SI INSTALLATION CORRECTE
+\end{minted}
 \subsection{Compiler le premier programme}
-Il faut pour compiler ce premier programme connaître le principe d'un \textit{terminal de commande}. Un terminal de commande permet d'exécuter les fonctionnalités du système d'exploitation sans passer par une interface graphique (c'est-à-dire des boutons, des fenêtres, etc\dots). Toutes les actions sont effectués par \textit{lignes de commande}. À une époque où l'interface graphique n'existait pas, ces terminaux de commande étaient les seuls moyens de manipuler un ordinateur.
-
 Le code du premier programme doit être écrit dans un fichier de nom quelconque (appelé \textit{``main.c''} par convention).
 
 Pour la suite, on pourra utiliser l'arborescence de fichiers suivante\footnote{Vous êtes bien sûr libre de faire autrement, il s'agit simplement de poser une structure conventionnelle pour la suite du cours.} :
@@ -250,7 +256,7 @@ C:\Users\user\Documents\Apprendre_le_C> main.exe
 
 \textbf{Sous Linux :}
 
-Il n'existe qu'un seul type de terminal sous Linux\footnote{Pour simplifier\dots que les puristes pardonnent.}. On ouvre ce terminal par les touches $\textsf{CTRL} + \textsf{ALT} + \textsf{T}$. Il suffit ensuite d'écrire :
+Il suffit ensuite d'écrire dans le terminal de commande :
 \begin{lstlisting}[title=Compiler sous Linux]
 \end{lstlisting}
 \begin{minted}[linenos]{bash}

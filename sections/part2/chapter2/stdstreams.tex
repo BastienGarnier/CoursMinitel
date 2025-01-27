@@ -158,4 +158,47 @@ Dans la suite, $N$ désigne une constante définie par un \textsf{\#define}.
 $$\lVert{A - B}\rVert^{2}_{euclide} = (x_{A} - x_{B})^{2} + (y_{A} - y_{B})^{2}$$
 
 \exercise{Somme d'entiers}Écrire un programme qui demande à l'utilisateur d'entrer $N$ entiers et renvoie la somme de ces entiers. Ce programme ne devra pas utiliser plus de 3 variables.
+
+\exercise{Jeu du plus ou moins} L'objectif est de programmer un petit jeu vidéo dans une console : le plus ou moins ! Le principe est très simple : un nombre mystère est tiré au hasard entre $0$ et $N-1$ inclu au lancement du programme. Le joueur doit deviner en le moins de tentatives possibles ce nombre mystère. À chaque tentative, le programme lui dira si le nombre mystère est plus grand ou plus petit. On pourra compter le nombre de tentatives, et par exemple l'afficher à la fin. Combien de tentatives au maximum est-il nécessaire pour trouver le nombre mystère à coup sûr ?
+\begin{minted}{bash}
+user@computer ~/working_directory> ./main
+Un nombre mystere a ete tire entre 0 et 99 inclu !
+Quel est le nombre mystere ?
+> 74
+Le nombre mystere est plus petit
+> 34
+Le nombre mystere est plus grand
+> 51
+Youpiii tu as trouve le nombre mystere en 3 tentatives !
+user@computer ~/working_directory>
+\end{minted}
+\begin{minitelbasicbox}{Génération de nombres pseudo-aléatoires}
+Un ordinateur ne peut pas en soi générer des nombres aléatoires puisqu'il est absolument déterministe. La seule chose qui est possible est d'utiliser des suites à comportements chaotiques dont la valeur initiale est différente à chaque exécution du programme. On utilise en général la date à laquelle le programme est exécuté, c'est-à-dire le nombre de secondes écoulées depuis le $1^{er}$ janvier 1970. On peut utiliser pour cela le module \textsf{time.h} du C :
+\begin{minted}{c}
+#include <time.h>
+
+int main() {
+	time_t seconds = time(NULL);
+	printf("Nombre de secondes depuis le 1er janvier 1970 : %ld\n", seconds);
+}
+\end{minted}
+On peut alors utiliser les fonctions \textsf{void srand(unsigned int seed);} et \textsf{void rand();} du module \textsf{stdlib.h} qui respectivement :
+\begin{itemize}
+	\item donne une valeur initiale à la suite du générateur de valeurs pseudo-aléatoires (i.e. chaotiques)
+	\item renvoie une valeur pseudo-aléatoire\footnote{C'est-à-dire le terme suivant de la suite chaotique.} entre $0$ et $RAND\_MAX$\footnote{Constante définie dans \textsf{stdlib.h}} inclu.
+\end{itemize}
+Dans la pratique :
+\begin{minted}{c}
+#include <stdlib.h>
+#include <time.h>
+
+int main() {
+	srand(time(NULL));
+
+	/*
+	Reste du programme utilisant rand()
+	*/
+}
+\end{minted}
+\end{minitelbasicbox}
 \end{document}

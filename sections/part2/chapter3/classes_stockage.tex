@@ -1,8 +1,7 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
-Cette section vient apporter des outils pour préciser la durée de vie d'une variable et sa portée d'utilisation. On appelle : 
-
+Cette section vient apporter des outils pour préciser la durée de vie d'une variable et sa portée d'utilisation.
 \definition{Portée d'une variable et durée de vie}{
 On définit ici deux notions qui ont été entrevues précédemment :
 \begin{itemize}
@@ -49,7 +48,77 @@ Une conséquence très importante de l'impossibilité d'une section de données 
 \subsubsection{Variables allouées dynamiquement}
 Les données des variables allouées dynamiquement sont présentes dans le tas. Cependant, le pointeur vers ces données est lui stocké indépendamment de ces données. Il peut donc être stocké dans l'un des quatre lieux de stockage de variable décrits ci-dessus.
 \subsubsection{Registres}
-Les registres sont de très petites unités de mémoire, en général constituées de bascules \textit{RS} ou \textit{JK} en séries. Chaque bascule stocke un bit. Les processeurs ne possèdent pas une grande quantité de registres car ceux-ci sont très coûteux par rapport à la quantité de mémoire qu'ils proposent. Leur accès est toutefois extrêmement rapide, en écriture comme en lecture. Ils servent donc souvent\footnote{Cela dépend en vérité du type de registre. Certains registres sont spéciaux et ont un sens spécifique pour le processeur tandis que d'autres sont très généraux et peuvent servir à tout est n'importe quoi.} comme variables temporaires pour les calculs du processeur.
+Les registres sont de très petites unités de mémoire, en général constituées de bascules \textit{RS} ou \textit{JK} en séries. Chaque bascule stocke un bit. Les processeurs ne possèdent pas une grande quantité de registres car ceux-ci sont très coûteux par rapport à la quantité de mémoire qu'ils proposent. Leur accès est toutefois extrêmement rapide, en écriture comme en lecture. Ils servent donc souvent comme variables temporaires pour les calculs du processeur\footnote{Cela dépend en vérité du type de registre. Certains registres sont spéciaux et ont un sens spécifique pour le processeur tandis que d'autres sont très généraux et peuvent servir à tout est n'importe quoi.}.
 
-Il est très difficile\footnote{Au sens informatique de complexité, il s'agit d'un problème d'ordonnancement $NP$-difficile.} d'accorder correctement les registres aux variables pendant les calculs. Cette opération est en général effectuée de manière automatisée par le compilateur.	
+Il est très difficile\footnote{Au sens informatique de complexité, il s'agit d'un problème d'ordonnancement $NP$-difficile.} d'accorder correctement les registres aux variables pendant les calculs. Cette opération est en général effectuée de manière automatisée par le compilateur.
+\subsection{Choisir la classe de stockage d'une variable en C}
+Il existe quatre classes de stockage en C : \textit{auto}, \textit{register}, \textit{static} et \textit{extern}.
+\begin{itemize}
+	\item \textit{auto} : explicite le fait que les choix du compilateur sont automatiques\footnote{En deux mots : complètement inutile}
+	\item \textit{register} : force l'utilisation d'un registre pour une variable particulière
+	\item \textit{static} permet de restreindre la portée d'une variable persistente à un environnement local\footnote{au contraire des variables globales qui sont persistentes mais\dots globales}
+	\item \textit{extern} permet d'étendre une variable globale sur plusieurs fichiers sources.
+\end{itemize}
+Les deux classes de stockage les plus importantes sont \textit{static} et \textit{extern}.\footnote{Par "plus importantes" on entend : possèdent des applications pratiques régulières.}
+
+On peut les utiliser de la façon suivante :
+\begin{minted}{c}
+auto TYPE x; // équivalent à ne rien préciser
+register TYPE x;
+static TYPE x;
+extern TYPE x;
+\end{minted}
+\subsubsection{La classe \textit{auto}matique}
+La classe \textit{auto} est celle utilisée par défaut pour toutes les variables dont la classe de stockage n'est pas précisé par le programmeur. Les propriétés des variables définies par la classe \textit{auto} sont celles vues depuis le début de ce livre. C'est-à-dire qu'en fonction du contexte, le compilateur choisi lui-même comment stocker ces variables. Ce peut-être : 
+\begin{itemize}
+	\item en pile d'exécution : pour des variables cantonnés à un environnement local, comme dans une fonction
+	\item dans le tas : pour des variables non globales mais qui peuvent être manipulés dans plusieurs fonctions différentes par exemple
+	\item dans un registre : pour des accès répétés sur une courte période
+	\item en section de données : ce qui peut arriver notamment dans le cas des variables globales
+\end{itemize}
+\subsubsection{La classe \textit{register}}
+La classe \textit{register} permet de forcer le compilateur à utiliser un registre pour stocker une variable si cela est possible\footnote{Puisqu'il n'existe pas une infinité de registres.}. Son utilisation n'est pas recommandée pour la plupart des cas d'usages. Ainsi, dans l'exemple suivant :
+\begin{minted}{c}
+int main() {
+	register int a = 0;
+	int x = 1;
+	printf("%d", a);
+	
+	// pleins de calculs sur 'x' n'utilisant pas 'a'
+	
+	a = (x = 0) ? 5 : 3;
+	printf("%d", a + x);
+}
+\end{minted}
+l'exécution des calculs ne nécessite pas la connaissance de $a$, par contre $a$ est nécessaire au début et à la fin. Le compilateur est dans l'impossibilité de réassigner le registre utilisé pour $a$ pour les calculs sur $x$. Les registres sont rares, mais l'un d'entre eux est gaspillé par l'utilisation abusive du mot-clé \textit{register}. 
+\subsubsection{La classe \textit{static}}
+La classe \textit{static} force le compilateur à placer la variable en section de données. La durée de vie de la variable devient alors la durée de vie du programme. Ainsi :
+\begin{minted}{c}
+#include <stdio.h>
+
+void example() {
+	static int i = 0; // l'initialisation n'a lieu qu'à la première exécution
+	printf("%d", i++);
+}
+
+int main() {
+	for (unsigned int u = 0; u < 10; u++) {
+		example();
+	}
+}
+\end{minted}
+affiche les nombres de 0 à 9.
+
+\textbf{Remarque :} la portée de la variable n'est pas augmentée par la classe \textit{static}. L'ajout de la ligne d'affichage de $i$ dans la fonction \textsf{main} provoque une erreur de compilation :
+\begin{minted}[linenos=false]{c}
+int main() {
+	for (unsigned int u = 0; u < 10; u++) {
+		example();
+	}
+	printf("%d", i);
+}
+\end{minted}
+Le mot-clé \textit{static} permet donc de construire des variables à valeur persistante dont la portée est locale. En effet, l'utilisation de variables globables est sinon la seule alternative, et cela pose des problèmes de stabilité du code dans le cas de grands projets.
+\subsubsection{La classe \textit{extern}}
+Il s'agit de la classe de stockage dont l'utilisation est la plus particulière.
 \end{document}
