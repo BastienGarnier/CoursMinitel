@@ -10,13 +10,14 @@ Supposons cependant que l'on veuille modéliser informatiquement des structures 
 	\item un personnage d'un jeu vidéo. Celui-ci possède, par exemple, des points de vie, une vitesse, un modèle 3D qui est (grossièrement) un tableau de sommets, d'arêtes et de faces, etc\dots
 	\item etc\dots
 \end{itemize}
-On pourrait stocker tout ceci dans des tableaux toujours plus grands d'entiers dont on peut interpréter les valeurs. Il faudrait alors noter dans une documentation que pour un tableau de \textsf{double} dont on conviendrait d'une convention de nommage pour se souvenir qu'il s'agit d'une lentille, la valeur \textsf{tableau[37]} correspondrait à telle ou telle propriété de la lentille.
+On pourrait stocker tout ceci dans des tableaux toujours plus grands d'entiers dont on peut interpréter les valeurs. 
+Il faudrait noter dans une documentation que le $34^e$ octet correspond à l'accélération selon l'axe $z$ par exemple. Il faudrait ensuite penser à effectuer une projection de type en nombre flottant, puisqu'un tableau ne peut pas contenir des éléments de plusieurs types différents.
  
-C'est possible. Mais cela semble de manière évidente complètement tordu, et d'un sens pratique assez\dots comment dire\dots limité.
+C'est possible. Mais cela semble plutôt complexe, et d'un sens pratique assez\dots comment dire\dots limité.
  
 C'est ici que les structures entrent en jeu.
- 
-Une structure est un moyen de stocker dans une seule entité plusieurs types d'informations. Chacune de ces informations possédera sa propre étiquette au sein de cette entité, ainsi que son propre type. C'est un peu comme une boîte qui contient plusieurs variables : 
+
+Une structure permet de définir un type complexe. C'est un moyen de stocker dans une seule entité plusieurs types d'informations. Chacune de ces informations possédera sa propre étiquette au sein de cette entité, ainsi que son propre type. C'est un peu comme une boîte qui contient plusieurs variables : 
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -33,23 +34,17 @@ struct NomStructure { // Aucun objet n'est créé, il s'agit d'une description
 	// etc...
 };
 \end{minted}
-Il s'agit d'une définition, et non d'une déclaration. Pour cette raison, aucune variable interne, ou \textit{membre}, de la structure ne peut être initialisée. Par ailleurs, une définition d'une structure est comme la définition d'un nouveau type de variable. Pour utiliser une structure, il faut au final créer des variables dont le type est cette structure :
+Il s'agit d'une définition, et non d'une déclaration. \textit{On définit un nouveau type}. Pour cette raison, aucune variable interne, ou \textit{membre}, de la structure ne peut être initialisée. Pour utiliser une structure, il faut au final créer des variables dont le type est cette structure :
 \begin{minted}[linenos=false]{c}
-struct NomStructure { // Aucun objet n'est créé, il s'agit d'une description
-	TYPE1 var1;
-	TYPE2 var2;
-	TYPE3 var3;
-	// etc...
-};
-struct NomStructure x; // 'x' est créé sans membres initialisés
+struct NomStructure x; // 'x' est créé sans membres initialisés.
 \end{minted}
 Il est possible d'y penser un peu comme à la construction d'une maison : on commence par dessiner le plan de la maison et une fois cela fait il suffit de fabriquer plein de maisons grâce à ce plan.
  
 On peut ensuite accéder aux membres d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un membre noté ``.'' :
 \begin{minted}[linenos=false]{c}
 x.var1 = ...; // accède au membre 'var1' de 'x'
-x.var2 = ...; // accède au membre 'var1' de 'x'
-x.var3 = ...; // accède au membre 'var1' de 'x'
+x.var2 = ...; // accède au membre 'var2' de 'x'
+x.var3 = ...; // accède au membre 'var3' de 'x'
 // etc...
 \end{minted}
 Un exemple :
@@ -282,7 +277,7 @@ Alors que le code ci-dessous initialise le membre $c$ à \textsf{NULL}, le membr
 struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 \end{minted}
 \subsection{Exercices}
-\exercise{Matrices (2)} Écrire une structure \textsf{struct Matrix} qui contient trois champs :
+\exercise{Matrices (2)}{13} Écrire une structure \textsf{struct Matrix} qui contient trois champs :
 \begin{itemize}
 	\item \textit{double** mat};
 	\item \textit{unsigned int n};
@@ -290,7 +285,7 @@ struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 \end{itemize}
 et modifier les routines de l'\refexercise{Matrices (1)} pour qu'elles utilisent la structure \textsf{struct Matrix}.
 
-\exercise{Listes chainées}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
+\exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
  
 On commence par construire la structure permettant de stocker un \textit{noeud} de la liste, c'est-à-dire un de ses éléments. La valeur du noeud est la valeur de l'élément de la liste :
  
@@ -329,6 +324,7 @@ En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud �
 	\textbf{Attention :} la difficulté principale réside dans le fait de relier correctement les noeuds entre eux grâce aux pointeurs. Il faut faire preuve de rigueur pour qu'après exécution de la fonction on ait bien le schéma ci-dessus.
 	\item De même, écrire une procédure \textsf{void linkedlist\_push\_on\_tail(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en queue de liste}.
 	\item Écrire deux fonctions \textsf{int linkedlist\_pop\_from\_head(struct LinkedList *l);} et \textsf{int linkedlist\_pop\_from\_tail(struct LinkedList *l);} qui suppriment respectivement le noeud en tête et en queue de liste et renvoient la valeur de ce noeud. On pensera à libérer la mémoire associée à l'allocation dynamique de ce noeud (c'est-à-dire utiliser \textsf{free} sur le pointeur vers le noeud).
+	\item Écrire une fonction \textsf{void linkedlist\_destroy(struct LinkedList *l);} qui détruit une liste en libérant la mémoire de chacun de ses noeuds et de la liste elle-même.
 	\item En utilisant un pointeur temporaire vers les noeuds, écrire une procédure \textsf{void linkedlist\_display(struct LinkedList *l);} qui affiche les valeurs des noeuds de la liste.
 \end{enumerate}
 % \exercise{Raymarching}Un environnement procédural est un environnement généré par des procédures, constitués de calculs mathématiques. L'algorithme de \textit{raymarching} permet de visualiser depuis un point de l'espace un tel environnement, comme le ferait une caméra\footnote{Voir \url{https://www.youtube.com/watch?v=BFld4EBO2RE} pour une démonstration de création d'un environnement procédural par un ancien ingénieur de Pixar.}

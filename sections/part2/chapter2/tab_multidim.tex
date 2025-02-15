@@ -56,8 +56,7 @@ On accède ensuite naturellement aux éléments du tableau par une double indexa
 \begin{minted}[linenos=false]{c}
 array[2][3]; // valeur en 3ème ligne et 4ème colonne du tableau
 \end{minted}
-\exercise{Afficher un tableau $2d$ [COURS]} Écrire un programme (et pas une routine) qui affiche les éléments d'un tableau $2d$ d'entiers.
- 
+
 Dans le cas d'un tableau à $D$ dimensions, on accède à un élément par $D$ indexations. Par exemple pour un tableau à 4 dimensions :
 \begin{minted}[linenos=false]{c}
 double spacetime_points[10][10][10][10];
@@ -110,15 +109,20 @@ int main() {
 			triangle[i][j] = 0;
 		}
 	}
-	
+	free(triangle);
+	triangle = NULL; // pas obligatoire car sortie de routine
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\exercise{Affichage du triangle [COURS]} Compléter le programme ci-dessus pour remplir le tableau \ref{math:triangle_2d_array}. Écrire ensuite une procédure \textsf{print\_triangle(int **triangle, int n\_lines);} qui affiche ce tableau (où \textsf{n\_lines} désigne le nombre de lignes du tableau)
+
+\subsection{Exercices}
+\exercise{Afficher un tableau $2d$}{10} Écrire un programme (et pas une routine) qui affiche les éléments d'un tableau $2d$ d'entiers.
+
+\exercise{Affichage du triangle}{13} Compléter le programme ci-dessus pour remplir le tableau \ref{math:triangle_2d_array}. Écrire ensuite une procédure \textsf{print\_triangle(int **triangle, int n\_lines);} qui affiche ce tableau (où \textsf{n\_lines} désigne le nombre de lignes du tableau)
  
 \textbf{Remarque :} L'exercice ci-contre met en évidence la possibilité de passer en argument des tableaux multidimensionnels.
-\subsection{Exercices}
-\exercise{Matrices (1)} L'objet de cet exercice est l'implantation de matrices en langage C. 
+
+\exercise{Matrices (1)}{13} L'objet de cet exercice est l'implantation de matrices en langage C. 
 
 Soient $n, m\in\mathbb{N}^{*}$. Une matrice $mat\in\mathcal{M}_{n, m}(\textsf{TYPE})$ est basiquement un tableau de lignes $(L_{i})_{i\in{\llbracket{0; n\llbracket}}}$ et chacune de ces lignes est un tableau de valeurs typées :
 $$\left\{ \begin{array}{llcl}

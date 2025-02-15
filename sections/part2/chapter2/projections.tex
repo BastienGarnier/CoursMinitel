@@ -6,17 +6,11 @@ La \textit{projection de type} (\textit{static cast} en anglais) est une opérat
 L'exemple suivant, extrêmement simple, va servir d'illustration à la projection de type : on souhaite diviser un nombre stocké comme un \underline{entier} par un diviseur stocké comme un \underline{entier}, et obtenir le nombre \underline{flottant} résultant. C'est-à-dire ne pas effectuer une division entière mais réelle.
  
 On essaie dans un premier temps le code suivant :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-	int some_integer = 7851;
-	int divider = 100;
-	double a = some_integer/divider;
-	printf("%.2lf\n", a);
-	return EXIT_SUCCESS;
-}
+\begin{minted}[linenos=false]{c}
+int some_integer = 7851;
+int divider = 100;
+double a = some_integer/divider;
+printf("%.2lf\n", a);
 \end{minted}
 Après exécution, on a le résultat : \textsf{78.00}
  
@@ -36,34 +30,22 @@ TYPE2 reinterpreted_variable = (TYPE2)(variable);
 	\item projection de pointeurs $T_1*$ vers $T_2*$ : donnée non modifiée\footnote{et c'est tout car la valeur et la donnée des pointeurs sont identiques}
 \end{itemize}
 Dans notre cas, il suffit d'écrire :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-	int some_integer = 7851;
-	int divider = 100;
-	double a = (double)(some_integer)/divider;
-	printf("%.2lf\n", a);
-	return EXIT_SUCCESS;
-}
+\begin{minted}[linenos=false]{c}
+int some_integer = 7851;
+int divider = 100;
+double a = (double)(some_integer)/divider;
+printf("%.2lf\n", a);
 \end{minted}
 Le résultat après exécution est bien : $78.51$
 
 Dans le cas d'une projection d'un nombre entier non signé vers un nombre entier signé, on  a bien une simple réinterprétation : 
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-	unsigned short int v = -1;
-	printf("%d\n", v); // -> 65535
-	printf("%d\n", (signed short int)(v)); // -> -1 mais il s'agit du même mot binaire
-	return EXIT_SUCCESS;
-}
+\begin{minted}[linenos=false]{c}
+unsigned short int v = -1;
+printf("%d\n", v); // -> 65535
+printf("%d\n", (signed short int)(v)); // -> -1 mais il s'agit du même mot binaire
 \end{minted}
 \subsection{Exercices}
-\exercise{Quelques évaluations entières}\newline
+\exercise{Quelques évaluations entières}{13}\newline
 Dire pour chaque expression si elle est vraie ou fausse (respectivement : différente ou égale à 0) :
 \begin{minted}[linenos=false]{c}
 int e1 = 0xFFFFFFF00 != 0xFFFFFFFF - (char)(-1);

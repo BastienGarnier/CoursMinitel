@@ -2,38 +2,41 @@
 \graphicspath{{sections/part2/images/}}
 \begin{document}
 \subsection{Introduction au tas}
-Un programme informatique, lorsqu'il est chargé en mémoire, comporte un troisième espace mémoire nommé \textit{le tas} (\textit{heap} en anglais). Il se nomme ainsi car il correspond à un tas de mémoire accessible au programmeur.\footnote{Au sens qu'il y en a beaucoup, et qu'on pioche ``dans le tas'' lorsqu'il s'agit de trouver une adresse pour allouer de la mémoire. L'appelation ne fait pas référence à la structure de donnée homonyme}
+Un programme informatique, lorsqu'il est chargé en mémoire, comporte un troisième espace mémoire\footnote{Les deux premiers sont :\begin{itemize}
+	\item le code
+	\item la pile d'exécution
+\end{itemize}} nommé \textit{le tas} (\textit{heap} en anglais). Il se nomme ainsi car il correspond à un tas de mémoire accessible au programmeur.\footnote{Au sens qu'il y en a beaucoup, et qu'on pioche ``dans le tas'' lorsqu'il s'agit de trouver une adresse pour allouer de la mémoire. L'appelation ne fait pas référence à la structure de donnée homonyme}
  
-Le tas est un espace mémoire de taille extensible\footnote{Avec comme limite la taille de la RAM de l'ordinateur.}. Il peut être aggrandit au fur-et-à-mesure des allocations, c'est-à-dire lorsque trop de variables ont été alloués. Ainsi, il est virtuellement possible d'utiliser l'entièreté de la RAM avec le tas. Il possède cependant certains défauts :
+Le tas est un espace mémoire de taille extensible\footnote{Avec comme limite la taille de la RAM de l'ordinateur.} contrairement à la pile d'exécution. Il peut être aggrandit au fur-et-à-mesure des allocations, c'est-à-dire lorsque trop de variables ont été alloués. Ainsi, il est virtuellement possible d'utiliser l'entièreté de la RAM avec le tas. Il possède cependant certains défauts :
 \begin{itemize}
 	\item les variables alloués ne sont pas toutes contigües en mémoire, contrairement à la pile. Cela ralentit l'accès à celles-ci.
 	\item les espaces mémoires alloués aux variables ne sont pas libérés automatiquement à la sortie des routines, \textbf{c'est au programmeur d'être responsable}
 \end{itemize}
-Le deuxième point est particulièrement important, puisqu'il peut être la source de graves bogues connus sous le nom de fuites de mémoire (\textit{memory leaks} en anglais). La fuite de mémoire apparaît lorsqu'une variable est allouée dynamiquement sur le tas, et que le programmeur oublie de la libérer avant la fin de la routine. Le système d'exploitation continue de considérer que la zone mémoire est utilisée jusqu'à ce que le programme se termine. Dans le cadre d'applications conséquentes, cela peut être vraiment problématique.\footnote{J'ai joué y a un bail à \textit{Nehrim : At fate's edge}, un jeu amateur utilisant le moteur de jeu de \textit{The Elder Scrolls IV : Oblivion}, et du fait de ces fuites de mémoire, le jeu \textit{freezait} après une heure ou deux. Il était alors nécessaire de l'éteindre et de le relancer. Excellent néanmoins, je conseille !}
+Le deuxième point est particulièrement important, puisqu'il peut être la source de graves bogues connus sous le nom de fuites de mémoire (\textit{memory leaks} en anglais). La fuite de mémoire apparaît lorsqu'une variable est allouée dynamiquement sur le tas, et que le programmeur oublie de la libérer avant la fin de la routine. Le système d'exploitation continue de considérer que la zone mémoire est utilisée jusqu'à ce que le programme se termine. Dans le cadre d'applications conséquentes, cela peut être vraiment problématique.\footnote{J'ai joué y a un bail à \textit{Nehrim : At fate's edge}, un jeu amateur utilisant le moteur de jeu de \textit{The Elder Scrolls IV : Oblivion}, et du fait de ces fuites de mémoire, le jeu \textit{freezait} après une heure ou deux. Il était alors nécessaire de l'éteindre et de le relancer. Excellent néanmoins, je conseille !} Par ailleurs, libérer incorrectement la mémoire peut amener à des failles de sécurité importantes.
  
-Un autre bogue très récurrent qui empêche totalement le fonctionnement du programme est l'accès à une variable dont l'espace mémoire a été libéré : s'ensuite l'erreur de segmentation, de code $-11$, provoqué par le système d'exploitation qui perçoit cela comme une attaque du système !\footnote{Si il était possible d'accéder à n'importe quelle case mémoire d'un ordinateur sans protection, le \textit{hacking} serait presque trivial.} Ce bogue est rencontré en quasi-permanence chez les débutants, dès lors que des structures complexes sont manipulées en mémoire. Il arrive aussi très fréquemment\footnote{Quoi que ceux-ci en disent ;)} chez les programmeurs expérimentés. En effet, il est d'une facilité extraordinaire de rencontrer ce bogue dès lors que la programmation manque un tout soit peu de rigueur.\footnote{C'est cette erreur qui crée la peur déraisonnée des pointeurs et la ``haine'' du C par quantité de programmeurs. Plus sérieusement, d'autres langages de programmation assez bas niveau qui assurent malgré tout en interne la sécurisation de la mémoire, comme le \textit{Rust}, sont souvent préférés en entreprise pour une question de stabilité et d'assurance qualité. Ce qui ne change rien au fait que savoir programmer en C assure une compétence bien plus grande que de ne pas savoir, en raison de l'affrontement direct avec le ``mal''}
+Un autre bogue très récurrent qui empêche totalement le fonctionnement du programme est l'accès à une variable dont l'espace mémoire a été libéré : s'ensuite l'erreur de segmentation, de code $-11$, provoqué par le système d'exploitation qui perçoit cela comme une attaque du système !\footnote{Si il était possible d'accéder à n'importe quelle case mémoire d'un ordinateur sans protection, le \textit{hacking} serait presque trivial.} Ce bogue est rencontré en quasi-permanence chez les débutants, dès lors que des structures complexes sont manipulées en mémoire. Il arrive aussi très fréquemment\footnote{Quoi que ceux-ci en disent ;)} chez les programmeurs expérimentés. En effet, il est d'une facilité extraordinaire de rencontrer ce bogue dès lors que la programmation manque un tout soit peu de rigueur.\footnote{C'est cette erreur qui crée la peur déraisonnée des pointeurs et la ``haine'' du C par quantité de programmeurs. Plus sérieusement, d'autres langages de programmation assez bas niveau qui assurent malgré tout en interne la sécurisation de la mémoire, comme le \textit{Rust}, sont souvent préférés en entreprise pour une question de stabilité et d'assurance qualité. Ce qui ne change rien au fait que savoir programmer en C assure une compétence bien plus grande que de ne pas savoir, en raison de la confrontation directe avec le ``mal''}
 \subsection{Les routines \textsf{malloc} et \textsf{free}}
 Pour gérer ``soi-même''\footnote{C'est les routines qui font le gros du boulot hein ! Faudrait pas se mettre à voler par les chevilles x)} de la mémoire sur le tas, deux fonctions de la bibliothèque \textit{stdlib.h} fournissent les fonctionnalités suivantes :
 \begin{itemize}
 	\item allouer un espace mémoire, grâce à \textsf{malloc}\footnote{Pour \textit{\underline{M}emory \underline{Alloc}ation}}
-	\item libérer un espace mémoire, grâce à \textsf{free}
+	\item libérer un espace mémoire précédemment alloué, grâce à \textsf{free}
 \end{itemize}
 Le détail du fonctionnement interne des deux fonctions ne sera pas explicité.\footnote{Mais pour le plaisir : \url{https://wiki.osdev.org/Memory_management}, \url{https://wiki.osdev.org/Memory_Allocation}, \url{https://codebrowser.dev/glibc/glibc/malloc/malloc.c.html} et la G.O.A.T. \url{https://gee.cs.oswego.edu/dl/}}
  
 Voici les prototypes de ces deux fonctions issus de la documentation officielle :
 \begin{minted}[linenos=false]{c}
 #include <stdlib.h>
-void *malloc(size_t size);
-void free(void *ptr);
+void* malloc(size_t size);
+void free(void* ptr);
 \end{minted}
 La fonction \textsf{malloc} prend en argument un nombre d'octets, et renvoie un pointeur de type quelconque vers la première case de l'espace mémoire alloué. La procédure \textsf{free} prend en argument un pointeur quelconque vers un espace mémoire, et libère l'entièreté de cet espace mémoire.
  
-On observe ici une première utilisation des pointeurs quelconques \textsf{void*} : \textsf{free} prend simplement une adresse, et libère la mémoire associée en interne. Elle n'a pas à connaître le type de la variable libérée.
- 
-En particulier, tout accès ultérieur à cet espace mémoire peut \textbf{potentiellement} provoquer l'erreur de segmentation de code $-11$. Il ne s'agit que d'une potentialité car tant que l'espace mémoire libéré n'est pas réutilisé par un autre programme, le système d'exploitation peut ne pas relever d'erreur.
+On observe ici une première utilisation des pointeurs quelconques \textsf{void*} : \textsf{free} prend simplement une adresse, et libère la mémoire associée en interne. Elle n'a pas à connaître le type de la variable libérée. En fait, la taille de chaque bloc mémoire alloué dynamiquement est stocké en interne.
+
+En particulier, tout accès à cet espace mémoire à la suite de la libération peut \textbf{potentiellement} provoquer l'erreur de segmentation de code $-11$. Il ne s'agit que d'une potentialité car tant que l'espace mémoire libéré n'est pas réutilisé par un autre programme, le système d'exploitation peut ne pas relever d'erreur.
 \begin{minted}{c}
 #include <stdio.h> // printf
-#include <stdlib.h> // malloc et free
+#include <stdlib.h> // EXIT_SUCCESS, malloc et free
 
 int main() {
 	int* array = (int*)malloc(sizeof(int) * 5); // Alloue 4 * 5 = 20 octets.
@@ -43,6 +46,8 @@ int main() {
 	}
 
 	free(array); // Autorise de futures allocations à cette adresse
+	array = NULL; // "oublie" l'ancienne position du tableau en mémoire
+	return EXIT_SUCCESS;
 }
 \end{minted}
 Il s'agit d'un pointeur vers un espace mémoire de 20 octets. On peut y accéder de la même manière que pour un tableau.
@@ -54,7 +59,7 @@ short int* array = malloc(sizeof(short int) * 10); // Alloue 2 * 10 = 20 octets
 \textbf{Remarque 2 :} Il est à présent possible d'allouer en mémoire un tableau dont la taille dépend des variables du programme, et de le renvoyer par une fonction !
 \begin{minted}{c}
 #include <stdio.h> // printf
-#include <stdlib.h> // malloc et free
+#include <stdlib.h> // EXIT_SUCCESS, malloc et free
 
 int* make_array(unsigned int n) {
 	int *array = (int*)malloc(sizeof(int) * n); // Alloue (4 * n) octets
@@ -72,8 +77,83 @@ int main() {
 	}
 
 	free(array); // la mémoire doit toujours être libérée
+	array = NULL; // et le pointeur réinitialisé
+	return EXIT_SUCCESS;
 }
 \end{minted}
-\subsection{Exercices}
+\subsection{L'importance de réinitialiser le pointeur après libération}
+Dans le code suivant :
+\begin{minted}[linenos=false]{c}
+void* ptr = malloc(N);
+... // utilisation de l'espace alloué
+free(ptr);
+ptr = NULL;
+\end{minted}
+la dernière instruction de réinitialisation du pointeur semble \textit{a priori} inutile. Le pointeur n'est plus utilisé, la mémoire est libérée et pourra donc être à nouveau réutilisée lors d'une prochaine allocation. Tout semble parfait. Et pourtant, là est le problème.
 
+La non réinitialisation d'un pointeur peut dans certains cas provoquer des erreurs de sécurité, de par le fonctionnement de la fonction \textsf{malloc}. En effet, un \textsf{free} va autoriser le bloc mémoire libéré à être alloué à nouveau. Mais les données à cet endroit sont toujours présentes et peuvent être réutilisées par mégarde. La fonction \textsf{malloc} va allouer la même zone mémoire à l'allocation suivante. Le pointeur qui a été libéré pointe toujours vers cette zone.
+
+Le code suivant illustre le problème :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define USER_SIZEOF_DATA_STRUCTURE ...
+#define IS_ADMIN_OFFSET ... // value < USER_SIZEOF_DATA_STRUCTURE
+
+int main() {
+	char *guest = NULL, *admin = NULL;
+
+	// les informations d'un premier utilisateur sont stockés dans un tableau de données
+	guest = malloc(USER_SIZEOF_DATA_STRUCTURE);
+	// un des octets stocke les droits d'utilisateur (1 si admin, 0 sinon)
+	guest[IS_ADMIN_OFFSET] = 0; // pas admin par défaut
+
+	// du code
+
+	// quelque part :
+	free(guest);
+	// guest pointe toujours vers sa zone mémoire !!!
+
+	// encore du code
+	
+	// et puis autre part :
+	admin = malloc(USER_SIZEOF_DATA_STRUCTURE);
+	admin[IS_ADMIN_OFFSET] = 1;
+	// (guest == admin) est vrai ici !!!!!!
+
+	// encore et toujours du code
+
+	if (guest == NULL || guest[IS_ADMIN_OFFSET] == 0) {
+		printf("Cette section nécessite les droits d'administrateur !\n");
+		return EXIT_FAILURE;
+	}
+	
+	printf("Acces a la zone d'administration autorise\n");
+
+	// du code administrateur
+
+	free(admin);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+L'exécution de ce programme affiche à l'écran :
+\begin{minted}{bash}
+user@computer ~/working_directory> ./main
+Acces a la zone d'administration autorise
+\end{minted}
+La réinitialisation n'est cependant pas toujours \textit{nécessaire}. Par exemple, en sortie de routine, toutes les variables et pointeurs de l'environnement local sont \og oubliés \fg. Dans le code suivant :
+\begin{minted}{c}
+void some_proc() {
+	// code
+	char* t = malloc(N);
+	// code
+	free(t);
+}
+\end{minted}
+l'accès au pointeur $t$ n'est pas possible à la suite d'un appel à la routine. Un simple \textsf{free} suffit amplement.
+\subsection{Exercices}
+\exercise{Conversion en binaire}{12}Écrire une fonction \textsf{char* bin\_from\_nat(int n);} qui renvoie la représentation binaire de $n$ dans un tableau $B$. Ainsi, si $n = (b_{31}\dots b_{0})_2$, alors pour tout $0 \leq i < 32$, $B[i] = b_i$, où $B[i]$ désigne l'élément d'indice $i$ de $B$. Écrire une procédure d'affichage d'un tableau $B$ \textsf{void bin\_display(char* b);}. Cette procédure doit afficher le nombre binaire dans le sens de lecture humain, c'est-à-dire avec les bits de poids faibles à droite.
+
+\textit{\underline{Indication :} on pourra considérer la représentation binaire d'un nombre sous forme de polynôme de Horner (voir la partie \textbf{1.3.1})}
 \end{document}

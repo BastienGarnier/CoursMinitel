@@ -63,7 +63,7 @@ fin:
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Pensez à oublier ça, c'était pour la culture, mais sauf à faire de l'assembleur, il faut éviter\dots
+Pensez à oublier ça, tant qu'on ne maîtrise pas absolument le reste, il faut éviter\dots et même là\dots
  
 \subsubsection{Saut conditionnel}
  
@@ -262,9 +262,11 @@ La raison, assez technique\footnote{Pour les curieux, voir \url{https://drive.go
  
 Un petit exemple d'utilisation :
 \begin{minted}{c}
-// <math.h> nécessite l'option -lm
-// à la fin de la ligne de commande pour compiler :
-// gcc main.c -o main -lm
+/*
+<math.h> nécessite l'option -lm
+à la fin de la ligne de commande pour compiler :
+	gcc main.c -o main --pedantic -lm
+*/
 #include <stdlib.h>
 #include <math.h> // NaN (Not A Number), sqrt
 
@@ -282,7 +284,6 @@ int main() {
 }
 \end{minted}
 \subsubsection{Aiguillage}
- 
 L'aiguillage est une autre forme de branchement conditionnel. Il permet de diriger le flot d'exécution selon la valeur d'une variable entière. On peut vouloir associer à plusieurs nombres un bloc d'instructions différent. L'aiguillage permet de faire correspondre à des entiers des blocs d'instructions.
  
 Il posséde quelques avantages et inconvénients :
@@ -290,16 +291,16 @@ Il posséde quelques avantages et inconvénients :
 	\item avantages :
 	\begin{itemize}
 		\item très lisible
-		\item permet une optimisation plus poussé du code par le compilateur
+		\item permet une optimisation plus poussé du code par le compilateur\footnote{C'est-à-dire qu'aucun branchement conditionnel n'est effectué quand on a au moins 5 valeurs entières proches (je n'ai pas vérifié ce que signifiait \textit{exactement} ``proche''), ce qui est \textit{extrêmement} appréciable en terme de performances.}
 		\item facilite l'écriture des conditions sur des structures complexes (parce-que personne n'a envie d'écrire 40 \textsf{if-else} enchaînés les uns dans les autres)
 	\end{itemize}
 	\item inconvénients : 
 	\begin{itemize}
 		\item ne test que des égalités
-		\item les valeurs à égaler doivent être écrites en dur
+		\item les valeurs à égaler doivent être prédéterminés à la compilation (pas de variables) et \textit{entières}
 	\end{itemize}
 \end{itemize}
-Cet aiguillage sert en général à effectuer un choix, qu'il s'agisse du parcours d'une structure informatique complexe\footnote{Patience et longueur de temps font plus que force ni que rage, a écrit un type un jour\dots Faut attendre un peu avant de faire des trucs impressionants, z'inquiétez pas ça va arriver}, ou d'un simple menu dans l'application d'un restaurant.
+Cet aiguillage sert en général à effectuer un choix, qu'il s'agisse du parcours d'une structure informatique complexe\footnote{Patience et longueur de temps font plus que force ni que rage, a écrit un type un jour\dots Faut attendre un peu avant de faire des trucs impressionants, z'inquiétez pas ça va arriver}, ou d'un simple menu dans l'application d'un restaurant\footnote{C'est pas très sexy dit comme ça, mais c'est le quotidien des examens d'Algo/Prog de l'ISMIN}.
  
 En langage C, l'aiguillage est introduit par le mot-clé \textsf{switch}. Les mot-clés \textsf{case} et \textsf{break} viennent avec.
 \begin{minted}[linenos=false]{c}
@@ -328,7 +329,7 @@ default:
 }
 printf("apres le switch");
 \end{minted}
-L'exemple ci-dessus se veut exhaustif des cas possibles de l'instruction \textsf{switch}. On observe que le flot d'exécution va ``sauter'' au \textsf{case} correspondant à la valeur de $x$, et à \textsf{default} si cette valeur n'est pas présente dans l'aiguillage. \textit{L'exécution redevient séquentielle à partir de cet instant !} Une erreur régulièrement faite par les débutants est de penser qu'à la fin de l'exécution du \textsf{case}, le flot vient tout de suite après le switch. Cela n'est pas vrai sans le mot-clé \textsf{break} qui ``casse'' le bloc d'instructions en cours d'exécution et saute à la fin.
+L'exemple ci-dessus se veut exhaustif des cas possibles de l'instruction \textsf{switch}. On observe que le flot d'exécution va ``sauter''\footnote{Littéralement.} au \textsf{case} correspondant à la valeur de $x$, et à \textsf{default} si cette valeur n'est pas présente dans l'aiguillage. \textit{L'exécution redevient séquentielle à partir de cet instant !} Une erreur régulièrement faite par les débutants est de penser qu'à la fin de l'exécution du \textsf{case}, le flot vient tout de suite après le switch. Cela n'est pas vrai sans le mot-clé \textsf{break} qui ``casse'' le bloc d'instructions en cours d'exécution et saute à la fin.
  
 Dans l'exemple ci-dessus, l'exécution du code pour $x = 3$ est suivie immédiatement par l'exécution du code pour $x = 4$ car il n'y a pas de \textsf{break}. De la même manière, si $x = 1$, le flot va sauter à la ligne \textsf{case 1} puis va séquentiellement avancer au bloc d'instructions pour $x = 2$.
 \subsubsection{Boucle à pré-condition (ou boucle \textit{while}) :}
@@ -373,7 +374,7 @@ $$
 \forall{n\in{\mathbb{N}}}, & u_{n+1} & = & 3u_{n}^{2} - 5u_{n} + 2
 \end{array}\right.
 $$
-\exercise{[COURS]} Modifier le programme donné en exemple pour qu'il affiche toutes les valeurs $u_{1}, \dots, u_{N}$. \newline
+\exercise{}{07} Modifier le programme donné en exemple pour qu'il affiche toutes les valeurs $u_{1}, \dots, u_{N}$. \newline
 Expliquer pourquoi les valeurs deviennent fausses à partir d'un certain rang que l'on précisera.
  
 \subsubsection{Boucle à post-condition (ou boucle \textit{do-while})}
@@ -468,12 +469,14 @@ L'instruction \textsf{continue} est le dual de l'instruction \textsf{break} pour
 	\end{center}
 \end{minipage}
  
-Plus sérieusement, il est vraiment recommandé de ne jamais faire cela. En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions.
+Plus sérieusement, il est recommandé de ne pas utiliser le \textsf{goto} l'immense majorité du temps.\footnote{Dire ça c'est un coup à avoir un lecteur à l'ego démesuré qui va penser être le type exceptionnel qui a des problèmes si extraordinaires qu'il lui \textit{faut} le \textsf{goto}. Ou qu'il est tellement malin qu'avec son \textsf{goto} à tort et à travers, il révolutionne les styles de programmation. Au risque de le décevoir\dots} En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions. Par ailleurs, la lecture seule d'une instruction \textsf{goto} ne donne aucune information supplémentaire à son sujet comme les raisons pour lesquelles le saut est effectué.
+
+Cela ne signifie pas que l'outil soit tout à fait inutile, simplement que son utilisation doit être restreinte à des cas d'utilité avéré.\footnote{On peut penser à des transitions de machines d'états.}
 
 \subsection{Exercices}
 Dans la suite, $N$ désigne une constante définie par un \textsf{\#define}.
 
-\exercise{Question d'âge} Écrire un programme C contenant une variable $age$ de type \textsf{signed char} dont la valeur est initialisée. Le programme affiche :
+\exercise{Question d'âge}{10} Écrire un programme C contenant une variable $age$ de type \textsf{signed char} dont la valeur est initialisée. Le programme affiche :
 \begin{itemize}
 	\item ``Soyez patient(e), votre tour arrive'' si $age < 0$
 	\item ``Mineur'' si $0 \leq age < 18$
@@ -483,7 +486,7 @@ Dans la suite, $N$ désigne une constante définie par un \textsf{\#define}.
 \end{itemize}
 Essayer de minimiser le nombre de branchements conditionnels (objectif : trois \textsf{if} maximum, et seule la phrase correcte doit s'afficher\footnote{Juré, c'est possible ! Croix de bois, croix de fer, si j'mens j'vais en enfer !}).
  
-\exercise{Suite de Fibonacci} Écrire un programme qui calcule les $N$ premiers éléments de la suite de Fibonacci $(f_{n})_{n\in{\mathbb{N}}}$ définie telle que :
+\exercise{Suite de Fibonacci}{15} Écrire un programme qui calcule les $N$ premiers éléments de la suite de Fibonacci $(f_{n})_{n\in{\mathbb{N}}}$ définie telle que :
 $$
 \left\{\begin{array}{llcl}
 & f_{0} & = & 0 \\
@@ -491,5 +494,5 @@ $$
 \forall{n\in{\mathbb{N}}}, & f_{n+2} & = & f_{n+1} + f_{n}
 \end{array}\right.
 $$
-\exercise{Test de primalité}Écrire un programme qui vérifie si $N$ est premier. On essaiera d'avoir un maximum de $\sqrt{N}$ tours de boucle. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
+\exercise{Test de primalité}{24M}Écrire un programme qui vérifie si $N$ est premier. On essaiera d'avoir un maximum de $\sqrt{N}$ tours de boucle. On justifiera la correction du programme\footnote{C'est-à-dire une démonstration que ce programme résout bien le problème.}.
 \end{document}

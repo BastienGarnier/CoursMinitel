@@ -1,5 +1,4 @@
 \documentclass[../../main.tex]{subfiles}
-\graphicspath{{sections/part1/images/}}
 \begin{document}
 \section{Algorithmes et programmation}
 La définition rigoureuse d'un algorithme se trouve n'être absolument pas trivial, ni même simple.
@@ -43,39 +42,21 @@ L'\textbf{Algorithme 1} produira donc le résultat suivant :
 L'intérêt d'algorithmes est notamment d'automatiser des tâches. On peut notamment imaginer l'algorithme suivant :
 \newline
 \begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:letters}
-Aller à la boîte aux lettres\;
-\eSi{la boîte est ouverte} {
-	Ramasser le contenu de la boîte aux lettres\;
-	Fermer la boîte aux lettres\;
-} {
-	Ouvrir la boîte aux lettres\;
-	Ramasser le contenu de la boîte aux lettres\;
-	Fermer la boîte aux lettres\;
+\caption{Cuisson des pâtes}\label{alg:letters}
+Prendre une casserole\;
+Mettre de l'eau dans la casserole\;
+Mettre la casserole sur le feu\;
+Allumer le feu sous la casserole\;
+\Tq{l'eau ne bout pas} {
+	Attendre que l'eau bout\;
 }
-Revenir à la maison\;
+Mettre les pâtes dans la casserole\;
+Attendre 9 minutes\;
 \end{algorithm}
 
-On peut imaginer apprendre cet algorithme à notre corbeau de compagnie (c'est très intelligent les corbeaux\dots), et simplement lui ordonner d'exécuter cet algorithme par l'instruction "Va chercher le journal !".
+On peut imaginer apprendre cet algorithme à notre singe de compagnie (c'est pas si con les singes\dots), et simplement lui ordonner d'exécuter cet algorithme par l'instruction "Va faire cuire les pâtes !".
 
-\textbf{Remarque :} En petit malin, le lecteur attentif peut observer deux choses\footnote{C'est la technique classique de "Nan mais t'inquiètes, tu vois l'erreur là ? C'est juste pour voir si tu suis, et pas parce-que j'ai oublié."\dots \textit{a priori} là ça va :)} :
-\begin{itemize}
-	\item que l'\textit{agent} qui exécute cet algorithme doit déjà savoir de quelle boîte aux lettres et de quelle maison il est question, pour qu'il n'y ait pas d'interprétation (et pour aller plus loin, il faut aussi qu'il comprenne le langage dans lequel est exprimé l'algorithme et le sens de chaque verbe/action).
-	\item que l'instruction "Fermer la boîte aux lettres" est présente deux fois, et surtout qu'on est certain qu'elle s'exécute. En effet, cette instruction est présente que la condition "\textit{la boîte est ouverte}" soit vérifiée ou non ! \textit{idem} pour l'instruction "Ramasser le journal". On peut donc les mettre une seule fois à la fin.
-\end{itemize}
-\begin{algorithm}
-\caption{Aller chercher le journal}\label{alg:optletters}
-Aller à la boîte aux lettres\;
-\eSi{la boîte est ouverte} {
-	\Comment*[r]{Il n'y a rien à faire !}
-} {
-	Ouvrir la boîte aux lettres\;
-}
-Ramasser le contenu de la boîte aux lettres\;
-Fermer la boîte aux lettres\;
-Revenir à la maison\;
-\end{algorithm}
-L'algorithme est alors plus court à lire, mais aussi plus court à apprendre, à enregistrer. Si il faut le stocker sur un ordinateur par exemple, la quantité de mémoire de l'ordinateur n'est pas infinie ! Il est donc \textbf{parfois}\footnote{Mais pas systématiquement, cela dépend de si l'on cherche à optimiser la vitesse d'exécution ou la taille en mémoire} important que cet algorithme soit le plus court possible. C'est ce qu'on appellera de l'\textit{optimisation d'espace}\footnote{Dual de l'\textit{optimisation temporelle} qui cherche à optimiser la vitesse d'exécution. Il n'est parfois pas possible d'avoir les deux, détail sur lequel on reviendra dans trèèèès longtemps}.
+\textbf{Remarque :} En petit malin, le lecteur attentif peut observer\footnote{C'est la technique classique de "Nan mais t'inquiètes, tu vois l'erreur là ? C'est juste pour voir si tu suis, et pas parce-que j'ai oublié."\dots \textit{a priori} là ça va :)} que l'\textit{agent} qui exécute cet algorithme doit déjà savoir de quelle casserole, de quel feu, pâtes et eau il est question, pour qu'il n'y ait pas d'interprétation (et pour aller plus loin, il faut aussi qu'il comprenne le langage dans lequel est exprimé l'algorithme et le sens de chaque verbe/action, ce qui n'est pas toujours évident pour un singe).
 \subsection{Algorithmes et programmes}
 \definition{Programme}{Un programme informatique est un algorithme pouvant être exécuté par un ordinateur (qui est donc l'agent exécutant). Il doit donc être écrit dans un langage compréhensible par l'ordinateur appelé \textit{langage de programmation}.}
 
@@ -92,17 +73,53 @@ de vue, beaucoup d'opérations apparaissent comme étant de la compilation; à l
 \section{Un peu de vocabulaire}
 Cette table de vocabulaire est donné en préambule pour ne pas trop surcharger le texte ci-après.
 
-\definition{BIOS}{Le BIOS (\textit{\underline{B}asic \underline{I}nput \underline{O}utput \underline{S}ystem}) est le programme qui s'exécute au démarrage de l'ordinateur (appelé le \textit{boot}). C'est lui qui permet de le lancer véritablement pour être utilisé. En effet, son objectif est de ``passer la main'' au système d'exploitation, grâce à un petit programme appelé le \textit{bootloader} (\textit{loader} signifie chargeur en anglais).}
+\definition{BIOS}{Le BIOS (\textit{\underline{B}asic \underline{I}nput \underline{O}utput \underline{S}ystem}) est le programme qui s'exécute au démarrage de l'ordinateur (appelé le \textit{boot}). C'est lui qui permet de le lancer véritablement pour être utilisé. En effet, son objectif est de ``passer la main'' au système d'exploitation, grâce à un petit programme appelé le \textit{bootloader} (\textit{loader} signifie chargeur en anglais).
 
-\definition{Système d'exploitation}{Un système d'exploitation est un programme exécuté par le BIOS juste après le lancement. Ce programme fournie à l'utilisateur de l'ordinateur toutes les fonctionnalités dont il pourrait avoir besoin : accès au disque dur, accès à la mémoire vive, aux périphériques entrée/sortie, possibilité d'exécuter des programmes utilisateurs, générateur de nombres pseudo-aléatoire, etc\dots}
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\small
+		\includesvg[width=1\textwidth]{bios}
+	\end{center}
+\end{minipage}
+}
 
-\definition{Répertoire}{Un répertoire est le nom technique donné au dossier. Il contient d'autres répertoires ou fichiers. Il permet en effet de \textit{répertorier} des fichiers ou d'autres répertoires. Sa fonction principale est donc la classification.}
+\definition{Système d'exploitation}{Un système d'exploitation est un programme exécuté par le BIOS juste après le lancement. Ce programme fournie à l'utilisateur de l'ordinateur toutes les fonctionnalités dont il pourrait avoir besoin : accès au disque dur, accès à la mémoire vive, aux périphériques entrée/sortie, possibilité d'exécuter des programmes utilisateurs, générateur de nombres pseudo-aléatoire, etc\dots
 
-\definition{Fichier}{Un fichier est un ensemble d'informations numériques constituées d'une séquence d'octets. Ces informations peuvent représenter des données allant du programme informatique à la vidéo en passant par les informations d'une communication réseaux, un livre numérique, la mémoire d'un programme informatique, etc\dots Ces informations sont réunis sous un même nom et manipulé comme une unité, appelé le fichier.}
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.7\textwidth]{niveau_abstraction}
+	\end{center}
+\end{minipage}
+}
+
+\definition{Fichier}{Un fichier est un ensemble d'informations numériques constituées d'une séquence d'octets. Ces informations peuvent représenter des données allant du programme informatique à la vidéo en passant par les informations d'une communication réseaux, un livre numérique, la mémoire d'un programme informatique, etc\dots Ces informations sont réunis sous un même nom et manipulé comme une unité, appelé le fichier. Les métadonnées d'un fichier fournissent des informations externes complémentaires.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includegraphics[width=.25\textwidth]{fichier}
+	\end{center}
+\end{minipage} 
+}
 
 \definition{Extension de nom fichier}{Une extension de nom de fichier (ou plus simplement ``extension de fichier'') est une suite de caractères à la fin du nom du fichier, séparée du radical du nom de fichier par un point, qui indique à l'utilisateur de l'ordinateur et aux logiciels le format des données qu'il contient. L'extension agit uniquement à titre \textit{indicatif} ! La modifier sans modifier le fichier lui-même n'effectue STRICTEMENT AUCUNE conversion. Il ne suffit pas d'appeler un chat un chien pour que celui-ci se transforme subitement ! Le nom d'un fichier est seulement une étiquette. Il n'a aucune incidence sur ce que le fichier contient réellement.\footnote{J'insiste car il s'agit là d'une \textit{croyance} extrêmement répandue chez les utilisateurs non techniciens d'outils informatiques}}
 
-\definition{Système de fichiers}{Afin de faciliter la localisation et la gestion des répertoires et des fichiers, ceux-ci sont organisés suivant un système de fichiers. C'est ce système qui permet à l'utilisateur de répartir les fichiers dans une arborescence de répertoires et de les localiser par un chemin d'accès.}
+\definition{Répertoire et système de fichiers}{Un répertoire est le nom technique donné au dossier. Il s'agit simplement d'un conteneur d'autres répertoires ou fichiers. Il permet de \textit{répertorier} des fichiers ou d'autres répertoires. Sa fonction principale est donc la classification. Afin de faciliter la localisation et la gestion des répertoires et des fichiers, ceux-ci sont organisés suivant un \textit{système de fichiers}. C'est ce système qui permet à l'utilisateur de répartir les fichiers dans une arborescence de répertoires et de les localiser par un chemin d'accès.
+\begin{center}
+\begin{forest}
+[Documents
+	[repertoire\_parent
+		[repertoire\_enfant\_1
+			[fichier\_texte]
+			[fichier\_image]
+		]
+		[repertoire\_enfant\_2
+			[fichier\_video]
+		]
+	]
+]
+\end{forest}
+\end{center}
+}
 
 \definition{Répertoire de travail}{Le répertoire de travail d'un exécutable est le répertoire dans lequel l'exécutable va effectuer ses instructions. Par exemple, si l'exécutable contient une instruction qui ouvre et lit un fichier sur le disque dur, l'ordinateur essaiera d'ouvrir ce fichier dans le répertoire de travail, renverra une erreur si ce fichier n'est pas présent dans le répertoire de travail. Il est possible de modifier le répertoire de travail d'un exécutable à l'intérieur de celui-ci (par certaines instructions).}
 
@@ -111,13 +128,50 @@ Cette table de vocabulaire est donné en préambule pour ne pas trop surcharger 
 		 \item chemin absolu : décrit la position absolue du fichier depuis la racine de l'arborescence du système de fichiers ($/$ sous Linux, $C:/$ sous Windows)
 		 \item chemin relatif : décrit la position relative du fichier par rapport au répertoire de travail. On considère alors le répertoire de travail comme la racine de l'arborescence
 \end{itemize}
+\begin{center}
+\begin{forest}
+[racine
+	[...]
+	[home
+		[user
+			[repertoire\_1]
+			[
+				[fichier\_1]
+			]
+			[repertoire\_2]
+			[
+				[fichier\_2]
+			]
+		]
+	]
+	[...]
+]
+\end{forest}
+\end{center}
+Ci-dessus, le chemin absolu du fichier 1 est \textit{racine/home/user/repertoire\_1/fichier\_1}. Si on suppose que le répertoire de travail est \textit{racine/home/user/repertoire\_1}, alors le chemin relatif du fichier 2 est \textit{../repertoire\_2/fichier\_2}.
+
+En effet, ``.'' désigne le nom du répertoire de travail, et ``..'' désigne le répertoire parent du répertoire de travail. Ainsi, \textit{../repertoire\_2} désigne le chemin relatif depuis le répertoire 1 équivalent au chemin absolu \textit{racine/home/user/}
 }
 \definition{Instruction}{Une instruction est une séquence d'octets qui peut être lue par l'UCC pour exécuter une action.}
 
-\definition{Exécutable}{Un fichier exécutable (ou plus simplement un exécutable) est un fichier contenant un entête d'informations générales et une séquence d'instructions. L'entête peut par exemple définir le point d'entrée du programme, c'est-à-dire l'adresse (relative) dans la séquence d'instructions à laquelle l'ordinateur doit débuter sa lecture des instructions.}
+\definition{Exécutable}{Un fichier exécutable (ou plus simplement un exécutable) est un fichier contenant un entête d'informations générales et une séquence d'instructions. L'entête peut par exemple définir le point d'entrée du programme, c'est-à-dire l'adresse (relative) dans la séquence d'instructions à laquelle l'ordinateur doit débuter sa lecture des instructions.
 
-\definition{Niveau d'abstraction}{Les langages de programmation peuvent être plus abstraits, c'est-à-dire être proche ou non du fonctionnement technique de l'ordinateur. Un langage à haut niveau d'abstraction va cacher la technique associée à la manipulation du matériel de l'ordinateur (mémoire vive, périphériques, etc\dots) tandis qu'un langage à bas niveau d'abstraction va laisser la possibilité au programmeur de manipuler lui-même ce qui est ``matériel''. En fait, les langages à haut niveau d'abstraction écrivent les instructions de manipulation bas niveau à l'insu du programmeur.}
-\section{Une classification}
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\hspace*{-3cm}\includesvg[width=.5\textwidth]{executable}
+	\end{center}
+\end{minipage}
+}
+
+\definition{Niveau d'abstraction}{Les langages de programmation peuvent être plus abstraits, c'est-à-dire être proche ou non du fonctionnement technique de l'ordinateur. Un langage à haut niveau d'abstraction va cacher la technique associée à la manipulation du matériel de l'ordinateur (mémoire vive, périphériques, etc\dots) tandis qu'un langage à bas niveau d'abstraction va laisser la possibilité au programmeur de manipuler lui-même ce qui est ``matériel''. En fait, les langages à haut niveau d'abstraction écrivent les instructions de manipulation bas niveau à l'insu du programmeur.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.45\textwidth]{abstraction_langages}
+	\end{center}
+\end{minipage}
+}
+\section{Langages de programmation}
 \subsection{Objectifs des langages de programmation}
 Les langages dits \og de programmation \fg ont un objectif : la description de données.
 
@@ -131,30 +185,6 @@ Ces données peuvent être de multiples natures. Ce peut être :
 	\item etc\dots
 \end{itemize}
 Il est à noter par ailleurs qu'un programme est potentiellement capable de décrire lui-même n'importe quel type information. Cependant, certains langages de programmation décrivent directement les données et non pas le programme qui les génère. On appelle les langages de programmation décrivant directement les données des \textit{langages de description}. Les langages décrivant des instructions exécutables par un ordinateur sont appellés des \textit{langages impératifs}.
-
-Parmi les langages de description les plus importants\footnote{La notion d'importance ici est tout à fait subjective, qu'on y prête attention.}, on peut citer :
-\begin{itemize}
-	\item HTML : description de pages internets
-	\item CSS : description de l'apparence d'éléments (associé presque directement au HTML)
-	\item LaTex : description de fichiers PDF, que ce soient diaporamas, articles de recherche, livres, etc\dots
-	\item les langages HDL (VHDL, SystemVerilog, \dots) : description de circuits électroniques intégrés
-	\item Z : description de la spécification formelle de systèmes.\footnote{Certains affirmerait que comme personne ne le connaît, il est sans importance\dots je le mets pour attirer l'attention sur un langage atypique particulièrement intéressant et absolument pas dépourvu d'utilité.}
-\end{itemize}
-Parmi les langages impératifs les plus importants\footnote{Un peu moins subjectif.}, on peut citer :
-\begin{itemize}
-	\item Scratch : langage à très haut niveau d'abstraction spécialisé pour l'éducation, c'est-à-dire destiné à l'apprentissage de l'algorithmie pour les enfants
-	\item Python : langage généraliste à très haut niveau d'abstraction destiné au prototypage rapide d'applications
-	\item Java : langage généraliste à très haut niveau d'abstraction, très utilisé dans le développement d'applications
-	\item JavaScript : langage à très haut niveau d'abstraction permettant de dynamiser des pages internets. Sert au développement d'applications Webs. Il manipule et génère des pages internets sous forme de texte HTML.
-	\item Fortran : langage de haut niveau d'abstraction utilisé pour le calcul scientifique
-	\item R : langage à très haut niveau d'abstraction spécialisé pour le calcul statistique et les visualisations de données
-	\item PHP : langage à très haut niveau d'abstraction spécialisé pour la programmation de serveurs Web
-	\item C : langage généraliste à niveau relativement bas d'abstraction (par rapport à la plupart des autres, mais très haut tout de même par rapport à l'Assembleur). Il est utilisé notamment dans le développement de programmes dans des systèmes embarqués, ou pour tout ce qui se rapproche de l'ordinateur, comme les systèmes d'exploitation par exemple.
-	\item C++ : une extension du langage C qui introduit des concepts de plus haut niveau d'abstraction tout en conservant le rapprochement technique avec l'ordinateur. Ce langage est le plus utilisé dans le développement d'applications et de jeux-vidéos.
-	\item C\# (prononcer \textit{C sharp}) : langage généraliste de haut niveau utilisé pour le développement d'applications et de jeux-vidéos. Le système d'exploitation Windows est programmé en grande partie avec ce langage. 
-	\item Rust : langage généraliste associant bas niveau et haut niveau. Nécessite une certaine compétence en matière de programmation.
-	\item Assembleur : le langage généraliste du plus bas niveau d'abstraction accessible par un humain. Il s'agit d'une traduction presque littérale des actions effectués par un ordinateur. Nécessite une certaine compétence en matière de programmation.
-\end{itemize}
 \subsection{Langages compilés et interprétés}
 Les langages de programmation peuvent être à nouveau divisés en deux catégories distinctes :
 \begin{itemize}
@@ -163,13 +193,15 @@ Les langages de programmation peuvent être à nouveau divisés en deux catégor
 \end{itemize}
 La compilation consiste à traduire un texte écrit dans un langage de programmation sous une forme accessible par un ordinateur, c'est-à-dire en langage binaire généralement.
 
-Certains langages de programmation nécessitent d'être compilés pour que la donnée décrite puisse être traitée par l'ordinateur. Par exemple, la description en LaTex d'un document nécessite une compilation par un autre programme pour être codée au format PDF. Les langages C, C++ et Assembleur sont également des langages qui nécessitent un \textit{compilateur} pour être transformés/traduits en code binaire qui puisse être exécuté par un ordinateur. Ces langages de programmation sont en général plus anciens que les langages dits ``interprétés''
+Certains langages de programmation nécessitent d'être compilés pour que la donnée décrite puisse être traitée par l'ordinateur. Par exemple, la description en LaTex d'un document nécessite une compilation par un autre programme pour être codée au format PDF. Les langages C, C++ et Assembleur sont également des langages qui nécessitent un \textit{compilateur} pour être transformés/traduits en code binaire qui puisse être exécuté par un ordinateur.
 
-L'autre catégorie de langages, dits interprétés, n'est jamais traduite en langage binaire pour être exécuté par l'ordinateur directement. Il y a à la place une interface créée par un autre programme appellé \textit{interpréteur}. Ce programme, qui lui est exécuté par l'ordinateur, va simuler l'exécution de l'ordinateur sur le code. Il va lire chacune des lignes du programme écrit, et va faire exécuter les instructions correspondantes à l'ordinateur. Cela permet notamment de créer un niveau d'abstraction supplémentaire pour le programmeur, qui n'a pas besoin de connaître sa machine pour écrire des programmes. C'est l'interpréteur qui s'occupe de l'aspect le plus technique. Le désavantage majeur de ce type de langages interprétés est que l'exécution d'un programme est beaucoup plus lente puisqu'une étape de traduction ``en direct'' par l'interpréteur est nécessaire \textbf{à chaque exécution du programme}. Ce type de langages n'a pu se développer que lorsque les ordinateurs ont été assez puissants pour le permettre. Cela explique par exemple l'explosion de Python dans le monde du développement ces dix dernières années.\footnote{Avis personnel de l'auteur : utiliser des langages qui consomment beaucoup plus de ressources pour arriver au même résultat avec des performances moindres pour des seules raisons de facilité est un problème dans un monde qui a besoin d'une baisse drastique de la consommation énergétique pour sa survie. Le Python ne permet pas de comprendre en profondeur les choses ni d'optimiser les programmes écrits de manière réellement efficace. Il n'est donc pas adapté pour des projets de grande envergure mais reste parfois utile pour tester une idée en cinq minutes. Certains argueront que le langage est utilisé à profusion dans le monde de l'industrie. Il s'agit pour moi d'une erreur à but lucrative mais non pérenne. À discuter\dots}
+L'autre catégorie de langages, dits interprétés, n'est jamais traduite en langage binaire pour être exécuté par l'ordinateur directement. Il y a à la place une interface créée par un autre programme appellé \textit{interpréteur}. Ce programme, qui lui est exécuté par l'ordinateur, va simuler l'exécution de l'ordinateur sur le code. Il va lire chacune des lignes du programme écrit, et va faire exécuter les instructions correspondantes à l'ordinateur. Cela permet notamment de créer un niveau d'abstraction supplémentaire pour le programmeur, qui n'a pas besoin de connaître sa machine pour écrire des programmes. C'est l'interpréteur qui s'occupe de l'aspect le plus technique. Le désavantage majeur de ce type de langages interprétés est que l'exécution d'un programme est beaucoup plus lente puisqu'une étape de traduction ``en direct'' par l'interpréteur est nécessaire \textbf{à chaque exécution du programme}. Ce type de langages n'a pu se développer efficacement que lorsque les ordinateurs ont été assez puissants pour le permettre.\footnote{\textit{Fun fact} : le langage interprété Lisp était très utilisé en intelligence artificielle au XX$^e$ siècle. Comme les ordinateurs généralistes de l'époque étaient trop lents, des ordinateurs spécialisés pour interpréter ce langages ont été développés : \href{https://fr.wikipedia.org/wiki/Machine_Lisp}{les machines Lisp}.} Cela explique par exemple l'explosion de Python dans le monde du développement ces dix dernières années.\footnote{Avis personnel de l'auteur : utiliser des langages qui consomment beaucoup plus de ressources pour arriver au même résultat avec des performances moindres pour des seules raisons de facilité est un problème dans un monde qui a besoin d'une baisse drastique de la consommation énergétique pour sa survie. Le Python ne permet pas de comprendre en profondeur les choses ni d'optimiser les programmes écrits de manière réellement efficace. Il n'est donc pas adapté pour des projets de grande envergure mais reste parfois utile pour tester une idée en cinq minutes. Certains argueront que le langage est utilisé à profusion dans le monde de l'industrie. Il s'agit pour moi d'une erreur à but lucrative mais non pérenne. À discuter\dots}
 \section{Le langage C}
-Le langage C est un langage de bas niveau. Il permet donc de mieux comprendre le fonctionnement interne de l'ordinateur puisqu'il permet la manipulation de la mémoire. D'un autre côté, il traduit assez bien dans sa syntaxe l'intuition algorithmique humaine et se trouve donc un moyen efficace d'apprendreà à programmer. Il est de plus très simple et présente peu de technicité langagière pure (au contraire de langages comme le Rust ou le Java par exemple). En cela, l'apprentissage du C permet de basculer ensuite vers un très grand nombre d'autres langages de programmation.
+Le langage C est un langage de bas niveau, c'est-à-dire qu'il est \textit{proche de la machine}. Cela signifie qu’il est nécessaire de bien comprendre l’organisation de la mémoire, la représentation des nombres et de manière générale le fonctionnement interne de l'ordinateur pour en tirer le meilleur parti et éviter certains les écueils inhérents à ce fonctionnement. D'un autre côté, il traduit assez bien dans sa syntaxe l'intuition algorithmique humaine et se trouve donc un moyen efficace d'apprendreà à programmer. Il est de plus très simple et présente peu de technicité langagière pure (au contraire de langages comme le Rust ou le Java par exemple).
 
-Le C a été inventé dans les années 70 dans l'objectif particulier de développer des systèmes d'exploitation. En effet, son rapprochement avec la machine, son extrême modularité, sa syntaxe claire et précise\footnote{Là j'avoue j'abuse\dots y a des trucs en C qui ont été \textit{designed} avec les pieds. Genre les tableaux statiques par exemple\dots Mais chuuut !} et la possibilité d'inclure des fragments de programmes écrits en assembleur à l'intérieur de programmes écrits en C permettent de développer n'importe quel type d'application complexe avec une certaine facilité pour l'époque. Le C reste très utilisé dans les systèmes embarquées et le développement de systèmes d'exploitation. Pour tout un tas de raisons allant du manque de souplesse abstraite du langage à certaines failles de sécurité introduites par les programmeurs rêveurs\footnote{Qui se trouvent être suffisamment nombreux pour avoir une mauvaise influence sur la réputation du langage\dots}, le langage C a tendance à être remplacé pour le développement d'applications complexes par d'autres langages qui proposent certaines solutions abstraites\footnote{comme la programmation orientée objets}, tiennent plus la main au programmeur en terme de sécurité\footnote{On pourra penser au \textit{garbage collector} introduit dans une quantité phénoménale de langages} et/ou de stabilité de développement\footnote{Il faut entendre : cette fois-ci le \textit{design} de base du langage est correct.}, proposent plus de fonctionnalités pré-écrites\footnote{Il n'y a qu'à voir la taille de la bibliothèque standard du C++ par rapport à celle du C}, etc\dots
+En cela, l'apprentissage du C permet une meilleure compréhension et un apprentissage facilité des autres langages de programmation.
+
+Le C a été inventé dans les années 70 aux Bell Labs par Denis Ritchie pour lequel il a reçu la \textit{IEEE Richard W.Hamming Medal}\footnote{La médaille Richard-Hamming est décernée chaque année depuis 1988 par l'\href{https://fr.wikipedia.org/wiki/Institute_of_Electrical_and_Electronics_Engineers}{IEEE}, pour honorer les contributions exceptionnelles à l'informatique et aux technologies de l'information.}. dans l'objectif particulier de développer des systèmes d'exploitation. En effet, son rapprochement avec la machine, son extrême modularité, sa syntaxe claire et précise\footnote{Là j'avoue j'abuse\dots y a des trucs en C qui ont été \textit{designed} avec les pieds. Genre les tableaux statiques par exemple\dots Mais chuuut !} et la possibilité d'inclure des fragments de programmes écrits en assembleur à l'intérieur de programmes écrits en C permettent de développer n'importe quel type d'application complexe avec une certaine facilité pour l'époque. Le C reste très utilisé dans les systèmes embarquées, le développement de systèmes d'exploitation et de nombreux domaines scientifiques et technologiques. Pour tout un tas de raisons allant du manque de souplesse abstraite du langage à certaines failles de sécurité introduites par les programmeurs rêveurs\footnote{Qui se trouvent être suffisamment nombreux pour avoir une mauvaise influence sur la réputation du langage\dots}, le langage C a tendance à être remplacé pour le développement d'applications complexes par d'autres langages qui proposent certaines solutions abstraites\footnote{comme la programmation orientée objets}, tiennent plus la main au programmeur en terme de sécurité\footnote{On pourra penser au \textit{garbage collector} introduit dans quantité de langages} et/ou de stabilité de développement\footnote{Il faut entendre : cette fois-ci le \textit{design} de base du langage est correct.}, proposent plus de fonctionnalités pré-écrites\footnote{Il n'y a qu'à voir la taille de la bibliothèque standard du C++ par rapport à celle du C}, etc\dots
 \subsection{Installer un éditeur et un compilateur}
 Avant de pouvoir programmer en C, il est nécessaire d'installer certains outils de base.
 \subsubsection{Éditeur de texte}
@@ -189,36 +221,33 @@ Les différents éléments du programme sont directement visibles.
 Il existe deux grandes familles d'éditeurs de code :
 \begin{itemize}
 	\item Les Environnements de Développement Intégrés (EDIs) : en général spécialisés dans un unique langage de programmation, ils incluent le compilateur/interpréteur de celui-ci et tous les outils nécessaires pour programmer dans ce langage.
-	\item Les éditeurs de texte : permettent d'éditer n'importe quel langage de programmation, mais ne fournissent aucun outil de compilation/interprétation, qui doit être installé à part (\textit{recommandé, car l'apprentissage de la compilation ``à la main'' est utile})
+	\item Les éditeurs de texte : permettent d'éditer n'importe quel langage de programmation, mais ne fournissent aucun outil de compilation/interprétation, qui doit être installé à part (\textit{recommandé, car l'apprentissage de la compilation ``à la main'' est utile et même nécessaire dans de nombreux cas})
 \end{itemize}
-Il existe plusieurs EDIs/éditeurs de code connus qui permettent d'éditer des programmes dans la plupart des langages de programmation :
-\begin{itemize}
-	\item Sublime Text : un éditeur de texte simple mais complet, recommandé pour commencer (\url{https://www.sublimetext.com/download}).
-	\item Atom : une variante de Sublime Text (\url{https://github.com/atom/atom/releases/tag/v1.60.0})
-	\item Code::Blocks : un EDI pour programmer en langages C et C++ sous Windows (\url{https://www.codeblocks.org/downloads/binaries/})
-	\item Visual Studio Code : un éditeur de texte pouvant être étendu en EDI, probablement le plus connu et le plus utilisé (\url{https://code.visualstudio.com/})
-	\item Visual Studio Community : un EDI pouvant être étendu sur plusieurs langages (extrêmement lourd, seulement utile pour de très gros projets professionnels)
-	\item EMACS\footnote{Il s'agit en vérité de beaucoup plus que d'un simple EDI/éditeur. On ne le sait pas au moment où on l'installe, c'est tout\dots} : un éditeur de texte pouvant être étendu en EDI pour n'importe quel langage de programmation, envoyer des mails, naviguer sur Internet, ouvrir des PDFs, etc\dots, etc\dots (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (\url{https://www.gnu.org/software/emacs/}).\newline
-	\item vim : un éditeur de texte pour les systèmes d'exploitation Linux uniquement (nécessite un peu de pratique avant de pouvoir être utilisé à son plein potentiel) (installé par défaut)
-\end{itemize}
+Il existe plusieurs EDIs/éditeurs de code connus qui permettent d'éditer des programmes dans la plupart des langages de programmation. On se restreindra ici à Sublime Text, un éditeur de texte simple mais complet : \url{https://www.sublimetext.com/download}. Visual Studio Code est aussi une possibilité, probablement plus connue : \url{https://code.visualstudio.com/}.
+\subsubsection{Interface en ligne de commande}
+La plupart des ordinateurs proposent ajourd'hui aux utilisateurs \textit{lambda}\footnote{Sans rien de péjoratif, précisons.} une interface graphique pensée pour l'utilisation d'une souris, avec des boutons sur lesquelles cliquer. Pourtant, cela n'est que relativement récent (début des années 1980). L'interface graphique n'a été pensé initialement que pour la mise sur marché d'ordinateurs au grand public. En particulier, de nombreuses possibilités d'interactions, de natures techniques, avec l'ordinateur ne peuvent effectués grâce à l'interface graphique des systèmes d'exploitations comme Linux ou Windows.
+
+Il faut pour pouvoir utiliser pleinement son ordinateur revenir aux outils accessibles par l'interface en ligne de commande (\textit{command line interface} en anglais). Cela est particulièrement nécessaire pour des systèmes Unix (comme Linux par exemple) qui ont d'abord été pensé à travers ce prisme (contrairement à Windows qui est pensé pour l'interface graphique).
+
+\textbf{Sous Linux :} on peut ouvrir généralement une interface en ligne de commande grâce au raccourci clavier \textsf{CTRL + ALT + T} (c'est-à-dire l'appui simultané des touches \textsf{CTRL}, \textsf{ALT} et de la lettre \textsf{T})
+
+\textbf{Sous Windows :} on peut ouvrir une interface en ligne de commande grâce au raccourci clavier \textsf{Windows + R} et en tapant dans la fenêtre qui apparaît soit \textsf{cmd}, soit \textsf{powershell}.
 \subsubsection{Compilateur}
-Il faut pour compiler ce premier programme connaître le principe d'un \textit{terminal de commande}. Un terminal de commande permet d'exécuter les fonctionnalités du système d'exploitation sans passer par une interface graphique (c'est-à-dire des boutons, des fenêtres, etc\dots). Toutes les actions sont effectués par \textit{lignes de commande}. À une époque où l'interface graphique n'existait pas, ces terminaux de commande étaient les seuls moyens de manipuler un ordinateur.
-
-\textbf{Sous Windows :}
-
-Pour installer un compilateur indépendant sous Windows, il n'y a pas besoin d'utiliser le terminal de commande Windows. Il suffit de télécharger l'archive à l'adresse : \url{https://github.com/brechtsanders/winlibs_mingw/releases/download/14.1.0posix-18.1.5-11.0.1-ucrt-r1/winlibs-x86_64-posix-seh-gcc-14.1.0-llvm-18.1.5-mingw-w64ucrt-11.0.1-r1.zip} puis d'extraire l'archive dans \textsf{C:/} de sorte à avoir un répertoire \textsf{C:/mingw64/}.
-
-Le compilateur est alors dans le répertoire \textsf{C:/mingw64/bin/} et pourra être utilisé pour compiler les programmes écrits en C ou en C++.
-
 \textbf{Sous Linux :}
 
-Il n'existe qu'un seul type de terminal sous Linux\footnote{Pour simplifier\dots que les puristes pardonnent.}. On ouvre ce terminal par les touches $\textsf{CTRL} + \textsf{ALT} + \textsf{T}$. Un compilateur du langage C peut-être installé \textit{via} le terminal :
+Un compilateur du langage C peut-être installé \textit{via} l'interface en ligne de commande :
 \begin{minted}[linenos]{bash}
 user@computer ~> sudo apt-get update && sudo apt-get upgrade
 user@computer ~> sudo apt-get install gcc
 user@computer ~> gcc -v
 NUMERO DE VERSION AFFICHÉE SI INSTALLATION CORRECTE
 \end{minted}
+
+\textbf{Sous Windows :}
+
+Pour installer un compilateur indépendant sous Windows, il suffit de télécharger l'archive à l'adresse : \url{https://github.com/brechtsanders/winlibs_mingw/releases/download/14.1.0posix-18.1.5-11.0.1-ucrt-r1/winlibs-x86_64-posix-seh-gcc-14.1.0-llvm-18.1.5-mingw-w64ucrt-11.0.1-r1.zip} puis d'extraire l'archive dans \textsf{C:/} de sorte à avoir un répertoire \textsf{C:/mingw64/}.
+
+Le compilateur est alors dans le répertoire \textsf{C:/mingw64/bin/} et pourra être utilisé pour compiler les programmes écrits en C ou en C++.
 \subsection{Compiler le premier programme}
 Le code du premier programme doit être écrit dans un fichier de nom quelconque (appelé \textit{``main.c''} par convention).
 
@@ -236,15 +265,20 @@ Pour la suite, on pourra utiliser l'arborescence de fichiers suivante\footnote{V
 \end{center}
 Le répertoire ``src''\footnote{Pour ``source''} contiendra les fichiers de code \textit{C}. Cette arborescence sera développée et étendue dans par la suite.
 
+\textbf{Sous Linux :}
+
+Il suffit ensuite d'écrire dans l'interface en ligne de commande :
+\begin{lstlisting}[title=Compiler sous Linux]
+\end{lstlisting}
+\begin{minted}[linenos]{bash}
+user@computer ~> cd ~/Apprendre_le_C
+user@computer ~/Apprendre_le_C> gcc src/main.c -o main --pedantic
+user@computer ~/Apprendre_le_C> ./main
+\end{minted}
+
 \textbf{Sous Windows :}
 
-Il existe deux terminaux de commande sous Windows. Le plus connu et le moins utile est le terminal dit \textit{CMD}. Il est hérité des anciennes versions de Windows, et ne permet pas de faire grand-chose. Le plus généraliste est le terminal plus récent \textit{PowerShell} qui permet une souplesse de manipulation plus élevée. En vérité, PowerShell est lui-même un langage de programmation impératif interprété à très haut niveau d'abstraction spécialisé dans la manipulation du système d'exploitation Windows.
-
-Cependant, le langage PowerShell demande plus de ressources à l'ordinateur, et dans notre cas, le CMD est suffisant.
-
-On peut exécuter l'un ou l'autre en maintant les touches $\textsf{Windows} + \textsf{R}$ du clavier et en tapant dans la fenêtre qui apparaît soit \textsf{cmd}, soit \textsf{powershell}.
-
-Dans les deux cas, comme PowerShell comprend les possibilités du CMD, on peut exécuter les mêmes lignes de commande pour compiler notre programme :
+Il suffit d'écrire dans l'interface en ligne de commande :
 \begin{lstlisting}[title=Compiler sous Windows]
 \end{lstlisting}
 \begin{minted}[linenos]{batch}
@@ -254,21 +288,11 @@ C:\Users\user\Documents\Apprendre_le_C> main.exe
 \end{minted}
 \og user \fg{} désigne votre nom d'utilisateur. Si une erreur apparaît à la première ligne, il faut taper \textsf{Utilisateurs} au lieu de \textsf{Users} (le système peut être en français).
 
-\textbf{Sous Linux :}
-
-Il suffit ensuite d'écrire dans le terminal de commande :
-\begin{lstlisting}[title=Compiler sous Linux]
-\end{lstlisting}
-\begin{minted}[linenos]{bash}
-user@computer ~> cd ~/Apprendre_le_C
-user@computer ~/Apprendre_le_C> gcc src/main.c -o main
-user@computer ~/Apprendre_le_C> ./main
-\end{minted}
 \textbf{Dans les deux cas :}
 
-La première ligne modifie le répertoire de travail du terminal. \newline
-La deuxième ligne compile notre programme sous la forme d'un exécutable appelé ``main.exe'' ou ``main''.\newline
-La troisième ligne commande à l'ordinateur d'exécuter le programme ``main.exe'' ou ``main'' au sein du terminal.
+La ligne 1 modifie le répertoire de travail du terminal. \newline
+La ligne 2 compile notre programme sous la forme d'un exécutable appelé ``main.exe'' ou ``main''\footnote{``-o'' signifie \textit{output} et ``pedantic'' spécifie au compilateur d'être intransigeant avec la spécification standard du langage.}\newline
+La ligne 3 commande à l'ordinateur d'exécuter le programme ``main.exe'' ou ``main'' au sein du terminal.
 
 Le résultat devrait être l'affichage du texte ``Hello World !'' à l'écran.
 \subsection{Analyse du premier programme}

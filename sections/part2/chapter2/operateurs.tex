@@ -171,7 +171,7 @@ printf("%d\n", a-b && (a != b)); // -> 1 car les deux propositions sont vraies
 \end{minted}
 \textbf{Remarque :} On observe que pour tout entiers $a$ et $b$, $a-b\equiv a \neq b$. En effet, $a \neq b \Leftrightarrow a - b \neq{0}$
 \subsection{Opérateurs d'assignation}
-Les opérateurs d'assignation sont à la fois les éléments les plus connus par les débutants et à la fois les opérateurs dont ces mêmes débutants ignorent tout des spécificités. Voici un exemple qui pourrait surprendre même des programmeurs ayant plusieurs années d'expérience :
+Les opérateurs d'assignation sont à la fois les éléments les plus connus par les débutants et à la fois les opérateurs dont ces mêmes débutants ignorent tout des spécificités. Voici un exemple qui pourrait surprendre :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -184,7 +184,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Les différentes opérations présentent dans ce code sont expliqués dans la suite, bien qu'une exécution et quelques tests accompagnés d'un peu d'intuition pourraient suffire à comprendre.
+Les différentes opérations présentent dans ce code sont expliqués dans la suite\footnote{Bien qu'une exécution et quelques tests accompagnés d'un peu d'intuition pourraient suffire à comprendre}.
  
 \subsubsection{Opérateur élémentaire d'assignation $=$}
  
@@ -280,7 +280,7 @@ a = b = 3;
 \subsection{Exercices}
 Voir \cite{BitHacks} pour approfondir les calculs binaires optimisés.
 
-\exercise{Valeur}
+\exercise{Valeur}{08}
 Quelle est la valeur de $i$ après la suite d'instructions :
 \begin{minted}[linenos=false]{c}
 int i = 10;
@@ -291,7 +291,7 @@ Quelle est la valeur de $i$ après la suite d'instructions :
 int i = 10;
 i = i - (--i);
 \end{minted}
-\exercise{Calcul d'expressions}\newline
+\exercise{Calcul d'expressions}{10}\newline
 Évaluer à la main les valeurs de $a$, $b$, $c$ et $d$ écrites en langage C :
 \begin{minted}[linenos=false]{c}
 int a = 57 + (4 - 6);
@@ -299,7 +299,7 @@ int b = a - 2 * 7;
 int c = b / 3 * 4 + b;
 unsigned short int d = c - (100 % c + 100);
 \end{minted}
-\exercise{Priorité des opérateurs}
+\exercise{Priorité des opérateurs}{11}
 Enlever les parenthèses des expressions suivantes lorsqu'elles peuvent être retirées (c'est-à-dire que le résultat du programme reste le même) :
 \begin{minted}[linenos=false]{c}
 int a = 6, b = 12, c = 24;
@@ -308,12 +308,12 @@ printf("%d", ((a > 4) && (b == 18)));
 ((a >= 6)&&(b < 18)) || (c != 18);
 c = (a = (b + 10));
 \end{minted}
-\exercise{Interversion sans effet de bord (1)} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. \textit{Sans initialiser une seule variable supplémentaire}, échanger les mots binaires des deux variables. Ainsi, si $a = a_{N_{a}-1}\dots{a_{0}}$ et $b = b_{N_{b}-1}\dots{b_{0}}$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = a_{N_{a}-1}\dots{a_{0}}$ et $a = b_{N_{b}-1}\dots{b_{0}}$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas à être modifié si les valeurs de $a$ et $b$ sont changées.\newline
+\exercise{Interversion sans effet de bord (1)}{15} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. \textit{Sans initialiser une seule variable supplémentaire}, échanger les mots binaires des deux variables. Ainsi, si $a = a_{N_{a}-1}\dots{a_{0}}$ et $b = b_{N_{b}-1}\dots{b_{0}}$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = a_{N_{a}-1}\dots{a_{0}}$ et $a = b_{N_{b}-1}\dots{b_{0}}$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas à être modifié si les valeurs de $a$ et $b$ sont changées.\newline
 Justifier que ce programme est toujours correct pour des entiers codés chacun sur $N$ bits, quelques soient les signatures de $a$ et $b$. Ce programme est-il toujours correct si $a$ et $b$ ne sont pas écrits sur autant de bits ? Justifier.
  
-\exercise{Interversion sans effet de bord (2)} \textit{idem} que pour l'\refexercise{Interversion sans effet de bord (1)} mais l'unique opérateur autorisé est l'opérateur de OU exclusif (noté $\wedge$ en C).
+\exercise{Interversion sans effet de bord (2)}{15} \textit{idem} que pour l'\refexercise{Interversion sans effet de bord (1)} mais l'unique opérateur autorisé est l'opérateur de OU exclusif (noté $\wedge$ en C).
  
-\exercise{Multiplication par décalage}\newline
+\exercise{Multiplication par décalage}{12}\newline
 On remarque que pour entiers $n, m\in{\mathbb{N}}$, $n\ll{m} = n\times2^{m}$. En utilisant uniquement des additions ou soustractions de décalages, effectuer la multiplication $57\times{14}$ :
 \begin{minted}{c}
 #include <stdio.h>
@@ -329,7 +329,7 @@ int main() {
 \end{minted}
 Minimiser le nombre de décalages et d'additions/soustractions (objectif : 2 décalages et une addition ou soustraction)
  
-\exercise{Valeur absolue}En utilisant uniquement des opérations arithmétiques et bit-à-bits, écrire un programme qui calcule la valeur absolue d'un entier signé :
+\exercise{Valeur absolue}{14}En utilisant uniquement des opérations arithmétiques et bit-à-bits, écrire un programme qui calcule la valeur absolue d'un entier signé :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>

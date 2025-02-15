@@ -1,6 +1,6 @@
 \documentclass{minitelreport}
 
-\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part4/images/}}
+\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part3/imagees}{sections/part4/images/}}
 
 \usepackage[backend=biber,style=numeric, sorting=nty]{biblatex}
 \addbibresource{references/bibliographie.bib}
@@ -17,13 +17,13 @@
 \newcounter{exercisescounter}
 \setcounter{exercisescounter}{0}
 
-\newcommand{\exercise}[1]{
+\newcommand{\exercise}[2]{
 	\refstepcounter{exercisescounter}
-	\textbf{Exercice \arabic{exercisescounter}\IfNoValueF{#1}{ (#1)}. \label{exercise:#1}}
+	\textbf{Exercice \arabic{exercisescounter}\IfNoValueF{#1}{ (#1)} [#2]. \label{exercise:#1}}
 }
 
 \newcommand{\refexercise}[1]{
-	\textbf{Exercice \ref{exercise:#1}.}
+	\textbf{Exercice \ref{exercise:#1}}
 }
 
 % Compteur de solutions
@@ -64,7 +64,6 @@
 \maketitle
 \begin{refsection}
 \section*{Préface}
-\addcontentsline{toc}{section}{Préface}
 \subfile{sections/preface}
 \tableofcontents
 \listoftables
@@ -105,7 +104,7 @@
 		\subfile{sections/part2/chapter2/stdstreams}
 		\section{Tableaux statiques}
 		\subfile{sections/part2/chapter2/tab_statiques}
-		\section{Tableaux dynamiques}
+		\section{Allocation dynamique}
 		\subfile{sections/part2/chapter2/tab_dynamiques}
 		\section{Tableaux multidimensionnels}
 		\subfile{sections/part2/chapter2/tab_multidim}
@@ -126,8 +125,6 @@
 		\subfile{sections/part2/chapter3/champs_bits}
 		\section{Classes de stockage}
 		\subfile{sections/part2/chapter3/classes_stockage}
-		\section{Espaces locaux et espace global}
-		\subfile{sections/part2/chapter3/volatile}
 		\section{Construction de littéraux}
 		\subfile{sections/part2/chapter3/litteraux}
 		\section{Pointeurs de routines}
@@ -173,6 +170,9 @@
 		\subfile{sections/part4/chapter2/benchmarks}
 		\section{À propos du style}
 		\subfile{sections/part4/chapter2/style}
+	\chapter{L'optimisation}
+		\section{La constante du problème}
+		\section{Architecture des processeurs}
 	% \chapter{Pour s'entraîner et s'amuser}
 	% 	Cette section propose une batterie de sujets plus difficiles. Aucune correction complète de ne sera donnée, seulement des indications. L'objectif est de mettre en pratique tout ce qui a été vu durant cette partie pour se préparer efficacement aux examens d'informatique de l'ISMIN.
 

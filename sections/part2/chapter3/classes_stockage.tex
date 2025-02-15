@@ -5,8 +5,8 @@ Cette section vient apporter des outils pour préciser la durée de vie d'une va
 \definition{Portée d'une variable et durée de vie}{
 On définit ici deux notions qui ont été entrevues précédemment :
 \begin{itemize}
-	\item la portée (\textit{scope} en anglais) d'une variable est l'espace/l'ensemble des sections de code dans lesquels cette variable est déclarée et utilisable.
-	\item la durée de vie (\textit{lifetime} en anglais) d'une variable est la portion de l'exécution du programme durant laquelle l'espace de stockage de la variable est assuré comme réservé pour elle.
+	\item la portée (\textit{scope} en anglais) d'une variable est l'espace/l'ensemble des sections de code dans lesquels cette variable est déclarée et utilisable. C'est-à-dire les régions de code correspondant à l'environnement local auquel elle appartient.
+	\item la durée de vie (\textit{lifetime} en anglais) d'une variable est l'intervalle de temps de l'exécution du programme durant lequel l'espace physique de stockage de la variable est assuré comme réservé pour elle.
 \end{itemize}
 }
 
@@ -16,9 +16,9 @@ Les classes de stockage permettent de définir avec plus de précision la porté
 
 On va détailler ici un peu plus l'organisation en mémoire vive d'un programme informatique. Un programme informatique est chargé en mémoire dans quatre différents types de zones mémoires :
 \begin{itemize}
-	\item section de code, aussi appelée section de texte : contient les instructions du programme, qui entre autre manipulent les registres.
+	\item section de code, aussi appelée section de texte : contient les instructions du programme, qui entre autre manipulent les registres écrivent et lisent dans la mémoire vive
 	\item section de données initialisées et non initialisées : contient les données globales ou \textit{statiques}\footnote{i.e. durables, la notion sera détaillée dans la suite.}
-	\item la pile : contient les variables temporaires, les arguments de routines, les adresses de retour des routines, etc\dots
+	\item la pile : contient les variables temporaires, les arguments de routines, les adresses de retour des routines au moment de l'appel, etc\dots
 	\item le tas : contient les variables allouées dynamiquement
 \end{itemize}
 Schématiquement, cela ressemble\footnote{Les sections ne sont pas toujours dans le même ordre. Les données peuvent être mélangées au code, le tas pourrait évoluer au dessus du code, etc\dots} à ça :

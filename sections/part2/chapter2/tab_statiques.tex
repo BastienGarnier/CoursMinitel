@@ -1,6 +1,7 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+\subsection{Tableaux}
 \definition{Structure de donnée}{Une structure de donnée est une manière de stocker les données. Il s'agit de la collection d'un ensemble de valeurs, de relations entre ces valeurs et de fonctions/d'opérations qui peuvent être appliquées à ces valeurs. Une structure de donnée peut être comparée ainsi à une structure algébrique en mathématiques.}
  
 Le \textit{tableau} est une des structures de donnée les plus simples. Il s'agit de l'équivalent informatique des $N$-uplets en mathématiques. Un tableau permet de stocker plusieurs variables sous une même étiquette de manière contigüe en mémoire : 
@@ -28,8 +29,8 @@ Si on considère que chaque élément est codé sur $t$ bits, et que le premier 
  
 En langage C, il existe deux manières principales d'\textit{implanter} un tableau :
 \begin{itemize}
-	\item Par allocation statique : allocation par le compilateur d'un tableau de taille fixé avant l'exécution du programme
-	\item Par allocation dynamique : allocation par le programmeur un tableau dont la taille dépend d'une variable du programme
+	\item Par allocation statique : allocation par le compilateur d'un tableau de taille fixé avant l'exécution du programme sur la pile d'exécution\footnote{Le plus souvent. Cela dépend de la \textit{classe de stockage} utilisé, voir le chapitre correspondant.} (voir \textbf{4.6.3} pour un rappel)
+	\item Par allocation dynamique : allocation par le programmeur un tableau dont la taille dépend d'une variable du programme, sur le tas
 \end{itemize}
 Cette section ne décrit que l'allocation statique.
 \subsection{Définition}
@@ -43,7 +44,10 @@ On appelle \textit{statique} ce type d'allocation de mémoire car $SIZE$ \underl
 int n = 5;
 int array[n]; // incorrect
 \end{minted}
-Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
+Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. 
+En effet, la taille d'un tableau statique doit pouvoir être déterminé par le compilateur au moment de la compilation. Celui-ci peut ainsi produire des instructions machines pour stocker ce tableau sur la pile d'exécution comme $n$ variables de tailles déterminées.
+
+Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
  
 Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
 \begin{minted}[linenos=false]{c}
@@ -246,7 +250,7 @@ Le tableau déclaré et initialisé dans \textsf{fonction\_test} a été libér�
  
 Une solution ? Oui, avec les tableaux dynamiques !\footnote{Pour celles et ceux qui se demandent : oui, il y a une suite à cette phrase, mais ceci est une autre histoire\dots}
 \subsection{Exercices}
-\exercise{Routines classiques de manipulation de tableaux}
+\exercise{Routines classiques de manipulation de tableaux}{20}
 Soit $T$ un tableau de $l(T)\in\mathbb{N}$ éléments. On note pour $i, j\in{\llbracket 0; l(T)-1}\rrbracket$ :
 \begin{itemize}
 	\item $T[i]$ : l'élément de $T$ d'indice $i$
@@ -275,12 +279,43 @@ $i\leftarrow 0$\;
 \item démontrer par récurrence la correction de l'algorithme précédent, c'est-à-dire une démonstration que cet algorithme trie effectivement le tableau dans l'ordre croissant.
 \end{enumerate}
 \newpage
-\exercise{Recherche dichotomique} On reprend les notations introduites dans l'\refexercise{Routines classiques de manipulation de tableaux}.
+\exercise{Recherche dichotomique}{12M} On reprend les notations introduites dans l'\refexercise{Routines classiques de manipulation de tableaux}.
 \begin{enumerate}
 	\item Soit $T$ un tableau d'entiers trié par ordre croissant. Soit $i\in \llbracket 0; l(T)-1\rrbracket$.Soit $x\in\mathbb{Z}$. Montrer que :
 	$$x\in T\Rightarrow \left\{\begin{array}{lcl}
 	x\leq T[i] & \Rightarrow & x\in T[0:i] \\
 	x> T[i] & \Rightarrow & x\in T[i:l(T)]\end{array}\right.$$
-	\item Écrire une fonction \textsf{char is\_in(int x, int array[], unsigned int length);} qui renvoie \textit{Vrai} sur $x$ appartient au tableau, et \textit{Faux} sinon. Cette fonction devra au pire effectuer $\lceil log_2(length)\rceil$ tours de boucle. On le démontrera grâce à la question 1, en choisissant judicieusement $i$ à chaque tour de boucle.
+	\item Écrire une fonction \textsf{char is\_in(int x, int array[], unsigned int length);} qui renvoie \textit{Vrai} sur $x$ appartient au tableau $array$ supposé trié dans l'ordre croissant, et \textit{Faux} sinon. Cette fonction devra au pire effectuer $\lceil log_2(length)\rceil$ tours de boucle. On le démontrera grâce à la question 1, en choisissant judicieusement $i$ à chaque tour de boucle.
 \end{enumerate}
+\exercise{Liste des nombres premiers}{37HM} Cet exercice tient à montrer, dans un exemple particulier, l'importance fondamentale du détail, et comment ce qui semble une infime différence dans la manière d'écrire un code peut changer fondamentalement l'efficacité de l'algorithme mis en oeuvre.
+\begin{enumerate}
+	\item En programmant une routine du test de primalité l'\refexercise{Test de primalité}, écrire un programme qui liste les nombres premiers inférieurs à $N$ en au plus $N^{\frac{3}{2}}$ tours de boucles.
+	\item En utilisant un tableau de taille $N$ qui stocke les nombres premiers déjà trouvés, utiliser cette fois-ci un test de primalité en au plus $\pi(\sqrt{N})$ tours de boucle
+	\item Programmer l'algorithme du \textit{crible d'Eratosthène} décrit ci-dessous.
+	\item Démontrer que l'algorithme de la \textbf{Question 2.} est asymptotiquement plus lent que le crible d'Eratosthène
+\end{enumerate}
+\textit{\underline{Note :} $\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$. Les théorèmes de théorie des nombres peuvent a priori être utilisés librement, ou la démonstration de la dernière question passe à une difficulté 45 environ}
+\begin{algorithm}
+\caption{Algorithme du crible d'Eratosthène}
+\Entree{$N > 0$ un entier naturel}\;
+\Sortie{les entiers naturels inférieurs à $N$}\;
+
+\textit{Initialisation}
+
+Déclarer un tableau $P$ de $N$ booléens\;
+Initialiser : $P[0] = Faux$ et $\forall i\in\llbracket 1; l(P)-1\rrbracket, P[i] = Vrai$\;
+
+\textit{Boucle}
+
+On pose $p := 2$\;
+\Tq{$p^2\leq N$} {
+	\Pour{($f := p$ to $\left\lceil \dfrac{N}{p}\right\rceil$)}{
+		$P[pf] = Faux$\;
+	}
+	\Tq{$P[p] = Faux$}{
+		$p \leftarrow p + 1$\;
+	}
+}
+
+\end{algorithm}
 \end{document}

@@ -68,7 +68,7 @@ printf("%s", "%s\n"); // 0 est ajouté automatiquement
 \end{minted}
 Ici, le compilateur construit deux chaînes de caractères : la première qui contient les caractères `\%', `s' et '$\setminus{0}$' et la seconde qui contient les caractères `\%', `s', `$\setminus$n' et '$\setminus0$'. Les caractères `\%' et `s' ne constituent un caractère spécial de formatage que dans la chaîne manipulé par \textsf{printf}, c'est-à-dire la première.
 \subsection{Exercices}
-\exercise{Calculatrice}Écrire un programme qui demande à l'utilisateur d'entrer des calculs sous la forme $x\star y$, où $x, y\in{\mathbb{R}_{f64}}, \star\in\{+, -, /, *\}$ et lui donne le résultat. Si une erreur a lieu lors de la lecture, le programme termine. Ainsi, un scénario possible d'exécution est le suivant :
+\exercise{Calculatrice}{21}Écrire un programme qui demande à l'utilisateur d'entrer des calculs sous la forme $x\star y$, où $x, y\in{\mathbb{R}_{f64}}, \star\in\{+, -, /, *\}$ et lui donne le résultat. Si une erreur a lieu lors de la lecture, le programme termine. Ainsi, un scénario possible d'exécution est le suivant :
 \begin{minted}{bash}
 user@computer ~/working_directory> gcc calculatrice.c -o main
 user@computer ~/working_directory> ./main

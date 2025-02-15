@@ -9,6 +9,9 @@ struct Node {
 
 struct Node* node_new(int value) {
 	struct Node* nd = malloc(sizeof(struct Node));
+	if (nd == NULL) {
+		fprintf(stderr, "Erreur d'allocation d'un noeud de valeur %d\n", value);
+	}
 	nd->next = NULL;
 	nd->previous = NULL;
 	nd->value = value;
@@ -23,17 +26,38 @@ struct LinkedList {
 
 struct LinkedList* linkedlist_new() {
 	struct LinkedList* lst = malloc(sizeof(struct LinkedList));
+	if (lst == NULL) {
+		fprintf(stderr, "Erreur d'allocation de la liste\n");
+	}
 	lst->length = 0;
 	lst->head = NULL;
 	lst->tail = NULL;
 	return lst;
 }
 
+char linkedlist_error_access(struct LinkedList *l) {
+	if (l == NULL) {
+		fprintf(stderr, "Erreur : acces a un pointeur de liste NULL.\n");
+		return -1;
+	}
+	return 0;
+}
+
+void linkedlist_destroy(struct LinkedList* l) {
+	if (linkedlist_error_access(l)) {return;}
+	while (!linkedlist_is_empty(l)) {
+		linkedlist_pop_from_head(l);
+	}
+	free(l);
+}
+
 char linkedlist_is_empty(struct LinkedList* l) {
+	if (linkedlist_error_access(l)) {return;}
 	return l->length == 0;
 }
 
 void linkedlist_push_on_head(struct LinkedList *l, int value) {
+	if (linkedlist_error_access(l)) {return;}
 	struct Node *nd = node_new(value);
 	if (linkedlist_is_empty(l)) {
 		l->head = l->tail = nd;
@@ -46,6 +70,7 @@ void linkedlist_push_on_head(struct LinkedList *l, int value) {
 }
 
 void linkedlist_push_on_tail(struct LinkedList *l, int value) {
+	if (linkedlist_error_access(l)) {return;}
 	struct Node *nd = node_new(value);
 	if (linkedlist_is_empty(l)) {
 		l->head = l->tail = nd;
@@ -58,6 +83,7 @@ void linkedlist_push_on_tail(struct LinkedList *l, int value) {
 }
 
 int linkedlist_pop_from_head(struct LinkedList *l) {
+	if (linkedlist_error_access(l)) {return;}
 	int to_return = -1;
 	if (!linkedlist_is_empty(l)) {
 		struct Node *to_delete = l->head;
@@ -75,6 +101,7 @@ int linkedlist_pop_from_head(struct LinkedList *l) {
 }
 
 int linkedlist_pop_from_tail(struct LinkedList *l) {
+	if (linkedlist_error_access(l)) {return;}
 	int to_return = -1;
 	if (!linkedlist_is_empty(l)) {
 		struct Node *to_delete = l->tail;
@@ -92,6 +119,7 @@ int linkedlist_pop_from_tail(struct LinkedList *l) {
 }
 
 void linkedlist_display(struct LinkedList *l) {
+	if (linkedlist_error_access(l)) {return;}
 	struct Node *tmp = l->head;
 	while (tmp != NULL) {
 		printf("->%d", tmp->value);
@@ -101,7 +129,6 @@ void linkedlist_display(struct LinkedList *l) {
 }
 
 int main() {
-
 	struct LinkedList *l = linkedlist_new();
 
 	linkedlist_push_on_head(l, 5);
@@ -110,5 +137,7 @@ int main() {
 
 	linkedlist_display(l);
 
+	linkedlist_destroy(l);
+	l = NULL;
 	return EXIT_SUCCESS;
 }

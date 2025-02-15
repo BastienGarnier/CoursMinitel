@@ -41,7 +41,7 @@ On dispose pour la manipulation des pointeurs de deux opérateurs en langage C :
 
 \begin{minipage}{\textwidth}
 	\begin{center}
-		\includesvg[width=0.6\textwidth]{indirection}
+		\includesvg[width=0.5\textwidth]{indirection}
 	\end{center}
 \end{minipage}
 
@@ -51,34 +51,7 @@ TYPE v = ...;
 TYPE* ptr = &v;
 \end{minted}
 On remarquera que $ptr$ doit être un pointeur de même type que le type de $v$. En effet, il devient possible depuis le pointeur $ptr$ de lire et de modifier la valeur de $v$. La pleine connaissance de $v$ est donc nécessaire, et l'information de sa taille est stockée comme la taille du pointeur.
- 
-C'est l'opérateur $*$ qui lui aussi, lorsqu'il est utilisé commme opérateur unaire, change de signification. $*ptr$ désigne la valeur de $v$. Modifier la valeur de $*ptr$ modifie donc la valeur de $v$. En langage C cela donne :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
 
-int main() {
-	int a = 58;
-	int b = 67;
-	int* ptr = &a; // pointe vers a
-	*ptr = 17; // pareil que a = 17
-	printf("a = %d\n", a);
-	ptr = &b; // pointe vers b
-	*ptr = 2; // pareil que b = 2
-	printf("b = %d", b);
-	return EXIT_SUCCESS;
-}
-\end{minted}
-Après exécution du code, on a le schéma suivant :
-
-\begin{minipage}{\textwidth}
-	\begin{center}
-		\includesvg[width=.7\textwidth]{pointeur4}
-	\end{center}
-\end{minipage}
-
-L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
- 
 On peut décider également qu'un pointeur ne pointe sur rien grâce à la constante $\textsf{NULL} = 0$ :
 \begin{minted}[linenos=false]{c}
 int *pointeur = NULL; // pointe sur rien
@@ -97,13 +70,81 @@ Un programme informatique d'ordinateur est généralement composé de plusieurs 
 On distingue principalement :
 \begin{itemize}
 	\item les segments de code : contiennent les instructions exécutables du programme
-	\item les segments de donnée : contiennent les variables globales du programme\footnote{à peu près}
+	\item les segments de donnée : contiennent les variables globales du programme\footnote{À peu près, voir les \textbf{Classes de stockage} pour plus de détails.}
 	\item le segment de pile : contient la pile d'exécution
 \end{itemize}
 Une erreur de segmentation provient principalement de la tentative d'accès à un segment de manière non autorisée. Il peut s'agir d'un segment du programme propre ou d'un autre programme. Dans tous les cas, cela est représentatif de l'accès non autorisé par le système d'exploitation ou par le processeur à une adresse mémoire de la RAM.
 
 Il faut alors vérifier que chaque utilisation de pointeur est valide dans la zone du code d'où provient l'erreur.
 \end{minitelbasicbox}
+
+L'opérateur $*$, lorsqu'il est utilisé commme opérateur unaire, change lui aussi de signification. $*ptr$ désigne la valeur de $v$. Modifier la valeur de $*ptr$ modifie donc la valeur de $v$. En langage C cela donne :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	int a = 58;
+	int b = 67;
+	int* ptr = &a; // pointe vers a
+	printf("Origine : a = ", *ptr);
+	*ptr = 17; // pareil que a = 17
+	printf("a = %d\n", a);
+	ptr = &b; // pointe vers b
+	printf("Origine : b = ", *ptr);
+	*ptr = 2; // pareil que b = 2
+	printf("b = %d", b);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Après exécution du code, on a le schéma suivant :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=.7\textwidth]{pointeur4}
+	\end{center}
+\end{minipage}
+
+L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
+
+\subsection{\textit{lvalue} et \textit{rvalue}}
+Les codes ci-dessus peut avoir provoquer chez le lecteur un froncement de sourcils, en particulier si celui-ci est porté à la rigueur des détails\dots
+
+Il pourrait après avoir essayé ceci avec succès :
+\begin{minted}[linenos=false]{c}
+int a = 5;
+int b = 6;
+*a = b;
+\end{minted}
+s'être dit que \textit{*a} est exactement la valeur de \textit{b}. Chose étrange puisqu'il est impossible d'écrire $8 = a$. Et de tenter :
+\begin{minted}[linenos=false]{c}
+int a = 5;
+int b = 6;
+&a = &b;
+\end{minted}
+et lire alors l'erreur de compilation \textit{\og lvalue required as left operand of assignment \fg}.
+
+Et de n'y rien comprendre !
+
+Pourquoi serait-il impossible de modifier l'adresse du symbole $a$ ? Certes, le programme ne pourrait plus accéder à la case mémoire d'origine, mais l'instruction en elle-même ne semble pas absurde de prime abord. Et qu'est-ce qu'une \textit{"lvalue"} ? Et pourquoi, alors que $a = 5$, écrire $*a = b$ est valide, mais $5 = b$ ne l'est pas ?\newline
+Posons des mots sur l'intuition.
+
+Commençons par expliquer pourquoi ce dernière code ne peut être valide. L'assignation modifiant l'adresse de $a$ effectue en vérité un traitement symbolique. $a$ est une étiquette sur une adresse mémoire. Vouloir changer l'adresse mémoire de cette étiquette, ce n'est pas ordonner à l'ordinateur d'agir mais uniquement de modifier la manière dont \textit{le compilateur} lit le programme. Et le C ne permet pas de traitement symbolique par l'assignation.
+
+Revenons au cas de l'assignation de valeur par un pointeur. Il existe en langage C deux catégories de valeurs :
+\begin{itemize}
+	\item les \textit{lvalues}\footnote{Abbréviation de \textit{left value}, c'est-à-dire \textit{valeur apparaissant à gauche dans une expression}} : symbole qui permet d'évaluer l'\textit{identité} d'un objet, d'un texte binaire
+	\item les \textit{rvalues}\footnote{Abbréviation de \textit{right value}, c'est-à-dire \textit{valeur apparaissant à droite dans une expression}} : symbole qui permet d'évaluer la \textit{valeur} d'un opérande, le texte binaire lui-même
+\end{itemize}
+On différencie l'identification d'un texte binaire avec ce texte binaire lui-même. On comprend alors le code suivant :
+\begin{minted}{c}
+int a;
+int b = 6;
+int* p = &a;
+*p = 5;
+\end{minted}
+Ici, $*p$ identifie le mot binaire qui est valeur de $a$. Il n'est pas lui-même ce mot binaire. Alors que $\&a$ est soi-même le mot binaire adresse de $a$ en mémoire.
+
 \subsection{Formatage en chaîne de caractères}
 Une adresse mémoire peut être affichée grâce au formatage des chaînes de caractères. Il faut pour cela utiliser le caractère spécial ``\%p'' :
 \begin{minted}{c}
@@ -251,17 +292,17 @@ Si pour l'instant l'utilisation de tels pointeurs peut rester assez absconse, ce
 	\end{center}
 \end{minipage}
 \subsection{Exercices}
-\exercise{Quelques procédures inutiles pour devenir un bot efficace} Programmer en C les procédures suivantes, et les tester sur quelques valeurs :
+\exercise{Quelques procédures inutiles pour devenir un bot efficace}{10} Programmer en C les procédures suivantes, et les tester sur quelques valeurs :
 \begin{itemize}
 	\item \textsf{void mov(int *x, int val);} : assigne à la variable pointé par $x$ la valeur $val$
 	\item \textsf{void add(int *a, int *b);} : assigne à la variable pointée par $a$ la somme des valeurs des variables pointées par $a$ et $b$
 	\item \textsf{void mul(int *y, int *z);} : assigne à la variable pointée par $y$ le produit des valeurs des variables pointées par $y$ et $z$
 	\item \textsf{void pow(int *x, int n);} : assigne à la variable pointée par $x$ la valeur de la variable pointé par $x$ à la puissance $n$
 \end{itemize}
-\exercise{Interversion sans effet de bord (3)} Écrire une procédure \textsf{void swap(int *a, int *b);} qui échange les valeurs des variables pointés par $a$ et $b$ sans utiliser de variable temporaire. Quel est le comportement du programme si $x = y$ ? (c'est-à-dire que la même adresse est passé en argument pour les deux paramètres) \newline
+\exercise{Interversion sans effet de bord (3)}{10} Écrire une procédure \textsf{void swap(int *a, int *b);} qui échange les valeurs des variables pointés par $a$ et $b$ sans utiliser de variable temporaire. Quel est le comportement du programme si $x = y$ ? (c'est-à-dire que la même adresse est passé en argument pour les deux paramètres) \newline
 Si cela induit une erreur de comportement de la procédure, corriger cette erreur.
  
-\exercise{Distance de Manhattan}
+\exercise{Distance de Manhattan}{25} Cet exercice est là uniquement comme exercice technique\footnote{et rigolo (?)}. La méthode utilisée est à la fois inefficace et immonde à lire et à programmer. On se rapportera aux \textbf{Structures} pour un implantation correcte.
 \begin{enumerate}
 	\item Écrire une fonction \textsf{double coords\_to\_point(float x, float y);} qui stocke les coordonnées d'un point dans une seule variable de type \textsf{double} à l'aide d'une projection de type.
 	\item Écrire une fonction \textsf{double substract(double pA, double pB);} qui à deux points $p_{A} = (x_{A}, y_{A})$ et $p_{B} = (x_{B}, y_{B})$ renvoie : $$p_{A} - p_{B} = (x_{A} - x_{B}, y_{A} - y_{B})$$

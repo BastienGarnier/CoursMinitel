@@ -157,10 +157,12 @@ Donc $G$ est bien un groupe commutatif.
 	\item $101 = (0110\ 0101)_2 = 0\textsf{x}65$
 \end{itemize}
 \subsection{Caractères ASCII}
-\solution{Traduction ASCII [COURS]} La chaîne de caractères décrite est : 
+\solution{Traduction ASCII 1} La chaîne de caractères décrite est : 
 \begin{center}
 ``Minitel = GOAT''
 \end{center}
+\solution{Traduction ASCII 2} Le mot binaire qui décrit cette chaîne est :
+$$\textsf{0x4F6820210A5175692065732D74752021083F}$$
 \section{Deuxième partie}
 \subsection{Bases du langage}
 \subsubsection{Variables}
@@ -232,7 +234,7 @@ Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujour
 	\item \textit{vraie} car $64\wedge{e3} = 65 \equiv 1[8]$. D'où $\textsf{!(((64 $\wedge$ e3) \% 8) - 1)} = 1$.\newline Alors : $e4 \equiv{\textsf{(unsigned char)(257) - 2}} = -1$
 \end{enumerate}
 \subsubsection{Structures de contrôle du flot d'exécution}
-\solution{[COURS]}
+\solution{}
 \inputminted{c}{solutions/cours_structure_controle.c}
 À partir de $u_{4}$ inclut, les valeurs de la suite sont fausses. On observe ainsi que $u_{3} = 808602$, d'où $u_{4} = 3\times808602^{2} - 5\times{808602} + 2 = 1961507540204 > 2^{31} - 1 = 2147483647$. Il y a un dépassement de capacité car la variable $u$ est stocké sur trop peu de bits. Le résultat est donc correct modulo $2^{32}$
  
@@ -309,9 +311,9 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 	\item si $x > T[i_m]$, $T\leftarrow T[i_m:l(T)]$ et boucler
 \end{itemize}
 Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \geq 1$ et le programme termine.
-
-% \solution{Liste des nombres premiers} 
-
+\inputminted{c}{solutions/dichotomique.c}
+\solution{Liste des nombres premiers} 
+TODO
 % \textbf{Questions 1 et 2 :}
 % La structure du code est la même dans les deux cas :
 % \begin{minted}{c}
@@ -388,10 +390,13 @@ Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Apr
 % & \geq & C'\dfrac{\sqrt{k}}{ln(k)} & \text{ où }C'=3ln(3)C
 % \end{array}$$
 % Comme $$\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$$, on a bien l'inégalité recherchée à partir d'un certain rang.
+\subsubsection{Tableaux dynamiques}
+\solution{Conversion en binaire}
+\inputminted{c}{solutions/nat2bin.c}
 \subsubsection{Tableaux multidimensionnels}
-\solution{Afficher un tableau \textit{2d} [COURS]}
+\solution{Afficher un tableau \textit{2d}}
 \inputminted{c}{solutions/tab_display_2d.c}
-\solution{Affichage du triangle [COURS]}\newline
+\solution{Affichage du triangle}\newline
 Version généralisée pour \textsf{N\_LINES} quelconque : 
 \inputminted{c}{solutions/triangle.c}
 \solution{Matrices (1)} \newline

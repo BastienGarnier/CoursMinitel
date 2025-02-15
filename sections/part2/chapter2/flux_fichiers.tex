@@ -17,7 +17,7 @@ Les fichiers sous Linux ont 3 types de droits :
 	\item écriture (noté \textit{w} comme \textit{\underline{w}rite} en anglais) : possibilité de modifier le contenu du fichier
 	\item exécution (noté \textit{x} comme \textit{e\underline{x}ecution} en anglais) : si le fichier contient des instructions exécutables, possibilité de les exécuter
 \end{itemize}
-Il est nécessaire de manipuler ces droits avec précaution. En effet, lors de la mise en réseau d'ordinateurs, des droits mal gérés peuvent présenter rapidement des risques de sécurité local comme réseau.
+Il est nécessaire de manipuler ces droits avec précaution. En effet, lors de la mise en réseau d'ordinateurs, des droits mal gérés peuvent présenter rapidement des risques de sécurité au niveau local comme au niveau réseau.
  
 Par ailleurs, chaque fichier sous Linux :
 \begin{itemize}
@@ -114,7 +114,7 @@ Elles s'utilisent comme vu précédemment dans la section sur les flux standards
  
 \textbf{Sortie :} 0 en cas de succès. \textsf{EOF} en cas d'erreur.\footnote{\textsf{EOF} est une constante définie dans \textit{$<$stdio.h$>$} et vaut généralement $-1$}
 \subsubsection{Un classique de l'ISMIN}
-Rien ne vaut un exemple à ce stade.\footnote{Et pas des moindres, il s'agit de la fine fleur des idées de sujet des types qui écrivent les examens de l'ISMIN. Les pauvres\dots Il ne faudrait pas les laisser seules avec eux-mêmes. Ce serait inconscient.} Le code ci-dessous va lire et écrire dans un flux binaire vers un fichier \textit{``annuaire.data''}. Il va y stocker des informations sur des individus :
+Rien ne vaut un exemple à ce stade.\footnote{Et pas des moindres, il s'agit de la fine fleur des idées de sujet des types qui écrivent les examens de l'ISMIN. Les pauvres\dots Il ne faudrait pas les laisser seuls avec eux-mêmes. Ce serait inconscient.} Le code ci-dessous va lire et écrire dans un flux binaire vers un fichier \textit{``annuaire.data''}. Il va y stocker des informations sur des individus :
 \begin{itemize}
 	\item leur nom sous forme d'un tableau de 50 caractères
 	\item leur numéro de téléphone sous forme d'un entier sur 64 bits
@@ -140,6 +140,10 @@ struct Person person_make() {
 
 void person_add_to_file(const char *pathname, struct Person p) {
 	FILE *fd = fopen(pathname, "ab");
+	if (fd == NULL) {
+		fprintf(stderr, "Erreur d'ouverture du fichier %s\n", pathname);
+		return;
+	}
 	if (!fwrite(&p, sizeof(struct Person), 1, fd)) {
 		fprintf(stderr, "Erreur d'ecriture dans annuaire.data\n");
 	}
@@ -148,11 +152,15 @@ void person_add_to_file(const char *pathname, struct Person p) {
 
 void person_print_numbers_from_file(const char *pathname) {
 	FILE *fd = fopen(pathname, "rb");
+	if (fd == NULL) {
+		fprintf(stderr, "Erreur d'ouverture du fichier %s\n", pathname);
+		return;
+	}
 	struct Person p;
 	while (fread(&p, sizeof(struct Person), 1, fd) == 1) {
 		printf("%s : %ld\n", p.name, p.number);
 	}
-	fclose(fd);
+	fclose(fd); // nécessaire : permet au fichier d'être réouvert plus tard
 }
 
 int main() {

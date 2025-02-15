@@ -19,6 +19,8 @@ struct LinkedList {
 };
 
 struct LinkedList* linkedlist_new();
+void linkedlist_destroy(struct LinkedList* l);
+char linkedlist_error_access(struct LinkedList *l);
 char linkedlist_is_empty(struct LinkedList* l);
 void linkedlist_push_on_head(struct LinkedList *l, int value);
 void linkedlist_push_on_tail(struct LinkedList *l, int value);

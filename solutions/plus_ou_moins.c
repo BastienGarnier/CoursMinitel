@@ -22,5 +22,5 @@ int main() {
 		}
 	}
 	printf("Youpiii tu as trouve le nombre mystere en %u tentatives !\n", tentatives);
-
+	return EXIT_SUCCESS;
 }

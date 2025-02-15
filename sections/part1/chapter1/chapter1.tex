@@ -243,11 +243,11 @@ $$
 \subsection{Exercices}
 Dans tous les exercices, $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 
-\exercise{La compréhension pour mieux comprendre} Décrire les fonctions $\vee$, $\oplus$, $\wedge$ et $\neg$ par compréhension.
+\exercise{La compréhension pour mieux comprendre}{13} Décrire les fonctions $\vee$, $\oplus$, $\wedge$ et $\neg$ par compréhension grâce à des fonctions élémentaires ($+$, $-$, $*$, $/$, $|.|$, etc\dots)
 
-\exercise{Universalité des fonctions logiques élémentaires} Montrer que toute fonction logique $N$-aire peut s'exprimer comme une combinaison des fonctions $\vee$, $\wedge$ et $\neg$.
+\exercise{Universalité des fonctions logiques élémentaires}{23} Montrer que toute fonction logique $N$-aire peut s'exprimer comme une combinaison des fonctions $\vee$, $\wedge$ et $\neg$.
 
-\exercise{Porte NAND} On pose la fonction $\uparrow$ dite \og NAND \fg définie par :
+\exercise{Porte NAND}{19} On pose la fonction $\uparrow$ dite \og NAND \fg définie par :
 $$
 \begin{array}{lclcl}
 \uparrow & : & \mathcal{B}^{2} & \rightarrow & \mathcal{B} \\
@@ -260,7 +260,7 @@ $$
 \end{enumerate}
 \textit{\underline{Note :} Un opérateur capable d'exprimer les opérateurs logiques élémentaires à lui seul est dit \og universel \fg}
 
-\exercise{Porte NOR} On pose la fonction $\downarrow$ dite \og NOR \fg définie par :
+\exercise{Porte NOR}{19} On pose la fonction $\downarrow$ dite \og NOR \fg définie par :
 $$
 \begin{array}{lclcl}
 \downarrow & : & \mathcal{B}^{2} & \rightarrow & \mathcal{B} \\
@@ -271,7 +271,7 @@ $$
     \item Déterminer la table de vérité de l'opérateur NOR
     \item Montrer que $\downarrow$ est un opérateur universel.
 \end{enumerate}
-\exercise{Petit retour à l'algèbre fondamentale} Démontrer que $G = (\mathcal{B}^{N}, \oplus)$ est un groupe commutatif. Pour tout $b\in{\mathcal{B}^{N}}$, déterminer $b^{-1}$.
+\exercise{Petit retour à l'algèbre fondamentale}{09} Démontrer que $G = (\mathcal{B}^{N}, \oplus)$ est un groupe commutatif. Pour tout $b\in{\mathcal{B}^{N}}$, déterminer $b^{-1}$.
 \\
 \textit{\underline{Rappel :} Un groupe est un ensemble $E$ muni d'une loi de composition interne $\ast$ associative respectant les propriétés suivantes :
 \begin{enumerate}
@@ -280,7 +280,7 @@ $$
 \end{enumerate}
 Un groupe est commutatif si $\ast$ est commutative.}
 
-\exercise{Inversibilité des décalages} Est-ce que les décalages logiques droit et gauche sont inversibles ? Justifier.
+\exercise{Inversibilité des décalages}{06} Est-ce que les décalages logiques droit et gauche sont inversibles ? Justifier.
 \section{Opérations arithmétiques}
 Sont ici décrites les opérations arithmétiques sur $\mathcal{B}^{N}$. L'arithmétique définit est une arithmétique modulaire, c'est-à-dire que l'ensemble $\llbracket 0; 2^{N}\llbracket$ est assimilé à l'ensemble des représentants des classes d'équivalence de $\dfrac{\mathbb{Z}}{2^{N}\mathbb{Z}}$.
 \subsection{Représentation d'un nombre entier en binaire}
@@ -330,7 +330,7 @@ Par exemple, trouvons la représentation binaire de $53$ :
 \end{itemize}
 D'où $53 = 1\times{2^{5}} + 1\times{2^{4}} + 0\times{2^{3}} + 1\times{2^{2}} + 0\times{2^{1}} + 1\times 2^{0} = (110101)_{2}$
 
-\exercise{Conversion en binaire}\newline
+\exercise{Conversion en binaire}{15}\newline
 Trouver la représentation binaire des dix entiers naturels ci-dessous :
 
 \begin{minipage}{0.5\textwidth}
@@ -533,7 +533,7 @@ d'où : $x = (10101.001)_{2}$
 
 On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x$ (voir section suivante)
 
-\exercise{Écriture en base 2 de nombres non entiers} Écrire en base 2 les nombres suivants :
+\exercise{Écriture en base 2 de nombres non entiers}{15} Écrire en base 2 les nombres suivants :
 \begin{itemize}
      \item $14.5625$
      \item $1.40625$
@@ -657,7 +657,7 @@ $$
 
 \textbf{Remarque :} Cette transformation est aussi valable pour des nombres flottants, puisqu'il suffit de considérer l'interprétation entière du mot binaire qui par la norme \textit{IEEE 754} représente un flottant.
 
-\exercise{Conversion binaire-hexadécimale}\newline
+\exercise{Conversion binaire-hexadécimale}{15}\newline
 Trouver les représentations binaires puis hexadécimale des nombres suivants. On utilisera l'écriture en base 2 pour les nombres entiers et la représentation 32 bits de la norme \textit{IEEE 754} pour les nombres à virgules :
 \begin{itemize}
      \item $713705$
@@ -717,12 +717,31 @@ Le premier standard international largement utilisé est apparu avec l'ANSI (\te
   \captionof{table}{Table des caractères ASCII \label{tab:ascii}}
 \end{center}
 \textbf{Remarque :} On peut trouver cette table en écrivant \textit{man ascii} dans un terminal de commande sous Linux.
- 
+
 La plupart des systèmes manipulent des mots binaires dont le nombre de bits est multiple de $8$. Par défaut, certains systèmes posent le bit de poids fort à la valeur 0. Il est toutefois possible d'étendre le codage ASCII en une version étendu (\textit{extended ASCII}). Il existe plusieurs standards d'ASCII étendu et il n'en sera pas discuté ici.
  
 \textbf{Exemple :} Selon l'ASCII, le caractère `a' est décrit par le mot binaire : $(1100001)_{2} = 0\textsf{x}61 = 97$. On peut également effectuer la correspondance dans l'autre sens, en réécrivant sous forme de caractères des mots binaires de 8 bits. Ainsi, \textsf{0x2B} décrit le caractère `$+$'
- 
-\exercise{Traduction ASCII [COURS]}Trouver la chaîne de caractères décrite par la chaîne de mots binaires suivante :
+\subsection{Caractères imprimables et non imprimables}
+Certains caractères du tableau \ref{tab:ascii}, dont la signification est donné entre crochets, sont appelés des \textit{caractères de contrôle} aussi dits \textit{non imprimables}. Ces caractères, qui appartiennent à la première colonne du tableau (plus \textsf{[SPACE]} et \textsf{[DEL]}), ne représentent pas de symboles. Ils sont seulement utilisés pour la mise en page, ou pour fournir des informations dans les télécommunications.
+
+On retiendra tout particulièrement les caractères de contrôle suivant, qui sont souvent utilisés en programmation pour le traitement de texte :
+\begin{itemize}
+  \item \textsf{0x0 $=$ [NULL]} : utilisé de nos jours pour indiquer la fin d'une chaîne de caractères
+  \item \textsf{0x8 $=$ [BACKSPACE]} : utilisé pour revenir en arrière d'un caractère dans une chaîne. Ainsi, \textsf{0x410842} représente non pas 'A' mais 'B'.
+  \item \textsf{0x9 $=$ [HORIZONTAL TAB]} : tabulation horizontale
+  \item \textsf{0xB $=$ [VERTICAL TAB]} : tabulation verticale
+  \item \textsf{0xA $=$ [LINE FEED]} : saut de ligne
+  \item \textsf{0xC $=$ [FORM FEED]} : saut de page
+  \item \textsf{0xD $=$ [CARRIAGE RETURN]} : retour chariot : signifie un retour en début de ligne\footnote{Pour les détails : \url{https://fr.wikipedia.org/wiki/Retour_chariot}. On observera que la plupart des caractères de contrôle sont des références aux machines à écrire et à de vieils normes de télécommunications (parfois encore usitées).}
+\end{itemize}
+Le caractère \textsf{[ESPACE]} est en général représenté par un blanc.
+
+\exercise{Traduction ASCII 1}{10}Trouver la chaîne de caractères décrite par la chaîne de mots binaires suivante :
 $$\textsf{0x4D696E6974656C203D20474F41540A0D00}$$
 \textit{\underline{Indication} : on pourra segmenter en mots de 8 bits la chaîne.}
+
+\exercise{Traduction ASCII 2}{10}Écrire en hexadécimale le mot binaire qui décrit le texte suivant :
+\begin{center}
+Oh !\textsf{[LINE FEED]}Qui es-tu !\textsf{[BACKSPACE]}?
+\end{center}
 \end{document}

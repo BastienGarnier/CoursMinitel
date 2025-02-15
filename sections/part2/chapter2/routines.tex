@@ -250,7 +250,7 @@ int sum(int a, int b, int c, int d, int e, int f, int g, int h, int i) {
 int result = sum(1, 2, 3, 4, 5, 6, 7, 8, 9);
 \end{minted}
 
-Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel.\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines.}
+Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel.\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines. Toutefois, il ne peut optimiser que munit de la certitude de ne pas modifier la sémantique du programme. Cela réduit grandement son champ d'action pour l'optimisation. Il est recommandé d'écrire par soi-même un code optimisé $\wedge\wedge$} Il est par exemple absurde de programmer une routine qui est si spécfique qu'elle ne sera appelée qu'une seule fois dans tout un programme.
 \subsection{Effet de bord}
 Une fonction peut agir sur son environnement, c'est-à-dire sur le résultat de l'exécution d'un programme, grâce à sa valeur de retour. Toutefois, une procédure ne le peut pas. Cela ne signifie pour autant pas qu'une procédure ne puisse pas agir sur son environnement. Ainsi, une procédure peut, sans renvoyer de valeur, agir sur les valeurs d'adresses mémoires extérieurs à sa région propre de code. Par exemple :
 \begin{minted}{c}
@@ -262,7 +262,7 @@ est une procédure agissant sur son environnement. Elle interagit avec la consol
 
 Une action d'une routine différente d'un renvoi de valeur hors de son environnement local est nommée un \textit{effet de bord}.
 \subsection{Exercices}
-\exercise{Encore Fibonacci}\newline Écrire une fonction de prototype \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
+\exercise{Encore Fibonacci}{11}\newline Écrire une fonction de prototype \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
  $$
 \left\{\begin{array}{llcl}
 & f_{0} & = & 0 \\
@@ -270,9 +270,9 @@ Une action d'une routine différente d'un renvoi de valeur hors de son environne
 \forall{n\in{\mathbb{N}}}, & f_{n+2} & = & f_{n+1} + f_{n}
 \end{array}\right.
 $$
-Tester ensuite cette fonction pour toutes les valeurs de $n\in{\llbracket 0; 100\rrbracket}$.
+Tester ensuite cette fonction pour toutes les valeurs de $n\in{\llbracket 0; 100\rrbracket}$
  
-\exercise{Puissances entières} Écrire une routine équivalente à la fonction :
+\exercise{Puissances entières}{10} Écrire une routine équivalente à la fonction :
  $$
  \begin{array}{lclcl}
 f & : & \llbracket-2^{31}, 2^{31}\llbracket\times{\llbracket0, 2^{32}\llbracket}& \rightarrow & \mathbb{Z} \\
