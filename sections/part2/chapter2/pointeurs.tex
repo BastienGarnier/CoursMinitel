@@ -108,6 +108,7 @@ Après exécution du code, on a le schéma suivant :
 L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
 
 \subsection{\textit{lvalue} et \textit{rvalue}}
+\label{sub:lvalue_et_rvalue}
 Les codes ci-dessus peut avoir provoquer chez le lecteur un froncement de sourcils, en particulier si celui-ci est porté à la rigueur des détails\dots
 
 Il pourrait après avoir essayé ceci avec succès :
@@ -146,6 +147,7 @@ int* p = &a;
 Ici, $*p$ identifie le mot binaire qui est valeur de $a$. Il n'est pas lui-même ce mot binaire. Alors que $\&a$ est soi-même le mot binaire adresse de $a$ en mémoire.
 
 \subsection{Formatage en chaîne de caractères}
+\label{sub:formatage_en_cha_ne_de_caract_res}
 Une adresse mémoire peut être affichée grâce au formatage des chaînes de caractères. Il faut pour cela utiliser le caractère spécial ``\%p'' :
 \begin{minted}{c}
 #include <stdio.h>
@@ -164,6 +166,7 @@ int main() {
 }
 \end{minted}
 \subsection{Les pointeurs en paramètres de routines}
+\label{sub:les_pointeurs_en_param_tres_de_routines}
 Venons en à une utilité possible des pointeurs : le passage d'arguments à des routines. La limitation des routines est qu'elles ne peuvent agir sur le reste du programme que par au maximum une unique valeur, celle de retour dans le cas des fonctions, aucune dans le cas des procédures. Imaginons par exemple une routine qui doive effectuer l'échange des valeurs de deux variables. Cela n'est pas possible tant que la routine n'a aucun moyen d'action direct sur les variables elles-même.
 
 C'est-ici qu'interviennent les pointeurs :
@@ -197,8 +200,9 @@ Ainsi, on observe le schéma suivant durant l'appel de la procédure \textsf{int
  
 Alors, $*a$ dans \textsf{interversion} est la valeur de $a$ dans la fonction \textsf{main} et $*b$ dans \textsf{interversion} est la valeur de $b$ dans la fonction \textsf{main}. On procède alors à une interversion avec effet de bord, comme dans l'\refexercise{Interversion de variables par effet de bord}.
  
-\subsection{Projection de type}
-Un point important n'a pas été abordé sur les pointeurs\footnote{Sans jeux de mots aucun\dots puisque les jeux de mots laids font des gambettes ;)} : la projection de type.
+\subsection{Arithmétique des pointeurs et projection de type}
+\label{sub:arithm_tique_des_pointeurs_et_projection_de_type}
+Un point important n'a pas été abordé sur les pointeurs\footnote{Sans jeux de mots aucun\dots puisque les jeux de mots laids font des gambettes ;)} : l'arithmétique des pointeurs, fortement liée à la projection de type sur les pointeurs.
  
 Considérons le code suivant :
 \begin{minted}{c}
@@ -266,9 +270,10 @@ Plus un petit \textit{trick} inutile mais rigolo : comme l'addition est commutat
 // le résultat du test suivant est toujours vrai
 (i - 1)[ptr + 1] == *(ptr + i);
 \end{minted}
-Les raisons de l'existence de cette facilité d'écriture seront détaillées dans la section sur les tableaux.
+Les raisons de l'existence de cette facilité d'écriture seront détaillées dans la section \ref{sec:tableaux_statiques} sur les tableaux.
 \subsubsection{Le pointeur quelconque : \textsf{void*}}
-Un dernier cas d'utilisation du projecteur de type est celui du pointeur quelconque \textsf{void*}. En soi, un pointeur contient seulement une adresse, et il peut être intéressant dans certains programmes (voir la section sur les tableaux dynamiques) de ne conserver que l'adresse et d'``oublier'' le reste, c'est-à-dire le type du pointeur.
+\label{ssub:le_pointeur_quelconque_void_}
+Un dernier cas d'utilisation du projecteur de type est celui du pointeur quelconque \textsf{void*}. En soi, un pointeur contient seulement une adresse, et il peut être intéressant dans certains programmes (voir la section \ref{sec:allocation_dynamique} sur les tableaux dynamiques) de ne conserver que l'adresse et d'``oublier'' le reste, c'est-à-dire le type du pointeur.
  
 Le type spécial \textsf{void*} représente exactement cela : un pointeur non typé vers une adresse.
  
@@ -284,8 +289,9 @@ Par ailleurs, l'addition sur un pointeur non typé est ``classique'' :
 void *pointeur_quelconque = NULL;
 printf("%p\n", pointeur_quelconque + 5); // -> 0x5
 \end{minted}
-Si pour l'instant l'utilisation de tels pointeurs peut rester assez absconse, cela s'éclairera dans le chapitre sur les concepts avancés du langage C. On trouvera déjà un premier exemple dans la section sur les tableaux dynamiques qui montre une application essentielle des pointeurs.
+Si pour l'instant l'utilisation de tels pointeurs peut rester assez absconse, cela s'éclairera dans le chapitre sur les concepts avancés du langage C. On trouvera déjà un premier exemple dans la section \ref{sec:allocation_dynamique} sur les tableaux dynamiques qui montre une application essentielle des pointeurs.
 \subsection{Pointeurs itérés}
+\label{sub:pointeurs_it_r_s}
 \begin{minipage}{\textwidth}
 	\begin{center}
 		\includegraphics[width=.75\textwidth]{pointer_meme}
@@ -311,4 +317,9 @@ Si cela induit une erreur de comportement de la procédure, corriger cette erreu
 	\item En déduire une fonction \textsf{float distance(double pA, double pB);} qui renvoie la distance entre deux points $p_{A}$ et $p_{B}$ associée à la norme 1. Cette distance est appelée \textit{distance de Manhattan}\footnote{Souvent utilisée en informatique du fait de sa vitesse d'exécution.}
 \end{enumerate}
 \textbf{Remarque : }On pourra éviter les avertissements à la compilation en effectuant des projections de type explicites.
+
+\exercise{Valeur absolue (2)}{18}En utilisant seulement des projections de type et une opération bits-à-bits, écrire une fonction \textsf{float abs(float x);} qui calcule la valeur absolue de $x$.
+
+\exercise{Racine carrée inverse rapide (2)}{25}
+Reprendre le résultat de l'\refexercise{Racine carrée inverse rapide (1)} pour écrire une fonction \textsf{float fast\_inverse\_square\_root(float x);} qui calcule $\frac{1}{\sqrt{x}}$ par une simple transformation linéaire.
 \end{document}

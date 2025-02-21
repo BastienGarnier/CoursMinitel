@@ -28,6 +28,7 @@ T_{N} = \left[{\begin{array}{c}
 	\end{array} } \right]
 \end{equation}
 \subsection{Tableaux multidimensionnels statiques}
+\label{sub:tableaux_multidimensionnels_statiques}
 Commençons par le moins utile. On ne peut définir statiquement que des tableaux multidimensionnels rectangulaire, c'est-à-dire dont chacune des lignes possède autant de colonnes que les autres.
  
 Dans le cas statique, la déclaration d'un tableau $D$-dimensionnel de taille $N_{1}\times{N_{2}}\dots\times{N_{D}}$ revient exactement à allouer statiquement en mémoire un ``grand'' tableau de $N_{1}\times{N_{2}}\dots\times{N_{D}}$ cases. Et c'est seulement lors de l'indexation du tableau que l'aspect multidimensionnel ressort.
@@ -75,6 +76,7 @@ printf("%lf", spacetime_points[1][4][2][7]);
 \end{itemize}
 Pour outrepasser les deux limitations des tableaux multidimensionnels statiques, on utilise l'allocation dynamique.
 \subsection{Tableaux multidimensionnels dynamiques}
+\label{sub:tableaux_multidimensionnels_dynamiques}
 L'idée de l'allocation dynamique de tableaux multidimensionnels est la suivante : on veut allouer dynamiquement un tableau qui va contenir des sous-tableaux que l'on va également allouer dynamiquement.
  
 \begin{minipage}{\textwidth}

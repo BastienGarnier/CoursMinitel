@@ -1,7 +1,8 @@
 \documentclass[../../main.tex]{subfiles}
 \begin{document}
 \section{L'ordinateur}
-\subsection{Vue de haut}
+\label{sec:l_ordinateur}
+\subsection{Vue de haut} \label{sub:vue_de_haut}
 On peut considérer un ordinateur comme un système évoluant selon des entrées pour produire des sorties :
 \begin{center}
   \includegraphics[width=\textwidth]{system}
@@ -25,6 +26,7 @@ sur cette bande et agit selon la valeur des caractères lues grâce à une fonct
 \end{minitelbasicbox}
 Le symbole \textit{I/O} est extrêmement récurrent puisqu'il apparaît dans tous les cas où existe un système d'entrée et de sortie d'informations.
 \subsection{À l'intérieur}
+\label{sub:_l_int_rieur}
 Les périphériques permettent l'interaction avec le système de l'ordinateur. Pourtant, celui-ci peut très bien fonctionner sans. Par exemple, on lisait les résultats des premiers ordinateurs directement à l'intérieur, et on y entrait les programmes ``à la main'', en modifiant les branchements des câbles pour ``écrire le programme''. En soi, cette notion d'écriture est assez récente, puisqu'elle date des ordinateurs disposant d'un clavier et d'un écran, périphériques d'entrée/sortie fondamentales pour une interaction ``facile'' avec un ordinateur.
 
 L'ordinateur lui-même est uniquement un calculateur possédant une mémoire. Il est représenté de manière simplifié par le schéma suivant qui représente la modélisation d'un ordinateur appelée \textit{architecture de Von Neumann} :
@@ -53,13 +55,16 @@ Ces types de support mémoire ne seront pas toutes détaillées dans la suite, e
 
 \textbf{Remarque :} En considérant seulement l'ensemble constitué de l'UAL et de l'UCP, la mémoire peut aussi être vue comme un support d'entrée/sortie. Ainsi, la lecture d''une information dans la mémoire constitue une entrée du système (UAL + UCP), et l'écriture d'une information dans la mémoire constitue une sortie du système (UAL + UCP).
 \subsection{Données manipulées}
+\label{sub:donn_es_manipul_es}
 \subsubsection{Binaire}
+\label{ssub:binaire}
 Un ordinateur est une machine constituée de circuits électroniques. Les informations qui circulent à l'intérieur de celui-ci sont donc des signaux électriques, caractérisés par leur tension. Cette tension traduit deux états, pour des raisons de stabilité et de facilité d'implantation. Le premier état représente l'absence de tension ($U \approx 0\ V$), et le second état représente la présence d'une tension ($U \approx V_{ref} > 0$).
 
 Le premier état est représenté par le chiffre\footnote{Il ne s'agit que d'un symbole sans signification.} 0 et le second par le chiffre\footnote{\textit{idem}} 1. Chaque chiffre (0 ou 1) est appelé un \textit{bit} (\textit{\underline{b}inary dig\underline{it}} en anglais). Cette modélisation sera justifiée par la suite de par les liens efficaces que l'on peut établir entre ces séquences d'états et $\mathbb{N}$.
 
 Toutes les données manipulées par un ordinateur sont donc constituées de 0 et de 1. L'ensemble $\{0, 1\}$ est en théorie du langage un ensemble de \textit{lettres}. Une séquence de lettres est appelée un \textit{mot} et le langage binaire est l'ensemble des mots écrits avec l'alphabet $\{0, 1\}$. On ne peut pas encore appeler le mot $1000010$ un nombre puisqu'il ne lui est pour l'instant associé aucune interprétation numérique\footnote{Il existe des interprétations non numériques de mots binaires. Par exemple, on peut associer à chaque lettres \textit{a}, \textit{b}, \dots, \textit{z} un mot binaire spécifique. Cela revient à interpréter un mot binaire comme une lettre.}.
 \subsubsection{Octets}
+\label{ssub:octets}
 Pour structurer l'information, on regroupe ces bits par paquets de 8 appelés \textit{octets}. Un octet est donc un nombre écrit avec 8 bits.
 
 On a ensuite les mêmes préfixes du système international que pour n'importe quelle unité physique :
@@ -89,8 +94,10 @@ Les données sur un ordinateur sont mesurés en octets. La mémoire vive, ou d'u
 
 Le numéro de chaque case est appelé son adresse. La première case est d'adresse 0 et la dernière dans une mémoire de $T$ octets est $T-1$.
 \section{Opérations logiques}
+\label{sec:op_rations_logiques}
 Les opérateurs sur les mots binaires sont des fonctions qui permettent d'agir sur les mots binaires, de les modifier.
 \subsection{Arité d'un opérateur, d'une fonction}
+\label{sub:arit_d_un_op_rateur_d_une_fonction}
 Est appelé \textit{arité} d'une fonction son nombre de paramètres.
 
 Un opérateur $1$-aire, dit \textit{unaire} (ou encore parfois \textit{monadique}), n'agit que sur une seule variable. Il ne possède qu'un seul paramètre.
@@ -101,6 +108,7 @@ Il est naturellement possible de considérer les opérations unaire sur un mot b
 
 Toutefois, après avoir posé $N$ comme le nombre de bits d'un mot binaire, un mot binaire de $N$ bits est \textit{par convention} considéré comme un unique paramètre pour l'ensemble des opérateurs. Ainsi, l'ensemble des opérateurs décrits ci-dessous sont des opérateurs unaires ou binaires uniquement.
 \subsection{Opérations logiques et tables de vérité}
+\label{sub:op_rations_logiques_et_tables_de_v_rit_}
 Les opérations dites \textit{logiques} sont des opérations qui s'effectuent sur les lettres de mots binaires sans nécessaire considération pour une quelconque interprétation numérique de ces mots.
 
 Les \textit{tables de vérité} sont un moyen commode de visualiser les opérations logiques. Il s'agit de représenter toutes les sorties d'une fonction opératrice selon toutes les entrées possibles. Pour une fonction d'opérateur $N$-aire, on a $2^{N}$ possibilités d'entrées\footnote{En effet, il n'y a que deux lettres dans l'alphabet $\{0, 1\}$.}. Il faut décrire chacune des $2^{N}$ sorties associées pour décrire la fonction et ainsi l'opérateur.
@@ -131,6 +139,7 @@ f & : & \{0, 1\}^{3} & \rightarrow & \{0, 1\} \\
 \end{array}
 $$
 \subsection{Opérations logiques élémentaires}
+\label{sub:op_rations_logiques_l_mentaires}
 Il existe quelques opérateurs logiques classiques très largement utilisés en informatique :
 \begin{itemize}
 	\item le OU logique exclusif
@@ -144,6 +153,7 @@ On peut expliquer les noms donnés à ces opérateurs en considérant l'interpr�
 	\item 1 correspond à la valeur logique \og Vrai \fg{}
 \end{itemize}
 \subsubsection{OU logique inclusif}
+\label{ssub:ou_logique_inclusif}
 L'opérateur binaire OU logique inclusif, noté $\vee$, est décrit par la table de vérité suivante :
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -158,6 +168,7 @@ $A$ & $B$ & $A\vee{B}$ \\
 \end{center}
 $A\vee{B}$ est vraie si et seulement si l'une \textit{OU} l'autre des deux entrées est vraie.
 \subsubsection{OU logique exclusif}
+\label{ssub:ou_logique_exclusif}
 L'opérateur binaire OU logique exclusif, noté $\oplus$, est décrit par la table de vérité suivante :
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -172,6 +183,7 @@ $A$ & $B$ & $A\oplus{B}$ \\
 \end{center}
 $A\oplus{B}$ est vraie si et seulement si l'une \textit{OU} l'autre des deux entrées est vraie, mais pas les deux en même temps !
 \subsubsection{ET logique}
+\label{ssub:et_logique}
 L'opérateur binaire ET logique exclusif, noté $\wedge$, est décrit par la table de vérité suivante :
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -186,6 +198,7 @@ $A$ & $B$ & $A\wedge{B}$ \\
 \end{center}
 $A\wedge{B}$ est vraie si et seulement si les deux entrées sont vraies en même temps.
 \subsubsection{NON logique}
+\label{ssub:non_logique}
 Le NON logique $\neg$ est une fonction unaire/monadique :
 \begin{center}
 \begin{tabular}{c|c}
@@ -198,6 +211,7 @@ $A$ & $\neg{A}$ \\
 \end{center}
 Ainsi, $\neg{A}$ est vraie si et seulement si $A$ est faux et inversement.
 \subsubsection{Extension aux mots}
+\label{ssub:extension_aux_mots}
 On pose $\mathcal{B} = \{0, 1\}$ et $N\in{\mathbb{N}^{*}}$
 
 Toutes les opérations décrites ci-dessus peuvent être étendues sur l'ensemble des $N$-uplets de $\mathcal{B}^{N}$. \newline
@@ -221,8 +235,9 @@ $$\neg{v} = \begin{pmatrix}
 \vdots \\
 \neg v_{N-1}
 \end{pmatrix}$$
-\subsection{Opérations de décalage}
+\subsection{Opérations de décalage} \label{sub:op_rations_de_d_calage}
 \subsubsection{Décalage à gauche}
+\label{ssub:d_calage_gauche}
 L'opérateur $\ll$ est défini comme suit :
 $$
 \begin{array}{lclcll}
@@ -231,7 +246,7 @@ $$
      &   & & \mapsto & 0\dots 0 & \text{ si $i = N$}
 \end{array}
 $$
-\subsubsection{Décalage logique à droite}
+\subsubsection{Décalage logique à droite}\label{ssub:d_calage_logique_droite}
 L'opérateur $\gg_{l}$ est défini comme suit :
 $$
 \begin{array}{lclcll}
@@ -281,9 +296,9 @@ $$
 Un groupe est commutatif si $\ast$ est commutative.}
 
 \exercise{Inversibilité des décalages}{06} Est-ce que les décalages logiques droit et gauche sont inversibles ? Justifier.
-\section{Opérations arithmétiques}
+\section{Opérations arithmétiques} \label{sec:op_rations_arithm_tiques}
 Sont ici décrites les opérations arithmétiques sur $\mathcal{B}^{N}$. L'arithmétique définit est une arithmétique modulaire, c'est-à-dire que l'ensemble $\llbracket 0; 2^{N}\llbracket$ est assimilé à l'ensemble des représentants des classes d'équivalence de $\dfrac{\mathbb{Z}}{2^{N}\mathbb{Z}}$.
-\subsection{Représentation d'un nombre entier en binaire}
+\subsection{Représentation d'un nombre entier en binaire} \label{sub:repr_sentation_d_un_nombre_entier_en_binaire}
 On considère la fonction suivante :
 $$
 \begin{array}{lclcl}
@@ -330,7 +345,7 @@ Par exemple, trouvons la représentation binaire de $53$ :
 \end{itemize}
 D'où $53 = 1\times{2^{5}} + 1\times{2^{4}} + 0\times{2^{3}} + 1\times{2^{2}} + 0\times{2^{1}} + 1\times 2^{0} = (110101)_{2}$
 
-\exercise{Conversion en binaire}{15}\newline
+\exercise{Du décimal au binaire}{15}\newline
 Trouver la représentation binaire des dix entiers naturels ci-dessous :
 
 \begin{minipage}{0.5\textwidth}
@@ -361,7 +376,7 @@ $$
      &   & n & \mapsto & \ast{(btoi^{-1}{(n)})}
 \end{array}
 $$
-\subsection{Nombres signés}
+\subsection{Nombres signés} \label{sub:nombres_sign_s}
 Pour représenter des nombres \textit{signés}, c'est-à-dire dont la valeur peut être négative comme positive (nombres qui possèdent un signe), on considère comme représentants de $\dfrac{\mathbb{Z}}{2^{N}\mathbb{Z}}$ les nombres :
 $$\dot{(-2^{N-1})}, \dots, \dot{-1}, \dot{0}, \dot{1}, \dots, \dot{(2^{N-1}-1)}$$
 Soit $v\in{\mathcal{B}^{N}}$ quelconque.
@@ -397,7 +412,7 @@ Donc $\dot{(btoi_{s}(v))} = \dot{(btoi_{u}(v))}$, or la représentation en base 
 & = & btoi_{s}(v)
 \end{array}
 \]
-\subsection{Addition}
+\subsection{Addition} \label{sub:addition}
 On définit l'opération d'addition de deux $N$-uplets de $\mathcal{B}^{N}$ comme l'opération :
 $$
 \begin{array}{lclcl}
@@ -435,7 +450,7 @@ $$
   \item $(1110\ 1110)_{2} + (0010\ 1111)_{2} = (1001\ 1101)_{2}$\newline
     c'est-à-dire $238 + 47 = 29$ en non signé et $-18 + 47 = 29$ en signé
 \end{itemize}
-\subsection{Soustraction}
+\subsection{Soustraction} \label{sub:soustraction}
 En utilisant la \textbf{Propriété 3.}, on définit simplement l'opération de soustraction par :
 $$
 \begin{array}{lclcl}
@@ -443,7 +458,7 @@ $$
      &   & (x, y) & \mapsto & x + (-y) = x + (\neg{y} + 1)
 \end{array}
 $$
-\subsection{Décalage arithmétique à droite}
+\subsection{Décalage arithmétique à droite} \label{sub:d_calage_arithm_tique_droite}
 Au contraire du décalage logique à droite qui ne prend en considération aucune interprétation d'un mot binaire, le décalage arithmétique prend en considération le signe du nombre représenté par le mot binaire.
 
 L'opération $\gg_{a}$ est définit comme suit :
@@ -479,10 +494,10 @@ btoi_{s}(v\gg_{a}1)  & = & btoi_{s}(v_{N-1}v_{N-1}\dots v_{1}) \\
 \end{array}
 \]
 \textbf{Remarque :} $btoi_{s}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor$ et $btoi_{u}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor$ ne sont vraies \textit{a priori} que pour des entiers naturels. En effet, le bit de signe ne doit pas être conservé en représentation non signée alors qu'il doit l'être en représentation signée.
-\section{Opérations flottantes}
-Les résultats qui vont suivre sont beaucoup plus spécifique à une partie mineure de l'informatique. Par manque de temps pour la rédaction, ils n'ont pas pu être particulièrement développés. Cela sera fait dans une version future. Veuillez excuser d'avance pour le manque de rigueur et de détails\dots\footnote{On rate en particulier le lien extraordinaire entre interprétation entière et interprétation flottante par la norme \textit{IEEE 754} des mots binaires qui fournie une approximation du logarithme, justifie ainsi le maintien de la relation d'ordre par changement d'interprétation et donc également la raison d'être de cette norme.}
+\section{Opérations flottantes} \label{sec:op_rations_flottantes}
 \subsection{Représentation des nombres à virgules}
-La manipulation de valeurs réelles est extrêmement importante, et même nécessaire, pour la manipulation d'espaces continues. On peut en particulier penser à des simulations physiques.
+\label{sub:repr_sentation_des_nombres_virgules}
+La manipulation de valeurs réelles est extrêmement importante, et même nécessaire, pour la manipulation d'espaces continues. On peut en particulier penser à des simulations physiques, et de manière générale aux applications scientifique de l'informatique.
 
 Pourtant, on peut observer simplement qu'un ordinateur manipule des données finies. En ce sens, il n'est envisageable de ne manipuler que des sous-ensembles de $\mathbb{Q}$. Par exemple :
 \begin{itemize}
@@ -501,7 +516,7 @@ Dépendamment du type de nombre manipulé (avec un nombre infini de chiffre apr�
 \textbf{Remarque 4 :} Imaginons qu'on choisisse de représenter \textit{naïvement} des nombres à virgules sur $N = 32$ bits en stockant sur 16 bits la partie entière et la partie flottante. Cela limite particulièrement la précision des nombres représentés puisqu'il ne peut y avoir que $65536$ parties fractionnaires différentes.
 
 Une norme est donc née de l'\textit{\underline{I}nstitute of \underline{E}lectrical and \underline{E}lectronics \underline{E}ngineers} (\textit{IEEE}), nommée la norme \textit{IEEE 754}. Il s'agit de la norme la plus largement utilisé en informatique, qui se base sur la notation scientifique.
-\subsection{Écriture en base 2 de nombres décimaux}
+\subsection{Écriture en base 2 de nombres décimaux} \label{sub:_criture_en_base_2_de_nombres_d_cimaux}
 Avant de décrire la norme \textit{IEEE 754}, on commence par détailler l'écriture en base 2 d'un nombre réel. 
 On rappel qu'un nombre $x\in{\mathbb{R}}$ s'écrit de manière générique en base 10 sous la forme suivante :
 $$x = \lfloor{x}\rfloor + fract(x)$$
@@ -531,7 +546,7 @@ On relève au passage la propriété qui permet de calculer la représentation e
 \end{itemize}
 d'où : $x = (10101.001)_{2}$
 
-On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x$ (voir section suivante)
+On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x$ (voir section \ref{ssub:rappel_de_vocabulaire_en_notation_scientifique})
 
 \exercise{Écriture en base 2 de nombres non entiers}{15} Écrire en base 2 les nombres suivants :
 \begin{itemize}
@@ -543,7 +558,7 @@ On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x
 \subsection{Norme \textit{IEEE 754}}
 Ne seront décrits ici que les nombres à virgules suivant la norme \textit{IEEE 754} d'une taille $N = 32$. En effet, le principe est le même pour les autres tailles si ce n'est que certaines constantes diffèrent.
 
-\subsubsection{Rappel de vocabulaire en notation scientifique}
+\subsubsection{Rappel de vocabulaire en notation scientifique} \label{ssub:rappel_de_vocabulaire_en_notation_scientifique}
 Un nombre $x\in{\mathbb{R}}$ en notation scientifique est écrit selon le format suivant :
 $$x = \pm\ mantisse \times{base^{exposant}}$$
 avec $mantisse\in{[1, base[}$ et $exposant\in{\mathbb{Z}}$
@@ -568,9 +583,15 @@ Selon la norme \textit{IEEE 754}, sur 32 bits :
 \end{itemize}
 Visuellement :
 $$\underbrace{0}_{s}\underbrace{00000000}_{e}\underbrace{00000000000000000000000}_{m}$$
-\subsubsection{Calcul du signe}
+\proposition{Limite de précision de la représentation des entiers} Soit $x\in\mathbb{Z}$ : 
+\begin{itemize}
+  \item si $|x| \leq 2^{24}$, sa représentation en précision simple (32 bits) selon la norme \textit{IEEE 754} est exacte.
+  \item si $|x| \leq 2^{53}$, sa représentation en précision double (64 bits) selon la norme \textit{IEEE 754} est exacte.
+\end{itemize}
+\textbf{Démonstration :} La précision de la mantisse est implicitement de 24 bits en précision simple (23 bits explicites). Elle est implicitement de 53 bits en précision double (52 bits explicites).
+\subsubsection{Calcul du signe} \label{ssub:calcul_du_signe}
 Si $x < 0$, $s = 1$, et $s= 0$ sinon.
-\subsubsection{Calcul de la mantisse}
+\subsubsection{Calcul de la mantisse} \label{ssub:calcul_de_la_mantisse}
 Soit $x\in{\mathbb{R}}$.\newline
 En base 2, il existe $(c_{i})_{i\in{\mathbb{Z}}}\in{\{0, 1\}^{\mathbb{Z}}}$ une suite unique telle que $x = \pm \displaystyle\sum_{i = -\infty}^{N}\left(c_{i}2^{i}\right)$ où $N$ est minimal.\newline
 On a :
@@ -579,14 +600,14 @@ Il s'agit très exactement de l'écriture de $x$ en notation scientifique en bas
 
 Par ailleurs, on sait que $m\geq{1}$, il n'y a donc pas besoin de stocker cette information. On ne conserve pour la mantisse dans la représentation en norme \textit{IEEE 754} que les bits après la virgule.
 
-\subsubsection{Calcul de l'exposant}
+\subsubsection{Calcul de l'exposant} \label{ssub:calcul_de_l_exposant}
 L'exposant peut être positif ou négatif. Cependant, on utilise pas ici la technique du complément à deux. En effet, cela rendrait plus complexe la comparaison entre deux nombres à virgules représentés selon cette norme.\footnote{La démonstration ne sera pas donnée mais la relation d'ordre sur les nombres réels représentés par les mots binaires est la même que celle sur les mots binaires réprésentant les nombres réels. C'est-à-dire qu'on peut indifférement comparer représentants ou représentés.} À la place, on utilise un \textit{biais}.
 
 Si l'exposant est écrit sur $n$ bits, la valeur du biais est $2^{n-1} - 1$. Cette valeur est donc constante une fois la norme fixé (puisqu'on fixe le nombre de bits sur lesquels sera écrit l'exposant). On ajoute ce biais à la valeur $N$ trouvé lors du calcul de la mantisse. Ainsi, pour $N\in{\llbracket -2^{n-1} - 1; 2^{n-1}-1\rrbracket}$, on a $N + biais \geq{0}$ et donc représentable par un mot binaire interprété comme non signé.
 
 \textbf{Remarque :} On interdit $N = 2^{n-1}$ (pour pouvoir représenter les valeurs spéciales $\pm\infty$ et $NaN$)
 
-\subsubsection{Représentation finale}
+\subsubsection{Représentation finale} \label{ssub:repr_sentation_finale}
 On distingue alors deux catégories selon la valeur de $N + biais$ pour le choix de la mantisse :
 \begin{itemize}
      \item $N + biais = 0$ : le nombre est dit \textit{``dénormalisé''}
@@ -621,11 +642,78 @@ Sur 32 bits, $biais = 127$, donc $N + biais = 0$. Le nombre est donc dénormalis
   \item le nombre est dénormalisé donc $m = (11000111101011100001010)_2$
 \end{itemize}
 Finalement, $x = -9.1688559\times{10^{-39}}$ est représenté selon la norme \textit{IEEE 754} par le mot binaire 32 bits : $$10000000011000111101011100001010$$
-\subsection{Notation pour la suite du cours}
+\subsection{Notation pour la suite du cours} \label{sub:notation_pour_la_suite_du_cours}
 On notera pour la suite $\mathbb{R}_{f32}$ (resp. $\mathbb{R}_{f64}$ et $\mathbb{R}_{f128
 }$) l'ensemble des nombres réels dont il existe une représentation binaire sur 32 bits (resp. 64 et 128 bits) exacte selon la norme \textit{IEEE 754}.
-% \subsection{Pour le plaisir : approximer $log_{2}$}
-\section{Représentation hexadécimale}
+
+On note également $ftob$ la fonction qui à un réel $x\in\mathbb{R}_{fN}$ associe le mot binaire $v\in \mathcal{B}^N$ construit selon la norme \textit{IEEE 754} et $btof$ la fonction qui a un vecteur $v\in\mathcal{B}^{N}$ associe le réel correspondant selon la norme \textit{IEEE 754}.
+\subsection{Approximation du logarithme par la norme \textit{IEEE 754}} \label{sub:approximation_du_logarithme_par_la_norme_ieee_754}
+La norme \textit{IEEE 754} présentée précédemment semble avoir été sortie du chapeau par un coup de baguette magique, comme si une telle norme était ``évidente'' pour résoudre les problèmes données en partie \textbf{1.4.1}. Cela n'est absolument pas évident, et sera essayé ici de présenter certaines conséquences du choix de cette norme, qui ``justifie'' son existence \textit{a posteriori}. On pourrait supposer que cette justification \textit{a posteriori} a mené à sa normalisation \textit{a priori}.
+
+Commençons par une observation naturelle, qui consiste à tracer la courbe de la fonction :
+$$
+\begin{array}{lclcl}
+f & : & \mathbb{R}_{f32} & \rightarrow & \mathbb{R} \\
+     &   & x & \mapsto & btoi(ftob(x))
+\end{array}
+$$
+On trace cette courbe pour $10^6$ valeurs uniformément réparties dans l'intervalle $[10^{-6}; 10^6]$ :
+\begin{center}
+  \includegraphics[width=\textwidth]{log}
+\end{center}
+qui a exactement la même allure que la fonction logarithme. Seule l'échelle semble différer. Il semblerait donc que pour tout $v\in\mathcal{B}^{N}$, $btoi(v)\approx ln(btof(v))$, à une transformation linéaire près.
+
+Tentons d'y voir plus clair par le calcul. Soit $v\in\mathcal{B}_{f32}$. On note $s$, $m$ et $e$ respectivement le bit de signe, la mantisse et l'exposant dans $v$ selon la norme \textit{IEEE 754}. On a :
+\begin{itemize}
+  \item $btof(v) = (-1)^{s}(m\times{2^{-23}} + 1)\times{2^{e-127}}$
+  \item $btoi(v) = s\times{2^{31}} + e\times{2^23} + m$
+\end{itemize}
+De l'observation précédente et des deux expressions données, il semble naturel d'appliquer un logarithme \textit{base 2} sur $btof(x)$ :
+$$\begin{array}{lcll}
+log_2(btof(v)) & = & e - 127 + log_2\left(1 + 2^{-23}m\right) \\
+& \simeq & (e - 127) + \dfrac{1}{ln(2)}\left(2^{-23}m\right) & \text{car $ln(1 + x)\sim_0 x$ avec $x = 2^{-23}m\approx{0}$} \\
+
+\end{array}$$
+C'est-à-dire :
+$$2^{23}log_2(btof(v)) + 2^{23}127\simeq \dfrac{1}{ln(2)}m + 2^{23}e\approx{btoi(v)}$$
+\textbf{Remarque :} l'approximation $\dfrac{1}{ln(2)}\approx 1$ devant $m$ est de moindre importance que $ln(2)\approx 1$ devant $e$ car $m$ représente les bits de poids faible de $btoi(v)$. Approximer le logarithme népérien serait donc beaucoup moins précis.
+
+On obtient l'approximation du logarithmee base 2 sur les flottants :
+$$log_2(btof(v)) = 2^{-23}btoi(v) - 127$$
+Comparons avec un graphe sur l'intervalle $[0.1, 10.0]$ :
+\begin{center}
+  \includegraphics[width=0.5\textwidth]{log_zoom}
+\end{center}
+les courbes sont presque confondues mais une imprécision subsiste du fait des approximations effectués durant les calculs. 
+
+On peut toutefois obtenir une transformation linéaire beaucoup plus précise en utilisant les valeurs normalisés positives minimale et maximale pour calculer la régression linéaire\footnote{On a prouvé son existence comme approximation.}. 
+
+On pose $m$ la valeur minimale et $M$ la valeur maximale. On a alors :
+\begin{itemize}
+  \item la pente de la régression linéaire $A = \dfrac{M - m}{btoi(ftob(M)) - btoi(ftob(m))}$ de représentation hexadécimale\footnote{Voir \ref{sec:repr_sentation_hexad_cimale} pour la représentation hexadécimale.} \textsf{0x340003ce}
+  \item la constante à l'origine $B = log_2(m) - Am$ de représentation hexadécimale\footnote{\textit{idem}} \textsf{0xc2fe000f}
+\end{itemize}
+On obtient alors le graphe suivant\footnote{voir } sur l'intervalle $[0.1; 10.0]$ :
+\begin{center}
+  \includegraphics[width=0.5\textwidth]{log_best}
+\end{center}
+\subsubsection{Conséquences} \label{ssub:cons_quences}
+Deux conséquences à cette approximation relativement précise du logarithme base 2 par la norme \textit{IEEE 754} :
+\begin{enumerate}
+  \item la relation d'ordre sur les mots binaires interprétés comme des entiers est la même que celle sur les nombres flottants. Il suffit donc pour comparer deux flottants de comparer l'interprétation entière du mot binaire.
+  \item on obtient une fonction relativement précise du calcul du logarithme base 2, qui si elle n'est pas utilisable pour des cas d'application scientifique pointus suffit amplement pour le reste.
+\end{enumerate}
+Les deux points soulèvent deux optimisations calculatoire de taille dans la manipulation des nombres flottants.
+
+Ils relèvent aussi la pertinence du choix de cette norme et pas d'une autre.
+\subsection{Exercices}
+\exercise{Racine carrée inverse rapide (1)}{20M} Une grande part du temps de calcul dans un jeu-vidéo est destiné à l'affichage 3D, et en particulier au calcul de la direction d'un rayon. Cela sert en particulier au rendu de la lumière. Il faut pour cela normaliser le vecteur de direction. Cela peut servir pour calculer un produit scalaire ou un produit vectoriel. On s'intéresse ici à une optimisation connue sous le nom de \textit{Racine carrée inverse rapide} qui apparaît dans le jeu \textit{Quake III}.
+
+Soit $v = (x, y, z)\in\mathbb{R}^3$. On veut calculer le vecteur unitaire $\dfrac{v}{\lVert v\rVert_2} = \dfrac{1}{\sqrt{x^2 + y^2 + z^2}}v$. \\
+Le problème est que les fonctions $x\mapsto\dfrac{1}{x}$ et $x\mapsto\sqrt{x}$ sont très coûteuses en temps de calcul.
+
+Sachant que $x^2 + y^2 + z^2$ est stocké comme un nombre flottant sur 32 bits, donner une approximation de $\dfrac{1}{\lVert v\rVert_2}$ qui n'utilise ni $x\mapsto\dfrac{1}{x}$ ni $x\mapsto\sqrt{x}$.
+\section{Représentation hexadécimale} \label{sec:repr_sentation_hexad_cimale}
 La représentation hexadécimale n'est qu'une compression de l'écriture de mots binaires en base 16 dans l'unique objectif de gagner de la place et de la lisibilité lors de l'écriture de mots binaires par des humains.
 
 Le choix de la base s'explique par l'observation suivante : $16 = 2^{4}$, donc les seizes chiffres peuvent représenter les nombres $0, \dots, 15$, c'est-à-dire en binaire $0000, \dots, 1111$. On pourrait choisir de manière équivalente n'importe quelle base qui soit une puissance de $2$.\footnote{En particulier la base octale (c'est-à-dire la base 8) a été utilisé pendant longtemps bien que maintenant assez obsolète.} En effet, écrire en base 2 revient à décomposer selon les puissances de 2. En choisissant une puissance de 2 comme base d'écriture, on divise d'autant le nombre de chiffres requis.
@@ -640,7 +728,7 @@ Par exemple, $(2\textsf{FA})_{16} = 2\times{16^{2}} + 15\times{16^{1}} + 10\time
 
 \textbf{Notation :} On note aussi $n = 0\textsf{x}c_{N-1}\dots c_{0}$. Par exemple, $0\textsf{x}2\textsf{FA} = (2\textsf{FA})_{16} = 762$
 
-\subsubsection{Lien entre binaire et hexadécimale}
+\subsubsection{Lien entre binaire et hexadécimale} \label{ssub:lien_entre_binaire_et_hexad_cimale}
 
 Soit $i\in{\llbracket 0; N-1\rrbracket}$. On observe que $c_{i}\in{\llbracket 0; 15\rrbracket}$. C'est-à-dire que chaque $c_{i}$ peut s'écrire avec 4 bits. On note alors $c_{i} = (b_{i, 3}, b_{i, 2}, b_{i, 1}, b_{i, 0})_{2}$.
 $$
@@ -666,14 +754,14 @@ Trouver les représentations binaires puis hexadécimale des nombres suivants. O
      \item $-1.1$
      \item $101$
 \end{itemize}
-\section{Données textuelles}
+\section{Données textuelles} \label{sec:donn_es_textuelles}
 \definecolor{asciigreen}{rgb}{0, 0.52, 0.51}
 \definecolor{asciiblue}{rgb}{0.16, 0, 0.46}
 \definecolor{asciired}{rgb}{0.6, 0, 0}
 La manipulation de texte au sens humain du terme n'est pas une fonctionnalité naturelle pour un ordinateur.
  
 Pour pouvoir manipuler du texte, il faut représenter ce texte, donc poser une correspondance entre des caractères et des mots binaires. 
-\subsection{Caractères ASCII}
+\subsection{Caractères ASCII} \label{sub:caract_res_ascii}
 Le premier standard international largement utilisé est apparu avec l'ANSI (\textit{\underline{A}merican \underline{N}ational \underline{S}tandards \underline{I}nstitute}). Celle-ci a posé une norme de correspondance entre les caractères de la langue anglaise et les mots binaires codés sur 7 bits. Cela définit donc $2^{7} = 128$ caractères :
 \begin{center}
   \tiny
@@ -721,7 +809,7 @@ Le premier standard international largement utilisé est apparu avec l'ANSI (\te
 La plupart des systèmes manipulent des mots binaires dont le nombre de bits est multiple de $8$. Par défaut, certains systèmes posent le bit de poids fort à la valeur 0. Il est toutefois possible d'étendre le codage ASCII en une version étendu (\textit{extended ASCII}). Il existe plusieurs standards d'ASCII étendu et il n'en sera pas discuté ici.
  
 \textbf{Exemple :} Selon l'ASCII, le caractère `a' est décrit par le mot binaire : $(1100001)_{2} = 0\textsf{x}61 = 97$. On peut également effectuer la correspondance dans l'autre sens, en réécrivant sous forme de caractères des mots binaires de 8 bits. Ainsi, \textsf{0x2B} décrit le caractère `$+$'
-\subsection{Caractères imprimables et non imprimables}
+\subsection{Caractères imprimables et non imprimables} \label{sub:caract_res_imprimables_et_non_imprimables}
 Certains caractères du tableau \ref{tab:ascii}, dont la signification est donné entre crochets, sont appelés des \textit{caractères de contrôle} aussi dits \textit{non imprimables}. Ces caractères, qui appartiennent à la première colonne du tableau (plus \textsf{[SPACE]} et \textsf{[DEL]}), ne représentent pas de symboles. Ils sont seulement utilisés pour la mise en page, ou pour fournir des informations dans les télécommunications.
 
 On retiendra tout particulièrement les caractères de contrôle suivant, qui sont souvent utilisés en programmation pour le traitement de texte :

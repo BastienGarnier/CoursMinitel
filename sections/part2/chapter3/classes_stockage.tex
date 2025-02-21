@@ -12,6 +12,7 @@ On définit ici deux notions qui ont été entrevues précédemment :
 
 Les classes de stockage permettent de définir avec plus de précision la portée et la durée de vie d'une variable au moment de sa déclaration.
 \subsection{Quelques détails de la structure d'un programme en mémoire}
+\label{sub:quelques_d_tails_de_la_structure_d_un_programme_en_m_moire}
 \textbf{Rappel :} Le processeur peut enregistrer les données soit dans la RAM (ou mémoire vive) soit dans les registres du processeur.
 
 On va détailler ici un peu plus l'organisation en mémoire vive d'un programme informatique. Un programme informatique est chargé en mémoire dans quatre différents types de zones mémoires :
@@ -39,6 +40,7 @@ La déclaration d'une variable peut alors avoir lieu dans, au choix :
 	\item un registre
 \end{itemize}
 \subsubsection{Section de données}
+\label{ssub:section_de_donn_es}
 Les sections de données d'un programme sont présentes dans le fichier binaire du programme compilé. Les sections de données ne peuvent donc ni grandir ni rétrécir puisque le code source du programme (avant compilation) décrit entièrement la taille des données. Elles sont de taille fixe et certaines données peuvent avoir une valeur initiale. On distingue alors deux types de sections de données :
 \begin{itemize}
 	\item les sections initialisées : les valeurs initiales sont indiquées dans le fichier binaire du programme compilé
@@ -46,12 +48,15 @@ Les sections de données d'un programme sont présentes dans le fichier binaire 
 \end{itemize}
 Une conséquence très importante de l'impossibilité d'une section de données de changer de taille est que toutes les variables définies dans cette section ne peuvent être supprimées. C'est-à-dire que leur valeur est \textit{persistante}. Une variable de section de données présente dans une routine ne voit pas sa valeur réinitialisée à la sortie de la routine.
 \subsubsection{Variables allouées dynamiquement}
+\label{ssub:variables_allou_es_dynamiquement}
 Les données des variables allouées dynamiquement sont présentes dans le tas. Cependant, le pointeur vers ces données est lui stocké indépendamment de ces données. Il peut donc être stocké dans l'un des quatre lieux de stockage de variable décrits ci-dessus.
 \subsubsection{Registres}
+\label{ssub:registres}
 Les registres sont de très petites unités de mémoire, en général constituées de bascules \textit{RS} ou \textit{JK} en séries. Chaque bascule stocke un bit. Les processeurs ne possèdent pas une grande quantité de registres car ceux-ci sont très coûteux par rapport à la quantité de mémoire qu'ils proposent. Leur accès est toutefois extrêmement rapide, en écriture comme en lecture. Ils servent donc souvent comme variables temporaires pour les calculs du processeur\footnote{Cela dépend en vérité du type de registre. Certains registres sont spéciaux et ont un sens spécifique pour le processeur tandis que d'autres sont très généraux et peuvent servir à tout est n'importe quoi.}.
 
 Il est très difficile\footnote{Au sens informatique de complexité, il s'agit d'un problème d'ordonnancement $NP$-difficile.} d'accorder correctement les registres aux variables pendant les calculs. Cette opération est en général effectuée de manière automatisée par le compilateur.
 \subsection{Choisir la classe de stockage d'une variable en C}
+\label{sub:choisir_la_classe_de_stockage_d_une_variable_en_c}
 Il existe quatre classes de stockage en C : \textit{auto}, \textit{register}, \textit{static} et \textit{extern}.
 \begin{itemize}
 	\item \textit{auto} : explicite le fait que les choix du compilateur sont automatiques\footnote{En deux mots : complètement inutile}
@@ -62,23 +67,30 @@ Il existe quatre classes de stockage en C : \textit{auto}, \textit{register}, \t
 Les deux classes de stockage les plus importantes sont \textit{static} et \textit{extern}.\footnote{Par "plus importantes" on entend : possèdent des applications pratiques régulières.}
 
 On peut les utiliser de la façon suivante :
-\begin{minted}{c}
+\begin{minted}[linenos=false]{c}
 auto TYPE x; // équivalent à ne rien préciser
 register TYPE x;
 static TYPE x;
 extern TYPE x;
 \end{minted}
+\textbf{Remarque :} l'ordre des spécificateurs de la variable n'importe pas. Les deux notations suivantes sont équivalentes :
+\begin{minted}[linenos=false]{c}
+CLASSE TYPE x;
+TYPE CLASSE x;
+\end{minted}
 \subsubsection{La classe \textit{auto}matique}
+\label{ssub:la_classe_auto}
 La classe \textit{auto} est celle utilisée par défaut pour toutes les variables dont la classe de stockage n'est pas précisé par le programmeur. Les propriétés des variables définies par la classe \textit{auto} sont celles vues depuis le début de ce livre. C'est-à-dire qu'en fonction du contexte, le compilateur choisi lui-même comment stocker ces variables. Ce peut-être : 
 \begin{itemize}
-	\item en pile d'exécution : pour des variables cantonnés à un environnement local, comme dans une fonction
-	\item dans le tas : pour des variables non globales mais qui peuvent être manipulés dans plusieurs fonctions différentes par exemple
+	\item en pile d'exécution : pour des variables cantonnés à un environnement local, comme dans une routine
+	\item dans le tas : pour des variables non globales mais qui peuvent être manipulés dans plusieurs routines différentes par exemple
 	\item dans un registre : pour des accès répétés sur une courte période
 	\item en section de données : ce qui peut arriver notamment dans le cas des variables globales
 \end{itemize}
 \subsubsection{La classe \textit{register}}
+\label{ssub:la_classe_register}
 La classe \textit{register} permet de forcer le compilateur à utiliser un registre pour stocker une variable si cela est possible\footnote{Puisqu'il n'existe pas une infinité de registres.}. Son utilisation n'est pas recommandée pour la plupart des cas d'usages. Ainsi, dans l'exemple suivant :
-\begin{minted}{c}
+\begin{minted}[linenos=false]{c}
 int main() {
 	register int a = 0;
 	int x = 1;
@@ -92,6 +104,7 @@ int main() {
 \end{minted}
 l'exécution des calculs ne nécessite pas la connaissance de $a$, par contre $a$ est nécessaire au début et à la fin. Le compilateur est dans l'impossibilité de réassigner le registre utilisé pour $a$ pour les calculs sur $x$. Les registres sont rares, mais l'un d'entre eux est gaspillé par l'utilisation abusive du mot-clé \textit{register}. 
 \subsubsection{La classe \textit{static}}
+\label{ssub:la_classe_static}
 La classe \textit{static} force le compilateur à placer la variable en section de données. La durée de vie de la variable devient alors la durée de vie du programme. Ainsi :
 \begin{minted}{c}
 #include <stdio.h>
@@ -102,9 +115,11 @@ void example() {
 }
 
 int main() {
+	...
 	for (unsigned int u = 0; u < 10; u++) {
 		example();
 	}
+	...
 }
 \end{minted}
 affiche les nombres de 0 à 9.
@@ -112,13 +127,32 @@ affiche les nombres de 0 à 9.
 \textbf{Remarque :} la portée de la variable n'est pas augmentée par la classe \textit{static}. L'ajout de la ligne d'affichage de $i$ dans la fonction \textsf{main} provoque une erreur de compilation :
 \begin{minted}[linenos=false]{c}
 int main() {
+	...
 	for (unsigned int u = 0; u < 10; u++) {
 		example();
 	}
-	printf("%d", i);
+	printf("%d", i); // erreur !
+	...
 }
 \end{minted}
 Le mot-clé \textit{static} permet donc de construire des variables à valeur persistante dont la portée est locale. En effet, l'utilisation de variables globables est sinon la seule alternative, et cela pose des problèmes de stabilité du code dans le cas de grands projets.
 \subsubsection{La classe \textit{extern}}
-Il s'agit de la classe de stockage dont l'utilisation est la plus particulière.
+\label{ssub:la_classe_extern}
+Il s'agit de la classe de stockage dont l'utilisation est la plus particulière car elle met en jeu plusieurs fichiers. Le principe d'\textit{extern} est d'indiquer au compilateur qu'un symbole définie dans un fichier est globale vis-à-vis de plusieurs autres fichiers, c'est-à-dire qu'il représente à chaque fois la même entité.
+
+Si une variable globale $x$ est définie dans un premier fichier \textit{fichier1.c} :
+\begin{lstlisting}[title=fichier1.c]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+unsigned int x = 5;
+\end{minted}
+on peut y faire référence par le mot-clé \textit{extern} dans un deuxième fichier \textit{fichier2.c} :
+\begin{lstlisting}[title=fichier2.c]
+\end{lstlisting}
+\begin{minted}[linenos=false]{c}
+extern unsigned int x;
+\end{minted}
+Comme le symbole représente la même entité, la modification de $x$ dans \textit{fichier1.c} entraîne la modification de $x$ dans \textit{fichier2.c} et \textit{vice versa}.
+
+La variable globale $x$ est ici étendue aux deux fichiers \textit{fichier1.c} et \textit{fichier2.c}.
 \end{document}

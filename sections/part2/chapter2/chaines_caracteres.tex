@@ -2,7 +2,7 @@
 \graphicspath{{sections/part2/images/}}
 \begin{document}
 \textbf{Rappel :} La représentation \textsf{ASCII} est détaillé en table \ref{tab:ascii}
-\subsection{Chaîne de caractères}
+\subsection{Chaîne de caractères}\label{sub:cha_ne_de_caract_res}
 Si un caractère est en informatique un mot binaire écrit sur 8 bits, une chaîne de caractères est basiquement un tableau de caractères. On observe toutefois quelques subtilités :
 \begin{itemize}
   \item un tableau est de taille finie, et donc doit aussi l'être une chaîne de caractères
@@ -10,7 +10,7 @@ Si un caractère est en informatique un mot binaire écrit sur 8 bits, une chaî
   \item la structure de donnée du tableau ne permet pas aisément certaines manipulations, comme l'insertion d'une chaîne de caractères au milieu d'une autre
 \end{itemize}
 \textbf{Remarque :} Concernant le dernier point, aucune solution ne sera proposée ici puisque ce n'est pas le coeur du propos. Il faut se rapprocher d'ouvrages d'algorithmie pour trouver une réponse satisfaisante.\footnote{Cela dépend de plus du besoin. Un \textit{gap buffer} n'aura pas les mêmes propriétés qu'un \textit{rop tree}. C'est bon, j'ai drop quelques noms ça fait genre que je maîtrise ;)}
-\subsection{En langage C}
+\subsection{En langage C}\label{sub:en_langage_c}
 La manipulation de texte sous forme de chaînes de caractères est native au langage C bien que nettement moins développé que dans d'autres langages.\footnote{Autant dire qu'en C, il n'y a que le strict minimum hein !}
  
 En particulier, on peut remarquer que le type du langage C pour des entiers sur 8 bits est \textit{char}, comme \textit{character} qui signifie \textit{caractère} en français.\footnote{Coïncidence ? Je ne crois pas.}
@@ -54,7 +54,7 @@ char text[50] = {'H', 'e', 'l', 'l', '\0', ' ', 'W', 'o', 'r', 'l', 'd', ' ', '!
 text[4] = 'o';
 printf("%s\n", text); // Affiche 'Hello World !' dans la console
 \end{minted}
-\subsection{Se faciliter la vie avec les chaînes littérales}
+\subsection{Se faciliter la vie avec les chaînes littérales}\label{sub:se_faciliter_la_vie_avec_les_cha_nes_litt_rales}
 Les lecteurs/rices attentifs/ives auront remarqué un fait étrange. La fonction \textsf{printf} affiche par défaut des chaînes de caractères :
 \begin{minted}[linenos=false]{c}
 printf("Hello World !");
@@ -68,7 +68,7 @@ printf("%s", "%s\n"); // 0 est ajouté automatiquement
 \end{minted}
 Ici, le compilateur construit deux chaînes de caractères : la première qui contient les caractères `\%', `s' et '$\setminus{0}$' et la seconde qui contient les caractères `\%', `s', `$\setminus$n' et '$\setminus0$'. Les caractères `\%' et `s' ne constituent un caractère spécial de formatage que dans la chaîne manipulé par \textsf{printf}, c'est-à-dire la première.
 \subsection{Exercices}
-\exercise{Calculatrice}{21}Écrire un programme qui demande à l'utilisateur d'entrer des calculs sous la forme $x\star y$, où $x, y\in{\mathbb{R}_{f64}}, \star\in\{+, -, /, *\}$ et lui donne le résultat. Si une erreur a lieu lors de la lecture, le programme termine. Ainsi, un scénario possible d'exécution est le suivant :
+\exercise{Calculatrice}{12}Écrire un programme qui demande à l'utilisateur d'entrer des calculs sous la forme $x\star y$, où $x, y\in{\mathbb{R}_{f64}}, \star\in\{+, -, /, *\}$ et lui donne le résultat. Si une erreur a lieu lors de la lecture, le programme termine. Ainsi, un scénario possible d'exécution est le suivant :
 \begin{minted}{bash}
 user@computer ~/working_directory> gcc calculatrice.c -o main
 user@computer ~/working_directory> ./main
@@ -91,4 +91,15 @@ On rappelle que l'appui des touches \textit{Ctrl + C} permet de forcer l'arrêt 
 \textbf{Remarque : } $nan\equiv{\textit{Not A Number}}$ et $inf\equiv{\infty}$, que l'on obtenir par $0/0$ et $1/0$. Par ailleurs, ces deux ``nombres'' peuvent être utilisés dans la calculatrice.
  
 \textit{\underline{Indication} : un caractère est un nombre, il peut donc être utilisé dans un aiguillage 'switch-case'}
+
+\exercise{AtoI}{15}Écrire une fonction \textsf{int atoi(char* string);} qui prend en entrée une chaîne de caractères représentant un nombre. Le signe doit être pris en considération. Si la chaîne contient des espaces, ils doivent être ignorés. Le programme ignore tout ce qui suit la première lettre rencontrée.\newline
+Si l'entrée n'est pas valide, le comportement est indéterminé (\textit{i.e.} laissé au choix du programmeur).
+
+Exemples de sortie :
+\begin{itemize}
+	\item ``42'' : $42$
+	\item ``-53'' : $-53$
+	\item `` +74TEXTE'' : $+74$
+\end{itemize}
+\textit{\underline{Note :} Aucune routine de la bibliothèque standard ne doit être utilisée dans \textsf{atoi} !!!\footnote{Trop facile sinon\dots}}
 \end{document}

@@ -1,7 +1,7 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
-\section{Identifiants}
+\section{Identifiants}\label{sec:identifiants}
 \definition{Identifiant}{Un identifiant est un symbole qui identifie une entité du langage (variable, routine, structure, etc\dots), c'est-à-dire qui la désigne. Un identifiant est composé de caractères compris dans l'ensemble :
 $$\Sigma = \{0, \dots, 9\}\cup{\{\_\}}\cup\{a, \dots, z\}\cup\{A, \dots, Z\}$$
  Le symbole \_ s'appelle l'\textit{underscore} (ou tiret du ``8'' en français, on conservera toutefois l'appellation anglaise car plus commune).}
@@ -68,11 +68,11 @@ Dans les deux cas, la transmission du code source à un tiers ne compilant pas s
 La plupart des IDEs permettent de choisir entre les différents standards du compilateur. Lors d'une compilation ``à la main'', le paramètre \textsf{-std} permet de spécifier le standard. Par exemple, \textsf{gcc main.c -o main -std=c23} va compiler selon le standard C23.
  
 \subsubsection{Internationalité des identifiants}
- 
+\label{ssub:internationalit_des_identifiants}
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, tous les identifiants d'un code doivent être en anglais de préférence.\footnote{C'est triste mais c'est la vie.}
 
 \textbf{Remarque :} Ce livre est en français pour être accessible et lisible par des francophones. Cependant, les identifiants sont très souvent standards dans les codes. Il est utile d'avoir l'habitude de lire et d'écrire des identifiants en anglais.
-\section{Commentaires}
+\section{Commentaires}\label{sec:commentaires}
 Les commentaires sont présents dans l'immense majorité des langages de programmation. Ils permettent d'annoter un code pour en expliquer certaines composantes ou pour exprimer certaines métadonnées vis-à-vis de celui-ci. Il peut s'agir par exemple de copier la licence utilisée dans le programme, de noter le nom de l'auteur du programme, d'expliquer le but d'un bloc de code, d'expliquer l'implantation pratique d'un objet théorique ou encore d'expliquer un aspect technique particulier du programme.
  
 Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ignore purement et simplement. Ainsi, il s'agit uniquement d'informations destinés au lecteur du code. Il peut y avoir plusieurs utilités :
@@ -80,8 +80,7 @@ Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ign
 	\item un développeur qui n'a plus touché à son code depuis six mois peut trouver extrêmement utile de l'avoir commenté lorsqu'il revient dessus
 	\item dans le cas d'un projet conséquent, le développement est effectué en équipe. Un développeur peut avoir besoin de comprendre/modifier ce qui a déjà été écrit par un autre.
 \end{itemize}
-\subsubsection{Internationalité des commentaires}
- 
+\subsubsection{Internationalité des commentaires}\label{ssub:internationalit_des_commentaires}
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, les commentaires d'un programme doivent tous être écrits en anglais.\footnote{C'est triste mais c'est la vie\dots Comment ça je me répète ?}
 
 \textbf{Remarque :} Ce livre est en français pour être accessible et lisible par des francophones. En conséquence de quoi les commentaires seront écrits en français dans tous les codes écrits dans ce livre\footnote{Qui est déjà en français, donc ça ne change rien à l'absence d'internationalité.}. Les commentaires ont une vertu explicative, il n'y a aucune utilité à s'entraîner à lire des commentaires écrits en anglais (il suffit d'apprendre l'anglais).
@@ -91,7 +90,7 @@ En C, on distingue deux types de commentaires :
 	\item les commentaires sur une ligne
 	\item les commentaires par bloc
 \end{itemize}
-\subsection{Commentaires sur une ligne}
+\subsection{Commentaires sur une ligne}\label{sub:commentaires_sur_une_ligne}
 Les commentaires sur une ligne sont indiqués par le double slash : \textsf{//} \newline
 Tous les caractères d'une ligne qui suivent un double slash sont considérés comme texte du commentaire, et donc ignorés par le compilateur.
 \begin{lstlisting}[title=Exemple]
@@ -104,7 +103,7 @@ printf("Salut les gens !\n"); // \n représente le symbole de retour à la ligne
 printf("Je ne dirais // pas bonjour !\n");
 \end{minted}
 compile sans erreur et produit la sortie : \textsf{Je ne dirais // pas bonjour}.
-\subsection{Commentaires par bloc}
+\subsection{Commentaires par bloc}\label{sub:commentaires_par_bloc}
 Les commentaires par bloc permettent d'écrire des commentaires sur plusieurs lignes. Ils sont indiqués par une entrée de commentaire et une sortie de commentaire : \textsf{/*} et \textsf{*/}.
 \begin{lstlisting}[title=Exemple]
 \end{lstlisting}
@@ -122,8 +121,10 @@ int main() { // Définit la fonction principale du programme
 	return 0; // Signifie une exécution réussie du programme
 }
 \end{minted}
-\section{Le point-virgule}
-Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer la fin d'une instruction. Les commentaires et les directives préprocesseurs ne finissent pas par un point-virgule car ils ne sont pas considérés comme des instructions du langage (voir sections \textbf{Commentaires} et \textbf{Directives préprocesseurs}).
+\section{Lignes de code} \label{sec:lignes_de_code}
+
+\section{Le point-virgule}\label{sec:le_point_virgule}
+Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer la fin d'une instruction. Les commentaires et les directives préprocesseurs ne finissent pas par un point-virgule car ils ne sont pas considérés comme des instructions du langage (voir sections \ref{sec:commentaires} et \ref{sec:directives_pr_processeurs_1_}).
  
 Le point-virgule ne peut en aucun cas être remplacé par un retour à la ligne (comme on le ferait en Python). Cependant, il permet d'écrire plusieurs instructions sur une seule et même ligne (comme en Python) :
 \begin{minted}{c}
@@ -143,7 +144,7 @@ Pourtant on fait l'observation que le compilateur agit formellement sur le langa
 
 La frustration peut être évitée en comprenant parfaitement les raisons d'être de chaque message d'erreur. Ainsi, le programmeur peut y réagir de manière appropriée. Un des objectifs de ce livre est aussi d'apporter un ensemble de connaissances pour cela.
 \end{minitelbasicbox}
-\section{Point d'entrée du programme}
+\section{Point d'entrée du programme}\label{sec:point_d_entr_e_du_programme}
 Lorsqu'un programme est chargé en mémoire rapide pour être exécuté par l'ordinateur, il commence à une adresse $a_{0}$ et fini à une adresse $a_{0} + l$, où $l$ est la taille du programme, c'est-à-dire le nombre d'octets du fichier binaire généré par le compilateur.
  
 Cependant, le programme lui-même ne débute pas nécessairement à $a_{0}$. À cette adresse peut commencer la déclaration de données globales au programme, d'instructions tierces, de fonctionnalités autres, etc\dots C'est pourquoi le fichier enregistré sur le disque dur contient aussi un entête qui n'est pas le programme lui-même mais contient certaines informations sur le programme.
@@ -186,7 +187,7 @@ int main() {
 }
 \end{minted}
 Ces constantes sont définies au sein du module \textsf{stdlib} par la directive de préprocesseur \textsf{\#define}.
-\section{Directives préprocesseurs (1)}
+\section{Directives préprocesseurs (1)}\label{sec:directives_pr_processeurs_1_}
 Les directives préprocesseurs sont des instructions qui seront exécutés par le compilateur. Elles ne font donc pas partie du programme lui-même mais permettent de ``diriger'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes.
  
 Les directives de préprocesseurs débutent par le caractère \#. Seules les directives de préprocesseur commencent par ce caractère. Ainsi, \textsf{\#include} est une directive de préprocesseur, qui va copier \textit{avant la compilation proprement dite} le contenu du module ciblé dans le code du fichier qui effectue l'inclusion.

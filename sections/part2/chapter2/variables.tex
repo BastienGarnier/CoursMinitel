@@ -8,7 +8,7 @@ Les variables constituent la brique de base du langage. Une variable au sens inf
 Cette donnée représente de l'information. Elle est donc numérique, bien que l'interprétation puisse être de toute nature : image, vidéo, chaîne de caractère, nombre entier ou à virgule, arbre informatique, etc\dots On peut par exemple penser à la représentation d'une couleur comme un triplet $(r, g, b, a)\in{\llbracket 0, 255\rrbracket^{4}}$, c'est-à-dire un mot binaire de quatre octets, et donc définir une variable de quatre octets qui stocke ces informations.
  
 \subsubsection{Approximation de stockage des variables}
- 
+\label{ssub:approximation_de_stockage_des_variables} 
 On considère dans un premier temps que les variables sont caractérisés par trois informations :
 \begin{itemize}
 	\item une \textit{étiquette}, aussi appelée le nom de de la variable
@@ -26,6 +26,7 @@ Visuellement :
 \end{minipage}
 
 \subsubsection{Type d'une valeur de variable}
+\label{ssub:type_d_une_valeur_de_variable}
 \definition{Type}{
 Une donnée est une séquence finie de bits (0 ou 1). Il faut interpréter cette donnée pour qu'elle soit utilisable dans un contexte de programmation. L'interprétation de données établit une correspondance entre un ensemble de données\footnote{Donc un ensemble de séquences de 0 et de 1} et un ensemble quelconque d'éléments. Cette correspondance est appelée un \textit{type}. 
 
@@ -137,12 +138,13 @@ int a = a; // La valeur de 'a' est toujours indéterminée
 \end{minted}
 En effet, le symbole $a$ est déclaré avant l'assignation.
 \subsection{Taille et type d'une variable}
+\label{sub:taille_et_type_d_une_variable}
 Il est possible de récupérer la taille d'une variable après l'avoir déclarée, ainsi que son type (depuis la version \textit{C23})
  
 Cela est effectué par les opérateurs unaires \textsf{sizeof} et \textsf{typeof}. L'opérateur d'alignement \textsf{\_Alignof} sera détaillé dans une section ultérieure.
  
 \subsubsection{Opérateur \textsf{sizeof}}
- 
+ \label{ssub:op_rateur_textsf_sizeof}
 L'opérateur \textsf{sizeof} est particulièrement commun. Son exécution est quasiment systématiquement effectuée \textit{à la compilation}. En effet, il retourne une valeur numérique précalculable. La valeur du résultat est donc remplacée dans le code à la génération de l'exécutable.
  
 \textsf{sizeof} renvoie le nombre d'octets $N$ nécessaires au stockage de l'espace mémoire associé à une étiquette ou un type. On utilise en général \textsf{sizeof} sur les types :
@@ -162,6 +164,7 @@ sizeof(TYPE); // idem
 \textbf{Remarque :} L'opérateur \textsf{sizeof} renvoie une valeur de type \textsf{size\_t}, équivalente à un \textsf{long int}.
 
 \subsubsection{Opérateur \textsf{typeof} (pour la culture uniquement)}
+\label{ssub:op_rateur_textsf_typeof}
 L'opérateur \textsf{typeof}, tout comme \textsf{sizeof}, est calculé au moment de la compilation. D'ailleurs, effectuer un tel calcul durant l'exécution du programme n'a aucun sens. En effet, \textsf{typeof} renvoie le type d'une variable. Les deux codes suivants sont donc strictement équivalents : 
 
 \begin{minipage}{0.5\textwidth}
@@ -181,6 +184,7 @@ int c;
 
 On préférera le code de droite pour des raisons d'élégance et de simplicité. Plus un code est lisible, mieux cela est. Par ailleurs, le programme de droite sera compilé un peu plus vite que celui de gauche. \textit{Il est inutile d'être trop intelligent.}\footnote{Enfin, la bêtise c'est quand même très rigolo. C'est une question d'humour au fond :)}
 \subsection{Entiers signés et non signés}
+\label{sub:entiers_sign_s_et_non_sign_s}
 Il est possible en langage C de choisir pour les nombres entiers entre l'interprétation signée de sa représentation binaire, et l'interprétation non signée. Cela se fait par les mot-clés \textsf{signed} et \textsf{unsigned}. Par défaut, les variables entières sont interprétés comme signées. Ainsi, le mot-clé \textsf{signed} n'est pas utile au moment de la déclaration de la variable. Cela peut être cependant utile pour une réinterprétation ultérieure (voir \textbf{Projection de type}). La syntaxe est la suivante :
 \begin{minted}[linenos=false]{c}
 char v = 130; // signé par défaut. La vérité est que v = 2 - 128 = -126
@@ -191,6 +195,7 @@ signed int v3 = -4; // 'signed' est inutile car implicite
 \textbf{Remarque :} Le langage C ne propose pas de nombres flottants non signés car le standard de représentation des nombres flottants implique directement la présence du signe.
 
 \subsection{Environnement et blocs}
+\label{sub:environnement_et_blocs}
 \definition{Environnement global}{Il semble clair que la possibilité d'associer à des symboles à des valeurs et y accéder plus tard signifie que le compilateur doit garder quelque part en mémoire les paires $(\textit{objet}, \textit{nom})$. Cette mémoire est appelée l'\textit{environnement du programme}, et plus précisement l'environnement \textit{globale}.
 
 Cet environnement global désigne un espace de noms. La fonction \textsf{main} est un de ces noms, et à ce nom est associé des instructions, un code.

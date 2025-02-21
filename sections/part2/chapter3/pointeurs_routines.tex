@@ -1,4 +1,141 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+\subsection{Motivation}
+\label{sub:motivation_pointeurs_routines}
+Considérons la structure suivante :
+\begin{minted}[linenos]{c}
+struct Point {
+	double x, y;
+};
+\end{minted}
+et un tableau de points :
+\begin{minted}[linenos=false]{c}
+struct Point *array = malloc(10*sizeof(struct Point));
+\end{minted}
+On se pose la question du tri du tableau $array$. Il nécessaire pour effectuer un tri de poser une relation d'ordre sur les éléments du tableau. Si $p = (x, y)\in\mathbb{R}^{2}$, l'ordre qui vient en premier à l'esprit est l'ordre lexicographique, qui consiste à trier d'abord les points selon $x$, puis selon $y$, qui peut être implanté par :
+\begin{minted}[linenos=false]{c}
+// -1 <=> a > b
+//  0 <=> a == b
+//  1 <=> a < b
+char cmp_x_y(struct Point a, struct Point b) {
+	if (a.x == b.x) {
+		if (a.y == b.y) {
+			return 0;
+		} else {
+			return (a.y > b.y) ? -1 : 1;
+		}
+	} else {
+		return (a.x > b.x) ? -1 : 1;
+	}
+}
+\end{minted}
+Cependant on peut aussi envisager le deuxième ordre lexicographique qui trie d'abord les points selon $y$ puis selon $x$, dont le prototype serait le suivant :
+\begin{minted}[linenos=false]{c}
+// -1 <=> a > b
+//  0 <=> a == b
+//  1 <=> a < b
+char cmp_y_x(struct Point a, struct Point b);
+\end{minted}
+La question devient alors : \textit{Comment préciser à une fonction de tri de tableau la relation à utiliser, sans avoir à programmer deux fonctions de tri -- potentiellement longues -- ?}
+
+Il serait agréable de simplement passer la relation d'ordre en argument à la procédure de tri :
+\begin{minted}[linenos=false]{c}
+struct Point *array = malloc(10*sizeof(struct Point));
+
+...
+
+sort_proc(array, 10, cmp_x_y);
+// OU
+sort_proc(array, 10, cmp_y_x);
+\end{minted}
+\definition{Fonction d'ordre supérieur}{
+Une fonction d'ordre supérieur, en mathématiques, est une fonction qui a comme espace d'arrivée ou de sortie un espace de fonctions.
+}
+La possibilité d'utiliser des fonctions d'ordre supérieur en informatique est très intéressante puisqu'elle permettrait par exemple de programmer la fonction de composition de fonctions, ou encore une procédure qui appliquerait une même procédure à chaque élément d'un conteneur (liste, tableau, etc\dots)
+\subsection{Syntaxe}
+\label{sub:syntaxe_pointeurs_routines}
+Une routine en mémoire est une simple adresse, stockée l'est une variable statique. L'unique différence est que l'adresse d'une routine est en section de code, alors que l'adresse d'une variable statique est en section de données. Il est donc tout à fait possible d'utiliser un pointeur routines, et même de définir des tableaux de routines.
+
+La syntaxe pour déclarer un pointeur de routine est la suivante :
+\begin{minted}[linenos=false]{c}
+// T1, ..., Tn sont les types des paramètres
+TYPE (*ptr)(T1, ..., Tn); // TYPE est le type de retour
+\end{minted}
+Ainsi, le pointeur vers la relation d'ordre de l'exemple précédent serait déclaré comme suit :
+\begin{minted}[linenos=false]{c}
+char (*cmp_ptr)(struct Point, struct Point);
+\end{minted}
+Comme une routine est déjà une adresse, on peut initialiser directement :
+\begin{minted}{c}
+cmp_ptr = cmp_x_y;
+// OU
+cmp_ptr = cmp_y_x;
+\end{minted}
+Une fonction de tri par sélection\footnote{Allons au plus simple, même si le code n'est pas ``efficace'' en soi} peut alors être implantée de la manière suivante :
+\begin{minted}{c}
+// definitions de struct Point, cmp_x_y et cmp_y_x ici.
+
+void swap(struct Point array[], unsigned int i, unsigned int j) {
+	struct Point tmp = array[i];
+	array[i] = array[j];
+	array[j] = tmp;
+}
+
+// le pointeur vers 'r' ne doit pas être modifié (relation modifiée) durant la fonction i_min
+unsigned int i_min(const struct Point a[], unsigned int l, char (*const r)(struct Point, struct Point)) {
+	unsigned int m = 0;
+	for (unsigned int i = 1; i < l; i++) {
+		if (r(a[i], a[m]) == 1) { // a[i] < a[m] selon la relation donnée
+			m = i;
+		}
+	}
+	return m;
+}
+
+// idem
+void selection_sort(struct Point a[], unsigned int l, char (*const r)(struct Point, struct Point)) {
+	for (unsigned int i = 0; i < l; i++) {
+		for (unsigned int j = i; j < l; j++) {
+			unsigned int m = i_min(a + i, l - i, r);
+			swap(a, i, m + i);
+		}
+	}
+}
+
+int main() {
+	...
+
+	struct Point arr[10] = {...};
+	selection_sort(arr, 10, cmp_x_y);
+
+	...
+}
+\end{minted}
+\subsection{Tableaux de routines}
+\label{sub:tableaux_de_routines}
+On peut faire des tableaux de routines de même qu'on définirait des tableaux de pointeurs :
+\begin{minted}[linenos=false]{c}
+#include <stdio.h>
+
+double add(double a, double b) {return a + b;}
+double sub(double a, double b) {return a - b;}
+double mul(double a, double b) {return a * b;}
+double div(double a, double b) {return a / b;}
+
+int main() {
+	...
+
+	double (*operators[4])(double, double) = {add, sub, mul, div};
+	printf("%lf\n", operators[1](2, 4)); // 2 - 4 = -2
+	
+	...
+}
+\end{minted}
+\subsection{Exercices}
+\exercise{Mapping}{10}
+\begin{enumerate}
+	\item Écrire une fonction \textsf{void array\_map(int array[], unsigned int length, void (*const f)(int*));} qui applique une procédure $f$ à chacun des éléments du tableau $array$.
+	\item Reprendre l'\refexercise{Listes chainées} et implanter une fonction \textsf{void linkedlist\_map(struct LinkedList *l, void (*const f)(int*));} qui applique la procédure $f$ à chacun des éléments de la liste chaînée.
+\end{enumerate}
 \end{document}

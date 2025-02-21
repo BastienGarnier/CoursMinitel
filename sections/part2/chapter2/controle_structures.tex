@@ -18,8 +18,8 @@ La manipulation de la valeur ce registre permet de se ``déplacer'' dans le prog
 	\end{center}
 \end{minipage}
  
-La première sous-section se veut une introduction plus bas-niveau du contrôle du flot d'exécution, c'est-à-dire détaillant de manière moins abstraite et plus technique le contrôle du flot d'exécution.\footnote{Il s'agit d'une introduction légère au cours d'architecture des processeurs} Il est possible d'aller directement à la sous-section décrivant les structures complexes, majoritairement utilisées en langage C.
-\subsection{Structures élémentaires}
+La première sous-section se veut une introduction plus bas-niveau du contrôle du flot d'exécution, c'est-à-dire détaillant de manière moins abstraite et plus technique le contrôle du flot d'exécution.\footnote{Il s'agit d'une introduction légère au cours d'architecture des processeurs} Il est possible d'aller directement à la sous-section \ref{sub:structures_complexes} décrivant les structures complexes, majoritairement utilisées en langage C.
+\subsection{Structures élémentaires}\label{sub:structures_l_mentaires}
 Voir \cite{CSaPP} pour plus de détails.
 
 Un ordinateur utilise les structures élémentaires de contrôle de flot suivantes :
@@ -32,7 +32,7 @@ Un ordinateur utilise les structures élémentaires de contrôle de flot suivant
 Les structures de contrôle plus abstraites sont ensuite construites par l'utilisation de ces structures élémentaires.
 
 \subsubsection{Séquence}
- 
+\label{ssub:s_quence}
 La séquence est une structure de contrôle implicite, dont la gestion est réservée au processeur de l'ordinateur. Il s'agit simplement du passage d'une instruction à la suivante. En langage C, c'est le point-virgule indiquant la fin d'une instruction qui se charge d'indiquer le passage à la suivante.
  
 La fin d'un instruction va donc amener à l'incrémentation du registre \textit{IP} de la taille de l'instruction. Imaginons que le processeur exécute la $i^e$ instruction de taille $t_{i}$ octets à l'adresse $a_{i}$. À l'exécution de cette instruction, $IP = a_{i}$. À la fin de l'exécution de l'instruction, $\textit{IP} = a_{i} + t_{i} = a_{i+1}$. Il s'agit de l'adresse de l'instruction suivante, puisque toutes les instructions sont contigües en mémoire.
@@ -40,11 +40,11 @@ La fin d'un instruction va donc amener à l'incrémentation du registre \textit{
 Certaines architectures de processeur utilisent une taille fixe pour les instructions. Dans ce cas, $\forall{i}, t_{i} = k\in{\mathbb{N}}$ est une constante. Cela accélére l'accès aux instructions par le processeur, mais limite le nombre possible d'instructions.\footnote{Par exemple, les processeurs Intels utilisent des instructions de taille variable tandis que les processeurs ARM utilisent des instructions de taille fixe}
  
 \subsubsection{Arrêt de programme}
- 
+\label{ssub:arr_t_de_programme}
 La mise en pause d'un programme à un certain point de son exécution et sa reprise est nécessaire pour un système multi-tâches qui doit exécuter plus de programmes au même moment qu'il ne possède de processeurs. Il peut ainsi alterner l'exécutions des programmes pour simuler leur exécution parallèle aux yeux de l'utilisateur. On peut imaginer \textit{par exemple} deux programmes utilisant chacun pendant $10\ ms$ les ressources de l'ordinateur. Ils ne s'exécuteront que $500\ ms$ chacun pendant une seconde, mais l'utilisateur pensera du fait de l'alternance très rapide d'exécution des programmes que ceux-ci s'exécutent en même temps (deux fois plus lentement cependant que si ils avaient été seuls à utiliser les ressources du processeur).
  
 \subsubsection{Saut inconditionnel}
- 
+\label{ssub:saut_inconditionnel}
 Le saut inconditionnel consiste à attribuer au registre \textit{IP} une valeur précisée dès que l'instruction est lue, sans aucune condition. Le processeur passe donc immédiatement à l'instruction souhaitée.
  
 En langage C, l'instruction qui permet d'effectuer ce genre de saut est \textsf{goto}. Il faut lui préciser une adresse d'instruction du code C qui sera indiqué par un \textit{label} définie selon la syntaxe suivante :
@@ -66,7 +66,7 @@ fin:
 Pensez à oublier ça, tant qu'on ne maîtrise pas absolument le reste, il faut éviter\dots et même là\dots
  
 \subsubsection{Saut conditionnel}
- 
+\label{ssub:saut_conditionnel}
 Le processeur contient un registre appelé le registre des \textit{drapeaux} (\textit{flags} en anglais), ou registre de statut. Ces \textit{drapeaux}, ou statuts, permettent d'indiquer des états du processeur vis-à-vis des actions qu'il a effectué. Chaque statut est stocké dans un bit du registre. On note $N$ le nombre de bits du registre ($N$ peut varier selon le processeur).
 $$R_{flags} = s_{N-1}\dots s_{0}$$
 Chaque instruction du processeur va modifier certains bits du registre. Par exemple, lors de l'addition de deux nombres non signés $a$ et $b$ stockés dans des registres 32 bits, si $a + b > 2^{32} - 1$, le drapeau dit de retenue (\textit{carry flag} en anglais, noté CF dans la littérature) sera mis à 1.
@@ -121,6 +121,7 @@ fin_de_boucle:
 ; ...
 \end{minted}
 \subsection{Structures complexes}
+\label{sub:structures_complexes}
 Grâce aux structures élémentaires de contrôle de flot d'exécution, le langage C propose des structures de contrôle beaucoup plus intuitives dans leur utilisation :
 \begin{itemize}
 	\item les conditions
@@ -141,7 +142,7 @@ Les \textit{conditions} permettent au programme d'effectuer des choix quant à s
 
 Les \textit{boucles} permettent d'effectuer un bloc d'instructions plusieurs fois de suite. Par exemple, trouver le minimum d'un ensemble de nombres nécessite de parcourir tous ces nombres, et il serait un peu ennuyant d'avoir à d'écrire autant d'instructions qu'il y a d'éléments de cet ensemble, surtout si celui-ci contient des milliers voire des millions de nombres.
 \subsubsection{Branchement \textsf{if-else} :}
- 
+\label{ssub:branchement_if_else}
 Le branchement \textsf{if-else} consiste à n'exécuter une partie du code que si une certaine condition est satisfaite, et en exécuter une autre si cette condition n'est pas satisfaite. On observe ainsi le pseudo-code suivant :
 \begin{algorithm}
 \caption{Branchement conditionnel}
@@ -234,7 +235,7 @@ if (a > b) { // ou a != b != 0
 printf("texte par defaut"); // sera toujours exécuté
 \end{minted}
 \subsubsection{Opérateur ternaire}
- 
+\label{ssub:op_rateur_ternaire}
 L'opérateur ternaire permet d'écrire certaines conditions de manière compacte :
  
 \begin{minipage}{0.65\textwidth}
@@ -284,6 +285,7 @@ int main() {
 }
 \end{minted}
 \subsubsection{Aiguillage}
+\label{ssub:aiguillage}
 L'aiguillage est une autre forme de branchement conditionnel. Il permet de diriger le flot d'exécution selon la valeur d'une variable entière. On peut vouloir associer à plusieurs nombres un bloc d'instructions différent. L'aiguillage permet de faire correspondre à des entiers des blocs d'instructions.
  
 Il posséde quelques avantages et inconvénients :
@@ -333,6 +335,7 @@ L'exemple ci-dessus se veut exhaustif des cas possibles de l'instruction \textsf
  
 Dans l'exemple ci-dessus, l'exécution du code pour $x = 3$ est suivie immédiatement par l'exécution du code pour $x = 4$ car il n'y a pas de \textsf{break}. De la même manière, si $x = 1$, le flot va sauter à la ligne \textsf{case 1} puis va séquentiellement avancer au bloc d'instructions pour $x = 2$.
 \subsubsection{Boucle à pré-condition (ou boucle \textit{while}) :}
+\label{ssub:boucle_pr_condition}
 La boucle à pré-condition suit le pseudo-code suivant :
 \begin{algorithm}
 \caption{Boucle \textit{While}}
@@ -378,7 +381,7 @@ $$
 Expliquer pourquoi les valeurs deviennent fausses à partir d'un certain rang que l'on précisera.
  
 \subsubsection{Boucle à post-condition (ou boucle \textit{do-while})}
- 
+\label{ssub:boucle_post_condition}
 La boucle à post-condition est pratiquement identique à la boucle à pré-condition, à une nuance qui a son importance : la condition est effectuée à la fin de l'exécution de la boucle. Cela signifie qu'au contraire de la boucle à pré-condition, le bloc d'instructions d'une boucle à post-condition s'exécute au moins une fois. Les deux codes suivants sont donc équivalents :
  
 \begin{minipage}{0.5\textwidth}
@@ -401,7 +404,7 @@ while (condition) {
 Ce type de boucle est extrêmement utile quand on veut être certain qu'une action est effectuée au minimum une fois. Par exemple, il peut s'agir de demander à un utilisateur d'entrer des nombres jusqu'à ce que l'utilisateur entre le nombre $0$.
  
 \subsubsection{Boucle itérative (ou boucle \textit{for})}
- 
+\label{ssub:boucle_it_rative}
 La boucle itérative est un cas particulier de boucle à pré-condition. Elle est construite selon le format suivant en langage C :
 \begin{minted}[linenos=false]{c}
 for (initial; condition; pas) {
@@ -417,7 +420,7 @@ Exécuter l'instruction initiale\;
 	Instruction de pas \Comment*[r]{Puis le pas}
 }
 \end{algorithm} \newline
-L'idée est en générale d'utiliser l'instruction de \textit{pas} pour parcourir une structure. Il s'agit d'une itération sur un élément de parcours, raison qui donne son nom à cette syntaxe de boucle. Son application va être vue dans la section sur les \textit{tableaux}.
+L'idée est en générale d'utiliser l'instruction de \textit{pas} pour parcourir une structure. Il s'agit d'une itération sur un élément de parcours, raison qui donne son nom à cette syntaxe de boucle. Son application va être vue dans la section \ref{sec:tableaux_statiques} sur les \textit{tableaux}.
  
 \textbf{Remarque 1 :} \textsf{initial} et \textsf{pas} ne peuvent être au maximum constitués que d'une instruction.
  
@@ -438,9 +441,15 @@ for (int a = 0; ; a++) { // a++ <=> a += 1
 // Boucle finie qui démarre en affichant du texte
 int a;
 for (printf("Initialement, a = %d\n", a = 1); a < 10; printf("À présent : a = %d\n", ++a));
+
+// Boucle rigolote (?)
+for (unsigned int i = 1; i < 7; i++) {
+	printf("%u * 142857 = %u\n", i, 142857*i);
+}
 \end{minted}
 
 \subsection{Détails sur l'instruction \textbf{break} (et l'instruction \textbf{continue})}
+\label{sub:d_tails_sur_break_et_continue}
 L'instruction \textsf{break} a été rapidement vue pour l'aiguillage. Mais une question -- légitime -- subsiste quand aux blocs d'instructions qui peuvent être "cassés" et ceux qui ne peuvent l'être.
 
 La réponse tient simplement : l'instruction \textsf{break} casse les blocs d'instructions \textsf{while}, \textsf{do-while}, \textsf{for} et \textsf{switch}, sans aucune exception. Le contrôle du programme est ensuite directement rendu à la première instruction suivant le bloc. Par exemple :

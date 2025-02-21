@@ -2,6 +2,7 @@
 \graphicspath{{sections/part2/images/}}
 \begin{document}
 \subsection{Introduction au tas}
+\label{sub:introduction_au_tas}
 Un programme informatique, lorsqu'il est chargé en mémoire, comporte un troisième espace mémoire\footnote{Les deux premiers sont :\begin{itemize}
 	\item le code
 	\item la pile d'exécution
@@ -16,6 +17,7 @@ Le deuxième point est particulièrement important, puisqu'il peut être la sour
  
 Un autre bogue très récurrent qui empêche totalement le fonctionnement du programme est l'accès à une variable dont l'espace mémoire a été libéré : s'ensuite l'erreur de segmentation, de code $-11$, provoqué par le système d'exploitation qui perçoit cela comme une attaque du système !\footnote{Si il était possible d'accéder à n'importe quelle case mémoire d'un ordinateur sans protection, le \textit{hacking} serait presque trivial.} Ce bogue est rencontré en quasi-permanence chez les débutants, dès lors que des structures complexes sont manipulées en mémoire. Il arrive aussi très fréquemment\footnote{Quoi que ceux-ci en disent ;)} chez les programmeurs expérimentés. En effet, il est d'une facilité extraordinaire de rencontrer ce bogue dès lors que la programmation manque un tout soit peu de rigueur.\footnote{C'est cette erreur qui crée la peur déraisonnée des pointeurs et la ``haine'' du C par quantité de programmeurs. Plus sérieusement, d'autres langages de programmation assez bas niveau qui assurent malgré tout en interne la sécurisation de la mémoire, comme le \textit{Rust}, sont souvent préférés en entreprise pour une question de stabilité et d'assurance qualité. Ce qui ne change rien au fait que savoir programmer en C assure une compétence bien plus grande que de ne pas savoir, en raison de la confrontation directe avec le ``mal''}
 \subsection{Les routines \textsf{malloc} et \textsf{free}}
+\label{sub:les_routines_malloc_et_free}
 Pour gérer ``soi-même''\footnote{C'est les routines qui font le gros du boulot hein ! Faudrait pas se mettre à voler par les chevilles x)} de la mémoire sur le tas, deux fonctions de la bibliothèque \textit{stdlib.h} fournissent les fonctionnalités suivantes :
 \begin{itemize}
 	\item allouer un espace mémoire, grâce à \textsf{malloc}\footnote{Pour \textit{\underline{M}emory \underline{Alloc}ation}}
@@ -82,6 +84,7 @@ int main() {
 }
 \end{minted}
 \subsection{L'importance de réinitialiser le pointeur après libération}
+\label{sub:l_importance_de_r_initialiser_le_pointeur_apr_s_lib_ration}
 Dans le code suivant :
 \begin{minted}[linenos=false]{c}
 void* ptr = malloc(N);
@@ -155,5 +158,5 @@ l'accès au pointeur $t$ n'est pas possible à la suite d'un appel à la routine
 \subsection{Exercices}
 \exercise{Conversion en binaire}{12}Écrire une fonction \textsf{char* bin\_from\_nat(int n);} qui renvoie la représentation binaire de $n$ dans un tableau $B$. Ainsi, si $n = (b_{31}\dots b_{0})_2$, alors pour tout $0 \leq i < 32$, $B[i] = b_i$, où $B[i]$ désigne l'élément d'indice $i$ de $B$. Écrire une procédure d'affichage d'un tableau $B$ \textsf{void bin\_display(char* b);}. Cette procédure doit afficher le nombre binaire dans le sens de lecture humain, c'est-à-dire avec les bits de poids faibles à droite.
 
-\textit{\underline{Indication :} on pourra considérer la représentation binaire d'un nombre sous forme de polynôme de Horner (voir la partie \textbf{1.3.1})}
+\textit{\underline{Indication :} on pourra considérer la représentation binaire d'un nombre sous forme de polynôme de Horner (voir la partie \ref{sub:repr_sentation_d_un_nombre_entier_en_binaire})}
 \end{document}

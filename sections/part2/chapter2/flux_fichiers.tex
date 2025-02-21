@@ -9,6 +9,7 @@ La bibliothèque standard vous fournit différentes fonctions pour manipuler les
  
 Cela permet notamment d'effectuer à nouveau des optimisations grâce aux tampons, et de rediriger des flux. On peut par exemple imaginer rediriger un flux standard de sortie vers un fichier pour écrire un \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}, ou rediriger le flux de lecture d'un fichier vers la console (pour en afficher le contenu par exemple).
 \subsection{Droits des fichiers}
+\label{sub:droits_des_fichiers}
 Cette sous-section n'est destiné qu'aux utilisateurs des systèmes Unix comme Linux. En effet, sous Windows, le système est légèrement différent bien que par certains aspects plus proche qu'il n'y paraît. Il ne sera pas traité.\footnote{Pour plus d'informations : \url{https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control}} Le but est simplement de comprendre l'existence de droits. Pour plus de détails, voir \url{https://www.linuxtricks.fr/wiki/droits-sous-linux-utilisateurs-groupes-permissions}.
  
 Les fichiers sous Linux ont 3 types de droits :
@@ -65,6 +66,7 @@ user@computer ~/working_directory> chmod a+rw somefilename
 user@computer ~/working_directory>
 \end{minted}
 \subsection{Les flux de fichiers en C}
+\label{sub:les_flux_de_fichiers_en_c}
 Pour manipuler des fichiers en C, il faut fondamentalement quatre routines :
 \begin{itemize}
 	\item une routine d'ouverture/création de flux
@@ -83,6 +85,7 @@ Heureusement, \textit{$<$stdio.h$>$} fournit toutes ces routines :
 \end{itemize}
 Les prototypes sont les suivants :
 \subsubsection{\detokenize{FILE* fopen(const char *pathname, const char *mode);}}
+\label{ssub:fopen}
 \textbf{Entrées :}\newline
 \textit{pathname} est une chaîne de caractère constante qui indique le chemin d'accès (relatif ou absolu) vers le fichier. \newline
 Le \textit{mode} d'ouverture est aussi une chaîne de caractère constante dont les valeurs peuvent être :
@@ -98,22 +101,27 @@ L'ajout du caractère `b' après la lettre ouvre le fichier avec un flux \textit
  
 \textbf{Sortie :} La fonction renvoie un pointeur vers un flux de fichier.
 \subsubsection{\detokenize{long int fwrite(const void *ptr, long int size, long int nmemb, FILE* stream);}}
+\label{ssub:fwrite}
 \textbf{Entrées :}\newline
 \textit{nmemb} est le nombre d'objets à copier de \textit{size} octets situés à l'adresse \textit{ptr} vers le flux \textit{stream}.
  
 \textbf{Sortie :} La fonction renvoie le nombre d'objets effectivement écrits. En cas d'erreur, ce nombre est strictement inférieur à \textit{nmemb}
 \subsubsection{\detokenize{long int fread(void *ptr, long int size, long int nmemb, FILE* stream);}}
+\label{ssub:fread}
 \textbf{Entrées :}\newline
 \textit{nmemb} est le nombre d'objets à lire de \textit{size} octets depuis le flux \textit{stream}. Ces objets sont stockés consécutivement à l'adresse \textit{ptr}.
  
 \textbf{Sortie :} La fonction renvoie le nombre d'objets effectivement lus. En cas d'erreur ou d'arrivée à la fin du fichier (auquel il y a moins à lire que voulu), ce nombre est strictement inférieur à \textit{nmemb}.
 \subsubsection{Les fonctions \textsf{fprintf} et \textsf{fscanf}}
+\label{ssub:fprintf_fscanf}
 Elles s'utilisent comme vu précédemment dans la section sur les flux standards. Le flux à préciser est le pointeur de type \textsf{FILE*}.
 \subsubsection{\detokenize{int fclose(FILE *stream);}}
+\label{ssub:fclose}
 \textbf{Entrée :} \textit{stream} est le flux à fermer
  
 \textbf{Sortie :} 0 en cas de succès. \textsf{EOF} en cas d'erreur.\footnote{\textsf{EOF} est une constante définie dans \textit{$<$stdio.h$>$} et vaut généralement $-1$}
 \subsubsection{Un classique de l'ISMIN}
+\label{ssub:un_classique_de_l_ismin}
 Rien ne vaut un exemple à ce stade.\footnote{Et pas des moindres, il s'agit de la fine fleur des idées de sujet des types qui écrivent les examens de l'ISMIN. Les pauvres\dots Il ne faudrait pas les laisser seuls avec eux-mêmes. Ce serait inconscient.} Le code ci-dessous va lire et écrire dans un flux binaire vers un fichier \textit{``annuaire.data''}. Il va y stocker des informations sur des individus :
 \begin{itemize}
 	\item leur nom sous forme d'un tableau de 50 caractères
@@ -171,6 +179,7 @@ int main() {
 }
 \end{minted}
 \subsection{Rediriger un flux standard vers un fichier}
+\label{sub:rediriger_un_flux_standard_vers_un_fichier}
 La redirection de flux a été évoquée précédemment et on montre ici comment la réaliser.
  
 \textbf{Remarque 1 :} Cette section est purement anecdotique.\footnote{Précisons : inutile dans le cadre de la formation ISMIN, mais absolument pas dans le cadre d'un apprentissage plus complet. Sinon, il n'y aurait pas de chapitre après celui-ci pour traiter des concepts avancés du langage.}

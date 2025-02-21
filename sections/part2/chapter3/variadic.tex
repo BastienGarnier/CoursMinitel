@@ -1,4 +1,90 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+\subsection{Motivation}
+Comprendre comment fonctionne la fonction \textsf{printf} du C, parce-que j'espère que tous les lecteurs arrivés à ce point se sont demandés comment une routine pouvait prendre un nombre d'arguments variable à son appel\dots Ah ! Et faire pareil aussi, ce serait chouette $\wedge\wedge$
+\subsection{Appels de routines}
+Lors d'un appel de routine, les arguments sont poussés sur la pile suivant le schéma simplifié suivant :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\hspace{2.5cm}\includesvg[width=.5\textwidth]{routine_call}
+	\end{center}
+\end{minipage} 
+
+Ils sont ensuite dépilés lors de la sortie de la routine, pour revenir à l'environnement précédent l'appel.
+
+Le compilateur doit donc savoir à la compilation combien d'arguments sont présents lors de l'appel pour pouvoir les empiler. De même pour pouvoir y accéder à l'intérieur d'une routine. Le nombre d'arguments ne peut donc être dynamique et déterminé par une variable du programme. Il faut qu'à l'appel de la routine, le nombre d'arguments soit déterminé. Il faut également que la taille en octets de chacun des arguments puisse être déterminé à la fois à la compilation et à la lecture de ceux-ci dans la routine. \\
+C'est le cas des appels à \textsf{printf} :
+\begin{minted}[linenos=false]{c}
+// nombre et taille des arguments connues à la compilation
+// la première chaîne de caractères donne ces informations à la routine
+printf("%d + %d = %d\n", a, b, a + b); 
+\end{minted}
+Le nombre d'arguments à fournir n'est pas donné par la routine intrinsèquement. Il est donné par le programmeur, qui doit tout de même se conformer à la spécification de la routine.
+\subsection{Syntaxe et module \textit{stdarg}}
+Une routine variadique doit contenir \textit{a minima} un paramètre nommé qui permette de déterminer le début des paramètres variadiques.
+
+Pour définir une routine variadique, on utilise la syntaxe suivante :
+\begin{minted}[linenos=false]{c}
+TYPE function(des paramètres déterminés, ...);
+\end{minted}
+Les trois points \dots ne sont pas là comme dans le reste du livre pour indiquer ``mettre ce que l'on veut''. Il s'agit véritablement de la syntaxe permettant de définir des routines variadiques. Ainsi, on peut donner le prototype d'une fonction calculant la somme d'un nombre $n > 0$ d'entiers :
+\begin{minted}[linenos=false]{c}
+int variadic_sum(unsigned int n, ...);
+\end{minted}
+qui peut par exemple être appelée par :
+\begin{minted}[linenos=false]{c}
+int x = variadic_sum(3, 7, 9, -5); // x = 7 + 9 - 5
+\end{minted}
+Intéressons nous maintenant à l'implantation d'une telle fonction \textsf{variadic\_sum}.
+
+Il est en théorie possible, en utilisant l'adresse du premier argument, de retrouver les arguments donnés à la routine. Il y a certains problèmes à cela :
+\begin{itemize}
+	\item les conventions d'appel de routines et de passage d'arguments dépendent à la fois du processeur et du compilateur
+	\item si on active les optimisations du compilateur, les conventions d'appel changent
+\end{itemize} 
+Ainsi, le seul qui possède toutes les informations pour lire de manière certaine les arguments passés à la routine variadique est \textit{le compilateur}. 
+
+Heureusement, celui-ci possède des routines intégrées capables d'initialiser et d'effectuer la lecture des arguments variadiques. Le module \textit{stdarg} de la bibliothèque standard permet d'appeler ces routines intégrées, dites \textit{``builtins''}\footnote{\url{https://github.com/gcc-mirror/gcc/blob/master/gcc/ginclude/stdarg.h} pour le vérifier.}.
+
+Il définit pour cela le type \textsf{va\_list} qui permet de parcourir les arguments variadiques suivant un paramètre indiqué. Il s'agit en fait d'un pointeur vers les arguments. On utilise pour initialiser et fermer proprement la lecture des arguments de deux macros :
+\begin{itemize}
+	\item \textsf{va\_start(va\_list args, PARAMETER\_NAME)}
+	\item \textsf{va\_end(va\_list args)}
+\end{itemize}
+\begin{minted}[linenos=false]{c}
+#include <stdarg.h>
+
+int variadic_sum(unsigned int n, ...) {
+	va_list args;
+	va_start(args, n); // on démarre la lecture des arguments après le paramètre 'n'
+
+	// lecture/utilisation des arguments variadiques
+
+	va_end(args);
+}
+\end{minted}
+On dispose de deux macros pour lire les arguments :
+\begin{itemize}
+	\item \textsf{va\_arg(va\_list args, TYPE)} : renvoie l'argument suivant, de type \textsf{TYPE}, et passe à l'argument suivant. 
+	\item \textsf{va\_copy(va\_list dest, va\_list source)} : initalise une liste d'arguments \textit{dest} comme une copie de la liste \textit{source}
+\end{itemize}
+Ainsi, on peut écrire :
+\begin{minted}[linenos=false]{c}
+#include <stdarg.h>
+
+int variadic_sum(unsigned int n, ...) {
+	int sum = 0;
+	va_list args;
+	va_start(args, n); // on démarre la lecture des arguments après le paramètre 'n'
+	for (unsigned int i = 0; i < n; i++) {
+		sum += va_arg(args, int);
+	}
+	va_end(args);
+	return sum;
+}
+\end{minted}
+\subsection{Exercices}
+\exercise{À un doigt du zéro}{10} Écrire une fonction \textsf{unsigned int mult(unsigned int first, \dots);} qui parcourt ses arguments jusqu'au premier 0 rencontré, et renvoie le produit de ces arguments, 0 exclu.
 \end{document}

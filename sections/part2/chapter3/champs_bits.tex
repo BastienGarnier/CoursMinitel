@@ -1,11 +1,12 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
-Cette section vient en continuité de la section précédente sur les unions. Les champs de bits constituent
+Cette section vient en continuité de la section précédente \ref{sec:unions} sur les unions. Les champs de bits constituent
 en effet un autre moyen d'optimiser le stockage des données en espace. Il s'agit cependant d'une perte
 en vitesse d'exécution car la plupart des processeurs ne peuvent pas manipuler directement les bits
 d'un octet mais doivent appliquer des opérations bit-à-bit dessus.
 \subsection{Motivation et principe}
+\label{sub:motivation_et_principe}
 Toutes les données contenues dans une structure ou une union ne nécessitent pas un nombre entier
 d'octets pour être stockées. Par exemple, un jour du mois appartient à l'ensemble $\llbracket 0; 31\rrbracket$ et ne nécessite
 donc que 5 bits.
@@ -45,6 +46,7 @@ l'écriture du mot binaire.
 
 Heureusement que le langage C est là et qu'entre en jeu le champ de bits !\footnote{Enfin, qu'entrent en jeu les champs de bits, parce-qu'a priori ils ne devraient pas souvent se balader seuls. Quoiqu'on sait jamais\dots}
 \subsection{Syntaxe}
+\label{sub:syntaxe}
 Les champs de bits \footnote{Bon, à partir de maintenant, je les remets ensemble. C'est rigolo parce-que les moutons isolés, on les perd dans des champs, alors que là ce sont les champs qui pourraient se perdre...dans des moutons ? Ça doit être moi qui me perd là :$|$} sont une facilité du langage C qui automatise les extractions de bits et les écritures
 de champs spécifiques d'un mot binaire. Il n'y a plus besoin d'écrire soi-même les fonctions de lecture
 et d'écriture de ces bits.
@@ -87,17 +89,18 @@ int main(int argc, char *argv[]) {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-La taille de la structure \textsf{struct BFDate} est bien celle d'un entier sur 4 octets, comme cela avait déjà été déterminé dans la sous-section précédente.
+La taille de la structure \textsf{struct BFDate} est bien celle d'un entier sur 4 octets, comme cela avait déjà été déterminé dans la sous-section \ref{sub:motivation_et_principe} précédente.
 
 Par ailleurs, l'accès en lecture/écriture des champs est bien plus aisée !
 \subsection{Le revers de la médaille}
+\label{sub:le_revers_de_la_m_daille}
 Il a été dit au premier paragraphe de cette section que les champs de bits constituaient une optimisation d'espace mais qu'on observait une perte en vitesse d'exécution. La nécessité d'opérations supplémentaires pour accéder aux données explique ce coût temporel supplémentaire.
 
 La question importante est de savoir à quel point ce ralentissement est notable.
 Pour cela, on peut simplement exécuter les deux codes suivants et les chronométrer :
 
 \begin{minipage}{0.5\textwidth}
-	\begin{minted}[linenos=false]{c}
+	\begin{minted}[linenos=false, fontsize=\footnotesize]{c}
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -121,7 +124,7 @@ int main(int argc, char *argv[]) {
 	\end{minted}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
-	\begin{minted}[linenos=false]{c}
+	\begin{minted}[linenos=false, fontsize=\footnotesize]{c}
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -171,5 +174,5 @@ L'utilisation des champs de bits empêche le compilateur d'effectuer une telle o
 
 \textbf{Ce qu'il faut retenir :} Les champs de bits ne doivent être utilisés que pour de l'optimisation mémoire dans le cas où la machine exécutant le code n'en possède que peu (par exemple en systèmes embarqués). Il faut toutefois avoir conscience que l'utilisation des champs de bits pour d'autres raisons est particulièrement contreproductive.
 
-\textbf{Remarque :} Les mesures de performance sont appelés des \textit{benchmarks}. Il peut s'agir de mesurer la qualité de la sortie du programme, son temps d'exécution, la quantité de mémoire utilisée, etc\dots Le \textit{benchmarking} sera abordé plus proprement\footnote{Je veux dire que le ``benchmarking'' dans cette section est fait complètement à l'arrache pour simplifier. Juste histoire de rassurer ceux qui seraient un peu plus puristes.} dans la troisième partie.
+\textbf{Remarque :} Les mesures de performance sont appelés des \textit{benchmarks}. Il peut s'agir de mesurer la qualité de la sortie du programme, son temps d'exécution, la quantité de mémoire utilisée, etc\dots Le \textit{benchmarking} sera abordé plus proprement\footnote{Je veux dire que le ``benchmarking'' dans cette section est fait complètement à l'arrache pour simplifier. Juste histoire de rassurer ceux qui seraient un peu plus puristes.} dans la quatrième partie.
 \end{document}

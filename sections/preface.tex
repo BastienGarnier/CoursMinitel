@@ -1,12 +1,15 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 \addcontentsline{toc}{section}{Préface}
-\subsection*{Paragraphe à sauter sans lire}
+\subsection*{Section à sauter sans lire}
 \addcontentsline{toc}{subsection}{Paragraphe à sauter sans lire}
 Merci à Basile Tonlorenzi pour la relecture, les idées et tout et tout ! $\wedge\wedge$
 
-\textbf{\textit{Disclaimer} de genre  :} il n'y a pas de neutre en français malheureusement. Je considère que les genres quand ils désignent un groupe d'individus quelconque ou un individu indéterminé, non identifié comme personne, sont sémantiquement nuls et non avenants et donc purs produits du hasard grammatical (exemple : \textit{table} et \textit{tabouret}). La phrase ``Bonjour à tous.'' porte la signification : ``Bonjour à tous les individus présents.''. Le masculin est conservé pour traiter les entités pensées neutres dans le texte, parce-que ça fait moins de lettres à écrire et un accord de moins auquel penser quand j'écris. Il s'agit du seul critère objectif dont je puisse faire preuve. Certains argueront que je perds autant voire plus de caractères à écrire ce petit paragraphe, mais ça c'est juste pour éviter les dramas quand j'utilise le mot ``lecteur'' à tout bout de champs (entre autre).
+\textbf{\textit{Disclaimer} de genre :} il n'y a pas de neutre en français malheureusement. Je considère que les genres quand ils désignent un groupe d'individus quelconque ou un individu indéterminé, non identifié comme personne, sont sémantiquement nuls et non avenants et donc purs produits du hasard grammatical (exemple : \textit{table} et \textit{tabouret}). La phrase ``Bonjour à tous.'' porte la signification : ``Bonjour à tous les individus présents.''. Le masculin est conservé pour traiter les entités pensées neutres dans le texte, parce-que ça fait moins de lettres à écrire et un accord de moins auquel penser quand j'écris. L'idée est aussi d'alléger l'écriture. Il s'agit des seuls critères dont je puisse faire preuve qui restent objectifs je pense. Certains argueront que je perds autant voire plus de caractères à écrire ce petit paragraphe, mais ça c'est juste pour éviter les dramas quand j'utilise le mot ``lecteur'' à tout bout de champs (entre autre). 
 
+Toutefois, si l'utilisation grammaticale du masculin en permanence rend la lecture de ce livre par certaines lectrices moins aisée, dites et je réécrirais les parties concernées. Je rajoute ce mini-paragraphe là après m'être rendu compte lors de la lecture d'un rapport de jury pour un l'agrégation d'informatique dont une partie était entièrement écrite au féminin que cela m'était moins facile que pour la lecture de la première partie (probablement par manque d'habitude, mais les neurosciences ne sont pas mon fort, donc dans le doute où je me tromperais\dots)
+
+Enfin bref\dots j'ai prévenu qu'il fallait sauter cette section.
 \subsection*{Motivation}
 \addcontentsline{toc}{subsection}{Motivation}
 Ce livre a été écrit dans le but premier d'offrir aux étudiants de l'École Nationale Supérieure des
@@ -21,7 +24,7 @@ Toutefois, la légitimité d'un tel cours peut se poser en école d'ingénieurs 
 
 Un objectif est aussi d'apporter une préparation pour les examens de programmation en C de l'ISMIN, avec une certaine quantité d'exercices corrigés. Les chapitres \textit{Programmer un ordinateur}, \textit{Les fondamentaux du langage} et \textit{Les bases du langage} sont suffisants pour cela. Il n'est pas utile à ceux qui ne souhaitent que valider l'UP d'aller plus loin si tel n'est pas leur souhait.
 
-Pour ceux sûrs de savoir déjà programmer en C, voir le deuxième programme de la section \textit{5.13.4} pour le vérifier\footnote{Enfin, juste histoire de mettre l'égo de côté quoi\dots}.
+Pour ceux sûrs de savoir déjà programmer en C, voir le deuxième programme de la section \ref{sec:tricks_r_cr_atifs_ft_basile_} pour le vérifier\footnote{Enfin, juste histoire de mettre l'égo de côté quoi\dots}.
 
 % Il est étrangement faux de considérer que savoir programmer est équivalent à savoir la grammaire de nombreux langages de programmation, à savoir une -- relativement -- grande quantitée de structures de données et d'algorithmes, à savoir comment fonctionne précisement un ordinateur. Ainsi, Alexander Stepanov\footnote{Celui qui a écrit la bibliothèque standard du C++, c'est-à-dire pas la moitié d'un imbécile comme aurait dit mon professeur d'informatique de classes préparatoires.} dit, à propos de cette noble discipline :
 % \begin{center}
@@ -56,7 +59,7 @@ Par ailleurs, la qualité stylistique comme pédagogique varie d'une section à 
 \subsection*{Difficulté des exercices}
 \addcontentsline{toc}{subsection}{Difficulté des exercices}
 
-Un certain nombre d'exercices sont présents en fin de section, ces sections étant séparés par thème. Ces exercices ont évidemment comme premier objectif de fournir au lecteur des occasions de pratiquer. Un second est de faire parfois découvrir de nouvelles notions intéressantes. Ces exercices ont été choisis dans le but d'être intéressants\footnote{Pas toujours réussi hein !}, avec l'objectif ultime qu'en abordant un exercice, le lecteur se dise ``Ah ? Tiens donc, rigolo.''.
+Un certain nombre d'exercices sont présents en fin de section, ces sections étant séparés par thème. Ces exercices ont évidemment comme premier objectif de fournir au lecteur des occasions de pratiquer. Un second est de montrer des cas d'application pratique des notions vues dans un chapitre et parfois découvrir de nouvelles notions intéressantes en lien. Ces exercices ont été choisis dans le but d'être intéressants\footnote{Pas toujours réussi hein !}, avec l'objectif ultime qu'en abordant un exercice, le lecteur se dise ``Ah ? Tiens donc, rigolo.''.
 
 On utilise l'échelle de mesure de difficulté utilisé par Donald Knuth\footnote{Le G.O.A.T !}\cite{TAOCP} : 
 \begin{center}
@@ -83,5 +86,7 @@ On utilise l'échelle de mesure de difficulté utilisé par Donald Knuth\footnot
 Ce livre n'a pas comme objectif d'amener à exposer des théories complexes, et l'auteur n'est pas un ressortissant de l'ENS Ulm, donc il n'y aura pas de problèmes côtés à $45$ ou plus.
 
 Par ailleurs, la difficulté d'un exercice est très subjective, puisque ce qui semble simple et intuitif pour l'un peut être un enfer pour l'autre. La difficulté est donc assez approximative, histoire de donner une idée, et que le lecteur ne parte pas bille en tête dans un exercice particulièrement difficile sans se poser de questions ou se complique la vie inutilement sur un exercice \textit{plutôt} simple\footnote{Je n'aimerais pas me chiffonner ou vexer quiconque qui pourrait galérer sur un exercice indiqué "simple"\dots Ça peut aussi être une erreur d'estimation, OU PIRE une faute frappe (genre $13$ au lieu de $31$), faut me prévenir si tel est le cas :)}.
+
+Pour ceux qui voudraient pratiquer plus la programmation\footnote{Pour s'entraîner pour les examens de l'ISMIN par exemple}, la base d'exercices de \textit{Leetcode} est assez fournie (\url{https://leetcode.com/problemset/}). Elle nécessite pour beaucoup exercices les notions présentés dans les trois premières parties.
 \newpage
 \end{document}

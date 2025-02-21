@@ -42,6 +42,7 @@ En particulier, trois flux \textit{textuels} sont créés par défaut au moment 
 Certains flux ont déjà été expérimentés dès à présent, comme \textit{stdout} grâce à la fonction \textsf{printf}, ou de manière abstraite les flux \textit{binaires} d'accès à la mémoire par la manipulation de variables.\footnote{Dont les fonctionnements techniques ne reposent pas tout à fait sur le concept de flux ceci étant dit\dots }
  
 \subsection{Flux d'entrée standard}
+\label{sub:flux_d_entr_e_standard}
 On s'intéresse ici à la manipulation du flux d'entrée \textit{stdin}. Il est possible de manipuler le flux des entrées clavier dans le terminal par la fonction \textsf{scanf} :
 \begin{minted}[linenos=false]{c}
 int x;
@@ -66,6 +67,7 @@ printf("Les deux nombres saisis sont %d et %d", x, y);
 	\label{lst:prgm1}
 \end{listing}
 \subsection{Flux de sortie standard et flux d'erreur standard}
+\label{sub:flux_de_sortie_standard_et_flux_d_erreur_standard}
 Il est possible en C de choisir sur quel flux on veut afficher les données grâce à la fonction \textsf{fprintf}. Cette fonction prend un argument en plus, qui est le flux vers lequel envoyer les données :
 \begin{minted}[linenos=false]{c}
 fprintf(stdout, "Hello World !\n");
@@ -133,6 +135,7 @@ Pour revenir à notre premier problème, on veut un affichage par défaut effica
  
 Par ailleurs, il est possible de rediriger les flux vers d'autres sorties que la console. On peut donc imaginer conserver \textit{stdout} pour afficher du texte dans notre programme, mais rediriger \textit{stderr} vers un fichier sur le disque dur qui servira de \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}.
 \subsection{Exemple pratique d'utilisation de \textit{stderr}}
+\label{sub:exemple_pratique_d_utilisation_de_stderr}
 On rappelle que \textsf{scanf} renvoie le nombre de valeurs saisies valides. Ainsi, à l'exécution du programme \hyperref[lst:prgm1]{ci-dessus}{}, si l'utilisateur entre des valeurs incorrectes il faut pouvoir avertir et donner un message d'erreur si la suite devient potentiellement bloquante :
 	\begin{minted}{c}
 #include <stdlib.h>

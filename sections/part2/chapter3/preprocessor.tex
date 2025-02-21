@@ -1,4 +1,221 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+Le préprocesseur C est un programme qui intervient avant le compilateur dans le traitement d'un fichier de code pour le transformer en exécutable. Le préprocesseur n'effectue pas de \textit{compilation} à proprement parler puisqu'il ne traduit pas le langage du code source. Il ne fait que préparer et simplifier les fichiers de code en vue de leur compilation.
+
+Le préprocesseur effectue une série de transformations textuelles sur un fichier traité. Celles-ci se produisent avant tout autre traitement. Conceptuellement, l'ensemble du fichier traité est exécuté à travers chaque transformation avant que la suivante ne commence. Dans la pratique, le préprocesseur effectue toutes les transformations en même temps pour des raisons de performances.
+
+Ces ``phases'' de transformation sont les suivantes :
+\begin{enumerate}
+	\item Initialisation :
+	\begin{itemize}
+		\item le fichier en entrée est chargé en mémoire et découpé en lignes.
+		\item si les digraphes et trigraphes\footnote{Voir \ref{sec:tricks_r_cr_atifs_ft_basile_}} sont autorisés, ils sont remplacés par le caractère simple correspondant 
+		\item les lignes continues sont fusionnés une seule ligne (rappel : \ref{sec:lignes_de_code})
+		\item tous les commentaires sont supprimés et remplacés par un espace
+	\end{itemize}
+	\item Identification des symboles : chaque ligne est découpé en symboles qui seront la base de l'analyse dans la suite
+	\item Certains symboles définissent des directives de préprocesseur, ou des \textit{macros} qui doivent être remplacés par le texte correspondant\footnote{Le traitement de ces symboles est ce qui est communément appelé le \textit{preprocessing} bien qu'il ne s'agisse en réalité que de la dernière étape.}.
+\end{enumerate}	
+Cette section vise à préciser en détails les directives de préprocesseurs déjà introduites en section \ref{sec:directives_pr_processeurs_1_} et à les compléter avec les directives de définition de \textit{macro}instructions (appelées simplement \textit{macros} par la suite).
+
+On peut observer le résultat du traitement du préprocesseur en exécutant l'instruction :
+\begin{minted}{bash}
+> gcc main.c -E -o main.preprocessed # génère un fichier texte
+> cat main.preprocessed # affichage du fichier texte
+... (assez long)
+\end{minted}
+\subsection{Inclusion de fichiers externes}
+\label{ssub:inclusion_de_fichiers_externes}
+On revient sur l'instruction du préprocesseur C \textsf{\#include} :
+\begin{minted}[linenos=false]{c}
+#include "nom_de_fichier_quelconque"
+#include <nom_de_fichier_quelconque>
+\end{minted}
+Cette instruction permet de copier un code d'un fichier externe dans un fichier de code. Elle est principalement utilisée pour copier des protoypes et des définitions de structure, comme cela a été vu dans la section \ref{sec:modulation_et_entetes} sur la modulation.
+
+Son usage peut toutefois être généralisé :
+\begin{lstlisting}[title=filename.ext]
+\end{lstlisting}
+\begin{minted}{c}
+const char t[] = "Hello World !\n";
+\end{minted}
+\begin{lstlisting}[title=main.c]
+\end{lstlisting}
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	#include "filename.ext"
+	printf("%s", t); // Hello World !\n
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Ce type de code ne doit être utilisé que dans des cas particuliers.
+
+\textbf{Exemple :} dans le cas de la programmation en C d'applications pour les calculatrices \textit{Casio}, les images dessinés sur l'écran ne peuvent être stockés dans un fichier externe au programme\footnote{ou difficilement} et doivent être programmés ``en dur'' dans le programme. L'image peut être représentée par du code C :
+\begin{minted}{c}
+const unsigned char image[] = {
+	// octets de couleur des pixels de l'image
+}
+\end{minted}
+Ces fichiers images peuvent être très long. Pour ne pas encombrer le code avec des données, on peut écrire ce tableau de pixels dans un fichier externe \textit{``image.c''} et l'inclure dans le programme :
+\begin{minted}[linenos=false]{c}
+#include "image.c"
+\end{minted}
+\textbf{Remarque :} cette technique est particulièrement utile quand des données ou des définitions sont nécessaires à plusieurs endroits du programme, et potentiellement dans des fichiers sources différents.
+
+On peut se défendre des inclusions multiples grâce à des garde-fous (voir section \ref{sec:modulation_et_entetes} sur la modulation).
+\subsection{Macros} \label{sub:macros}
+L'instruction \textsf{\#define} n'a été utilisée depuis le début de ce cours que pour définir des symboles en tant que tels ou des constantes associés à des symboles :
+\begin{minted}[linenos=false]{c}
+#define JUST_A_MEANINGLESS_SYMBOL
+#define PI 3.14159
+\end{minted}
+Le mot-clé \textsf{\#define} permet beaucoup plus que de définir des constantes.
+
+Il existe deux types de macros :
+\begin{itemize}
+	\item les macros de données
+	\item les macros ``fonctions''
+\end{itemize}
+\subsubsection{Macros de données}\label{ssub:macros_donnees}
+Les macros de données sont les macros utilisées depuis le début de ce cours. Il s'agit d'une correspondance simple entre un symbole et un fragment de code. À la suite de la définition d'un symbole par un texte, chaque apparition de ce symbole dans le fichier source est remplacé par le texte correspondant.
+
+Ces macros sont utilisés comme de simples données textuelles dans le code où elles apparaissent.
+
+Les symboles définis peuvent très bien être des mots-clés du C, puisque le préprocesseur ne sait rien du langage C lui-même. Les mots-clés sont remplacés par leur correspondance, comme n'importe quels autres symboles définis. Ainsi, le programme suivant est tout à fait valide :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define float int
+
+int main() {
+	float x = 3.14;
+	printf("%d\n", x); // affiche 3 sans avertissements
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On peut définir des textes plus longs :
+\begin{minted}{c}
+#include <stdio.h>
+
+#define SALUT printf("Salut !!!\n");
+#define FIN printf("Au revoir !\n"); return 0;
+#define DIRE_SALUT_ET_PARTIR SALUT FIN
+
+int main() {
+	DIRE_SALUT_ET_PARTIR
+}
+\end{minted}
+\subsubsection{Macros fonctions}\label{ssub:macros_fonctions}
+Les macros ``fonctions'' sont des macros contenant des instructions qui peuvent être utilisées comme des fonctions. Elles peuvent prendre en paramètre du texte et produisent en sortie du code C :
+\begin{minted}[linenos=false]{c}
+#define MACRO_ID(param1, param2, etc...) <sortie>
+\end{minted}
+On peut par exemple utiliser les macros pour définir des routines \textit{inline}, c'est-à-dire exécutés sans appel de routine. Cela permet d'accélérer l'exécution, puisqu'il n'y a pas besoin de pousser sur la pile d'exécution les paramètres.
+
+On notera que les paramètres ne peuvent pas être typés :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX(a, b) a > b ? a : b // ne dépend ni du type de 'a' ni de celui de 'b'
+
+int main() {
+	int a = 2;
+	int b = 5;
+	printf("%d\n", MAX(a, b)); // 5
+	double x = 3.14;
+	float y = 1.414;
+	printf("%f\n", MAX(x, y)); // 3.140000
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Par ailleurs, les arguments de la macro ne sont pas copiés. C'est le code de la macro qui est copié à l'endroit de l'appel. Cela signifie que la modification d'un argument dans la macro est une modification de cet argument \textit{tout court} :
+\begin{minted}{c}
+#include <stdio.h>
+
+#define log2(x) { \
+					int n = *((int*)&x); \
+					x = 0x340003ce * ((float)n) + 0xc2fe000f; \
+				}
+
+\end{minted}
+\subsection{Compilation conditionnelle} \label{sub:compilation_conditionnelle}
+\subsubsection{Motivation}
+La compilation conditionnelle a été abordée succintement dans la section \ref{sub:garde_fous} sur les garde-fous.
+
+Elle permet de choisir au moment de la compilation quel région du code sera compilée ou non. Cela est particulièrement intéressant quand le programme dépend fortement de son environnement d'exécution. Prenons l'exemple d'un logiciel présentant une interface graphique. Selon le système d'exploitation sur lequel ce programme s'exécute, le système de fenêtrage va différer. On utilisera \textit{X} ou \textit{Wayland} sous Linux, tandis que sous Windows, le fenêtrage est directement intégré au système d'exploitation. Le code C diffère donc largement dans chacun des cas.
+\subsubsection{Syntaxe}
+La compilation conditionnelle en C se base sur la syntaxe suivante :
+\begin{minted}[linenos=false]{c}
+#if condition
+
+// INSTRUCTIONS
+
+#else // optionnel
+
+// INSTRUCTIONS
+
+#endif
+\end{minted}
+On peut naturellement imbriquer des conditions entre elles. On peut raccourcir :
+\begin{minted}[linenos=false]{c}
+#if condition
+// instructions
+#else
+	#if condition
+	// instructions
+	#endif
+#endif
+\end{minted}
+par :
+\begin{minted}[linenos=false]{c}
+#if condition
+// instructions
+#elif condition
+// instructions
+#endif
+\end{minted}
+\subsubsection{Expression d'une condition}
+Les conditions préprocesseurs utilisent les mêmes opérateurs relationnels qu'en C ($||$, $&&$, $!$) et les mêmes opérateurs de comparaison.
+
+On y ajoute l'opérateur unaire \textsf{defined}, spécifique au préprocesseur. Cet opérateur renvoie \textit{Vrai} si le symbole qui le suit est défini, et \textit{Faux} sinon :
+\begin{minted}[linenos=false]{c}
+#if !(defined MODULE_H_INCLUDED) // <=> #ifndef MODULE_H_INCLUDED
+#define MODULE_H_INCLUDED
+
+// interface du module
+
+#endif
+\end{minted}
+\textbf{Remarque :} on a introduit dans la section \ref{sub:garde_fous} sur les garde-fous les instructions raccourcies \textsf{\#ifdef} et \textsf{\#ifndef}
+\subsection{Diagnostiques}\label{sub:Diagnostiques}
+\subsubsection{Avertissements}
+\subsubsection{Erreurs}
+\subsection{Pragma} \label{sub:pragma}
+L'instruction \textsf{\#pragma} permet d'exécuter des directives spécifique au compilateur. Ainsi, il n'est jamais assuré qu'un programme utilisant \textsf{\#pragma} soit portable entre tous les systèmes d'exploitation et compilateurs. Il s'agit d'une instruction à éviter le plus possible.
+
+On ne décrit que l'instruction \textsf{\#pragma} la plus courante : \textsf{\#pragma once}.
+\subsubsection{\#pragma once}
+La directive \textsf{\#pragma once} indique que le fichier lu ne devra jamais être lu à nouveau durant la compilation. Il s'agit d'une version moins portable des garde-fous décrits en section \ref{sec:modulation_et_entetes} :
+\begin{minted}[linenos=false]{c}
+#pragma once
+
+// contenu du fichier
+\end{minted}
+Il faut toutefois noter que cette directive est la plus reconnue parmi les directives non standards, et est utilisable avec la plupart des compilateurs les plus importants (comme \textit{gcc} ou \textit{clang}).
+
+L'avantage principal de \textsf{\#pragma once} est d'éviter l'erreur humaine d'utiliser plusieurs garde-fous de même nom comme cela peut être possible dans de gros programmes. Le préprocesseur s'occupe lui-même de générer un symbole de garde-fou.
+
+Le problème principal qui empêche la standardisation de \textsf{\#pragma once} est la forte dépendance d'une telle instruction avec le système de fichiers utilisé et le compilateur. En effet, un même fichier physique peut se trouver dans plusieurs répertoires différents d'un système de fichiers si celui-ci le lie physiquement ou virtuellement en un autre point. Les fichiers peuvent aussi être différenciés de plusieurs manières selon le compilateur.
+
+À éviter en général comme toutes les autres instructions \textsf{\#pragma}.
+\subsection{Concaténation de symboles} \label{sub:concatenation_de_symboles}
+\exercise{Tout dépend du système}{07}Le compilateur définit par défaut certaines constantes selon l'environnement de compilation. \url{https://sourceforge.net/p/predef/wiki/OperatingSystems/} liste les macros définies selon le système d'exploitation.
+
+Écrire un programme qui affiche \textit{``Chouette !''} si le programme est compilé et exécuté sous Linux et affiche \textit{``Beeerk !''} si le programme est compilé et exécuté sous Windows. Le cas de MacOS n'est pas traité car ce système d'exploitation n'existe pas.
 \end{document}

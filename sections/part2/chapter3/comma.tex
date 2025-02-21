@@ -9,6 +9,7 @@ langage. Il s’agit uniquement d’être exhaustif.
 
 Et très honnêtement, ça ne sert pas à grand-chose\dots Mais si jamais, c’est là !
 \subsection{La virgule comme opérateur}
+\label{sub:la_virgule_comme_op_rateur}
 La virgule sert à effectuer des opérations à effets de bord lors de l’écriture d’expressions.
 
 \textbf{Rappel :} Une routine à effet de bord est une routine qui agit autrement que par sa valeur de retour,
@@ -18,30 +19,30 @@ est une routine à effet de bord.
 
 La syntaxe est la suivante :
 \begin{minted}[linenos=false]{c}
-expression = (expr1, ..., exprn);
+expression = (expr1, ..., exprN);
 \end{minted}
 Elle est équivalente à :
 \begin{minted}[linenos=false]{c}
 expr1;
 expr2;
 ...;
-expr<n-1>;
-expression = exprn;
+expr<N-1>;
+expression = exprN;
 \end{minted}
-Un exemple purement technique consistant à compter le nombre d’assignations à des variables :*
+Un exemple purement technique consistant à compter le nombre d’assignations à des variables :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdio.h>
 
-#define ASSIGN(X) (i++, X)
+unsigned int _assign_count = 0;
+#define ASSIGN(X) (_assign_count++, X)
 
 int main(int argc, char **argv) {
-	unsigned int i = 0;
 	int a = ASSIGN(42);
 	int b = ASSIGN(64);
 	b = ASSIGN(a + b);
-	int c = ASSIGN(i*b + a);
-	printf("Nombre d'assignations : %u\n", i);
+	int c = ASSIGN(_assign_count*b + a);
+	printf("Nombre d'assignations : %u\n", _assign_count);
 	return EXIT_SUCCESS;
 }
 \end{minted}
@@ -67,10 +68,12 @@ est incorrect car équivalent à :
 \end{minted}
 qui n’a pas de sens.
 \subsection{La virgule comme séparateur}
+\label{sub:la_virgule_comme_s_parateur}
 La virgule sert également dans un cas déjà observé : la séparation des déclarations de variables.
 \begin{minted}[linenos=false]{c}
 int a = 3, b = a + 1;
 \end{minted}
 \subsection{Conclusion}
-Ben voilà c’est tout...
+\label{sub:conclusion}
+Ben voilà c’est tout\dots\footnote{J'espère que cette conclusion dithyrambique plaira $\wedge\wedge$}
 \end{document}

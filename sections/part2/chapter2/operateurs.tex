@@ -75,6 +75,7 @@ Priorité & Opérateur & Description & Associativité \\
 \end{center}
 La priorité indique l'ordre de consommation des opérandes. Ainsi, un opérateur de priorité 1 effectuera son calcul sur ses opérandes avant les opérateurs de priorité 2, 3, etc\dots
 \subsection{Opérateurs arithmétiques}
+\label{sub:op_rateurs_arithm_tiques}
 On liste les opérateurs arithmétiques suivants :
 \begin{center}
 \begin{tabular}{l|c|c|c}
@@ -120,6 +121,7 @@ On observe que la division est bien entière en posant les divisions euclidienne
 % \end{itemize}
 
 \subsection{Opérateurs bit-à-bit}
+\label{sub:op_rateurs_bit_bit}
 On liste les opérateurs bit-à-bit suivants :
 \begin{center}
 \begin{tabular}{l|c|c|c}
@@ -137,6 +139,7 @@ Décalage à gauche & 2 & $\ll$ & $<<$
 \end{center}
 Ces opérateurs sont décrits en détails dans la partie 1 du cours.
 \subsection{Opérateurs logiques, ou relationnels}
+\label{sub:op_rateurs_logiques_ou_relationnels}
 \definition{Vérité d'une expression}{On dit qu'une expression est \textit{fausse} si sa valeur est égale à 0. On dit qu'elle est \textit{vraie} sinon.}
  
 Les opérateurs logiques, contrairement aux opérateurs bit-à-bits, ne travaillent pas sur les valeurs de variables mais sur leur valeur de vérité. En particulier, ils ne renvoient que 1 ou 0, c'est-à-dire \textit{vrai} ou \textit{faux}.
@@ -171,6 +174,7 @@ printf("%d\n", a-b && (a != b)); // -> 1 car les deux propositions sont vraies
 \end{minted}
 \textbf{Remarque :} On observe que pour tout entiers $a$ et $b$, $a-b\equiv a \neq b$. En effet, $a \neq b \Leftrightarrow a - b \neq{0}$
 \subsection{Opérateurs d'assignation}
+\label{sub:op_rateurs_d_assignation}
 Les opérateurs d'assignation sont à la fois les éléments les plus connus par les débutants et à la fois les opérateurs dont ces mêmes débutants ignorent tout des spécificités. Voici un exemple qui pourrait surprendre :
 \begin{minted}{c}
 #include <stdio.h>
@@ -187,7 +191,7 @@ int main() {
 Les différentes opérations présentent dans ce code sont expliqués dans la suite\footnote{Bien qu'une exécution et quelques tests accompagnés d'un peu d'intuition pourraient suffire à comprendre}.
  
 \subsubsection{Opérateur élémentaire d'assignation $=$}
- 
+\label{ssub:op_rateur_l_mentaire_d_assignation_egal}
 L'opérateur binaire $=$, dit d'assignation, n'effectue pas que l'assignation d'une valeur à une variable. Il renvoie également la valeur assignée.\newline
 Ainsi, l'opération $a = 2$ est égale à 2. On peut donc écrire de manière équivalente :
 
@@ -218,7 +222,7 @@ int main() {
 Il n'est pas particulièrement utile d'utiliser cette particularité de l'opérateur d'assignation sauf dans des cas très spécifiques. Mais c'est toujours bon à savoir lorsqu'on tombe sur le code d'un tiers qui l'utilise.
  
 \subsubsection{Combinaison de l'opérateur d'assignation et des opérateurs binaires de calcul}
- 
+ \label{ssub:combinaison_de_l_op_rateur_d_assignation_et_des_op_rateurs_binaires_de_calcul}
 Les opérateurs binaires arithmétiques et bit-à-bits peuvent être combinés avec l'opérateur d'assignation pour contracter le code :
 \begin{minted}[linenos=false]{c}
 int a = ...; // valeur quelconque
@@ -236,7 +240,7 @@ a >>= 3; // a = a >> 3
 L'équivalence à l'expression en commentaire est totale. Ainsi, ces combinaisons renvoient la nouvelle valeur de $a$.
  
 \subsubsection{Incrémentation et décrémentation}
- 
+\label{ssub:incr_mentation_et_d_cr_mentation}
 En raison de présence extraordinairement récurrente des deux opérations d'incrémentation et de décrémentation (c'est-à-dire l'ajout de 1 à la valeur d'une variable, ou sa diminution de 1), deux opérateurs spécifiques existent pour performer de manière optimisé ces opérations :
 \begin{itemize}
 	\item \textsf{++variable;}\footnote{Ce qui a d'ailleurs amené au nommage du langage \textit{C++} comme une version ``incrémentée'', étendue, du langage C}
@@ -329,17 +333,11 @@ int main() {
 \end{minted}
 Minimiser le nombre de décalages et d'additions/soustractions (objectif : 2 décalages et une addition ou soustraction)
  
-\exercise{Valeur absolue}{14}En utilisant uniquement des opérations arithmétiques et bit-à-bits, écrire un programme qui calcule la valeur absolue d'un entier signé :
+\exercise{Valeur absolue (1)}{18}En utilisant uniquement des opérations arithmétiques et bit-à-bits, écrire un programme qui calcule la valeur absolue d'un entier signé :
 \begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-	int x = ...; // valeur quelconque, positive comme négative
-	unsigned int abs_x;
-	// ici : code à déterminer
-	printf("|%d| = %u", x, abs_x);
-	return EXIT_SUCCESS;
-}
+int x = ...; // valeur quelconque, positive comme négative
+unsigned int abs_x;
+// ici : code à déterminer;
+printf("|%d| = %u", x, abs_x);
 \end{minted}
 \end{document}

@@ -119,7 +119,7 @@ Donc $G$ est bien un groupe commutatif.
 
 \solution{Inversibilité des décalages} Les décalages ne sont pas inversibles. En effet, quand des bits sont supprimés par un décalage de trop de bits, l'information est perdue. Un décalage dans l'autre sens ne produit que des 0. Par exemple : $(01000 \ll 2) \gg 2 = 00000 \neq 01000$
 \subsection{Opérations arithmétiques}
-\solution{Conversion en binaire} 
+\solution{Du décimal au binaire} 
 
 \begin{minipage}{0.5\textwidth}
 \begin{itemize}
@@ -147,6 +147,22 @@ Donc $G$ est bien un groupe commutatif.
 	\item $(111.0111)_2$
 	\item $(0.0001001\underline{001}\dots)_2$ : il existe un nombre infini de décimales. On a le même phénomène avec la représentation de $\frac{1}{3}$ en décimal.
 \end{itemize}
+\solution{Racine carrée inverse rapide (1)} \\
+On note $P = x^2 + y^2 + z^2$. Pour simplifier les notations, on note pour $x\in\mathbb{R}$ :
+\begin{itemize}
+	\item $itof(x) = btof(btoi^{-1}(x))$
+	\item $ftoi(x) = btoi_s(ftob(x))$
+\end{itemize}
+On utilise ici trois résultats :
+\begin{flalign}
+    &log_2\left(\dfrac{1}{\sqrt{P}}\right) = -\frac{1}{2}log_2(P)\label{eq:log2}\\
+    &\forall x\in\mathbb{R}_{f32},\ x = itof\left(A^{-1}(log_2(x) - B)\right)\label{eq:x_itof}\\
+    &\forall x\in\mathbb{R}_{f32},\ log_2(x) = Aftoi(x) + B\label{eq:x_ftoi}
+\end{flalign}
+En utilisant l'égalité \eqref{eq:log2} dans \eqref{eq:x_itof} en $x = \frac{1}{\sqrt{P}}$, on obtient :
+$$\frac{1}{\sqrt{P}} = itof\left(-\frac{1}{2A}(log_2(P) + 2B)\right)$$
+En injectant \eqref{eq:x_ftoi}, on a alors :
+$$\frac{1}{\sqrt{P}} = itof\left(-\frac{1}{2}ftoi(P) - \frac{3B}{2A}\right)$$
 \subsection{Représentation hexadécimale}
 \solution{Conversion binaire-hexadécimale}
 \begin{itemize}
@@ -222,7 +238,7 @@ Il est ainsi possible, parfois, d'optimiser l'opération de multiplication grâc
 $$987654321\times{65534} = (987654321 \ll 16) - (987654321 \ll 1)$$
 Seules 2 décalages et une soustraction sont effectuées ($65534 = 65536 - 2 = 2^{16} - 2^{1}$)
  
-\solution{Valeur absolue}On utilise la particularité qu'un décalage logique (effectué sur \textsf{unsigned int}) n'effectue pas d'extension du signe :
+\solution{Valeur absolue (1)}On utilise la particularité qu'un décalage logique (effectué sur \textsf{unsigned int}) n'effectue pas d'extension du signe :
 \inputminted{c}{solutions/valeur_absolue.c}
 Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujours vrai et \textsf{0 \& x == 0} est toujours vrai.
 \subsubsection{Projection de type}
@@ -266,9 +282,63 @@ On observe que $(2^{31}-1)^{2^{32}-1}\approx{2^{31\times{2^{32}}}}$ est très la
 \solution{Interversion sans effet de bord (3)}
 \inputminted{c}{solutions/inter_no_side_effect_3.c}
 En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *x = 0$. Les autres lignes sont inutiles, mais chacune a le même effet que la première.
- 
+
 \solution{Distance de Manhattan}
+Le type \textsf{double} est sur $8 = 2\times{4}$ octets. Il permet donc de stocker deux nombres de type \textsf{float}.
+
+Si $x$ est une variable de type \textsf{double}, $\&x$ est aussi l'adresse des premiers 4 octets, et $\&x + 4$ est \textit{mathématiquement} l'adresse des seconds 4 octets. Il faut toutefois faire attention. En C, $\&x$ est de type \textsf{double}. Si on veut lui ajouter 4, il faut le projeter en un pointeur de type sur 4 octets, et ajouter 1 à ce pointeur :
+\begin{minted}{c}
+double x; // 8 octets
+float *x_left = (float*)&x; // pointeur sur 4 octets de gauche
+float *x_right = (float*)&x + 1; // pointeur sur 4 octets de droite
+\end{minted}
 \inputminted{c}{solutions/manhattan_dist.c}
+\solution{Valeur absolue (2)}
+On veut simplement modifier le bit de signe. Toutefois, les opérations bit-à-bits sont interdites sur les nombres à virgules.
+
+Les projections classiques \textsf{float x = (float)n;} et \textsf{int n = (int)x;} modifient la représentation binaire, ce qui n'est pas souhaité. On utilise à la place une idée semblable à celle utilisée pour l'\refexercise{Distance de Manhattan} :
+\begin{minted}{c}
+float abs(float x) {
+	int int_x = *((int*)&x); // réinterprétation entière
+	int_x &= 0x7FFFFFFF;	
+	float abs_x = *((float*)&int_x); // réinterprétation flottante
+	return abs_x;
+}
+\end{minted}
+\solution{Racine carrée inverse rapide (2)}
+La première étape est de déterminer la projection de type à effectuer pour calculer les fonctions :
+\begin{itemize}
+	\item $itof(x) = btof(btoi^{-1}(x))$
+	\item $ftoi(x) = btoi_s(ftob(x))$
+\end{itemize}
+On utilise la même technique que pour l'\refexercise{Valeur absolue (2)} :
+\begin{minted}{c}
+float fast_inverse_square_root(float x) {
+	int n = *((int*)&x);
+	// transformation
+	float y = *((float*)&n);
+	return y;
+}
+\end{minted}
+On a $A = \textsf{0x340003ce}$ et $B = \textsf{0xc2fe000f}$ interprétés comme des nombres flottants, d'où $-\frac{3B}{2A} = \textsf{0x4ebe7a62}$ selon la norme \textit{IEEE 754}. La difficulté est donc de trouver le mot binaire correspondant à la projection entière de $-\frac{3B}{2A}$ :
+\begin{minted}{c}
+int binary = 0x4ebe7a62;
+float float_interpretation = *(float*)&binary;
+int projection = (int)(float_interpretation);
+printf("%x\n", projection);
+\end{minted}
+donne le mot binaire \textsf{0x5f3d3100}. Finalement :
+\begin{minted}{c}
+float fast_inverse_square_root(float x) {
+	int n = *((int*)&x);
+	n = 0x5f3d3100 - (n >> 1);
+	float y = *((float*)&n);
+	return y;
+}
+\end{minted}
+On obtient $\frac{1}{\sqrt{0.01}} = 10 \approx 10.70$. L'erreur est assez élevé. En effet, la projection entière de \textsf{0x4ebe7a62} comporte une imprécision supplémentaire qui s'ajoute à celle de $log_2$.
+
+On peut améliorer la précision en balayant les projections entières adjacentes. Avec \textsf{0x5f31eb85}\footnote{Le jeu \textit{Quake III utilise la constante \textsf{0x5f3759df}.}}, on obtient une erreur de moins de $0.1\%$. Cette précision peut encore être améliorée en utilisant la \href{https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Newton}{méthode de Newton}. 
 \subsubsection{Interagir avec les flux standards}
 \solution{Distance Euclidienne}
 \inputminted{c}{solutions/euclidian_dist.c}
@@ -278,6 +348,8 @@ En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *
 \inputminted{c}{solutions/plus_ou_moins.c}
 La stratégie optimale est identique à celle de l'\refexercise{Recherche dichotomique} pour les mêmes raisons. Il faudra au maximum $\lceil log_2(N)\rceil$ tentatives pour trouver le nombre mystère.
 \subsubsection{Tableaux statiques}
+\solution{Les routines, direction la seconde classe !} Une fonction ne peut pas être construite pendant l'exécution du programme en C\footnote{Enfin, en assembleur on peut, mais là n'est pas le sujet, ce n'est plus du C.}.
+
 \solution{Routines classiques de manipulation de tableaux}
 \inputminted{c}{solutions/tab_select_sort.c}
 On pose pour $i\in\llbracket 0; l(T)\rrbracket$ l'hypothèse de récurrence $P(i)$ : \textit{\og après le $i^e$ tour de boucle, on a les invariants suivants :
@@ -298,7 +370,7 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 
 \solution{Recherche dichotomique}
 
-\textbf{Question 1 :} La démonstration est presque trivivale. Supposons que $x\in T$. Il existe donc $i_x\in \llbracket{0; l(T)-1}\rrbracket$ tel que $T[i_x] = x$. 
+\textbf{Question 1 :} La démonstration est presque triviale. Supposons que $x\in T$. Il existe donc $i_x\in \llbracket{0; l(T)-1}\rrbracket$ tel que $T[i_x] = x$. 
 \begin{itemize}
 	\item Supposons $x\leq T[i]$. Comme $T$ est trié par ordre croissant, $i_x \leq i$
 	\item Supposons $x > T[i]$. Comme $T$ est trié par ordre croissant, $i_x > i$ 
@@ -424,6 +496,8 @@ user@computer ~/working_directory>
 \end{minted}
 \solution{Calculatrice}
 \inputminted{c}{solutions/calculatrice.c}
+\solution{AtoI}
+\inputminted{c}{solutions/atoi.c}
 \subsubsection{Interagir avec les flux de fichiers}
 \subsection{Concepts avancés}
 \subsubsection{Passage d'arguments au programme}
@@ -431,4 +505,10 @@ user@computer ~/working_directory>
 \inputminted{c}{solutions/list_args.c}
 \solution{Un cat minimaliste}
 \inputminted{c}{solutions/cat.c}
+\subsubsection{Pointeurs de routines}
+\solution{Mapping}
+\inputminted{c}{solutions/mapping.c}
+\subsubsection{Routines variadiques}
+\solution{À un doigt du zéro}
+\inputminted{c}{solutions/un_doigt_du_zero.c}
 \end{document}

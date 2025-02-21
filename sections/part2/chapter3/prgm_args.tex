@@ -15,17 +15,18 @@ user@computer ~/working_directory>
 En effet, les chaînes de caractères ``main.c'', ``-o'' et ``main'' ont tout d'arguments donnés au programme \textit{gcc}. Or cela n'est absolument pas possible avec le prototype de la fonction \textit{main} qui a été donné dans la première partie du cours et tout au long de la seconde partie.
 
 L'objectif de cette section est donc de revenir sur un petit ``mensonge'' à but simplificateur : le prototype de \textit{main}
-\subsection{Le véritable prototype de \textit{main}}
-Le prototype de main est le suivant :
+\subsection{Le (véritable ?) prototype de \textit{main}}
+Il existe en vérité deux formes standards possible pour le prototype de \textsf{main} :
 \begin{minted}[linenos=false]{c}
-int main(int argc, char **argv);
+int main(void);
+int main(int argc, char *argv[]);
 \end{minted}
-Le compilateur C accepte la version sans paramètres mais c'est bien la version avec paramèters qui est complète. Les deux paramètres fournissent les informations sur les arguments donnés au programme :
+Si le programme n'a pas besoin de lire d'arguments fournis au programme, on peut utiliser le premier prototype. Dans le cas contraire, les deux paramètres de la seconde version fournissent les informations sur les arguments donnés au programme :
 \begin{itemize}
 	\item \textit{argc} : nombre d'arguments donnés au programme
 	\item \textit{argv} : tableau des chaînes de caractères des arguments donnés au programme\footnote{Le double pointeur est ainsi justifié : \begin{itemize}
-	\item la première étoile désigne le tableau de caractères
-	\item la seconde étoile désigne le tableau des tableaux de caractères
+	\item les crochets désignent le tableau de caractères
+	\item l'étoile désigne le tableau des tableaux de caractères
 	\end{itemize}}
 \end{itemize}
 Plus particulièrement, \textit{argc} est la longueur du tableau \textit{argv}.

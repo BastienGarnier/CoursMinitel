@@ -1,4 +1,64 @@
 \documentclass[../../../main.tex]{subfiles}
 \graphicspath{{sections/part2/images/}}
 \begin{document}
+\subsection{Motivation}
+\label{sub:motivation}
+Dans la partie sur les chaînes de caractères ont été abordés les chaînes littérales, c'est-à-dire l'écriture de tableaux de caractères initialisés par le programmeur mais déclarés par le compilateur :
+\begin{minted}[linenos=false]{c}
+printf("Hello World !\n");
+// est strictement équivalent à :
+const char _anonym_array[15] = {'H', 'e', 'l', etc, '!', '\n', '\0'};
+printf(_anonym_array);
+\end{minted}
+L'objectif est de montrer la généralisation la construction de littéraux pour des types quelconques. 
+\subsection{Syntaxe}
+\label{sub:syntaxe_litteraux}
+Les littéraux sont des variables dites \textit{anonymes}, c'est-à-dire qu'elles ne possèdent pas d'identifiants. On utilise pour les initialiser les \textit{listes d'initialisation}, qui ont déjà été vues pour l'initialisation de tableaux ou de structures :
+\begin{minted}[linenos=false]{c}
+struct Point {
+	double x, y, z;	
+};
+
+int x[5] =    {0, 1, 2, 3, 4};
+//         liste d'initialisation
+
+struct Point p = {.x = 0.5, .y = 0.7, .z = 1.5};
+\end{minted}
+En fait, on peut aussi utiliser les listes d'initialisation pour initialiser d'autres variables que des tableaux\footnote{Bien que la notation soit lourde pour aucune raison\dots} :
+\begin{minted}[linenos=false]{c}
+double pi = {3.14159};
+\end{minted}
+La syntaxe pour définir un littéral est alors la suivante :
+\begin{minted}[linenos=false]{c}
+(TYPE){liste}
+\end{minted}
+Cette notation a le même comportement que :
+\begin{minted}[linenos=false]{c}
+TYPE ANONYM = {liste};
+\end{minted}
+Il est à noter qu'un littéral est une \textit{lvalue}, c'est-à-dire que l'expression renvoie l'identité de l'objet. Ainsi, on peut écrire :
+\begin{minted}[linenos=false]{c}
+(int[5]){0, 1, 2, 3, 4}[0] = 1; // bon... inutile car l'adresse du tableau est perdue ensuite
+\end{minted}
+\subsection{Cas d'utilisation}
+\label{sub:cas_d_utilisation}
+On peut utiliser les littéraux pour passer des arguments sans créer d'objets spécifiques. Cela peut être utile pour ne pas surcharger l'espace des identifiants dans le programme.
+\begin{minted}{c}
+#include <stdlib.h>
+#include <stdio.h>
+
+struct Point {
+	double x, y, z;	
+};
+
+void display_point(struct Point p) {
+	printf("(%lf, %lf, %lf)\n", p.x, p.y, p.z);
+}
+int main() {
+	for (unsigned int i = 0; i < 10; i++) {
+		display_point((struct Point){.x = (double)i, .y = 1.2, .z = -0.4});
+	}
+	return EXIT_SUCCESS;
+}
+\end{minted}
 \end{document}

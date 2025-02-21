@@ -1,0 +1,207 @@
+\documentclass[../../../main.tex]{subfiles}
+\graphicspath{{sections/part2/images/}}
+\begin{document}
+On s'est intéressé dans la section précédente \ref{sec:classes_de_stockage} aux différents moyens permettant d'indiquer au compilateur où les variables déclarés devraient être placées en mémoire, et ainsi de déterminer quelle portée effective dans le code ces variables peuvent avoir et/ou combien de temps elles peuvent rester accessibles.
+
+Cette section va présenter les \textit{indicateurs d'intention d'utilisation des identifiants}. Ces indicateurs en C sont au nombre de deux\footnote{Sans blague, genre y a pas un titre de section pour l'indiquer\dots}\footnote{Certains langages plus complexes peuvent en avoir plus, comme le Rust par exemple qui est une vraie usine à gaz syntaxique.} :
+\begin{itemize}
+	\item \textsf{const} : indique au compilateur que la \textit{rvalue} d'un identifiant ne doit pas être modifiée, \textit{par quelque moyen que ce soit}.
+	\item \textsf{restrict} : permet d'indiquer lors de la déclaration d'un pointeur que seul le pointeur lui-même sera utilisé pour accéder à l'objet pointé (et pas un autre pointeur indépendant)
+\end{itemize}
+Il est particulièrement important d'indiquer ces précisions dans un code. D'une part, cela permet au compilateur de mieux optimiser le code puisque sa connaissance de la sémantique voulue par le programmeur est augmentée. D'autre part, cela permet d'assurer dans une certaine mesure que le comportement du programme est bien celui attendu.
+\subsection{const}
+\label{sub:const}
+\subsubsection{Types simples}
+\label{ssub:types_simples}
+Le mot-clé \textsf{const} s'utilise à la déclaration d'une variable devant son type :
+\begin{minted}[linenos=false]{c}
+const int x = 42;
+printf("x = %d\n", x); // lecture de la constante
+x++; // écriture de la constante : erreur de compilation 
+\end{minted}
+L'ordre d'écriture de la classe de stockage, du type et du spécificateur de constante n'importe pas :
+\begin{minted}[linenos=false]{c}
+const auto int x = 42;
+// équivalent à :
+int const auto x = 42;
+\end{minted}
+Il faut faire attention à un détail : la valeur d'une constante ne peut lui être donné qu'à sa déclaration. Ainsi, le code suivant provoque une erreur à la compilation :
+\begin{minted}{c}
+const int x; // valeur indéfinie
+x = 5; // erreur de compilation
+\end{minted}
+\subsubsection{Types complexes}
+\label{ssub:types_complexes}
+Dans le cas des types complexes, chaque champ peut être définit individuellement comme constant :
+\begin{minted}[linenos=false]{c}
+struct Type {
+	const int a;
+	float b;
+	const char c;	
+};
+\end{minted}
+Lors de la déclaration d'une variable, chaque champ constant doit être initialisé. En effet, chaque champ est lui-même un type simple et doit être traité comme tel. Un champ constant non initialisé à la déclaration ne pourra plus être modifié :
+\begin{minted}[linenos=false]{c}
+struct Type v = {.a = 42, .c = 'z'}; // pas d'erreur
+
+struct Type v_e;
+v_e.a = 42; // erreur de compilation
+\end{minted}
+Dans le cas où un type complexe est \textit{déclaré} comme constant, chacun de ses champs l'est :
+\begin{minted}[linenos=false]{c}
+
+const struct Type v;
+v.b = 3.14; // erreur de compilation, chacun des champs est une constante
+\end{minted}
+\subsubsection{Protection des pointeurs}
+\label{ssub:protection_des_pointeurs}
+Les pointeurs pointent vers un espace mémoire quelconque\footnote{Sans blague !}. Cet espace peut être déclaré constant ou non\footnote{Malgré des apparences trompeuses, ceci n'est pas un concours de lapalissades.}. En cela, l'application d'un \textsf{const} sur un pointeur peut être ambigüe. Il peut s'agir de l'espace pointé qui est constant, ou du pointeur lui-même qui doit ne pas pouvoir pointer ailleurs. Prenons le programme suivant :
+\begin{minted}[linenos=false]{c}
+int a = 0;
+int b = 1;
+const int* p = &a; // pointeur vers un 'const int'
+*p = 42; // erreur 
+p = &b; // pas d'erreur, car le pointeur lui-même n'est pas constant
+\end{minted}
+Il faut y penser comme avec des parenthèses ``virtuelles'' :
+\begin{minted}[linenos=false]{c}
+int a = 0;
+(const int)* p = &a; // parenthèses juste pour visualiser, mais ne compile pas
+\end{minted}
+L'utilisation de pointeurs vers des espaces constants permet de sécuriser certains codes en indiquant que le pointeur est immuable.\newline
+Par exemple, dans le cas d'un parcours de tableau :
+\begin{minted}[linenos=false]{c}
+// affichage ne doit pas modifier tableau
+void array_display(const int array[], unsigned int length);
+
+// tri peut potentiellement modifier tableau
+void array_sort(int array[], unsigned int length);
+\end{minted}
+\textbf{Remarque :} Il est inutile d'indiquer qu'un paramètre est constant ou non s'il ne s'agit pas d'un pointeur. En effet, l'argument sera copié, donc sa modification dans la routine ne modifie en rien sa valeur à l'appel.
+
+Par ailleurs, passer en argument d'une routine un pointeur vers un espace constant à un paramètre non constant provoque une erreur :
+\begin{minted}{c}
+const int somestats[42] = {...};
+
+array_sort(somestats, 42); // erreur
+\end{minted}
+On a pas l'assurance que l'espace emémoire de $somestats$ reste constant par la routine \textsf{array\_sort}. Le compilateur relève une erreur pour assurer au mieux le bon comportement du programme.
+
+Si on veut que le pointeur lui-même soit constant, ce n'est pas son type qui doit être indiqué comme constant, mais le pointeur lui-même :
+\begin{minted}[linenos=false]{c}
+int a = 0;
+int b = 1;
+int* const p = &a; // pointeur 'const' vers un 'int'
+*p = 42; // pas d'erreur
+p = &a; // erreur car p est constant
+\end{minted}
+Par exemple, dans le parcours d'une liste doublement chaînée avec un n\oe{}ud virtuel\footnote{L'idée est d'ajouter une sécurité de programmation et d'optimiser les accès à la tête et à la queue. Le pointeur virtuel n'est jamais \textsf{NULL} et il y a donc une condition de moins à vérifier.}, le pointeur vers le n\oe{}ud virtuel peut être déclaré lui-même constant :
+\begin{minted}[linenos=false]{c}
+struct LinkedList {
+	struct Noeud *const vhd; // virtual head
+	unsigned int length;	
+};
+\end{minted}
+On évite alors dans toutes les manipulations de la liste de l'invalider totalement par la modification du pointeur de n\oe{}ud virtuel.
+\subsubsection{Passer outre \textsf{const}}
+\label{ssub:passer_outre_const}
+On aborde ici le point le plus délicat du mot-clé \textsf{const}, c'est-à-dire l'absence totale d'assurance de la constance des espaces mémoires déclarés et voulus comme tels.
+
+Par exemple, le compilateur relève une erreur sur un code de cet acabit :
+\begin{minted}{c}
+const int x = 42;
+x = 5;
+\end{minted}
+pourtant, il est aussi possible de modifier la valeur de $x$ en passant par son adresse :
+\begin{minted}[linenos=false]{c}
+int *y = &x;
+*y = 5; // avertissement à la compilation
+\end{minted}
+C'est pour cette raison que \textsf{const} est seulement un déclarateur d'\textit{intention}, et ne force en rien le programmeur dans l'absolu.
+
+Pire que cela, il est possible d'éviter ces avertissements en écrivant du code moins propre :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Type {
+	const int a;
+	float b;
+	const char c;	
+};
+
+int main() {
+	struct Type v = {.a = 5, .c = 'a'};
+	int *p = &v.a; // avertissement à la compilation
+	p = (int*)((&v.a)); // aucun avertissement (gcc comme clang)
+	return EXIT_SUCCESS;
+}
+\end{minted}
+En effet, les capacités d'analyse \textit{sémantique} du compilateur sont limités\footnote{On en déduit que sont aussi limités ses capacités d'optimisation qui sont directement liés.}. L'idée du mot-clé \textsf{const} est seulement d'indiquer pour le programmeur consciencieux ce qui est en droit d'être modifié et ce qui ne devrait pas l'être. Le compilateur utilise ces informations pour tenter d'empêcher le programmeur d'écrire n'importe quoi et pour optimiser le code.
+
+L'optimisation du code du fait de l'utilisation du mot-clé \textsf{const} a une conséquence importante : la modification d'un espace mémoire précisé constant induit un comportement indéfini du programme si celui-ci est optimisé.
+
+Ainsi, le mot-clé \textsf{const} sert d'aide pour aider le programmeur à limiter les erreurs mais ne constitue en rien une assurance absolue du bon comportement du programme. Il s'agit seulement d'une assurance que le comportement du programme est indéfini si une constante est modifié. C'est une assurance \underline{\textit{grammaticale}}.
+
+C'est aussi un indicateur pour un lecteur tiers du comportement du programme. Une routine dont un paramètre pointeur est déclaré \textsf{const} ``assure'' à l'utilisateur de celle-ci qu'elle ne modifiera pas l'espace mémoire pointé.
+\subsection{restrict}
+\label{sub:restrict}
+\definition{Aliasing}{
+	On considère une donnée $D$ accessible par symbole $S$. Un \textit{alias} $A$ de $S$ est un second symbole qui accède très exactement à la même donnée $D$. Ainsi l'écriture de $D$ en $D'$ \textit{via} $A$ entraîne que la lecture de cette donnée \textit{via} $S$ renverra $D'$, et inversement.
+
+	En C, $A$ et $S$ sont deux pointeurs vers un même espace mémoire.
+}
+Si un espace mémoire est modifié dans par une instruction et que cet même espace mémoire est lu depuis une seconde instruction, le comportement de la seconde instruction et des instructions utilisant son résultat est entièrement dépendant de la toute première instruction.
+
+Si un bloc d'instruction n'a pas la certitude que les espaces mémoires manipulés par deux instructions différentes sont différents, de nombreuses optimisations sont perdues car il faut traiter une possible dépendance.
+
+Prenons par exemple la routine suivante :
+\begin{minted}{c}
+void swap(int *x, int *y) {
+	*x = *x ^ *y;
+	*y = *x ^ *y;
+	*x = *x ^ *y;
+}
+\end{minted}
+Cette routine échange les valeurs présentes dans les espaces mémoires pointés par $x$ et $y$. Toutefois, si $x = y$, on a $^*x = 0$ après la première instruction et $^*y = 0$ après la seconde. Le comportement est donc incorrect si $x$ est un alias de $y$ et $^*x \neq 0$
+
+Il faut corriger cette erreur par :
+\begin{minted}{c}
+void swap(int *x, int *y) {
+	if (x == y) {
+		return;
+	}
+	*x = *x ^ *y;
+	*y = *x ^ *y;
+	*x = *x ^ *y;
+}
+\end{minted}
+Ce branchement conditionnel ralentit considérablement l'exécution de cette routine dans le cas général. Il faudrait que la vérification n'ait lieu que dans les cas particuliers où il est possible que $x = y$.
+
+Le mot-clé \textsf{restrict} est un déclarateur d'\textit{intention} qui permet d'affirmer à la déclaration d'un pointeur que celui-ci est le seul à pointer vers son espace mémoire, c'est-à-dire qu'il n'existera jamais pendant la durée de vie du pointeur d'alias à celui-ci. 
+
+La syntaxe est similaire à celle de \textsf{const} sur les pointeurs eux-mêmes :
+\begin{minted}{c}
+{
+	void *restrict ptr = ...;
+	// déclaration qu'aucun alias de ptr n'est présent dans ce bloc.
+}
+\end{minted}
+Ce déclarateur d'intention surtout l'optimisation par le compilateur qui croit en la rigueur du programmeur. L'utilisateur des pointeurs est alors optimale. Par ailleurs, utiliser le mot-clé \textsf{restrict} \textit{indique} au programmeur qu'il faut faire attention à ne pas utiliser d'alias, dans la déclaration d'une routine par exemple.
+
+La routine d'échange précédente devient :
+\begin{minted}{c}
+void swap(int *restrict x, int *restrict y) {
+	*x = *x ^ *y;
+	*y = *x ^ *y;
+	*x = *x ^ *y;
+}
+\end{minted}
+\textbf{Remarque :} contrairement à \textsf{const}, le compilateur n'essaie pas d'avertir ou de relever d'erreurs relatives à une incohérence sémantique du programme. En effet, à l'exception de cas très particuliers, les pointeurs rendent inutile l'analyse grammaticale du programme pour en déduire une analyse sémantique utile.
+
+Ainsi :
+\begin{minted}[linenos=false]{c}
+swap(&x, &x);
+\end{minted}
+ne provoque aucune erreur et le comportement est tout à fait \textit{incorrect} vis-à-vis de ce qui est souhaité par le programmeur.
+\end{document}

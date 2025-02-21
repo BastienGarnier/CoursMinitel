@@ -2,6 +2,7 @@
 \graphicspath{{sections/part2/images/}}
 \begin{document}
 \subsection{Tableaux}
+\label{sub:tableaux}
 \definition{Structure de donnée}{Une structure de donnée est une manière de stocker les données. Il s'agit de la collection d'un ensemble de valeurs, de relations entre ces valeurs et de fonctions/d'opérations qui peuvent être appliquées à ces valeurs. Une structure de donnée peut être comparée ainsi à une structure algébrique en mathématiques.}
  
 Le \textit{tableau} est une des structures de donnée les plus simples. Il s'agit de l'équivalent informatique des $N$-uplets en mathématiques. Un tableau permet de stocker plusieurs variables sous une même étiquette de manière contigüe en mémoire : 
@@ -34,6 +35,7 @@ En langage C, il existe deux manières principales d'\textit{implanter} un table
 \end{itemize}
 Cette section ne décrit que l'allocation statique.
 \subsection{Définition}
+\label{sub:d_finition}
 L'allocation sur la pile, dite statique, est effectuée en langage C par la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
 TYPE array[SIZE]; // tableau non initialisé
@@ -47,7 +49,7 @@ int array[n]; // incorrect
 Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. 
 En effet, la taille d'un tableau statique doit pouvoir être déterminé par le compilateur au moment de la compilation. Celui-ci peut ainsi produire des instructions machines pour stocker ce tableau sur la pile d'exécution comme $n$ variables de tailles déterminées.
 
-Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
+Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante \ref{sec:allocation_dynamique}). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
  
 Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
 \begin{minted}[linenos=false]{c}
@@ -106,8 +108,9 @@ array[5] = 666;
 array[6] = 1414;
 \end{minted}
 \end{minipage}
-La raison, qui \og expliquera \fg au passage l'utilisation des accolades $\{\dots\}$ sera vue dans la section sur la construction de littéraux dans le chapitre sur les concepts avancés du langage.
+La raison, qui \og expliquera \fg au passage l'utilisation des accolades $\{\dots\}$ sera vue dans la section \ref{sec:construction_de_litt_raux} sur la construction de littéraux dans le chapitre \ref{chap:concepts_avances} sur les concepts avancés du langage.
 \subsection{Les tableaux statiques, kékoi pour de vrai ?}
+\label{sub:les_tableaux_statiques_k_koi_pour_de_vrai_}
 Les tableaux statiques sont à un certain point de vue très proches comportementalement des pointeurs. Ils en diffèrent pourtant du tout au tout.
  
 Pour mieux comprendre la nature d'un tableau, il faut exécuter le code suivant :
@@ -127,11 +130,12 @@ Le résultat est assez surprenant, puisqu'on observe l'égalité des trois formu
  
 Cette étrangeté tient en une phrase, d'apparence barbare : \textbf{les tableaux, en C, ne sont pas des entités de première classe}\footnote{Voir \url{https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Limitations-of-C-Arrays.html} ainsi que \url{https://en.wikipedia.org/wiki/First-class_citizen}}. On appelle, en programmation, une entité de première classe une entité informatique régit par les mêmes règles générales que les autres entités fondamentales du langage. Il peut s'agir par exemple de pouvoir :
 \begin{itemize}
+	\item être créé à l'exécution du programme
 	\item être renvoyé par une fonction
 	\item être assigné à une variable
 	\item être passé en argument à une fonction
 \end{itemize} 
-Il est absolument fondamentale de comprendre les conséquences de cette affirmation : les tableaux statiques ne sont pas régis par les mêmes règles que les autres entités du langage C. En particulier, il n'est pas possible de manipuler un tableau comme un tout de la même manière qu'une variable ``classique''. En particulier, un tableau suit la règle suivante :
+Il est absolument fondamentale de comprendre les conséquences de cette affirmation : les tableaux statiques ne sont pas régis par les mêmes règles que les autres entités plus génériques du langage C. En particulier, il n'est pas possible de manipuler un tableau comme un \textit{tout} de la même manière qu'une variable ``classique''. En particulier, un tableau suit la règle suivante :
  
 \textbf{Règle de la conversion :\footnote{L'appelation n'a rien d'officiel, mais je trouvais qu'elle décrivait bien l'état de fait.}}
  
@@ -142,6 +146,7 @@ Tout identifiant référant à un tableau dans un code C subit une conversion co
 \end{itemize}
 Cette règle amène à plusieurs propriétés.
 \subsubsection{Accès aux éléments par incrémentation du pointeur}
+\label{ssub:acc_s_aux_l_ments_par_incr_mentation_du_pointeur}
 En considérant la déclaration d'un tableau quelconque :
 \begin{minted}[linenos=false]{c}
 TYPE array[N] = {...};
@@ -173,6 +178,7 @@ int main() {
 \end{minted}
 La notation n'est pas utilisée car assez illisible.\footnote{Question d'habitude\dots}
 \subsubsection{Passage d'un tableau en argument à une routine}
+\label{ssub:passage_d_un_tableau_en_argument_une_routine}
 Le langage C autorise à passer un tableau en argument à une routine (voir \refexercise{Routines classiques de manipulation de tableaux}). Mais cela cache en vérité une subtilité : ce n'est pas un tableau qui est passé en argument, mais un pointeur vers le tableau !\newline
 Un exemple :
 \begin{minted}{c}
@@ -220,6 +226,7 @@ int main() {
 \end{minted}
 L'incrémentation de tous les éléments du tableau est permanente et subsiste dans la suite du programme. Cela est logique, puisque c'est un pointeur vers les éléments du tableau qui est donné à la procédure.
 \subsubsection{Renvoi d'un tableau par une fonction}
+\label{ssub:renvoi_d_un_tableau_par_une_fonction}
 Il a déjà été dit qu'un tableau ne pouvait être renvoyé par une fonction. Cependant, un pointeur peut l'être. Une première intuition serait donc de créer un tableau dans la fonction, puis de renvoyer un pointeur vers celui-ci :
 \begin{minted}{c}
 #include <stdio.h>
@@ -250,6 +257,8 @@ Le tableau déclaré et initialisé dans \textsf{fonction\_test} a été libér�
  
 Une solution ? Oui, avec les tableaux dynamiques !\footnote{Pour celles et ceux qui se demandent : oui, il y a une suite à cette phrase, mais ceci est une autre histoire\dots}
 \subsection{Exercices}
+\exercise{Les routines, direction la seconde classe !}{05} Justifier que les routines en C ne sont pas non plus des entités de première classe.
+
 \exercise{Routines classiques de manipulation de tableaux}{20}
 Soit $T$ un tableau de $l(T)\in\mathbb{N}$ éléments. On note pour $i, j\in{\llbracket 0; l(T)-1}\rrbracket$ :
 \begin{itemize}

@@ -74,6 +74,7 @@ void afficher_diff_0(int x) {
 }
 \end{minted}
 \subsection{Signature et prototype}
+\label{sub:signature_et_prototype}
 \definition{Prototype}{Le prototype d'une routine est la donnée de :
 \begin{itemize}
 	\item son type de retour
@@ -116,6 +117,7 @@ int addition(int a, int b) { // Déclaration de la fonction 'addition'
  
 \textbf{Remarque :} Si le concept de \textit{signature} de routine est général à une grande quantité de langages, celui de \textit{prototype} de routine tel que définit ci-avant est spécifique aux langages C, C++ et à ceux dérivant de C et C++.
 \subsection{Note relative à la copie des arguments}
+\label{sub:note_relative_la_copie_des_arguments}
 Notons que les identifiants à l'intérieur d'une routine évoluent dans un \textit{espace local} :
 \begin{minted}{c}
 #include <stdio.h>
@@ -190,6 +192,7 @@ int main() {
 \end{minted}
 On trouve alors une limitation à l'action des fonctions, puisque celles-ci semblent ne pouvoir agir que sur une unique valeur, celle de retour. Grâce aux pointeurs, on pourra cependant abroger cette limitation\dots
 \subsection{La pile d'exécution}
+\label{sub:la_pile_d_ex_cution}
 Lorsque le système charge en mémoire un programme informatique et l'exécute, il ne contient pas que le code. Il faut aussi pouvoir stocker les variables et enregistrer l'historique des appels de routines. En effet, il faut bien	gérer en mémoire le passage d'un argument à une routine, et également stocker l'adresse mémoire à laquelle le \textsf{return} doit revenir. On pourrait imaginer le code suivant :
 \begin{minted}{c}
 #include <stdio.h>
@@ -252,13 +255,14 @@ int result = sum(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel.\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines. Toutefois, il ne peut optimiser que munit de la certitude de ne pas modifier la sémantique du programme. Cela réduit grandement son champ d'action pour l'optimisation. Il est recommandé d'écrire par soi-même un code optimisé $\wedge\wedge$} Il est par exemple absurde de programmer une routine qui est si spécfique qu'elle ne sera appelée qu'une seule fois dans tout un programme.
 \subsection{Effet de bord}
+\label{sub:effet_de_bord}
 Une fonction peut agir sur son environnement, c'est-à-dire sur le résultat de l'exécution d'un programme, grâce à sa valeur de retour. Toutefois, une procédure ne le peut pas. Cela ne signifie pour autant pas qu'une procédure ne puisse pas agir sur son environnement. Ainsi, une procédure peut, sans renvoyer de valeur, agir sur les valeurs d'adresses mémoires extérieurs à sa région propre de code. Par exemple :
 \begin{minted}{c}
 void print_number(int x) {
 	printf("%d\n", x);
 }
 \end{minted}
-est une procédure agissant sur son environnement. Elle interagit avec la console sur laquelle s'exécute le programme\footnote{Voir la section sur les flux standards pour plus de détails.}.
+est une procédure agissant sur son environnement. Elle interagit avec la console sur laquelle s'exécute le programme\footnote{Voir la section \ref{sec:flux_standards} sur les flux standards pour plus de détails.}.
 
 Une action d'une routine différente d'un renvoi de valeur hors de son environnement local est nommée un \textit{effet de bord}.
 \subsection{Exercices}

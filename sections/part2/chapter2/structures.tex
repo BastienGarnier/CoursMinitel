@@ -132,6 +132,7 @@ int main() {
 }
 \end{minted}
 \subsection{Tableaux de structures}
+\label{sub:tableaux_de_structures}
 Comme les structures définies sont considérés comme des entités de première classe, il est évidemment possible de créer statiquement des tableaux de ces structures :
 \begin{minted}{c}
 #include <stdio.h>
@@ -216,6 +217,7 @@ printf("a = %d, b = %d\n", (*s).a, (*s).b);
 \end{minted}
 \end{minipage}
 \subsection{Initialisation à la déclaration}
+\label{sub:initialisation_la_d_claration}
 L'initialisation de structures contenant une grande quantité de variables peut vite être fastidieuse. Le langage C propose deux facilités d'écriture pour initialiser les variables statiques (c.à.d obtenues sans allocation dynamique) d'une structure dès la déclaration d'une instance : 
 
 \begin{minipage}{0.5\textwidth}
