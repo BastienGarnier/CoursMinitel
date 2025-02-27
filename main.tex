@@ -62,12 +62,16 @@
 
 \usepackage{subfiles}
 \begin{document}
-\title{Informatique}
-\subtitle{Une introduction à la programmation}
-\variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
-\author{B. Garnier}
-\maketitle
-\begin{refsection}
+	\title{Informatique}
+	\subtitle{Une introduction à la programmation}
+	\variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
+	\author{
+		B. Garnier
+		% \\ A. Utre
+	}
+	% date : automatique
+	\maketitle
+\begin{refsection} % enlève des warnings et des bogues sur les réfèrences longue portée (biblio ou multifichier)
 \section*{Préface}
 \subfile{sections/preface}
 \tableofcontents
@@ -207,28 +211,37 @@
 			\subfile{sections/part4/chapter2/makefile}
 		\section{Utiliser un débogueur}
 			\label{sec:utiliser_un_d_bogueur}
-		Le déboguage est une composante fondamentale du développement logiciel. En effet, il est crucial de pouvoir identifier les fautes dans un code, en particulier si celui-ci rencontre des erreurs fatales à son fonctionnement (i.e. \textit{crash}). \textit{GDB} (\textit{\underline{G}NU \underline{D}e\underline{B}ugger}) est un logiciel qui permet d'opérer le déboguage de programmes complexes. Seront détaillés dans la suite les fonctionnalités basiques qu'il propose.
+			\subfile{sections/part4/chapter2/gdb}
 		\section{Git}
+			\label{sec:git}
+			\subfile{sections/part4/chapter2/git}
 		\section{Le markdown}
+			\label{sec:le_markdown}
+			\subfile{sections/part4/chapter2/markdown}
 	\chapter{Programmer proprement}
 	\label{chap:programmer_proprement}
 		\section{À propos du style}
-		\label{sec:_propos_du_style}
-		\subfile{sections/part4/chapter3/style}
+			\label{sec:_propos_du_style}
+			\subfile{sections/part4/chapter3/style}
 		\section{La gestion des erreurs}
-		\label{sec:la_gestion_des_erreurs}
-		\subfile{sections/part4/chapter3/erreurs}
+			\label{sec:la_gestion_des_erreurs}
+			\subfile{sections/part4/chapter3/erreurs}
 		\section{Tests unitaires}
-		\label{sec:tests_unitaires}
-		\subfile{sections/part4/chapter3/unittests}
+			\label{sec:tests_unitaires}
+			\subfile{sections/part4/chapter3/unittests}
 		\section{Benchmarks}
-		\label{sec:benchmarks}
-		\subfile{sections/part4/chapter3/benchmarks}	
+			\label{sec:benchmarks}
+			\subfile{sections/part4/chapter3/benchmarks}	
 \part{Annexes}
 \label{part:annexes}
-\chapter{Correction des \theexercisescounter\ exercices}
+	\chapter{Correction des \theexercisescounter\ exercices}
 	\label{chap:correction_exercices}
-	\subfile{sections/solutions}
+		\subfile{sections/solutions}
+
+%%%%%%%%%%%%%%%%%
+% Bibliographie %
+%%%%%%%%%%%%%%%%%
+
 \phantomsection
 \printbibheading
 \printbibliography[type=book,heading=subbibliography,title={Livres}]
