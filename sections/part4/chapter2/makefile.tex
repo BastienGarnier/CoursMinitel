@@ -1,5 +1,4 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part4/images/}}
 \begin{document}
 \textit{make} est un logiciel installé par défaut sur les environnements Linux qui permet d'automatiser certaines tâches, en particulier des tâches de compilation de programmes. L'objectif de cette section est d'expliquer le principe général de fonctionnement de ce logiciel et de détailler son utilisation dans le cadre du développement logiciel en C.
 \subsection{Généralités}
@@ -251,13 +250,13 @@ Cette sous-section ne présente pas des particularités de \textit{make} mais si
 \subsubsection{Arborescence du répertoire de travail}
 Il peut être intéressant :
 \begin{itemize}
-	\item d'avoir un répertoire \textit{bin} qui contient la sortie binaire de la compilation, c'est-à-dire l'exécutable
-	\item de séparer les fichiers sources et les fichiers d'entêtes tant entre eux que vis-à-vis des autres fichiers du projet
+	\item d'avoir un répertoire \textit{build} qui contient la sortie binaire de la compilation, c'est-à-dire l'exécutable
+	\item de séparer les fichiers sources et les fichiers d'entêtes tant entre eux que vis-à-vis des autres fichiers du projet (c'est-à-dire utiliser un répertoire pour les sources\footnote{Le nom standard est \textit{src}} et un second répertoire pour les entêtes\footnote{Le nom standard est \textit{include}})
 	\item de séparer les fichiers objets générés pour qu'ils ne gênent pas
 \end{itemize}
 On peut pour la séparation des fichiers sources et des fichiers d'entêtes utiliser le paramètre \textsf{-I} du compilateur, qui permet d'indiquer un répertoire de fichier d'entête supplémentaire au répertoire courant.
 \subsubsection{Ajout de la gestion de bibliothèques externes}
 On peut ajouter par défaut le paramètre \textit{-lm} pour utiliser la bibliothèque \textsf{math.h}.
  
-On peut ajouter un répertoire \textit{lib} au projet pour y stocker des bibliothèques externes (d'extension ``.a'' ou ``.so'')
+On peut ajouter un répertoire \textit{lib} au projet pour y stocker des bibliothèques externes (d'extensions ``.a'' ou ``.so'')
 \end{document}

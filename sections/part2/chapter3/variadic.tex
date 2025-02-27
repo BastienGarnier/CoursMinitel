@@ -1,10 +1,9 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part2/images/}}
 \begin{document}
 \subsection{Motivation}
-Comprendre comment fonctionne la fonction \textsf{printf} du C, parce-que j'espère que tous les lecteurs arrivés à ce point se sont demandés comment une routine pouvait prendre un nombre d'arguments variable à son appel\dots Ah ! Et faire pareil aussi, ce serait chouette $\wedge\wedge$
+Comprendre comment la fonction \textsf{printf} du C permet de prendre un nombre d'arguments variable à son appel, parce-que j'espère que tous les lecteurs arrivés à ce point se sont posés la question\dots Ah ! Et faire pareil aussi, ce serait chouette $\wedge\wedge$
 \subsection{Appels de routines}
-Lors d'un appel de routine, les arguments sont poussés sur la pile suivant le schéma simplifié suivant :
+Il existe plusieurs standards d'appel de routines. Lors d'un appel de routine \textit{suivant le standard du langage C}\footnote{Pour des raisons d'optimisation, le compilateur peut utiliser d'autres standards, voir \url{https://en.wikipedia.org/wiki/X86_calling_conventions} pour des détails.}, les arguments sont poussés sur la pile suivant le schéma simplifié suivant :
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -85,6 +84,8 @@ int variadic_sum(unsigned int n, ...) {
 	return sum;
 }
 \end{minted}
+\subsection{Macros variadiques}
+TODO
 \subsection{Exercices}
 \exercise{À un doigt du zéro}{10} Écrire une fonction \textsf{unsigned int mult(unsigned int first, \dots);} qui parcourt ses arguments jusqu'au premier 0 rencontré, et renvoie le produit de ces arguments, 0 exclu.
 \end{document}

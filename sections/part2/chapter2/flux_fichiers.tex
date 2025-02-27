@@ -1,5 +1,4 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part2/images/}}
 \begin{document}
 \textit{\underline{Recommandation} : revoir le vocabulaire sur les fichiers de la partie 1 du cours}.
  
@@ -181,13 +180,24 @@ int main() {
 \subsection{Rediriger un flux standard vers un fichier}
 \label{sub:rediriger_un_flux_standard_vers_un_fichier}
 La redirection de flux a été évoquée précédemment et on montre ici comment la réaliser.
- 
-\textbf{Remarque 1 :} Cette section est purement anecdotique.\footnote{Précisons : inutile dans le cadre de la formation ISMIN, mais absolument pas dans le cadre d'un apprentissage plus complet. Sinon, il n'y aurait pas de chapitre après celui-ci pour traiter des concepts avancés du langage.}
- 
-\textbf{Remarque 2 :} Faire des remarques comme ça, on dirait presque ChatGPT
- 
-\textbf{Remarque 3 :} À la différence majeure que ChatGPT n'a pas de sens de l'humour
- 
+
+\begin{minitelbasicbox}{\textbf{Petit aparté :} Liste des remarques les plus pertinentes de ChatGPT}
+Série de prompts suivante : \\
+\textit{``Liste des quelques remarques inutiles à propos des remarques inutiles.''}\\
+\textit{``Essaie de les rendre plus vides de sens''} \\
+\textit{``Reformule ces remarques en utilisant le moins de vocabulaire possible''}\\
+\textit{``Peux-tu écrire le même texte sans métaphores ?''}
+\begin{itemize}
+	\item Les remarques inutiles existent sans but précis.
+	\item Une remarque inutile est simplement un mot sans effet.
+	\item Les remarques inutiles n'ont aucune conséquence.
+	\item Une remarque inutile n'a de valeur que si quelqu'un l'écoute.
+	\item Les remarques inutiles n'ont pas de réelle fonction.
+	\item Les remarques inutiles n'ont de sens que dans un contexte où rien n'a d'importance.
+	\item Une remarque inutile n'est souvent même pas retenue.
+\end{itemize}
+Ce que ça peut être con une I.A. quand même\dots
+\end{minitelbasicbox}
 La redirection de flux passe par la fonction \textsf{freopen} dont le prototype est le suivant :
 \begin{center}
 \detokenize{FILE *freopen(const char *pathname, const char *mode, FILE *stream);}

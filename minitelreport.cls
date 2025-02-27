@@ -82,7 +82,7 @@
 	}
 
 % Pour surtitrer et référencer les codes
-\usepackage{listings}
+\RequirePackage{listings}
 
 % Pour les échantillons de codes colorés syntaxiquement
 \RequirePackage[newfloat]{minted2}
@@ -219,7 +219,7 @@
 	}
 
 % Pour multiplier les options d'énumération de type itemize ou enumerate
-\usepackage[shortlabels]{enumitem}
+\RequirePackage[shortlabels]{enumitem}
 	\setlist[itemize, 1]{font=\color{minitelgreen3}, label=\ding{110}}
 	\setlist[itemize, 2]{font=\color{minitelgreen2}, label=\textbullet}
 	\setlist[itemize, 3]{font=\color{minitelgreen1}, label=\ding{117}}
@@ -258,7 +258,7 @@
 	\end{center}
 	\begin{minipage}{\textwidth}
 		\begin{center}
-			\includegraphics[height=6cm]{images/logo_minitel}
+			\includesvg[height=6cm]{images/logo_minitel}
 		\end{center}
 	\end{minipage}
 	\vspace*{\fill}
@@ -267,7 +267,7 @@
 	\begin{minipage}{0.3\textwidth}
 	\linespread{1}
 	\raggedright
-	\includegraphics[width=6cm]{images/logo_ecole}
+	\includesvg[width=6cm]{images/logo_ecole}
 	\end{minipage}
 	\begin{minipage}{0.7\textwidth}
 	\raggedleft

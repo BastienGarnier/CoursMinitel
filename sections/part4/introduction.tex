@@ -1,28 +1,30 @@
 \providecommand{\topdir}{../..}
 \documentclass[../../main.tex]{subfiles}
-\graphicspath{{sections/part4/images/}}
 \begin{document}
 Cette quatrième partie du cours d'informatique prend le contrepied de la troisième partie. Son contenu de fond appartient à un cadre beaucoup plus pratique de la programmation.
  
-Si le/la lecteur/trice assidu(e) et consciencieux/se des trois parties précédentes doit maintenant maîtriser assez bien le langage C\footnote{Ainsi que nombre de notions gravitant autour comme les représentations binaires des nombres ou quelques principes de la programmation système} d'un point de vue des connaissances syntaxiques et sémantiques, et doit également posséder suffisamment de connaissances théoriques pour comprendre les fondements de l'informatique, cela ne suffit pas à en faire un(e) développeur/se compétent(e). Il lui manque encore certains points fondamentaux qui agissent plus au niveau professionnel que personnel. La programmation n'est en général pas un travail absolument individuel puisqu'un programme est souvent destiné à d'autres qu'à soi.
+Si le lecteur assidu et consciencieux des trois parties précédentes doit maintenant maîtriser assez bien le langage C\footnote{Ainsi que nombre de notions gravitant autour comme les représentations binaires des nombres ou quelques principes de la programmation système} d'un point de vue des connaissances syntaxiques et sémantiques, et doit également posséder suffisamment de connaissances théoriques pour comprendre les fondements de l'informatique, cela ne suffit pas à en faire un développeur compétent. Il lui manque encore certains points fondamentaux qui agissent plus au niveau professionnel que personnel. On fait ainsi la distinction entre la programmation pure et le développement d'application. Il y a dans le mot \textit{développement} l'idée de faire grandir un programme, de le faire évoluer dans une certaine direction. Cet agrandissement se doit d'être contrôlé de la même manière qu'on fait grandir un arbre. Si l'arbre grandit de travers, il n'y a plus moyen par la suite de le redresser sans d'immenses difficultés. Il devient presque nécessaire de planter un nouvel arbre et de reprendre de zéro.
 
-Ont été régulièrement donnés quelques indices vis-à-vis du développement de projets de grandes tailles, et sur la nécessité d'une méthodologie d'approche qui permette de rester efficace/efficient sur le long terme, au fur-et-à-mesure que le projet devient trop gros ou grand pour être facilement pensé dans sa globalité par un unique individu.\footnote{À noter que cela concerne également les projets personnels de grande envergure puisque le développeur à un instant précis n'a pas une vision d'ensemble directement dans sa tête. Il lui a fallu découper cette vision sur des supports écrits et rester méthodique pour ne pas s'embourber dans le déluge de fonctionnalités et de caractéristiques du projet. On peut penser à l'écriture d'une documentation personnelle ou d'un micro-wiki dont la forme peut être quelconque comme des brouillons rassemblés décrivant le fonctionnement de certaines parties du système.} Cette quatrième partie se veut apporter quelques outils pour conserver une stabilité dans le développement d'applications complexes, et apprendre à programmer dans un cadre véritablement concret. Elle vise en particulier :
+Ont été régulièrement donnés quelques indices vis-à-vis du développement de projets de grandes tailles, et sur la nécessité d'une méthodologie d'approche qui permette de rester efficace/efficient sur le long terme, au fur-et-à-mesure que le projet devient trop gros ou grand pour être facilement pensé dans sa globalité par un unique individu\footnote{À noter que cela concerne également les projets personnels de grande envergure puisque le développeur à un instant précis n'a pas une vision d'ensemble directement dans sa tête. Il lui a fallu découper cette vision sur des supports écrits et rester méthodique pour ne pas s'embourber dans le déluge de fonctionnalités et de caractéristiques du projet. On peut penser à l'écriture d'une documentation personnelle ou d'un micro-wiki dont la forme peut être quelconque comme des brouillons rassemblés décrivant le fonctionnement de certaines parties du système.} et impossible à modifier en profondeur sans tout reprendre de rien. Cette quatrième partie se veut apporter quelques outils pour conserver une stabilité dans le développement d'applications complexes, et permettre de programmer dans un cadre véritablement concret. Elle vise en particulier :
 \begin{itemize}
-	\item la recherche autonome de ressources d'apprentissage informatique
+	\item la recherche autonome de ressources d'apprentissage de l'informatique
+	\item le minimum des outils nécessaires pour le développement d'un projet informatique :
+		\begin{itemize}
+			\item \textit{make} : un premier outil relativement simple et puissant pour l'automatisation de construction logiciel
+			\item \textit{gdb} : LE débogueur
+			\item \textit{Git} : LE gestionnaire de versions
+			\item le langage \textit{Markdown}, pour l'écriture de notes et de \textit{README}s
+		\end{itemize}
 	\item le développement "propre" de projets par :
 	\begin{itemize}
-		\item la minimisation des erreurs incontrôlées \textit{via} la gestion des erreurs et les tests unitaires
+		\item la prévention et la minimisation des erreurs incontrôlées \textit{via} les tests globaux et les tests unitaires
+		\item l'utilisation d'un style d'écriture clair
 		\item l'internationalisation du code\footnote{déjà évoqué en fin de première partie et début de deuxième}
 		\item l'utilisation efficiente des commentaires
-		\item l'écriture de documentation
+		\item l'écriture de documentation, dont on discutera de l'automatisation par intelligence artificielle
 	\end{itemize}
-	\item le minimum des outils pour la gestion d'un projet informatique :
-		\begin{itemize}
-			\item \textit{Git}
-			\item \textit{Markdown} et les \textit{README}s
-		\end{itemize}
 \end{itemize}
-L'objectif est de rendre le lecteur \textit{autonome} en apportant une conscience de la réalité du monde informatique pour le développement et la programmation.
+L'objectif est de rendre le lecteur relativement autonome en discutant des fondamentaux du développement d'application, que l'on distingue de la programmation pure qui n'est finalement que la partie centrale du développement, son coeur, mais non pas son tout.
 
 \hrulefill
 \newpage

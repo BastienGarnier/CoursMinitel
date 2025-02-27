@@ -1,6 +1,11 @@
 \documentclass{minitelreport}
 
-\graphicspath{{sections/part1/images/}{sections/part2/images/}{sections/part3/imagees}{sections/part4/images/}}
+\graphicspath{
+	{sections/part1/images/}
+	{sections/part2/images/}
+	{sections/part3/imagees}
+	{sections/part4/images/}
+}
 
 \usepackage[backend=biber,style=numeric, sorting=nty]{biblatex}
 \addbibresource{references/bibliographie.bib}
@@ -139,6 +144,9 @@
 			\subfile{sections/part2/chapter2/flux_fichiers}
 	\chapter{Concepts avancés}
 	\label{chap:concepts_avances}
+		\section{Virgule et expressions}
+			\label{sec:virgule_et_expressions}
+			\subfile{sections/part2/chapter3/comma}
 		\section{Paramètres d'un programme}
 			\label{sec:parametres_programme}
 			\subfile{sections/part2/chapter3/prgm_args}
@@ -160,7 +168,7 @@
 		\section{Pointeurs de routines}
 			\label{sec:pointeurs_de_routines}
 			\subfile{sections/part2/chapter3/pointeurs_routines}
-		\section{Directives de préprocesseurs (2)}
+		\section{Directives du préprocesseur (2)}
 			\label{sec:directives_de_pr_processeurs_2_}
 			\subfile{sections/part2/chapter3/preprocessor}
 		\section{Routines variadiques}
@@ -172,9 +180,6 @@
 		\section{Assembleur et C}
 			\label{sec:assembleur_et_c}
 			\subfile{sections/part2/chapter3/assembly}
-		\section{La virgule}
-			\label{sec:la_virgule}
-			\subfile{sections/part2/chapter3/comma}
 		\section{Tricks récréatifs (ft. Basile)}
 			\label{sec:tricks_r_cr_atifs_ft_basile_}
 			\subfile{sections/part2/chapter3/tricks}
@@ -190,53 +195,35 @@
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part4/introduction}
-	\chapter{Outils et méthodes utiles à la programmation}
-	\label{chap:outils_et_méthodes}
+	\chapter{Outils à la programmation}
+	\label{chap:outils}
 		% \section{Se documenter}
 		% \subfile{sections/part4/chapter1/trouver_doc}
-		\section{Lire une documentation}
-			\label{sec:lire_une_documentation}
-			\subfile{sections/part4/chapter1/lire_doc}
+		% \section{Lire une documentation}
+		% 	\label{sec:lire_une_documentation}
+		% 	\subfile{sections/part4/chapter1/lire_doc}
 		\section{Makefiles}
 			\label{sec:makefiles}
-			\subfile{sections/part4/chapter1/makefile}
+			\subfile{sections/part4/chapter2/makefile}
 		\section{Utiliser un débogueur}
 			\label{sec:utiliser_un_d_bogueur}
-		Le déboguage est une composante fondamentale du développement logiciel. En effet, il est fondamentale de pouvoir identifier les fautes dans un code, en particulier si celui-ci rencontre des erreurs fatales à son fonctionnement (i.e. \textit{crash}). \textit{GDB} (\textit{\underline{G}NU \underline{D}e\underline{B}ugger}) est un logiciel qui permet d'opérer le déboguage de programmes complexes. Seront détaillés dans la suite les fonctionnalités basiques qu'il propose.
+		Le déboguage est une composante fondamentale du développement logiciel. En effet, il est crucial de pouvoir identifier les fautes dans un code, en particulier si celui-ci rencontre des erreurs fatales à son fonctionnement (i.e. \textit{crash}). \textit{GDB} (\textit{\underline{G}NU \underline{D}e\underline{B}ugger}) est un logiciel qui permet d'opérer le déboguage de programmes complexes. Seront détaillés dans la suite les fonctionnalités basiques qu'il propose.
 		\section{Git}
-		\section{Markdown}
+		\section{Le markdown}
 	\chapter{Programmer proprement}
 	\label{chap:programmer_proprement}
 		\section{À propos du style}
 		\label{sec:_propos_du_style}
-		\subfile{sections/part4/chapter2/style}
+		\subfile{sections/part4/chapter3/style}
 		\section{La gestion des erreurs}
 		\label{sec:la_gestion_des_erreurs}
-		\subfile{sections/part4/chapter2/erreurs}
+		\subfile{sections/part4/chapter3/erreurs}
 		\section{Tests unitaires}
 		\label{sec:tests_unitaires}
-		\subfile{sections/part4/chapter2/unittests}
+		\subfile{sections/part4/chapter3/unittests}
 		\section{Benchmarks}
 		\label{sec:benchmarks}
-		\subfile{sections/part4/chapter2/benchmarks}	
-	\chapter{L'optimisation}
-	\label{chap:optimisation}
-		\section{La constante du problème}
-		\label{sec:la_constante_du_probl_me}
-		\section{Architecture des processeurs}
-		\label{sec:architecture_des_processeurs}
-	% \chapter{Pour s'entraîner et s'amuser}
-	% 	Cette section propose une batterie de sujets plus difficiles. Aucune correction complète de ne sera donnée, seulement des indications. L'objectif est de mettre en pratique tout ce qui a été vu durant cette partie pour se préparer efficacement aux examens d'informatique de l'ISMIN.
-
-	% 	\textbf{Remarque 1 :} Les sujets ci-dessous sont en moyenne plus difficiles que ceux donnés en examen, dans le but d'une prise de hauteur sur les notions exigées. Il est donc normal de devoir passer du temps à chercher.
-
-	% 	\textbf{Remarque 2 :} Ces sujets ont un objectif ludique, c'est-à-dire qu'ils essaient de montrer quelques aspects amusants ou intéressants de l'informatique. Il pourrait s'agir de véritables projets. Il est d'ailleurs tout à fait possible de les développer et aller plus loin que ce qui est proposé ici.
-	% 	\section{Rogue-Like}
-	% 		\subfile{sections/part4/chapter3/roguelike}
-	% 	\section{Allocation dynamique}
-	% 		\subfile{sections/part4/chapter3/allocationdynamique}
-	% 	\section{Reseaux neuronaux}
-	% 		\subfile{sections/part4/chapter3/reseauxneuronaux}
+		\subfile{sections/part4/chapter3/benchmarks}	
 \part{Annexes}
 \label{part:annexes}
 \chapter{Correction des \theexercisescounter\ exercices}

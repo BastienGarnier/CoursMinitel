@@ -1,5 +1,4 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part2/images/}}
 \begin{document}
 \section{Identifiants}\label{sec:identifiants}
 \definition{Identifiant}{Un identifiant est un symbole qui identifie une entité du langage (variable, routine, structure, etc\dots), c'est-à-dire qui la désigne. Un identifiant est composé de caractères compris dans l'ensemble :
@@ -187,8 +186,8 @@ int main() {
 }
 \end{minted}
 Ces constantes sont définies au sein du module \textsf{stdlib} par la directive de préprocesseur \textsf{\#define}.
-\section{Directives préprocesseurs (1)}\label{sec:directives_pr_processeurs_1_}
-Les directives préprocesseurs sont des instructions qui seront exécutés par le compilateur. Elles ne font donc pas partie du programme lui-même mais permettent de ``diriger'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes.
+\section{Directives du préprocesseur (1)}\label{sec:directives_pr_processeurs_1_}
+Les directives préprocesseurs sont des instructions qui seront exécutés avant le compilateur par un programme nommé le \textit{préprocesseur}. Elles ne font donc pas partie du programme lui-même mais permettent de ``préparer'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes\footnote{Et en fait beaucoup plus, détaillé dans une partie ultérieure.}.
  
 Les directives de préprocesseurs débutent par le caractère \#. Seules les directives de préprocesseur commencent par ce caractère. Ainsi, \textsf{\#include} est une directive de préprocesseur, qui va copier \textit{avant la compilation proprement dite} le contenu du module ciblé dans le code du fichier qui effectue l'inclusion.
  

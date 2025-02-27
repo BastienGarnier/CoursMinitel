@@ -1,13 +1,7 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part2/images/}}
 \begin{document}
 Ceci n’est pas une blague. Il s’agit d’une section traitant de la virgule ``,'' en C, à la fois comme
-opérateur entre différentes expressions et comme séparateur de déclarations.
-
-Cette section n’apparaît qu’à la fin du cours de C au vu de l’anecdoticité\footnote{Je ne sais pas si le mot existe\dots voir même que je suis certain qu'il n'existe pas *\textbackslash{}\_°! °\_/*} de cette caractéristique du
-langage. Il s’agit uniquement d’être exhaustif.
-
-Et très honnêtement, ça ne sert pas à grand-chose\dots Mais si jamais, c’est là !
+opérateur entre différentes expressions et comme séparateur de déclarations\footnote{Et très honnêtement, ça ne sert pas à grand-chose\dots Mais si jamais, c’est là ! La plupart des sections de ce chapitre sont utiles, mais c'est rigolo d'en mettre une inutile dès le début :)}.
 \subsection{La virgule comme opérateur}
 \label{sub:la_virgule_comme_op_rateur}
 La virgule sert à effectuer des opérations à effets de bord lors de l’écriture d’expressions.
@@ -67,6 +61,8 @@ est incorrect car équivalent à :
 (((int x = 1), 2), 3);
 \end{minted}
 qui n’a pas de sens.
+\subsubsection{Expression à partir d'un bloc}
+TODO
 \subsection{La virgule comme séparateur}
 \label{sub:la_virgule_comme_s_parateur}
 La virgule sert également dans un cas déjà observé : la séparation des déclarations de variables.

@@ -1,5 +1,4 @@
 \documentclass[../../../main.tex]{subfiles}
-\graphicspath{{sections/part2/images/}}
 \begin{document}
 Le préprocesseur C est un programme qui intervient avant le compilateur dans le traitement d'un fichier de code pour le transformer en exécutable. Le préprocesseur n'effectue pas de \textit{compilation} à proprement parler puisqu'il ne traduit pas le langage du code source. Il ne fait que préparer et simplifier les fichiers de code en vue de leur compilation.
 
@@ -67,83 +66,6 @@ Ces fichiers images peuvent être très long. Pour ne pas encombrer le code avec
 \textbf{Remarque :} cette technique est particulièrement utile quand des données ou des définitions sont nécessaires à plusieurs endroits du programme, et potentiellement dans des fichiers sources différents.
 
 On peut se défendre des inclusions multiples grâce à des garde-fous (voir section \ref{sec:modulation_et_entetes} sur la modulation).
-\subsection{Macros} \label{sub:macros}
-L'instruction \textsf{\#define} n'a été utilisée depuis le début de ce cours que pour définir des symboles en tant que tels ou des constantes associés à des symboles :
-\begin{minted}[linenos=false]{c}
-#define JUST_A_MEANINGLESS_SYMBOL
-#define PI 3.14159
-\end{minted}
-Le mot-clé \textsf{\#define} permet beaucoup plus que de définir des constantes.
-
-Il existe deux types de macros :
-\begin{itemize}
-	\item les macros de données
-	\item les macros ``fonctions''
-\end{itemize}
-\subsubsection{Macros de données}\label{ssub:macros_donnees}
-Les macros de données sont les macros utilisées depuis le début de ce cours. Il s'agit d'une correspondance simple entre un symbole et un fragment de code. À la suite de la définition d'un symbole par un texte, chaque apparition de ce symbole dans le fichier source est remplacé par le texte correspondant.
-
-Ces macros sont utilisés comme de simples données textuelles dans le code où elles apparaissent.
-
-Les symboles définis peuvent très bien être des mots-clés du C, puisque le préprocesseur ne sait rien du langage C lui-même. Les mots-clés sont remplacés par leur correspondance, comme n'importe quels autres symboles définis. Ainsi, le programme suivant est tout à fait valide :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-#define float int
-
-int main() {
-	float x = 3.14;
-	printf("%d\n", x); // affiche 3 sans avertissements
-	return EXIT_SUCCESS;
-}
-\end{minted}
-On peut définir des textes plus longs :
-\begin{minted}{c}
-#include <stdio.h>
-
-#define SALUT printf("Salut !!!\n");
-#define FIN printf("Au revoir !\n"); return 0;
-#define DIRE_SALUT_ET_PARTIR SALUT FIN
-
-int main() {
-	DIRE_SALUT_ET_PARTIR
-}
-\end{minted}
-\subsubsection{Macros fonctions}\label{ssub:macros_fonctions}
-Les macros ``fonctions'' sont des macros contenant des instructions qui peuvent être utilisées comme des fonctions. Elles peuvent prendre en paramètre du texte et produisent en sortie du code C :
-\begin{minted}[linenos=false]{c}
-#define MACRO_ID(param1, param2, etc...) <sortie>
-\end{minted}
-On peut par exemple utiliser les macros pour définir des routines \textit{inline}, c'est-à-dire exécutés sans appel de routine. Cela permet d'accélérer l'exécution, puisqu'il n'y a pas besoin de pousser sur la pile d'exécution les paramètres.
-
-On notera que les paramètres ne peuvent pas être typés :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-#define MAX(a, b) a > b ? a : b // ne dépend ni du type de 'a' ni de celui de 'b'
-
-int main() {
-	int a = 2;
-	int b = 5;
-	printf("%d\n", MAX(a, b)); // 5
-	double x = 3.14;
-	float y = 1.414;
-	printf("%f\n", MAX(x, y)); // 3.140000
-	return EXIT_SUCCESS;
-}
-\end{minted}
-Par ailleurs, les arguments de la macro ne sont pas copiés. C'est le code de la macro qui est copié à l'endroit de l'appel. Cela signifie que la modification d'un argument dans la macro est une modification de cet argument \textit{tout court} :
-\begin{minted}{c}
-#include <stdio.h>
-
-#define log2(x) { \
-					int n = *((int*)&x); \
-					x = 0x340003ce * ((float)n) + 0xc2fe000f; \
-				}
-
-\end{minted}
 \subsection{Compilation conditionnelle} \label{sub:compilation_conditionnelle}
 \subsubsection{Motivation}
 La compilation conditionnelle a été abordée succintement dans la section \ref{sub:garde_fous} sur les garde-fous.
@@ -181,7 +103,7 @@ par :
 #endif
 \end{minted}
 \subsubsection{Expression d'une condition}
-Les conditions préprocesseurs utilisent les mêmes opérateurs relationnels qu'en C ($||$, $&&$, $!$) et les mêmes opérateurs de comparaison.
+Les conditions préprocesseurs utilisent les mêmes opérateurs relationnels qu'en C ($||$, $\&\&$, $!$) et les mêmes opérateurs de comparaison.
 
 On y ajoute l'opérateur unaire \textsf{defined}, spécifique au préprocesseur. Cet opérateur renvoie \textit{Vrai} si le symbole qui le suit est défini, et \textit{Faux} sinon :
 \begin{minted}[linenos=false]{c}
@@ -194,8 +116,23 @@ On y ajoute l'opérateur unaire \textsf{defined}, spécifique au préprocesseur.
 \end{minted}
 \textbf{Remarque :} on a introduit dans la section \ref{sub:garde_fous} sur les garde-fous les instructions raccourcies \textsf{\#ifdef} et \textsf{\#ifndef}
 \subsection{Diagnostiques}\label{sub:Diagnostiques}
-\subsubsection{Avertissements}
-\subsubsection{Erreurs}
+Les instructions de diagnostique permettent de faire échouer la compilation ou d'avertir dans le cas de soucis potentiels d'exécution au moment de la compilation. Ces avertissements et erreurs provoqués sciemment par le préprocesseur peuvent par exemple permettre d'indiquer très précisement si une bibliothèque de code est manquante ou si une bibliothèque n'est pas à jour lors de l'inclusion. En effet, les bibliothèques contiennent généralement une macro de donnée indiquant la version de la bibliothèque. On peut aussi par exemple relever une erreur si une certaine macro de donnée est définie, si le programme ne fonctionne pas dans un certain environnement.
+
+Pour une erreur on utilise le mot-clé \textsf{\#error} :
+\begin{minted}[linenos=false]{c}
+#ifndef SDL_VERSION
+#error "Please include SDL for the application to work."
+#else
+// ...
+#endif
+\end{minted}
+Et selon la même syntaxe, on utilise le mot-clé \textsf{\#warning} pour lever un avertissement :
+\begin{minted}[linenos=false]{c}
+// le "..." ci-dessus :
+#if defined SDL_MAJOR_VERSION && SDL_MAJOR_VERSION < 3
+#warning "The application does not officially support SDL versions 1.X and 2.X."
+#endif
+\end{minted}
 \subsection{Pragma} \label{sub:pragma}
 L'instruction \textsf{\#pragma} permet d'exécuter des directives spécifique au compilateur. Ainsi, il n'est jamais assuré qu'un programme utilisant \textsf{\#pragma} soit portable entre tous les systèmes d'exploitation et compilateurs. Il s'agit d'une instruction à éviter le plus possible.
 
@@ -214,8 +151,171 @@ L'avantage principal de \textsf{\#pragma once} est d'éviter l'erreur humaine d'
 Le problème principal qui empêche la standardisation de \textsf{\#pragma once} est la forte dépendance d'une telle instruction avec le système de fichiers utilisé et le compilateur. En effet, un même fichier physique peut se trouver dans plusieurs répertoires différents d'un système de fichiers si celui-ci le lie physiquement ou virtuellement en un autre point. Les fichiers peuvent aussi être différenciés de plusieurs manières selon le compilateur.
 
 À éviter en général comme toutes les autres instructions \textsf{\#pragma}.
-\subsection{Concaténation de symboles} \label{sub:concatenation_de_symboles}
-\exercise{Tout dépend du système}{07}Le compilateur définit par défaut certaines constantes selon l'environnement de compilation. \url{https://sourceforge.net/p/predef/wiki/OperatingSystems/} liste les macros définies selon le système d'exploitation.
+\subsection{Macros} \label{sub:macros}
+L'instruction \textsf{\#define} n'a été utilisée depuis le début de ce cours que pour définir des symboles en tant que tels ou des constantes associés à des symboles :
+\begin{minted}[linenos=false]{c}
+#define JUST_A_MEANINGLESS_SYMBOL
+#define PI 3.14159
+\end{minted}
+Le mot-clé \textsf{\#define} permet beaucoup plus que de définir des constantes.
+
+Il existe deux types de macros :
+\begin{itemize}
+	\item les macros de données
+	\item les macros fonctionnelles
+\end{itemize}
+\subsubsection{Macros de données}\label{ssub:macros_donnees}
+Les macros de données sont les macros utilisées depuis le début de ce cours. Il s'agit d'une correspondance simple entre un symbole et un fragment de code. À la suite de la définition d'un symbole par un texte, chaque apparition de ce symbole dans le fichier source est remplacé par le texte correspondant.
+
+Ces macros sont utilisés comme de simples données textuelles dans le code où elles apparaissent.
+
+Les symboles définis peuvent très bien être des mots-clés du C, puisque le préprocesseur ne sait rien du langage C lui-même. Les mots-clés sont remplacés par leur correspondance, comme n'importe quels autres symboles définis. Ainsi, le programme suivant est tout à fait valide :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define float int
+
+int main() {
+	float x = 3.14;
+	printf("%d\n", x); // affiche 3 sans avertissements
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On peut définir des textes plus longs :
+\begin{minted}{c}
+#include <stdio.h>
+
+#define SALUT printf("Salut !!!\n");
+#define FIN printf("Au revoir !\n"); return 0;
+#define DIRE_SALUT_ET_PARTIR SALUT FIN
+
+int main() {
+	DIRE_SALUT_ET_PARTIR
+}
+\end{minted}
+\subsubsection{Macros fonctionnelles}\label{ssub:macros_fonctions}
+Les macros fonctionnelles sont des macros contenant des instructions qui peuvent être utilisées comme des fonctions. Elles peuvent prendre en paramètre du texte et produisent en sortie du code C :
+\begin{minted}[linenos=false]{c}
+#define MACRO_ID(param1, param2, etc...) <sortie>
+\end{minted}
+On peut par exemple utiliser les macros pour définir des routines \textit{inline}, c'est-à-dire exécutés sans appel de routine. Cela permet d'accélérer l'exécution, puisqu'il n'y a pas besoin de pousser sur la pile d'exécution les paramètres.
+
+On notera que les paramètres ne peuvent pas être typés :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX(A, B) ((A) > (B) ? (A) : (B)) // ne dépend ni du type de 'a' ni de celui de 'b'
+
+int main() {
+	int a = 2;
+	int b = 5;
+	printf("%d\n", MAX(a, b)); // 5
+	double x = 3.14;
+	float y = 1.414;
+	printf("%f\n", MAX(x, y)); // 3.140000
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Par ailleurs, les arguments de la macro ne sont pas copiés. C'est le code de la macro qui est copié à l'endroit de l'appel. Cela signifie que la modification d'un argument dans la macro est une modification de cet argument \textit{tout court} :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SYRACUSA(X) X = (!(X%2)) ? (X >> 1) : (X * 3 + 1);
+
+int main() {
+	int n = 53;
+	SYRACUSA(n);
+	printf("%d\n", n); // 160
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\subsection{Opérateurs de macros sur les symboles} \label{sub:traitement_de_symboles}
+Le préprocesseur permet la manipulation des symboles du texte. Il permet la définition de données associées à des symboles \textit{via} les macros, et ces symboles sont remplacés par les données correspondantes dans le texte.
+
+Il semble manquer toutefois la possibilité de manipuler les symboles en tant que tels dans une macro. On observe que si une telle utilisation peut avoir lieu, les symboles conserveront par nature un caractère statique. On peut imaginer une conversion du symbole en une chaîne de caractère littérale correspondante, ou la possibilité de construire un nouveau symbole sur la base de précédents.
+\subsubsection{stringizing}
+Le préprocesseur C offre exactement ce service, en anglais nommé \textit{stringizing}, traduit littéralement par la périphrase ``construction de chaîne'', en un mot \textit{cordelage}. On conservera la dénomination anglaise, plus parlante.
+On a vu que le symbole \# permet d'introduire les directives de préprocesseur. Mais cela n'est vrai que hors des macros. Dans une macro, le \# perd cette fonctionnalité. Il en gagne cependant une seconde, qui permet à une macro d'interagir avec les symboles passés en argument.
+
+Dans une macro, le \# suivi d'un argument renvoie la chaîne de caractère représentant exactement le texte-argument. L'intérêt d'une telle fonction provient de l'inefficacité du code suivant :
+\begin{minted}{c}
+#define AFFICHER(texte) printf("texte""\n") // affiche texte\n quelque soit la valeur de l'argument
+\end{minted}
+Le \# permet de mettre entre guillemets le texte de l'argument de la macro :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+#define AFFICHER(texte) printf(#texte "\n")
+
+int main() {
+	AFFICHER(Salut les pingouins !!!); // affiche Salut les pingouins !!!\n
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On peut écrire ainsi des macros utilitaires :
+\begin{minted}{c}
+#define WARN(expression) fprintf(stderr, "Avertissement : "#expression"\n")
+
+...
+
+WARN(x < 0); // Avertissement : x < 0\n
+\end{minted}
+\textbf{Remarque :} Le \# a \textit{exactement} le comportement de mise entre guillemets du texte-argument. Ainsi l'appel suivant :
+\begin{minted}[linenos=false]{c}
+AFFICHER(\n)
+\end{minted}
+affiche bien un retour à la ligne.
+\subsubsection{Concaténation de symboles}
+L'opération fondamentale que l'on peut opérer sur des chaînes de caractères est leur concaténation, c'est-à-dire la mise bout-à-bout de ces chaînes. On peut ainsi à partir d'un alphabet donné construire n'importe quel texte sur cet alphabet.
+
+Par exemple, avec l'alphabet $\Sigma = \{'0', '1'\}$, on peut écrire '01110' qui est la concaténation d'un zéro, de trois uns et d'un zéro.
+
+Le préprocesseur C offre la possibilité de concaténer deux symboles dans une macro grâce à l'opérateur \#\# :
+\begin{minted}{c}
+#define AB int
+#define C A##B // <=> #define C int
+
+#define PRINT(text) pr##intf(#text "\n") // <=> printf(...)
+\end{minted}
+\textbf{Remarque :} cet opérateur, tout comme l'opérateur de \textit{stringizing}, n'est disponible que dans les macros. Ainsi, le code suivant ne compile pas :
+\begin{minted}[linenos=false]{c}
+pri##ntf("Salut les pingouins !\n"); // error: stray ‘##’ in program 
+\end{minted}
+\subsubsection{Exemple d'application concret}
+\textit{Cet exemple, pertinent, est extrait directement de la documentation du préprocesseur C.}
+
+Supposons qu'on écrive un programme qui définisse plusieurs procédures de commandes dans un tableau :
+\begin{minted}[linenos=false]{c}
+// définitions de quit_command et de help_command
+
+struct Commande {
+	char *name;
+	void (*procedure)(void);
+};
+
+struct Commande commands[] = {
+	{"quit", quit_command}, // name = "quit", procedure = quit_command
+	{"help", help_command} // idem
+};
+\end{minted}
+Le ``souci'' ici est d'avoir à écrire deux fois le nom de la procédure lors de l'initialisation du tableau, à la fois pour la chaîne de caractère et à la fois pour le nom de la procédure elle-même.
+
+On peut simplifier\footnote{Dans le cas où il y aurait une très grand quantité de procédures} l'initialisation par une macro fonctionelle utilisant à la fois le \textit{stringizing} et la concaténation :
+\begin{minted}[linenos=false]{c}
+ // proc_name est remplacé dans la concaténation par la valeur de l'argument
+#define COMMAND(proc_name) {#proc_name, proc_name##_command}
+
+struct Command commands[] = {
+	COMMAND(quit),
+	COMMAND(help)
+}
+\end{minted}
+\subsection{Exercices}
+\exercise{Tout dépend du système}{07}Le compilateur définit par défaut certaines constantes selon l'environnement de compilation. Le site \url{https://sourceforge.net/p/predef/wiki/OperatingSystems/} liste les macros définies selon le système d'exploitation.
 
 Écrire un programme qui affiche \textit{``Chouette !''} si le programme est compilé et exécuté sous Linux et affiche \textit{``Beeerk !''} si le programme est compilé et exécuté sous Windows. Le cas de MacOS n'est pas traité car ce système d'exploitation n'existe pas.
 \end{document}
