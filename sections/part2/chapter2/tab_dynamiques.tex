@@ -154,6 +154,8 @@ void some_proc() {
 }
 \end{minted}
 l'accès au pointeur $t$ n'est pas possible à la suite d'un appel à la routine. Un simple \textsf{free} suffit amplement.
+
+En général, pour ne pas \textit{oublier} une réinitialisation qui pourrait être importante, on définit une \textit{macro}\footnote{Voir section \ref{sec:directives_de_pr_processeurs_2_} sur les directives du préprocesseur}.
 \subsection{Exercices}
 \exercise{Conversion en binaire}{12}Écrire une fonction \textsf{char* bin\_from\_nat(int n);} qui renvoie la représentation binaire de $n$ dans un tableau $B$. Ainsi, si $n = (b_{31}\dots b_{0})_2$, alors pour tout $0 \leq i < 32$, $B[i] = b_i$, où $B[i]$ désigne l'élément d'indice $i$ de $B$. Écrire une procédure d'affichage d'un tableau $B$ \textsf{void bin\_display(char* b);}. Cette procédure doit afficher le nombre binaire dans le sens de lecture humain, c'est-à-dire avec les bits de poids faibles à droite.
 

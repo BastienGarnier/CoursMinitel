@@ -1,4 +1,111 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
+La prise de notes efficace est une nécessité dans beaucoup de cadres. En particulier, la mise en forme de ces notes est généralement rébarbative et un frein dans l'écriture. Le langage Markdown se veut une solution à ce problème. Sa syntaxe est minimale pour écrire le plus vite possible.
 
+Le Markdown est très utilisé dans le développement pour écrire des documentations rapides, pour écrire des \textit{README}s, fichiers servant à indiquer les informations générales sur le contenu d'un dossier. Il peut aussi servir à écrire des rapports courts, à prendre des notes en réunions, écrire des idées, etc\dots
+
+\textbf{Logiciel :} on peut utiliser \href{https://obsidian.md/}{Obsidian}, gratuit et probablement le meilleur sur le marché, bien que non libre\dots Il effectue la mise en page automatiquement.
+
+Le formatage utilise les règles de base suivantes, selon la spécification \href{https://commonmark.org/}{CommonMark} :
+
+\begin{tabular}{|p{0.5\textwidth}|p{0.5\textwidth}|}
+	\hline
+	$^*$texte en italique$^*$ & \textit{texte en italique} \\
+	\hline
+	$^{**}$texte en gras$^{**}$ & \textbf{texte en gras} \\
+	\hline
+	\# Titre 1 & \text{\huge Titre 1} \\
+	\hline
+	\#\# Titre 2 & \text{\Large Titre 2} \\
+	\hline
+	\#\#\# Titre 3 & \text{\large Titre 3} \\
+	\hline
+	$[$Link to example$]$(example.com) & \href{https://example.com/}{Link to example} \\
+	\hline
+	![Link to image](chemin/smiley.png) & \includegraphics{smiley} \\
+	\hline
+\end{tabular}
+
+\textbf{Remarque 1 :} il est possible de combiner les symboles. Ainsi, $^{***}$Salut !$^{***}$ donne \textbf{\textit{Salut !}}.
+
+\textbf{Remarque 2 :} les liens d'image comme de ``site'' peuvent être des chemins internet ou locaux au système de fichier.
+
+On peut y ajouter les listes :
+
+\begin{minipage}{0.5\textwidth}
+- element de liste\newline
+- element de liste\newline
+- element de liste
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+	\item element de liste
+	\item element de liste
+	\item element de liste
+\end{itemize}
+\end{minipage}
+
+qui peuvent être numérotés :
+
+\begin{minipage}{0.5\textwidth}
+1. element de liste\newline
+2. element de liste\newline
+3. element de liste
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{enumerate}
+	\item element de liste
+	\item element de liste
+	\item element de liste
+\end{enumerate}
+\end{minipage}
+
+On peut aussi insérer des lignes de séparation par ``- - -'' qui donne :
+
+\hrulefill
+
+et insérer du code :
+
+\begin{minipage}{0.5\textwidth}
+\`{}\`{}\`{}LANGAGE (par exemple C ou Python) \\
+du code, plein de code \\
+sur pleins \\
+de lignes \\
+\`{}\`{}\`{}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{c}
+printf("Salut les gens");
+// et d'autre code
+\end{minted}
+\end{minipage}
+
+\subsubsection{Mathématiques en Markdown}
+L'écriture de notes scientifiques induit la nécessité d'écrire des mathématiques. Markdown n'a pas de standard pour écrire des mathématiques.
+
+Heureusement, la plupart des logiciels d'éditions Markdown, dont Obsidian, possèdent un interpréteur \LaTeX pour les formules mathématiques. Il suffit, comme en \LaTeX, d'écrire les formules entre dollars simples \textit{\$formule\$} ou doubles \textit{\$\$formule\$\$}.
+
+\begin{minipage}{0.5\textwidth}
+\small
+\texttt{\# Théorème de Pythagore} \\
+
+\begin{verbatim}
+Soit $ABC$ un triangle.
+$ABC$ est rectangle en $\widehat{BAC}$ ssi :
+$$AB^{2} + AC^{2} = BC^{2}$$
+\end{verbatim}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\text{\huge{Théorème de Pythagore}} \\
+
+Soit $ABC$ un triangle. \\
+$ABC$ est rectangle en $\widehat{BAC}$ ssi :
+$$AB^{2} + AC^{2} = BC^{2}$$
+\end{minipage}
+
+On peut trouver l'intégralité des symboles mathématiques \LaTeX en deux versions :
+\begin{itemize}
+	\item une version légère avec seulement les symboles mathématiques basiques \url{https://www3.nd.edu/~nmark/UsefulFacts/LaTeX_symbols.pdf} 
+	\item une version complète contenant l'intégralité des symboles de \LaTeX \url{https://ctan.tetaneutral.net/info/symbols/comprehensive/symbols-a4.pdf}
+\end{itemize}
 \end{document}

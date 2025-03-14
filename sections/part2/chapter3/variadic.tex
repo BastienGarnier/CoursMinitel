@@ -85,7 +85,25 @@ int variadic_sum(unsigned int n, ...) {
 }
 \end{minted}
 \subsection{Macros variadiques}
-TODO
+Les macros fonctionnelles du préprocesseur peuvent aussi être variadiques et prendre un nombre quelconque de paramètre. La syntaxe et les possibilités sont beaucoup plus limités que dans le cas des routines variadiques ``classiques''.
+
+La syntaxe est la suivante :
+\begin{minted}{c}
+#define VAR(named_args, ...) // code using __VA_ARGS__ symbol
+\end{minted}
+En fait, moins qu'une macro à nombre indéfini de variables, il s'agit d'une possibilité de passer à la macro un argument qui contient des virgules.
+
+L'argument ``\dots'' peut contenir des virgules et est nommé dans la macro par \textsf{\_\_VA\_ARGS\_\_}.
+
+Ainsi, on peut écrire :
+\begin{minted}{c}
+#define debug_printf(...) \
+	fprintf(stderr, "At line %d : ", __LINE__); \
+	fprintf(stderr, __VA_ARGS__); \
+	fprintf(stderr, "\n")
+// plus loin
+debug_printf("Dividing by %d", x);
+\end{minted}
 \subsection{Exercices}
 \exercise{À un doigt du zéro}{10} Écrire une fonction \textsf{unsigned int mult(unsigned int first, \dots);} qui parcourt ses arguments jusqu'au premier 0 rencontré, et renvoie le produit de ces arguments, 0 exclu.
 \end{document}

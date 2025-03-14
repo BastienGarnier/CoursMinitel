@@ -4,7 +4,7 @@ Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temp
  
 La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est ni garanti que les programmes proposés soient optimaux, ni que les démonstrations proposées soient les plus élégantes.
 
-Toute proposition de démonstration ou de code peut être envoyé par mail à l'adresse \textit{bastiengarnier17@gmail.com} dans l'optique d'amélioration des futures éditions.
+Toute proposition de démonstration ou de code peut être envoyé au contact donné en préface dans l'optique d'amélioration des futures éditions.
 \section{Première partie}
 On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 \subsection{Opérations logiques sur les mots binaires}
@@ -338,7 +338,7 @@ float fast_inverse_square_root(float x) {
 \end{minted}
 On obtient $\frac{1}{\sqrt{0.01}} = 10 \approx 10.70$. L'erreur est assez élevé. En effet, la projection entière de \textsf{0x4ebe7a62} comporte une imprécision supplémentaire qui s'ajoute à celle de $log_2$.
 
-On peut améliorer la précision en balayant les projections entières adjacentes. Avec \textsf{0x5f31eb85}\footnote{Le jeu \textit{Quake III utilise la constante \textsf{0x5f3759df}.}}, on obtient une erreur de moins de $0.1\%$. Cette précision peut encore être améliorée en utilisant la \href{https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Newton}{méthode de Newton}. 
+On peut améliorer la précision en balayant les projections entières adjacentes. Avec \textsf{0x5f31eb85}\footnote{Le jeu \textit{Quake III utilise la constante \textsf{0x5f3759df}, mais utilise la méthode Newton. La constante doit aussi s'adapter à ça pour de meilleurs résultats.}}, on obtient une erreur de moins de $0.1\%$. Cette précision peut encore être améliorée en utilisant la \href{https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Newton}{méthode de Newton}. 
 \subsubsection{Interagir avec les flux standards}
 \solution{Distance Euclidienne}
 \inputminted{c}{solutions/euclidian_dist.c}
@@ -361,7 +361,7 @@ On pose pour $i\in\llbracket 0; l(T)\rrbracket$ l'hypothèse de récurrence $P(i
 
 \underline{Initialisation} : le tableau $T[0:0]$ est vide. Les deux propositions constitutives de $P(0)$ sont trivialement vraies.
 
-\underline{Hérédité} : Soit $i\in\llbracket 0; l(T) - 1\rrbracket$. Supposons $P(i)$. Au $(i + 1)^e$ tour de boucle, on a $i_{min}$ l'indice de l'élément minimal dans $T[i:l(A)]$. Comme par HR, tous les éléments de $T[0:i]$ sont inférieurs à ceux de $T[i:l(A)]$ et donc à $T[i + i_{min}]$. Après le $(i+1)^e$ tour de boucle, on a échangé $T[i]$ et $T[i + i_{min}]$ donc $T[0:i+1]$ contient des éléments tous inférieurs à ceux de $T[i+1:l(A)]$ et $T[i]$ majore $T[0:i+1]$ qui est donc trié par ordre croissant. \newline
+\underline{Hérédité} : Soit $i\in\llbracket 0; l(T) - 1\rrbracket$. Supposons $P(i)$. Au $(i + 1)^e$ tour de boucle, on a $i_{min}$ l'indice de l'élément minimal dans $T[i:l(A)]$. Par HR, tous les éléments de $T[0:i]$ sont inférieurs à ceux de $T[i:l(A)]$ et donc à $T[i + i_{min}]$. Après le $(i+1)^e$ tour de boucle, on a échangé $T[i]$ et $T[i + i_{min}]$ donc $T[0:i+1]$ contient des éléments tous inférieurs à ceux de $T[i+1:l(A)]$ et $T[i]$ majore $T[0:i+1]$ qui est donc trié par ordre croissant. \newline
 Donc les deux propositions de $P(i+1)$ sont vraies.
 
 \underline{Conclusion} : L'hypothèse de récurrence est initialisée et héréditaire. Donc par principe de raisonnement par récurrence, pour tout $i\in\llbracket 0; l(T)\rrbracket$, $P(i)$ est vraie.
@@ -382,7 +382,7 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 	\item si $x\leq T[i_m]$, $T\leftarrow T[0; i_m]$ et boucler
 	\item si $x > T[i_m]$, $T\leftarrow T[i_m:l(T)]$ et boucler
 \end{itemize}
-Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \geq 1$ et le programme termine.
+Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \leq 1$ et le programme termine.
 \inputminted{c}{solutions/dichotomique.c}
 \solution{Liste des nombres premiers} 
 TODO
@@ -479,6 +479,12 @@ $$mat[i][j] \equiv\ ^*(^*(mat + i) + j) \equiv (^*((char^*)mat + i\times sizeof(
 \solution{Matrices (2)} \newline
 Il suffit d'utiliser l'interface suivante, les modifications des routines sont assez triviales :
 \inputminted{c}{solutions/matrix.h}
+\solution{Optimisation d'alignement}
+Avec un \textsf{double} à la place d'un \textsf{int} :
+\begin{itemize}
+	\item $\textsf{sizeof(struct ExampleUnaligned)} = 24$
+	\item $\textsf{sizeof(struct ExampleAligned)} = 16$
+\end{itemize}
 \solution{Listes chaînées}
 \inputminted{c}{solutions/linkedlist_1.c}
 \subsubsection{Modulation et entêtes}
@@ -508,6 +514,25 @@ user@computer ~/working_directory>
 \subsubsection{Pointeurs de routines}
 \solution{Mapping}
 \inputminted{c}{solutions/mapping.c}
+\subsubsection{Directives du préprocesseur (2)}
+\solution{Tout dépend du système}
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+	#if defined(__linux__)
+	printf("Chouette !\n");
+	#elif defined(_WIN32)
+	printf("Beeerk !\n");
+	#endif
+	return EXIT_SUCCESS;
+}
+\end{minted}
+\solution{Libération sécurisée}
+\begin{minted}[linenos=false]{c}
+#define safe_free(p) do {free((void*)p);p = NULL;} while(0)
+\end{minted}
 \subsubsection{Routines variadiques}
 \solution{À un doigt du zéro}
 \inputminted{c}{solutions/un_doigt_du_zero.c}

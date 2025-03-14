@@ -25,7 +25,7 @@ Toutefois, la légitimité d'un tel cours peut se poser en école d'ingénieurs 
 
 Un objectif est aussi d'apporter une préparation pour les examens de programmation en C de l'ISMIN, avec une certaine quantité d'exercices corrigés. Les chapitres \textit{Programmer un ordinateur}, \textit{Les fondamentaux du langage} et \textit{Les bases du langage} sont suffisants pour cela. Il n'est pas utile à ceux qui ne souhaitent que valider l'UP d'aller plus loin si tel n'est pas leur souhait.
 
-Pour ceux sûrs de savoir déjà programmer en C, voir le deuxième programme de la section \ref{sec:tricks_r_cr_atifs_ft_basile_} pour le vérifier\footnote{Enfin, juste histoire de mettre l'égo de côté quoi\dots}.
+Pour ceux sûrs de savoir déjà programmer en C, voir les programmes de la sous-section \ref{sub:un_peu_d_imagination} pour le vérifier\footnote{Enfin, juste histoire de mettre l'égo de côté quoi\dots}.
 
 % Il est étrangement faux de considérer que savoir programmer est équivalent à savoir la grammaire de nombreux langages de programmation, à savoir une -- relativement -- grande quantitée de structures de données et d'algorithmes, à savoir comment fonctionne précisement un ordinateur. Ainsi, Alexander Stepanov\footnote{Celui qui a écrit la bibliothèque standard du C++, c'est-à-dire pas la moitié d'un imbécile comme aurait dit mon professeur d'informatique de classes préparatoires.} dit, à propos de cette noble discipline :
 % \begin{center}
@@ -34,25 +34,28 @@ Pour ceux sûrs de savoir déjà programmer en C, voir le deuxième programme de
 
 \hrulefill
 
-Une bibliographie est disponible en \textbf{Annexe} qui propose de manière thématique certains ouvrages spécialisés\footnote{Je n'ai pas encore tout lu en entier\dots Pas que l'envie m'en manque, mais classes préparatoires et ISMIN obligent, il n'y a pas toujours le temps de se marrer autant qu'on le voudrait ;(}. Cette bibliographie couvre les thèmes suivants :
+Une bibliographie est disponible en \textbf{Annexe} qui propose de manière thématique certains ouvrages spécialisés\footnote{Je n'ai pas encore tout lu en entier\dots Pas que l'envie m'en manque, mais classes préparatoires et ISMIN obligent, il n'y a pas toujours le temps de se marrer autant qu'on le voudrait ;(}. Cette bibliographie couvre (entre autres) les thèmes suivants :
 \begin{itemize}
 	\item Représentation binaire des nombres \cite{MullerEtAl2018}\cite{BitHacks}
-	\item Programmation de manière générale \cite{TAOCP}\cite{EoP}\footnote{Pas très spécialisé me direz-vous, mais \textit{The Art of Computer Programming} est si extraordinaire que je ne peux qu'en recommander vivement la lecture.}
-	\item Programmation en C \cite{KR}\cite{MSRC}\cite{c11}
-	\item Programmation sous Linux \cite{LPI}
+	\item Programmation de manière générale \cite{EoP}
+	\item Langage C \cite{KR}\cite{MSRC}\cite{c11}
+	\item Programmation système sous Linux \cite{LPI}
 	\item Compilation \cite{gnumake}\cite{LL}\cite{AL}\cite{Aho}
-	\item Programmation système \cite{CSaPP}
-	\item Informatique théorique \cite{XFI}
+	\item Programmation bas-niveau \cite{CSaPP}
+	\item Algorithmique \cite{EltAlgorithmie}\cite{TAOCP}
+	\item Informatique fondamentale \cite{ONotation}\cite{XFI}
 \end{itemize}
 
 Toutes coquilles relevées\footnote{MINITEL n'est pas assez riche pour récompenser en dollars hexadécimales ces braves efforts, mais ce serait gentil malgré tout de bien vouloir nous faire part des erreurs techniques ;)}, suggestions d'amélioration ou autres remarques quelconques peuvent être envoyées à la section ``Formation'' du serveur Discord de l'association Minitel de l'ISMIN.
+
+La qualité stylistique comme pédagogique varie d'une section à une autre, que ce soit dû à la fatigue, au fait que certaines sections écrites d'abord souffrent d'un manque d'expérience dans la rédaction et que d'autres sections écrites en dernières souffrent de manquement dans la relecture et l'affinage.
 
 \begin{minitelbasicbox}{\textbf{Premier petit apparté} : parenté}
 Originellement, ce livre devait, du moins dans mon esprit, être entièrement affilié à l'association étudiante d'informatique de l'école, Minitel. Je considérais, et considère encore, qu'il est mal placé de se mettre en avant dans le cadre d'un travail associatif, puisque l'on travaille pour les autres avant toute chose, pour soi en dernier.
 
 Pourtant, c'est la conscience assez aigüe de mon ignorance de nombreuses choses en matière de programmation et d'informatique qui a changé radicalement l'application de ce point de vue vis-à-vis de ce livre. Cela provient de la certitude que mon travail pouvait être entaché de bévues d'importances assez grandes. Alors, à ne signer que du nom de l'association, les erreurs lui seraient attribuées. Certains vont alléguer que la relecture permet la correction de ces erreurs. Cela est vrai seulement dans le cas d'erreurs locales, purement techniques. Certaines erreurs sont d'un ordre plus large, et n'apparaissent pas clairement. Elles fondent la vision que l'on peut avoir de concepts généraux -- comme l'informatique, la programmation et plus particulièrement la programmation en C. En fait, ces \textit{erreurs} dont j'ai pu entrevoir les possibles existences par la lecture de certaines \oe{}uvres extraordinaires \cite{EoP}\cite{TAOCP} ont parfois amenés à la réécriture -- encore très imparfaite -- d'immenses pans de ce livre. C'est parce-que je ne tiens pas à infliger la responsabilité d'autres inévitables erreurs à l'association Minitel que mon nom est écrit sur la couverture.
 
-Par ailleurs, la qualité stylistique comme pédagogique varie d'une section à une autre, que ce soit dû à la fatigue ou au fait que certaines sections écrites d'abord souffrent d'un manque d'expérience dans la rédaction.
+Un autre point m'est apparu ensuite. Je ne serais bientôt plus membre de l'association Minitel. L'affiliation à un nom m'a permis d'ajouter une licence pour éviter, principalement, qu'un usage commercial soit fait de mon travail, qui se veut un cadeau à tous ceux qui le liront. 
 \end{minitelbasicbox}
 
 \hrulefill
@@ -88,6 +91,6 @@ Ce livre n'a pas comme objectif d'amener à exposer des théories complexes, et 
 
 Par ailleurs, la difficulté d'un exercice est très subjective, puisque ce qui semble simple et intuitif pour l'un peut être un enfer pour l'autre. La difficulté est donc assez approximative, histoire de donner une idée, et que le lecteur ne parte pas bille en tête dans un exercice particulièrement difficile sans se poser de questions ou se complique la vie inutilement sur un exercice \textit{plutôt} simple\footnote{Je n'aimerais pas me chiffonner ou vexer quiconque qui pourrait galérer sur un exercice indiqué "simple"\dots Ça peut aussi être une erreur d'estimation, OU PIRE une faute frappe (genre $13$ au lieu de $31$), faut me prévenir si tel est le cas :)}.
 
-Pour ceux qui voudraient pratiquer plus la programmation\footnote{Pour s'entraîner pour les examens de l'ISMIN par exemple}, la banque d'exercices de \textit{Leetcode} est assez fournie (\url{https://leetcode.com/problemset/}). Elle nécessite pour beaucoup d'exercices les notions présentés dans les trois premières parties.
+Pour ceux qui voudraient pratiquer plus la programmation\footnote{Pour s'entraîner pour les examens de l'ISMIN par exemple}, la banque d'exercices de \textit{Leetcode} est assez fournie (\url{https://leetcode.com/problemset/}). Elle nécessite pour beaucoup d'exercices les notions présentées dans les trois premières parties.
 \newpage
 \end{document}

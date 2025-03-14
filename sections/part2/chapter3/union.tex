@@ -75,7 +75,7 @@ printf("%u\n", e.keyboard.keycode); // prints 42
 \end{minted}
 Le bénéfice est bien visible au niveau de la taille de la zone mémoire :
 \begin{itemize}
-	\item 16 octets pour \textsf{struct Event}\footnote{Et pas 14 du fait de l’alignement mémoire, voir la section dédiée}
+	\item 16 octets pour \textsf{struct Event}\footnote{Et pas 14 du fait de l’alignement mémoire, voir la section \ref{sub:alignement}}
 	\item 8 octets pour \textsf{union Event}
 \end{itemize}
 Dans le cas de la programmation de systèmes embarquées ou pour des structures qui seront alloués un

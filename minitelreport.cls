@@ -230,6 +230,8 @@
 \newcommand\@variant{}
 \newcommand\subtitle[1]{\renewcommand\@subtitle{#1}}
 \newcommand\@subtitle{}
+\newcommand\licence[1]{\renewcommand\@licence{#1}}
+\newcommand\@licence{}
 \renewcommand{\maketitle}{
 	\begin{tikzpicture}[remember picture,overlay]
         \node[xshift=-108mm, yshift=151.5mm] at (current page.center)
@@ -241,9 +243,12 @@
     \end{tikzpicture}
     \color{white}
 	\pagenumbering{gobble}
-	\begin{minipage}{\textwidth}
-	\raggedleft
+	\begin{minipage}{0.5\textwidth}
 	\large
+	\textbf{\@date}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+	\raggedleft
 	\textbf{\@author}
 	\end{minipage}
 	\vspace*{0.5\fill}
@@ -272,7 +277,7 @@
 	\begin{minipage}{0.7\textwidth}
 	\raggedleft
 	\large
-	\textbf{\@date}
+	\textbf{\@licence}
 	\end{minipage}
 	\newpage
 	\normalsize
@@ -297,3 +302,5 @@
 	citecolor=PineGreen,
 	linkcolor=minitelgreen2!70!black
 }
+
+\RequirePackage{makecell}

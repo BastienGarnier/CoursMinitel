@@ -1,8 +1,7 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
-Probablement la section la plus simple de ce document, l'utilisation des pointeurs n'induira jamais de bogues étranges et inexpliqués dans un programme C. Tout un chacun peut affirmer sans hésitation qu'il n'y a rien de plus \textit{trivial} que la programmation avec des pointeurs.\newline
-Tout va bien se passer\dots\newline
-Maintenant que le lecteur est \textbf{\underline{\textit{rassuré}}}, commençons\dots
+Les pointeurs sont régulièrement considérés comme la source de bogues la plus fréquente en C. Cela résulte en général d'une mauvaise compréhension de leur manipulation et de manques de rigueur dans les codes utilisant les pointeurs.
+Ce chapitre espère être suffisamment précis pour éviter au mieux les écueils habituels de la programmation avec des pointeurs\dots mais il n'est absolument pas certain que cela soit réussi.
  
 \textbf{Rappel :} Une variable peut être approximée comme la collection de trois informations :
 \begin{itemize}
@@ -19,24 +18,32 @@ Visuellement :
 \end{minipage} 
 
 L'idée des pointeurs est simple : au lieu de stocker directement une valeur, on stocke l'adresse mémoire d'une autre variable :
- 
+
 \begin{minipage}{\textwidth}
 	\begin{center}
 		\includesvg[width=.4\textwidth]{pointeur}
 	\end{center}
 \end{minipage}
  
-Les pointeurs sont fondamentaux en C\footnote{Et presque seulement en C\dots}. En particulier, ils permettent une flexibilité très importante des programmes écrits. En effet, une variable est définie dans un certain espace. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques. Les possibilités des routines sont donc décuplées puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
+Les pointeurs sont fondamentaux en C\footnote{Et presque seulement en C\dots}. En particulier, ils permettent une flexibilité très importante des programmes écrits. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Pourtant, une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques, et l'utilisation de pointeurs permet de manipuler des variables bien qu'étant hors de l'environnement local de cette variable.
 
-Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
+L'utilisation des pointeurs pour manipuler des adresses non locales décuple les possibilités des routines puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
+
+% Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
  
 Un pointeur est définit selon la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
 TYPE* ptr;
 \end{minted}
-On sait alors que $ptr$ contiendra l'adresse d'autres variables.
- 
-On dispose pour la manipulation des pointeurs de deux opérateurs en langage C : l'étoile $\ast$ et l'esperluette $\&$. L'esperluette en tant qu'opérateur binaire permet de signifier l'opération $ET$, qu'elle soit logique ou bit-à-bit. Il est cependant possible de l'utiliser comme opérateur unaire. Sa signification est alors tout autre. \textsf{\&v} renvoie l'adresse mémoire à laquelle se situe la variable \textsf{v}. 
+On sait alors que $ptr$ contiendra l'adresse d'une variable de type \textsf{TYPE} et va alors \textit{référer} à cette variable.
+
+\subsection{Pointeurs et références}
+
+On dispose pour la manipulation des pointeurs de deux opérateurs en langage C : l'étoile $\ast$ et l'esperluette $\&$.
+
+L'esperluette en tant qu'opérateur binaire permet de signifier l'opération $ET$, qu'elle soit logique ou bit-à-bit. Comme opérateur unaire, \textit{$\&$v} renvoie l'adresse mémoire à laquelle se situe la variable \textit{v}. 
+
+L'étoile en tant qu'opérateur binaire permet de signifier la multiplication numérique. Comme opérateur unaire, \textit{$^*$ptr} est une référence de la variable pointée par \textit{ptr}. Il s'agit d'accéder à la case mémoire contenue à une certaine adresse.
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -46,14 +53,29 @@ On dispose pour la manipulation des pointeurs de deux opérateurs en langage C :
 
 On peut donc écrire :
 \begin{minted}[linenos=false]{c}
-TYPE v = ...;
-TYPE* ptr = &v;
+double v = ...;
+double* ptr = &v; // référence 'v' dans 'ptr'
+
+// %p est le caractère de formatage d'une adresse mémoire :
+printf("Adresse de v = %p = %p\n", &v, ptr);
+printf("Valeur de v = %lf = %lf\n", v, *ptr);
 \end{minted}
-On remarquera que $ptr$ doit être un pointeur de même type que le type de $v$. En effet, il devient possible depuis le pointeur $ptr$ de lire et de modifier la valeur de $v$. La pleine connaissance de $v$ est donc nécessaire, et l'information de sa taille est stockée comme la taille du pointeur.
+Ainsi :
+\begin{itemize}
+	\item $\&$ est l'opérateur de \textit{référencement} qui permet de contruire la référence d'une variable
+	\item $^*$ est l'opérateur de \textit{déréférencement}\footnote{Ou d'indirection} qui permet d'accéder effectivement à la référence de la variable pointé
+\end{itemize}
+Le référencement permet de modifier la variable indirectement, \textit{via} le pointeur :
+\begin{minted}[linenos=false]{c}
+int v = 42; // déclaration et initialisation d'une variable
+int* ptr = &v; // construire d'une "référence" vers 'v', &v est l'adresse de v
+*ptr = 1001; // <=> v = 1001 par déréférencement de ptr
+\end{minted}
+On remarquera que $ptr$ doit être un pointeur de même type que le type de $v$. En effet, il devient possible depuis le pointeur $ptr$ de lire et de modifier la valeur de $v$. La pleine connaissance de $v$ est donc nécessaire, et l'information de son type est stockée comme le type du pointeur.
 
 On peut décider également qu'un pointeur ne pointe sur rien grâce à la constante $\textsf{NULL} = 0$ :
 \begin{minted}[linenos=false]{c}
-int *pointeur = NULL; // pointe sur rien
+int *pointeur = NULL; // ne pointe sur rien
 \end{minted}
 \textbf{Remarque/Avertissement :} Lorsqu'un pointeur ne pointe sur rien, ou pointe sur une adresse dont l'accès n'est pas autorisé, c'est-à-dire qui est potentiellement utilisé par un autre programme, l'accès à la valeur en mémoire conduira très probablement le système d'exploitation, pour des raisons de sécurité, à arrêter prématurément l'exécution du programme en indiquant le code d'erreur $-11$ dit d'\textit{erreur de segmentation} (\textit{segmentation fault} en anglais) :
 \begin{minted}[linenos=false]{c}
@@ -85,11 +107,11 @@ L'opérateur $*$, lorsqu'il est utilisé commme opérateur unaire, change lui au
 int main() {
 	int a = 58;
 	int b = 67;
-	int* ptr = &a; // pointe vers a
+	int* ptr = &a; // référence vers a
 	printf("Origine : a = ", *ptr);
 	*ptr = 17; // pareil que a = 17
 	printf("a = %d\n", a);
-	ptr = &b; // pointe vers b
+	ptr = &b; // référence vers b
 	printf("Origine : b = ", *ptr);
 	*ptr = 2; // pareil que b = 2
 	printf("b = %d", b);
@@ -106,7 +128,7 @@ Après exécution du code, on a le schéma suivant :
 
 L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une variable a donné à cet opérateur unaire le nom d'\textit{opérateur d'indirection}\footnote{En toute originalité.}.
 
-\subsection{\textit{lvalue} et \textit{rvalue}}
+\subsection{Détails sur les références : \textit{lvalue} et \textit{rvalue}}
 \label{sub:lvalue_et_rvalue}
 Les codes ci-dessus peut avoir provoquer chez le lecteur un froncement de sourcils, en particulier si celui-ci est porté à la rigueur des détails\dots
 
@@ -145,25 +167,7 @@ int* p = &a;
 \end{minted}
 Ici, $*p$ identifie le mot binaire qui est valeur de $a$. Il n'est pas lui-même ce mot binaire. Alors que $\&a$ est soi-même le mot binaire adresse de $a$ en mémoire.
 
-\subsection{Formatage en chaîne de caractères}
-\label{sub:formatage_en_cha_ne_de_caract_res}
-Une adresse mémoire peut être affichée grâce au formatage des chaînes de caractères. Il faut pour cela utiliser le caractère spécial ``\%p'' :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-	int a = 58;
-	int b = 67;
-	int* ptr = &a; // pointe vers a
-	printf("&a = %p et a = %d\n", &a, a);
-	printf("&ptr = %p, ptr = %p et *ptr = %d\n", &ptr, ptr, *ptr);
-	ptr = &b; // pointe vers b
-	printf("&b = %p et b = %d\n", &b, b);
-	printf("&ptr = %p, ptr = %p et *ptr = %d\n", &ptr, ptr, *ptr);
-	return EXIT_SUCCESS;
-}
-\end{minted}
+$*p$ est donc bien une \textit{référence} vers $a$, alors que $\&a$ n'est pas une référence mais permet d'en construire une.
 \subsection{Les pointeurs en paramètres de routines}
 \label{sub:les_pointeurs_en_param_tres_de_routines}
 Venons en à une utilité possible des pointeurs : le passage d'arguments à des routines. La limitation des routines est qu'elles ne peuvent agir sur le reste du programme que par au maximum une unique valeur, celle de retour dans le cas des fonctions, aucune dans le cas des procédures. Imaginons par exemple une routine qui doive effectuer l'échange des valeurs de deux variables. Cela n'est pas possible tant que la routine n'a aucun moyen d'action direct sur les variables elles-même.
@@ -296,6 +300,8 @@ Si pour l'instant l'utilisation de tels pointeurs peut rester assez absconse, ce
 		\includegraphics[width=.75\textwidth]{pointer_meme}
 	\end{center}
 \end{minipage}
+
+On laisse au lecteur le plaisir d'essayer, ce qui lui permettra de se familiariser avec les concepts.
 \subsection{Exercices}
 \exercise{Quelques procédures inutiles pour devenir un bot efficace}{10} Programmer en C les procédures suivantes, et les tester sur quelques valeurs :
 \begin{itemize}

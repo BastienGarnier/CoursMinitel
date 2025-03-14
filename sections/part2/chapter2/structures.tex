@@ -109,7 +109,7 @@ struct Line {
 	struct Couple direction;
 };
 
-// or
+// ou encore :
 
 struct Line {
 	struct Couple {
@@ -130,91 +130,6 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\subsection{Tableaux de structures}
-\label{sub:tableaux_de_structures}
-Comme les structures définies sont considérés comme des entités de première classe, il est évidemment possible de créer statiquement des tableaux de ces structures :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-struct Time {
-	short int milliseconds;
-	char hour;
-	char minutes;
-	char seconds;
-}
-
-int main() {
-	int i = ...;
-	struct Time running_times[10];
-	running_times[i].hour = ...;
-	return EXIT_SUCCESS;
-}
-\end{minted}
-On peut également effectuer des allocations dynamiques avec les pointeurs par le \textsf{malloc}. Son utilisation est identique à celle permettant l'allocation dynamique de tableaux de types intrinsèques au langage :
-\begin{minted}{c}
-...
-
-int main() {
-	int i = ...;
-	struct Time* running_times = malloc(sizeof(struct Time) * 10);
-	running_times[i].hour = ...;
-	return EXIT_SUCCESS;
-}
-\end{minted}
-Il est ainsi possible de travailler sur des pointeurs de structure :
-\begin{minted}{c}
-#include <stdio.h>
-#include <stdlib.h>
-
-struct Something {
-	int a;
-	char b;
-};
-
-int function(struct Something* s_ptr) {
-	(*s_ptr).a += (*s_ptr).b;
-	return (*s_ptr).a;
-}
-
-int main() {
-	struct Something s;
-	s.a = 0;
-	s.b = 1;
-	for (int i = 0; i < 10; i++) {
-		s.b = function(&s) / s.b;
-	}
-	printf("%d\n", s.a);
-	return EXIT_SUCCESS;
-}
-\end{minted}
-On observe que l'opérateur d'accès à un membre est prioritaire sur l'opérateur d'indirection $*$\footnote{En effet, l'opérateur d'indirection ne fait qu'ajouter un décalage à l'adresse de la variable structurée pour accéder au membre de la structure. Ce calcul est effectué par le compilateur. Pour cette raison, l'opérateur d'accès à un membre fait partie des opérateurs les plus prioritaires du langage.}. Oublier de parenthéser amène à une erreur puisque \textsf{ptr.member} n'existe pas. En effet, un pointeur n'est qu'une adresse vers la structure. Il n'a donc pas de membres. \newline
-La notation apparaît cependant très lourde à écrire, alors une notation purement facilitatrice existe en C, la flèche :
- 
-\begin{minipage}{0.5\textwidth}
-\begin{minted}[linenos=false]{c}
-struct MyStruct {
-	int a;
-	int b;
-};
-
-struct MyStruct *s = ...;
-
-printf("a = %d, b = %d\n", s->a, s->b);
-\end{minted}
-\end{minipage}
-\begin{minipage}{0.5\textwidth}
-\begin{minted}[linenos=false]{c}
-struct MyStruct {
-	int a;
-	int b;
-};
-
-struct MyStruct *s = ...;
-
-printf("a = %d, b = %d\n", (*s).a, (*s).b);
-\end{minted}
-\end{minipage}
 \subsection{Initialisation à la déclaration}
 \label{sub:initialisation_la_d_claration}
 L'initialisation de structures contenant une grande quantité de variables peut vite être fastidieuse. Le langage C propose deux facilités d'écriture pour initialiser les variables statiques (c.à.d obtenues sans allocation dynamique) d'une structure dès la déclaration d'une instance : 
@@ -277,6 +192,242 @@ Alors que le code ci-dessous initialise le membre $c$ à \textsf{NULL}, le membr
 \begin{minted}[linenos=false]{c}
 struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 \end{minted}
+\subsection{Méchanisme de construction}
+La question ici est de comprendre quel est le méchanisme qui permet d'accéder à chacun des champs d'une structure à partir de sa définition, c'est-à-dire comment fonctionne l'opérateur d'indirection.
+
+L'objectif, en particulier, est de montrer que l'utilisation de structures et l'utilisation de l'opérateur d'accès à un membre ne ralentissent pas l'exécution d'un programme.
+
+Pour mieux comprendre comment les données sont stockées, on exécute le programme suivant :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Something {
+	int a;
+	short int b;
+	char c;
+};
+
+int main() {
+	struct Something s = {.a = 0x01234567, .b = 0x89AB, .c = 0xCD};
+
+	printf("Taille de la structure : %lu\n", sizeof(struct Something));
+
+	// permet d'accéder à la structure octet par octet :
+	unsigned char *ptr = (unsigned char*)&s; 
+	for (unsigned int i = 0; i < sizeof(struct Something); i++) {
+		printf("octet %u : 0x%02x\n", i, ptr[i]);
+	}
+
+	return EXIT_SUCCESS;
+}
+\end{minted}
+À l'exécution, on observe le résultat suivant :
+\begin{minted}{bash}
+user@computer ~/working_directory> ./main
+Taille de la structure : 8
+# s.a :
+octet 0 : 0x67
+octet 1 : 0x45
+octet 2 : 0x23
+octet 3 : 0x01
+# s.b :
+octet 4 : 0xab
+octet 5 : 0x89
+# s.c :
+octet 6 : 0xcd
+# padding
+octet 7 : 0x00
+\end{minted}
+On observe que :
+\begin{itemize}
+	\item les champs sont contenus les uns à la suite des autres, de manière compacte
+	\item les octets sont inversés, par petit boutisme (\url{https://fr.wikipedia.org/wiki/Boutisme})
+	\item un octet est ajouté à la fin de la structure \textit{``sans raisons apparentes''}
+\end{itemize}
+On discute du troisième point dans la sous-section \ref{sub:alignement} suivante.
+
+La compacité des structures est logique dans un souci d'optimisation spatiale. Elle signifie en particulier que les champs d'une structure n'existent pas indépendamment en mémoire. Cela justifie notamment la possibilité de définir des tableaux de structures (voir section suivante).
+
+En particulier, on peut accéder aux champs de la manière suivante :
+\begin{minted}[linenos=false]{c}
+struct Something {
+	int a;
+	short int b;
+	char c;
+};
+
+...
+
+struct Something s = {.a = 0x01234567, .b = 0x89AB, .c = 0xCD};
+void *ptr = (void*)&s;
+
+s.a == (int)(*(ptr + 0));
+s.b == (short int)(*(ptr + sizeof(s.a)));
+s.c == (char)(*(ptr + sizeof(s.a) + sizeof(s.b)));
+\end{minted}
+\textbf{Remarque :} les assertions sont correctes car \textsf{struct Something} est correctement aligné (voir la sous-section \ref{sub:alignement} suivante).
+
+Les adresses des champs d'une instance de structure sont seulement des décalages (\textit{offsets} en anglais) vis-à-vis de l'adresse de l'instance elle-même.
+
+Comme ces décalages sont calculés à la compilation programme, l'opération d'accès à un membre peut aussi être calculée à la compilation.
+
+L'utilisation de structures ne ralenti donc pas l'exécution du programme.
+\subsection{Tableaux de structures}
+\label{sub:tableaux_de_structures}
+Comme les structures définies sont considérés comme des entités de première classe et sont compactes en mémoire, il est évidemment possible de créer statiquement des tableaux de ces structures :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Time {
+	short int milliseconds;
+	char hour;
+	char minutes;
+	char seconds;
+}
+
+int main() {
+	int i = ...;
+	struct Time running_times[10];
+	running_times[i].hour = ...;
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On peut également effectuer des allocations dynamiques avec les pointeurs par le \textsf{malloc}. Son utilisation est identique à celle permettant l'allocation dynamique de tableaux de types intrinsèques au langage :
+\begin{minted}{c}
+...
+
+int main() {
+	int i = ...;
+	struct Time* running_times = malloc(sizeof(struct Time) * 10);
+	running_times[i].hour = ...;
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Il est ainsi possible de travailler sur des pointeurs de structure :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Something {
+	int a;
+	char b;
+};
+
+int function(struct Something* s_ptr) {
+	(*s_ptr).a += (*s_ptr).b;
+	return (*s_ptr).a;
+}
+
+int main() {
+	struct Something s;
+	s.a = 0;
+	s.b = 1;
+	for (int i = 0; i < 10; i++) {
+		s.b = function(&s) / s.b;
+	}
+	printf("%d\n", s.a);
+	return EXIT_SUCCESS;
+}
+\end{minted}
+On observe que l'opérateur d'accès à un membre est prioritaire sur l'opérateur d'indirection $*$\footnote{En effet, l'opérateur d'accès à un membre ne fait qu'ajouter un décalage à l'adresse de la variable structurée pour accéder au membre de la structure. Ce calcul est effectué par le compilateur. Pour cette raison, l'opérateur d'accès à un membre fait partie des opérateurs les plus prioritaires du langage (voir sous-section précédente)}. Oublier de parenthéser amène à une erreur puisque \textsf{ptr.member} n'existe pas. En effet, un pointeur n'est qu'une adresse vers la structure. Il n'a donc pas de membres. \newline
+La notation est cependant très lourde à écrire, alors une notation purement facilitatrice existe en C, la flèche :
+ 
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	int b;
+};
+
+struct MyStruct *s = ...;
+
+printf("a = %d, b = %d\n", s->a, s->b);
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}[linenos=false]{c}
+struct MyStruct {
+	int a;
+	int b;
+};
+
+struct MyStruct *s = ...;
+
+printf("a = %d, b = %d\n", (*s).a, (*s).b);
+\end{minted}
+\end{minipage}
+\subsection{Alignement et optimisation des structures}
+\label{sub:alignement}
+On aborde ici un point technique ayant à voir avec l'optimisation du code de manière générale, et plus précisément l'optimisation des structures.
+
+Si un processeur tente d'accéder à une valeur codée sur $N$ octets située à une adresse $a \not\equiv 0\ [N]$, il va devoir effectuer des calculs supplémentaires pour se décaler de la valeur du modulo et se trouve ralenti.
+
+Ainsi, on veut que l'adresse d'un \textsf{int} soit un multiple de 4 octets, que l'adresse d'un \textsf{char} soit multiple de 1 octet, que l'adresse d'un \textsf{double} soit multiple de 8 octets, etc\dots
+
+\definition{Alignement}{On dit qu'une donnée d'adresse $a$ est alignée sur $N$ octets si $a \equiv 0 [N]$}
+
+On cherche donc à aligner les adresses des objets sur leurs taille.
+
+Prenons les deux structures suivantes :
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{c}
+struct ExampleUnaligned {
+	char c;
+	int a;
+	short b;
+};
+
+struct ExampleUnaligned x;
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{c}
+struct ExampleAligned {
+	int a;
+	short b;
+	char c;
+};
+
+struct ExampleAligned x;
+\end{minted}
+\end{minipage}
+
+Les deux structures \textit{semblent} équivalentes, pourtant elles ne le sont pas.
+
+Pour garantir l'alignement de la donnée de plus grande taille, on aligne les structures elles-mêmes sur cette plus grande taille. Ainsi, chacune des deux structures est alignée sur 4 octets.
+
+\textbf{Dans le cas de la structure \textsf{ExampleAligned} :}
+\begin{itemize}
+	\item $x.a$ est à l'adresse $\&x$, donc aligné sur 4 octets, ce qui est correct
+	\item $x.b$ est à l'adresse $\&x + 4$, donc aligné sur 2 octets, ce qui est correct
+	\item $x.c$ est à l'adresse $\&x + 6$, donc aligné sur 1 octet, ce qui est correct
+\end{itemize}
+
+\textbf{Dans le cas de la structure \textsf{ExampleUnaligned} :}
+\begin{itemize}
+	\item $x.c$ est à l'adresse $\&x$, donc aligné sur 1 octet, ce qui est correct
+	\item $x.a$ est, \textit{a priori}, à l'adresse $\&x + 1$, donc \textit{non aligné} sur 4 octets
+	\item $x.b$ est, \textit{a priori}, à l'adresse $\&x + 5$, donc \textit{non aligné} sur 2 octets 
+\end{itemize}
+
+Ainsi, la structure \textsf{ExampleUnaligned} devrait être plus lente que la structure \textsf{ExampleAligned}.
+
+Le compilateur effectue cependant un alignement automatique lors de la génération du code des structures pour que chaque adresse des champs d'un objet de type complexe, défini par une structure, soit congrue à la taille de la donnée.
+
+Dans le cas de la structure \textsf{ExampleUnaligned} :
+\begin{itemize}
+	\item $x.c$ est toujours à l'adresse $\&x$
+	\item $x.a$ est placé à l'adresse $\&x + 4$ pour forcer l'alignement
+	\item $x.b$ est placé à l'adresse $\&x + 8$ pour forcer l'alignement
+\end{itemize}
+La taille de la structure devient $10$.
+
+Si on veut pouvoir créer un tableau de cette structure sans problèmes d'alignement, il faut arrondir la taille de la structure à son alignement, donc à $12$.
+
+Finalement, $\textsf{sizeof(struct ExampleUnaligned)} = 12$, tandis que $\textsf{sizeof(struct ExampleAligned)} = 8$.
 \subsection{Exercices}
 \exercise{Matrices (2)}{13} Écrire une structure \textsf{struct Matrix} qui contient trois champs :
 \begin{itemize}
@@ -285,6 +436,8 @@ struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 	\item \textit{unsigned int m};
 \end{itemize}
 et modifier les routines de l'\refexercise{Matrices (1)} pour qu'elles utilisent la structure \textsf{struct Matrix}.
+
+\exercise{Optimisation d'alignement}{03} Déterminer les tailles des structures \textsf{ExampleAligned} et \textsf{ExampleUnaligned} avec un \textsf{double} à la place d'un \textsf{int}.
 
 \exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
  

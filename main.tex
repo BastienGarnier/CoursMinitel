@@ -63,12 +63,13 @@
 \usepackage{subfiles}
 \begin{document}
 	\title{Informatique}
-	\subtitle{Une introduction à la programmation}
+	\subtitle{Le C pour les (pas) nuls}
 	\variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
 	\author{
 		B. Garnier
 		% \\ A. Utre
 	}
+	\licence{CC-BY-NC-SA}
 	% date : automatique
 	\maketitle
 \begin{refsection} % enlève des warnings et des bogues sur les réfèrences longue portée (biblio ou multifichier)
@@ -178,9 +179,6 @@
 		\section{Routines variadiques}
 			\label{sec:routines_variadiques}
 			\subfile{sections/part2/chapter3/variadic}
-		\section{Alignement}
-			\label{sec:alignement}
-			\subfile{sections/part2/chapter3/alignement}
 		\section{Assembleur et C}
 			\label{sec:assembleur_et_c}
 			\subfile{sections/part2/chapter3/assembly}
@@ -193,6 +191,43 @@
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part3/introduction}
+	\chapter{Calculabilité}
+	\label{cha:calcul_et_calculabilite}
+	\chapter{Complexité}
+	\label{cha:complexite}
+		\section{Mesures du coût} % comptage des instructions/tours de boucle
+		\section{Notation de Landau} % pire, average, amorti
+		\section{Récurrences} % sur les sous-problèmes
+	\chapter{Structures de données classiques}
+	\label{cha:structures_de_donn_es_classiques}
+		\section{Type abstrait de données} % algébrique et classique
+			\label{sec:type_abstrait_de_donn_es}
+		\section{Tableaux}
+			\label{sec:tableaux}
+		\section{Listes chaînées}
+			\label{sec:listes_cha_n_es}
+		\section{Partitions}
+			\label{sec:partitions}
+		\section{Arbres binaires}
+			\label{sec:arbres_binaires}
+		\section{Dictionnaire et hashage}
+			\label{sec:dictionnaire_et_hashage}
+		\section{Graphes}
+			\label{sec:graphes}
+		\section{Enrichissement de structures}
+			\label{sec:enrichissement_de_structures}
+	\chapter{Approches algorithmiques}
+	\label{cha:approches_algorithmiques}
+		\section{Recherche exhaustive}
+			\label{sec:recherche_exhaustive}
+		\section{Algorithmes gloutons}
+			\label{sec:algorithmes_gloutons}
+		\section{Diviser pour régner}
+			\label{sec:diviser_pour_r_gner}
+		\section{Programmation dynamique}
+			\label{sec:programmation_dynamique}
+		\section{Prétraitement}
+			\label{sec:pr_traitement}
 \part{Le vrai monde de la réalité réelle}
 \label{part:le_vrai_monde_de_la_réalité_réelle}
 	\phantomsection
@@ -215,7 +250,7 @@
 		\section{Git}
 			\label{sec:git}
 			\subfile{sections/part4/chapter2/git}
-		\section{Le markdown}
+		\section{Markdown}
 			\label{sec:le_markdown}
 			\subfile{sections/part4/chapter2/markdown}
 	\chapter{Programmer proprement}
