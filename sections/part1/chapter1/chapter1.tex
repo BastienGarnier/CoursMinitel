@@ -51,7 +51,7 @@ La mémoire elle-même n'est dans les faits pas constituée d'un unique bloc mai
     \item la mémoire SRAM  (pour \underline{S}tatic RAM) (5 à 10 fois plus rapide que la RAM, même capacité mais beaucoup plus chère)
     \item les registres (extrêmement rapide, capacité allant de 1 octet à 8 octets, 16 octets pour les ordinateurs spécialisés en calcul scientifique).
 \end{itemize}
-Ces types de support mémoire ne seront pas toutes détaillées dans la suite, en tout cas pas dans leur principe de fonctionnement. L'utilité de certains supports sera tout de même expliqué (notamment le disque dur et la mémoire RAM, ainsi que certains registres ultérieurement).
+Ces types de support mémoire ne seront pas tous détaillés dans la suite, en tout cas pas dans leur principe de fonctionnement. L'utilité de certains supports sera tout de même expliqué (notamment le disque dur et la mémoire RAM, ainsi que certains registres ultérieurement).
 
 \textbf{Remarque :} En considérant seulement l'ensemble constitué de l'UAL et de l'UCP, la mémoire peut aussi être vue comme un support d'entrée/sortie. Ainsi, la lecture d''une information dans la mémoire constitue une entrée du système (UAL + UCP), et l'écriture d'une information dans la mémoire constitue une sortie du système (UAL + UCP).
 \subsection{Données manipulées}
@@ -246,6 +246,7 @@ $$
      &   & & \mapsto & 0\dots 0 & \text{ si $i = N$}
 \end{array}
 $$
+Par exemple : $(11010110)_2 \ll 3= (10110000)_2$
 \subsubsection{Décalage logique à droite}\label{ssub:d_calage_logique_droite}
 L'opérateur $\gg_{l}$ est défini comme suit :
 $$
@@ -255,6 +256,7 @@ $$
      &   & & \mapsto & 0\dots 0 & \text{ si $i = N$}
 \end{array}
 $$
+Par exemple : $(11010110)_2 \gg_l 3 = (00011010)_2$
 \subsection{Exercices}
 Dans tous les exercices, $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 
