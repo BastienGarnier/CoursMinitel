@@ -1,0 +1,286 @@
+\documentclass[../../../main.tex]{subfiles}
+% Voir : 
+% https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/
+% https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
+% https://fr.wikipedia.org/wiki/Fonction_de_hachage
+% https://en.wikipedia.org/wiki/Avalanche_effect
+% TAOCP Vol. 3, page 513 à 550
+
+
+% TODO : 
+% - ajouter le load factor + considérations théorique sur le seuil max.
+% - ajouter analyses de complexité
+% - détailler et corriger les exercices
+\begin{document}
+Sont à ajouter :
+\begin{itemize}
+	\item les analyses de complexité
+	\item le \textit{load factor} et son seuil d'agrandissement d'une table
+	\item correction des exercices
+\end{itemize}
+\subsection{Motivation}
+\label{sub:dict_motivation}
+Un problème important de calcul est la mise en correspondance d'éléments d'un premier ensemble avec des éléments d'un second ensemble. L'exemple le plus typique est celui des mots du dictionnaire mis en correspondance avec leur définition. Il faut pouvoir :
+\begin{itemize}
+	\item ajouter/supprimer des mots efficacement
+	\item lire la définition d'un mot efficacement
+\end{itemize}
+Les mots sont appelés les \textit{clefs} du dictionnaire et les définitions sont les \textit{valeurs} associées aux clefs.
+
+L'idée la plus simple semble être d'utiliser une liste chaînée de mots :
+\begin{minted}{c}
+struct Word {
+	char* word;
+	char* definition;
+};
+
+... // Définition d'une liste chaînée WordList contenant des 'Word'
+
+WordList words;
+\end{minted}
+On peut bien insérer et supprimer des couples $(mots, definition)$ efficacement. Le problème est alors qu'il n'est pas possible de lire la définition d'un mot quelconque sans parcourir la liste jusqu'à le trouver.
+
+On peut aussi implanter la liste comme un tableau, mais le problème n'est pas résolu. Si on cherche la définition du mot ``horloge'', il va falloir parcourir le tableau et comparer le champ \textit{word} avec ``horloge''. Les arbres ne servent pas plus puisqu'il est toujours nécessaire de parcourir chaque noeuds/feuilles de l'arbre pour comparer le mot.
+
+Les structures vues jusqu'à présent sont des structures de stockage qui se prêtent très mal à la correspondance. Ce dont on rêve est une structure telle qu'il soit possible d'écrire :
+\begin{minted}{c}
+char* definition = structure_find(structure, "horloge");
+\end{minted}
+sans avoir à parcourir l'entièreté des éléments de la structure.
+
+On appelle dans la suite :
+\begin{itemize}
+	\item \textit{clef} : l'élément dont on cherche le correspondant
+	\item \textit{valeur} : le correspondant d'une clef
+\end{itemize}
+L'espace des clefs est l'ensemble des valeurs possibles que peuvent prendre les clefs.
+
+\textbf{Remarque :} Les clefs peuvent être de nature différente. Il peut s'agir d'une donnée simple comme une chaîne de caractères ou d'un enregistrement. Un enregistrement désigne simplement un espace de clefs comme produit cartésien.
+
+Le type abstrait qui décrit un tel comportement est appelé un \textit{dictionnaire}. \newline
+\textit{Dictionnaire\textless Clef, Element\textgreater} utilise \textit{Booléen}, \textit{Entier}, \textit{Clef} et \textit{Element}
+\begin{itemize}
+	\item $creer\_vide()\rightarrow Dictionnaire$ renvoie un dictionnaire vide, sans couple $(cle, valeur)$
+	\item $est\_vide(Dictionnaire)\rightarrow \textit{Booléen}$ teste si le dictionnaire contient au moins un couple
+	\item $trouver(Dictionnaire, Clef)\rightarrow Element$ renvoie la valeur d'une clé dans le dictionnaire, indéfini si la clé n'appartient pas au dictionnaire
+	\item $supprimer(Dictionnaire, Clef:k)\rightarrow Dictionnaire$ supprime le couple de clé $k$ du dictionnaire
+	\item $insertion(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ ajoute un couple $(cle, valeur)$ au dictionnaire, indéfini si la clé appartient au dictionnaire
+	\item $modifier(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ remplace dans le dictionnaire la valeur de la clé, indéfini si la clé n'appartient pas au dictionnaire
+	\item $taille(Dictionnaire)\rightarrow Entier$ renvoie le nombre de couples $(clef, valeur)$ stockés dans le dictionnaire.
+\end{itemize}
+On observe que les routines $insertion$ et $modifier$ sont complémentaires. On peut donc l'implanter avec une unique routine qui ajoute le couple si la clef n'existe pas déjà et le met à jour sinon.
+
+\textbf{Remarque :} les tableaux sont l'implantation d'un cas particulier des dictionnaires où les indices du tableau sont les clés. En fait, si on arrive à transformer par un calcul les éléments d'un ensemble dans un ensemble borné d'entiers, on peut utiliser ce premier ensemble comme pour indicer le tableau, et on a une implantation générique d'un dictionnaire au prix du calcul.
+
+C'est cette remarque qui guide l'implantation par \textit{tables de hachages}. 
+% On peut aussi implanter les dictionnaires grâce aux $ABR$ (voir exercices).
+\subsection{Tables et fonctions de hachage}
+Il faut pouvoir \textit{calculer} à partir de la clef la place de la valeur. Ce calcul doit être en temps constant, au moins en moyenne, et l'accès à la valeur depuis la place également. Le calcul de la place est nécessairement effectué par une fonction\footnote{Puisqu'il s'agit d'un calcul.}, qui prend en argument la clef et renvoie la place de la valeur. Comme l'ensemble des clefs possibles est \textit{a priori} non borné\footnote{Avec un clef textuelle, il y a une infinité de lettres et de permutations de lettres possibles} et qu'on veut par notre fonction calculer une place, qui est évidemment bornée, il va être nécessaire de supprimer des informations des clefs de départ. On appelle \textit{fonction de hachage} la fonction qui ``hache'' (ou découpe) la donnée pour la faire ``rentrer'' dans un ensemble borné. L'ensemble  des clefs est potentiellement très grand, et est très peu rempli\footnote{Par exemple, il y a très peu de mots dans le dictionnaire par rapport à toutes les possibilités de permutation de lettres.}. La fonction de hachage joue donc un rôle de repliement de l'espace de départ dans l'espace d'arrivé.
+
+Comme la fonction de hachage est arbitraire, on peut choisir n'importe quel type pour représenter les places et les valeurs à ces places. Par souci de simplicité et d'optimisation, on considère donc un tableau de valeurs, dont les indices sont les places. Ce tableau est applé une \textit{table de hachage}.
+
+On a finalement :
+\begin{itemize}
+	\item une \textit{table de hachage} $T$ qui contient des valeurs accessiblees par des indices $i\in\llbracket 0; |T|-1\rrbracket$. $|T|$ désigne la capacité du tableau, et pas le nombre d'éléments stockés dans le dictionnaire.
+	\item une \textit{fonction de hachage} $f$ qui permet de replier l'ensemble des clefs dans un ensemble borné (d'entiers ou en bijection avec des entiers). En général, il s'agit de l'anneau $\frac{\mathbb{Z}}{2^{N}\mathbb{Z}}$ des entiers représentables sur $N$ bits.
+	\item une \textit{fonction de réduction} $r$ qui donne à partir du résultat de $f$ une place dans la table de hachage.
+\end{itemize}
+La distinction entre la première fonction de hachage et la fonction de réduction rend la fonction de hachage choisie indépendante de la taille du tableau et de la représentation des places. On assure par exemple de pouvoir définir des fonctions de hachage sur plusieurs ensembles différents qui ne dépendent pas de la taille du tableau. C'est la réduction qui replie l'image de $f$ en espace de places.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{table_hachage}
+	\end{center}
+\end{minipage}
+
+\textbf{Collisions :} $f$ est indépendante de la taille du tableau et peut produire une sortie hors du tableau. Toutefois, l'image de la réduction est, elle, dans un ensemble fixe plus petit. Certaines clefs donneront donc le même indice dans la table de hachage, quelque soit la fonction choisie. On appelle ce phénomène une \textit{collision}. Par exemple : $r(f(\text{``Horloge''})) = r(f(\text{``Poisson''}))$
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{table_hachage_collisions}
+	\end{center}
+\end{minipage}
+
+Les questions sont alors :
+\begin{itemize}
+	\item quelles fonctions $f$ et $r$ choisir pour calculer des indices dans la table en garantissant un minimum de collisions ?
+	\item comment gérer efficacement les collisions pour ne pas dégénérer la complexité temporelle de la structure ? 
+\end{itemize}
+Dans le cadre des tables de hachages, le plus important est la vitesse de calcul, donc :
+\begin{itemize}
+	\item une répartition homogène de $r$ dans l'intervalle des indices de la table
+	\item un calcul (très) rapide des fonctions $f$ et $r$
+\end{itemize}
+De fait, la nécessité d'un calcul très rapide des fonctions de hachage et de réduction peut amener dans l'implantation à confondre les deux, c'est-à-dire à considérer \textit{de fait} la donnée en entrée comme un entier\footnote{Ce qui ne pose pas de problèmes puisque le mot binaire représentant la donnée peut être interprété comme un entier.}, à utiliser l'identité comme fonction de hachage, et à se concentrer sur la réduction qui occupe alors en partie le rôle de fonction de hachage.
+
+\begin{minitelbasicbox}{\textbf{Bonne ou mauvaise fonction de hachage}\footnote{Bon t'a la mauvaise fonction de hachage, elle voit un truc elle hache. Elle hache ! La bonne fonction de hachage, elle voit un truc\dots Bon elle hache mais euh\dots c'est une bonne fonction de hachage hein !}}
+On ne s'intéresse pas à la sécurité engendré par la fonction de hachage. Ce ne sont pas ses propriétés cryptographiques qui intéressent mais seulement ses propriétés de répartition et de calculabilité. On veut une fonction \textit{rapidement calculable} qui répartissent de manière ``homogène'' ses sorties sur $\llbracket 0; |T| - 1\rrbracket$ \newline
+
+On peut mesurer la qualité d'une fonction de hachage cryptographique par le \textit{critère strict d'avalanche} : chaque fois qu'un seul bit de l'entrée est modifié, chaque bit de sortie doit changer avec une probabilité $0.5$. Ce critère assure l'homogénéité de la sortie et l'impossibilité de prédire le résultat de la fonction à cause de biais statistiques.
+
+Dans la pratique\dots on s'en fout, tant que c'est empiriquement homogène et surtout très rapide à calculer.
+\end{minitelbasicbox}
+\subsection{Fonction de hachage}
+Les fonctions qui ne génèrent pas de collisions, c'est-à-dire qui ne génèrent pas deux fois la même valeur avec deux clefs donnés, sont relativement rares. Un exemple clair est donné par le paradoxe des anniversaires. Avec plus de 23 personnes choisies aléatoirement, la probabilité que deux personnes parmi ces plus de 23 soient nés le même jour est très élevé. Ainsi, si on choisit aléatoirement une réduction, et qu'on veuille placer 23 couples $(cle, valeur)$ dans un tableau de 365 cases, la probabilité que deux hash parmi ces 23 aient le même résultat par la réduction est de pratiquement $0.5$.
+
+Une fonction de hachage ne peut donc être choisie au hasard.
+
+On présente là plusieurs fonctions simples qui suffisent amplement à la plupart des cas d'applications pratiques. Plus une fonction de hachage est complexe, plus elle est lente à calculer. Hors du cadre de la cryptographie, c'est la vitesse de calcul qui prime. Et la cryptographie sort très largement du cadre de ce livre.
+
+Les fonctions de hachage présentés ci-dessous sont toutes à valeurs dans $\{0, \dots, M-1\}$, avec $M\in{\mathbb{N}^*}$. On considère $K$ l'interprétation entirère du mot binaire à hacher.
+\subsubsection{Hachage par division}
+Le hachage par modulo est le plus simple de tous.  On pose alors :
+$$f(K) = K\text{ mod } M$$
+où $M$ doit être bien choisi. Le hachage est bien meilleur si $M$ est premier puisque les restes par le modulo sont tous différents. D'autres valeurs amènent à un hachage particulièrement médiocre. Ainsi, si $M = 2^p$, $f$ est simplement la sélection des $p$ bits de poids faibles de $K$.
+
+On observe que le hachage par modulo n'est pas une bonne fonction de hachage selon le critère strict d'avalanche. Si on modifie les bits de poids faible de $K$ avec $K\text{ mod }M < M$, seuls les bits de poids faibles de $f(K)$ seront modifiés car la ``barre'' du modulo ne sera pas dépassée et modifier $K$ revient alors à modifier $f(K)$.
+\subsubsection{Hachage multiplicatif}
+On pose $w$ le nombre de bits d'un mot machine (\textit{a priori} 32 bits) et alors $W = 2^w$
+
+Le hachage multiplicatif est effectué par la fonction :
+$$f_\alpha(K) = \left\lfloor\dfrac{M}{W}(\alpha K\text{ mod }W)\right\rfloor$$
+dont la qualité dépend du choix de $\alpha$. On choisit alors $\alpha$ premier avec $W$.
+
+\textbf{Justification du choix de $\alpha$ :} Pour une fonction de hachage fonctionnelle, on veut \textit{a minima} assurer $K_1\neq K_2\Rightarrow f(K_1)\neq f(K_2)$ pour $0 \leq K_1, K_2 < W$. Si $\alpha$ est premier avec $W$, il existe d'après le théorème de Bachet-Bézout $A, B$ tels que $A\alpha + BW = 1$. On a alors : $K\alpha A = KBW + K$.\newline
+Si $0\leq K < W$, il s'ensuit :
+$$\begin{array}{lcll}
+K & = & AK\alpha \text{ mod }W \\
+  & = & A(K\alpha\text{ mod }W)\text{ mod }W \\
+  & = & Af(K)\text{ mod } W\end{array}$$
+Supposons $K_1\neq K_2$. Si $f(K_1) = f(K_2)$, on a $K_1 = K_2$, c'est absurde.\newline
+D'où $K_1 \neq K_2 \Rightarrow f(K_1)\neq f(K_2)$.
+
+On remarque que le calcul de $f$ ne nécessite aucune division. En effet, le modulo de $2^w$ est effectué naturellement par le processeur et $\frac{M}{W} = 2^{m-w}$. D'où :
+\begin{minted}{c}
+#define ALPHA ...
+#define m ... // M = 2^m
+uint32_t f(uint32_t K) {
+	return (ALPHA * K) >> (m - sizeof(K))
+}
+\end{minted}
+\subsubsection{Hachage par pliage}
+Le hachage par pliage consiste à découper le mot binaire à hacher en sous-mots de $m$ bits, où $M = 2^m$ et à superposer ces sous-mots les uns sur les autres. On note $K = (K_{N-1} \dots, K_0)_2$, avec $N\in\mathbb{N}$. Si $N\text{ mod }m \neq 0$, il existe $q$ tel que $\lfloor\frac{N}{m}\rfloor = q$, on étend $K$ avec des $0$ en posant $K_N, \dots, K_{qm} = 0$
+$$f(K) = \left((K_0, \dots, K_{m-1})_2\star \dots \star (K_{(q-1)m}, \dots, K_{qm - 1})\right)\text{ mod }M$$
+Si $\star$ est une opération bit-à-bit, le modulo n'a pas besoin d'être calculé. On peut choisir par exemple $\star = \oplus$. Finalement :
+$$f(K) = \displaystyle\bigoplus_{i = 1}^{q}(K_{(i - 1)m}, \dots, K_{im - 1})_2$$
+Cette méthode ne peut être efficace que pour des clés de taille très supérieure à $M$.
+% \subsubsection{Hachage par conversion de base}
+\subsection{Réduction}
+Supposons que la table $T$ utilisé soit de taille $|T|\in\mathbb{N}$. Pour toute clef $k$, il faut donc $0\leq r(f(k)) < |T|$.
+
+Idéalement, on veut exactement $\dfrac{|Im(f)|}{|T|}$ clés pour chaque indice dans l'intervalle $\llbracket 0; |T| - 1\rrbracket$. Ce n'est possible que si $|Im(f)|$ est divisible par $|T|$, ce qui n'est généralement pas le cas. Au mieux, on peut avoir soit $\left\lfloor \dfrac{|Im(f)|}{|T|}\right\rfloor$ soit $\left\lceil \dfrac{|Im(f)|}{|T|}\right\rceil$ valeurs pour chaque indice. Si $|T|$ est petit par rapport à $|Im(f)|$, on peut considérer la réduction comme parfaite.
+
+Le modulo est à nouveau la solution la plus simple :
+$$r(f(K)) = f(K)\text{ mod }|T|$$
+\textbf{Remarque :} Dans le cas où on a $f : K\mapsto K$, la réduction sert également de hachage dans l'implantation. Il apparaît que certaines valeurs de $|T|$ sont meilleures que d'autres par la même analyse que celle du hachage par modulo décrit précédemment. % TODO : à justifier -> superposition des bits de la clé si non premier.
+
+On peut programmer facilement cette réduction :
+\begin{minted}{c}
+uint32_t reduction(uint32_t f_k, uint32_t card_T) {
+	return f_k % card_T;
+}
+\end{minted}
+Le problème de cette fonction est sa lenteur. En effet, la division sur un ordinateur est une opération coûteuse, \textit{a minima} deux fois plus lente qu'une multiplication.
+
+Certaines hypothèses sur les taille de $|T|$ et de $f(K)$ permettent d'optimiser le calcul de la réduction. 
+
+\textbf{Si $|T| = 2^p$,} avec $p\in\mathbb{N}$, on peut calculer le modulo par quelques opérations logiques\footnote{Si on fixe $p$ et donc la taille de $|T|$, on peut précalculer le masque et n'avoir qu'un seul ET logique.} :
+\begin{minted}{c}
+uint32_t reduction(uint32_t f_k, uint32_t p) {
+	return f_k & (~((uint32_t)-1 << p));
+}
+\end{minted}
+
+\textbf{Si $|T|, f(K)\in\llbracket 0; 2^N - 1\rrbracket$,} on peut accélérer la réduction en calculant $r(f(K)) = \dfrac{f(K)|T|}{2^N}$\footnote{Il s'agit d'une optimisation proposée en 2016 par le chercher Daniel Lemire de l'université du Quebec et adoptée entre autre par \textit{Stockfish} en 2017, le meilleur logiciel d'échecs du monde actuellement : \url{https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/}}. Avec $N = 32\text{ bits}$ :
+\begin{minted}{c}
+uint32_t reduction(uint32_t f_k, uint32_t card_T) {
+	return ((uint64_t)f_k * (uint64_t)card_T) >> 32;
+}
+\end{minted}
+\textbf{Preuve :} En multipliant par $|T|$, on fait correspondre les valeurs $\llbracket 0; 2^{32}\llbracket$ aux multiples de $|T|$ dans l'ensemble $\llbracket 0; |T|2^{32}\llbracket$. La division par $2^{32}$ fait correspondre tous les multiples de $|T|$ de l'intervalle $\llbracket k; (k+1)2^{32}\llbracket$ à $k$. Le nombre de multiples de $|T|$ dans un intervalle de $2^{32}$ éléments est soit $\left\lfloor \dfrac{2^{32}}{|T|}\right\rfloor$ soit $\left\lceil \dfrac{2^{32}}{|T|}\right\rceil$.
+
+\textbf{Remarque :} Cette optimisation de la réduction n'est utile que si la fonction de hachage fournit des valeurs dans $\{0, \dots, 2^{32}-1\}$ de manière homogène
+\subsection{Gestion des collisions}
+On distingue deux méthodes principalement utilisées de gestion des collisions :
+\begin{itemize}
+	\item par liste
+	\item par adressage ouvert
+\end{itemize}
+
+Le choix de la méthode influence surtout les constantes pour la vitesse d'exécution et la mémoire. De fait, cela dépend de l'architecture du processeur sur lequel le code est exécuté, et induit une bonne gestion du cache du processeur pour être efficace.
+\subsubsection{Liste de couples}
+La méthode par listee apparaît comme la solution la plus évidente : stocker toutes les collisions dans une liste. Au lieu d'avoir une table de valeurs, on a alors une table de listes de couples $(clef, valeur)$.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{table_hachage_chainage}
+	\end{center}
+\end{minipage}
+
+Lors de la recherche de la valeur de ``Horloge'', il suffit de parcourir la liste de la cellule calculée par la fonction $r\circ f$, et pour chaque élément de comparer la clef avec celle recherchée.
+
+\textbf{Remarque :} comme les fonctions de hachage et de réduction sont supposées répartir uniformément les clés parmi les indices de la table, il n'y a que peu d'éléments en collisions en moyenne. L'implantation d'une liste par tableau dynamique peut être plus rapide car les données sont stockés dans la même localité mémoire et rentrent mieux dans le cache du processeur.
+\subsubsection{Adressage ouvert par sondage linéaire}
+La méthode d'adressage ouvert consiste à stocker les paires $(clef, valeur)$ en collision dans des cases différentes de la table de hachage. Pour calculer les cases vers lesquelles stocker les couples en collisions, on utilise une fonction de sondage $s:\mathbb{N}\rightarrow \mathbb{N}$. Le choix de la fonction de sondage est alors important pour garantir l'efficacité de la table. On ne présente ici que le sondage linéaire. D'autres choix sont présentés dans les exercices.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{table_hachage_open_addr}
+	\end{center}
+\end{minipage}
+
+On peut supposer tous les calculs effectués \textit{modulo} $|T|$. Pour un sondage linéaire, on a $s(n) = n$. On peut en fait choisir n'importe quelle fonction de $\mathbb{N}$ dans $\mathbb{Z}$.
+
+Pour la recherche d'un élément, on suit alors l'algorithme suivant :\newline
+
+\begin{algorithm}
+\caption{Recherche d'un élément par sondage}\label{alg:dict_sondage}
+\KwIn{\textit{Table T}}
+\KwIn{\textit{Clef K}}
+$hash \leftarrow r(T, f(K))$\;
+$n \leftarrow 0$\;
+$place \leftarrow hash + s(n)$\;
+\While {$clef(T, place) \neq K \wedge n < |T|$} {
+	$n\leftarrow n + 1$\;
+	$place\leftarrow hash + s(n)$\;
+}
+\eIf {$clef(T, place) = K$} {
+	\Return valeur(T, place)\;
+} {
+	Comportement indéfini\dots \tcp*{La clef n'est pas trouvée}
+}
+\end{algorithm}
+
+\textbf{Remarque :} le test $n < |T|$ est optionnel si on suppose l'algorithme définit \textit{ssi} la clé est présente dans le dictionnaire.
+
+Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser un algorithme très similaire, en se munissant d'une fonction $est\_utilise(Table T, Place p)\rightarrow \textit{Booléen}$ qui renvoie $Vrai$ si la place est utilisée pour un couple $(clef, valeur)$ et $Faux$ sinon. La condition de la boucle devient simplement $est\_utilise(T, place) \wedge n < |T|$.
+\subsection{Exercices}
+\exercise{Hachage de chaînes de caractères}{12}Proposer une fonction de hachage permettant de hacher des chaînes de caractères.
+
+\exercise{Dictionnaire en C}{20}Les clefs et les valeurs considérés ici sont des chaînes de caractères.
+\begin{enumerate}
+	\item Proposer un enregistrement \textit{Couple} permettant de stocker un couple $(clef, valeur)$ d'un dictionnaire
+	\item Implanter en C les fonctionnalités de dictionnaire proposées à la sous-section \ref{sub:dict_motivation} de deux manières :
+		\begin{itemize}
+			\item avec une gestion des collisions par chaînage
+			\item avec une gestion des collisions par adressage ouvert en sondage linéaire
+		\end{itemize}
+		La fonction de hachage et la fonction de réduction doivent pouvoir être spécifier pour chaque instance d'enregistrement de \textit{Dictionnary}\footnote{Les identifiants dans le code sont en anglais, toujours.}.
+\end{enumerate}
+
+\exercise{Dictionnaire par ABR}{20}On considère ici un type abstrait de dictionnaire dont les clefs sont des chaînes de caractères.
+\begin{enumerate}
+	\item Donner une relation d'ordre sur les clefs
+	\item Implanter une structure de dictionnaire par arbre binaire de recherche, où les clefs des noeuds de l'arbre sont les clefs des couples $(clef, valeur)$ du dictionnaire.
+	\item Quelles sont les complexités temporelles de chaque opération de recherche, d'insertion et de suppression ?
+\end{enumerate}
+
+\exercise{Sondage quadratique}{}
+
+\exercise{Double hachage}{}
+
+\exercise{Hachage de Fibonacci}{}
+
+\exercise{Filtre de Bloom}{}
+
+\end{document}

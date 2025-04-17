@@ -21,12 +21,12 @@ La solution à cela est la \textit{projection de type}. Il s'agit de forcer le c
 TYPE1 variable;
 TYPE2 reinterpreted_variable = (TYPE2)(variable);
 \end{minted}
-\textbf{IMPORTANT :} La projection de type effectue dans certains cas un changement de valeur sans modification de la donnée (c'est-à-dire du mot binaire) et dans d'autres cas un changement de la donnée pour rester au plus proche de l'ancienne valeur\footnote{Parce-que le langage C est conceptuellement claqué au sol, mais \textit{trènkile}.}. Ainsi :
+\textbf{IMPORTANT :} La projection de type effectue dans certains cas un changement de valeur sans modification de la donnée de représentation (c'est-à-dire du mot binaire) et dans d'autres cas un changement de la donnée de représentation pour rester au plus proche de l'ancienne valeur\footnote{Parce-que le langage C est conceptuellement claqué au sol, mais \textit{trènnkile}.}. Ainsi :
 \begin{itemize}
-	\item projection de nombre à virgule vers entier : donnée modifiée et valeur approximée de l'ancienne (car perte de décimales)
-	\item projection d'entier vers nombre à virgule : donnée modifiée et valeur approximée de l'ancienne (car perte de précision du fait de la norme IEEE 754)
-	\item projection d'entier signé vers entier non signé, ou inversement : donnée non modifiée et valeur modifiée (simple changement d'interprétation)
-	\item projection de pointeurs $T_1*$ vers $T_2*$ : donnée non modifiée\footnote{et c'est tout car la valeur et la donnée des pointeurs sont identiques}
+	\item projection de nombre à virgule vers entier : représentation modifiée et valeur approximée de l'ancienne (car perte de décimales)
+	\item projection d'entier vers nombre à virgule : représentation modifiée et valeur approximée de l'ancienne (car perte de précision du fait de la norme IEEE 754)
+	\item projection d'entier signé vers entier non signé, ou inversement : représentation non modifiée et valeur modifiée (simple changement d'interprétation)
+	\item projection de pointeurs $T_1*$ vers $T_2*$ : représentation non modifiée\footnote{et c'est tout car la valeur et la donnée des pointeurs sont identiques}
 \end{itemize}
 Dans notre cas, il suffit d'écrire :
 \begin{minted}[linenos=false]{c}

@@ -14,36 +14,54 @@ Il faudrait noter dans une documentation que le $34^e$ octet correspond à l'acc
  
 C'est possible. Mais cela semble plutôt complexe, et d'un sens pratique assez\dots comment dire\dots limité.
  
-C'est ici que les structures entrent en jeu.
+C'est ici que le type abstrait d'\textit{enregistrement} entre en jeu.
 
-Une structure permet de définir un type complexe. C'est un moyen de stocker dans une seule entité plusieurs types d'informations. Chacune de ces informations possédera sa propre étiquette au sein de cette entité, ainsi que son propre type. C'est un peu comme une boîte qui contient plusieurs variables : 
+Un enregistrement permet de définir une structure complexe fixe de stockage. C'est un moyen de stocker dans une seule entité plusieurs informations de types différents dont le nombre et la séquence sont fixées à la définition. Chacune de ces informations possédera sa propre étiquette au sein de cette entité, ainsi que son propre type. C'est un peu comme une boîte qui contient plusieurs variables : 
 
 \begin{minipage}{\textwidth}
 	\begin{center}
 		\includesvg[width=.25\textwidth]{structure}
 	\end{center}
 \end{minipage}
- 
-La syntaxe de définition d'une structure en C est la suivante :
+
+L'enregistrement est analogue aux produits cartésiens en mathématique. Si les ensembles de chaque type sont $E_1, \dots, E_n$, l'ensemble des éléments que peut représenter un enregistrement est $E_1\times\dots\times E_n$. Une \textit{instance} d'un enregistrement est un élément du produit cartésien, c'est-à-dire un $n\text{-uplet}$ dont chaque \textit{champ} appartient à un ensemble $E_i$.
+
+On appelle aussi les enregistrements des structures de données passives. L'enregistrement est représenté par des champs de valeurs passifs.
+
+On s'intéresse dans cette section à la programmation concrète d'un enregistremnt et à la syntaxe C qui permet sa manipulation. On verra de manière beaucoup plus poussée dans le chapitre \ref{cha:structures_de_donn_es_classiques} l'application qui peut être faite de cet outil fourni par le langage. En C, les enregistrements sont implantés par le mot-clé \mintinline{c}{struct}.
+
+\begin{minitelbasicbox}{\textbf{Point vocabulaire :} Structure ou enregistrement ?}
+Les enregistrements dans la littérature technique sur le langagee C sont appelés simplement des structures, du fait du mot-clé utilisé pour les décrire. Le \textit{Pascal} est un langage plus précis qui utilise le mot-clé \textit{record}. En manipulation de bases de données, c'est aussi le mot ``enregistrement'' qui est utilisé.
+
+La justification du mot ``structure'' est que les enregistrements peuvent être utilisés comme support de données pour implanter des structures de données plus complexes. Ils servent comme type d'abstraction inférieur (voir section \ref{sec:type_abstrait_de_donn_es}) Il faut toutefois faire attention à la distinction entre une structure de données de manière générale (voir chapitre \ref{cha:structures_de_donn_es_classiques}) et les structures du langage C qui ne sont qu'une manière d'implanter des produits cartésiens.
+
+Dans la suite, on utilisera le mot ``enregistrement'' pour parler du type abstrait et le mot ``structure'' pour parler de l'implantation en C des enregistrements.
+\end{minitelbasicbox}
+
+La syntaxe de définition d'un enregistrement en C est la suivante :
 \begin{minted}[linenos=false]{c}
-struct NomStructure { // Aucun objet n'est créé, il s'agit d'une description
+struct NomEnregistrement { // Aucun objet n'est créé, il s'agit d'une description
 	TYPE1 var1;
 	TYPE2 var2;
 	TYPE3 var3;
 	// etc...
 };
 \end{minted}
-Il s'agit d'une définition, et non d'une déclaration. \textit{On définit un nouveau type}. Pour cette raison, aucune variable interne, ou \textit{membre}, de la structure ne peut être initialisée. Pour utiliser une structure, il faut au final créer des variables dont le type est cette structure :
+Il s'agit d'une définition, et non d'une déclaration. \textit{On définit un nouveau type}. Pour cette raison, aucune variable interne, ou \textit{champ}, de l'enregistrement ne peut être initialisée. Pour utiliser un enreigstrement, il faut au final l'\textit{instancier}. On rappelle qu'un enregistrement est la description d'un produit cartésien. Il faut donc déclarer une varible dont le type est cet enregistrement :
 \begin{minted}[linenos=false]{c}
-struct NomStructure x; // 'x' est créé sans membres initialisés.
+struct NomEnregistrement instance; // 'instance' est créé sans champs initialisés.
 \end{minted}
+À tout instant de l'exécution du programme, \mintinline{c}{instance} représentera un tuple élément de ce produit cartésien.
+
 Il est possible d'y penser un peu comme à la construction d'une maison : on commence par dessiner le plan de la maison et une fois cela fait il suffit de fabriquer plein de maisons grâce à ce plan.
- 
-On peut ensuite accéder aux membres d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un membre noté ``.'' :
+
+On observe qu'un type abstrait tel que défini dans la section \ref{sec:variables} sur les variables est un ensemble muni d'opérations. L'utilisation d'enregistrements permet de définir des ensembles par produits cartésiens, ce qui facilite la définition de types abstraits. On peut par exemple implanter $\mathbb{Q}$ comme l'ensemble $\mathbb{Z}\times{\mathbb{N}}$, pour définir les rationnels comme des rapports $\frac{a}{b}$
+
+On peut ensuite accéder aux membres d'une instance d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un champ noté ``.'' :
 \begin{minted}[linenos=false]{c}
-x.var1 = ...; // accède au membre 'var1' de 'x'
-x.var2 = ...; // accède au membre 'var2' de 'x'
-x.var3 = ...; // accède au membre 'var3' de 'x'
+instance.var1 = ...; // accède au champ 'var1' de 'instance'
+instance.var2 = ...; // accède au champ 'var2' de 'instance'
+instance.var3 = ...; // accède au champ 'var3' de 'instance'
 // etc...
 \end{minted}
 Un exemple :
@@ -67,9 +85,11 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\textbf{Remarque 1 :} Une structure ne peut contenir au maximum que 127 membres.
+Ici, \textsf{Point3D} est une implantation de $\mathbb{R}_{f64}^{3}$
+
+\textbf{Remarque 1 :} Une structure en C ne peut contenir au maximum que 127 champs. Il s'agit d'une limitation technique à l'implantation des enregistrements.
  
-\textbf{Remarque 2 :} Au contraire des tableaux statiques, toute structure définie est considérée comme une entité de première classe. Ainsi, il est possible d'écrire des routines dont les paramètres sont des structures, et qui prennent en argument des structures identiques :
+\textbf{Remarque 2 :} Au contraire des tableaux statiques, toute instance de structure est considérée comme une entité de première classe. Ainsi, il est possible d'écrire des routines dont les paramètres sont des instances de structures, et qui prennent en argument des instances de structures identiques :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -94,7 +114,8 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-\textbf{Remarque :} Il est aussi possible qu'un membre d'une structure soit lui-même une structure :
+Il est évident qu'un ensemble d'un produit cartésien soit lui-même un produit cartésien. Ainsi, $\mathbb{R}\times{(\mathbb{N}\times{\mathbb{N}})}$ est toujours un produit cartésien.
+De même en C, on peut définir un champ d'une structure comme étant lui-même une structure :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -171,9 +192,9 @@ struct MyStruct s = {
 \end{minted}
 \end{minipage}
 
-L'initialisation séquentielle suit exactement l'ordre des membres de la structure.
+L'initialisation séquentielle suit exactement l'ordre des champs de la structure.
 \newline
-L'initialisation sélective permet de choisir très exactement quel membre reçoit quelle valeur.
+L'initialisation sélective permet de choisir très exactement quel champ reçoit quelle valeur.
  
 \textbf{Remarque :} Les retours à la ligne sont optionnels et ne servent qu'à la lisibilité. Le code suivant est valide :
 \begin{minted}[linenos=false]{c}
@@ -184,18 +205,18 @@ struct Point {
 
 struct Point p = {.y = 4.5, 3.2}; // Pointe vers x = 3.2, y = 4.5
 \end{minted}
-Il est parfaitement possible de mélanger les initialisations séquentielles et sélectives. Dans un tel cas, l’initialisation séquentielle reprend au dernier membre désigné par une initialisation sélective. Partant, le code suivant initialise le membre $a$ à 1 et le membre $d$ à 30.560.
+Il est parfaitement possible de mélanger les initialisations séquentielles et sélectives. Dans un tel cas, l’initialisation séquentielle reprend au dernier champ désigné par une initialisation sélective. Partant, le code suivant initialise le membre $a$ à 1 et le membre $d$ à 30.560.
 \begin{minted}[linenos=false]{c}
-struct MyStruct s = {1, .d = 30.560};
+struct MyRecord s = {1, .d = 30.560};
 \end{minted}
-Alors que le code ci-dessous initialise le membre $c$ à \textsf{NULL}, le membre $d$ à 48, le membre $b$ à 0 et le membre $c$ à $\&s$.
+Alors que le code ci-dessous initialise le champ $c$ à \textsf{NULL}, le champ $d$ à 48, le champ $b$ à 0 et le champ $c$ à $\&s$.
 \begin{minted}[linenos=false]{c}
-struct MyStruct s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
+struct MyRecord s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
 \end{minted}
 \subsection{Méchanisme de construction}
-La question ici est de comprendre quel est le méchanisme qui permet d'accéder à chacun des champs d'une structure à partir de sa définition, c'est-à-dire comment fonctionne l'opérateur d'indirection.
+La question ici est de comprendre quel est le méchanisme qui permet d'accéder à chacun des champs d'une structure à partir de sa définition, c'est-à-dire comment fonctionne concrètement, techniquement, matériellement\footnote{Je rajoute des caisses d'adverbes pour le plaisir} l'opérateur d'indirection.
 
-L'objectif, en particulier, est de montrer que l'utilisation de structures et l'utilisation de l'opérateur d'accès à un membre ne ralentissent pas l'exécution d'un programme.
+L'objectif substantiel est de montrer que l'utilisation de structures et l'utilisation de l'opérateur d'accès à un champ d'une instance ne ralentissent pas l'exécution d'un programme.
 
 Pour mieux comprendre comment les données sont stockées, on exécute le programme suivant :
 \begin{minted}{c}
@@ -439,9 +460,11 @@ et modifier les routines de l'\refexercise{Matrices (1)} pour qu'elles utilisent
 
 \exercise{Optimisation d'alignement}{03} Déterminer les tailles des structures \textsf{ExampleAligned} et \textsf{ExampleUnaligned} avec un \textsf{double} à la place d'un \textsf{int}.
 
-\exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
+\exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La section \ref{sec:listes} est consacrée à cette structure\footnote{L'idée de mettre sous forme d'exercice ce qui apparaîtra plus tard dans le cours est de rendre la partie 2 sur le langage C complète vis-à-vis des cours Algo/Prog 1 de l'ISMIN sans  alourdir trop le cours. La section sur les listes semblera parfois un peu de la redite, bien qu'elle plus avant dans les détails.}
+
+La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
  
-On commence par construire la structure permettant de stocker un \textit{noeud} de la liste, c'est-à-dire un de ses éléments. La valeur du noeud est la valeur de l'élément de la liste :
+On commence par construire l'enregistrement permettant de stocker un \textit{noeud} de la liste, c'est-à-dire un de ses éléments. La valeur du noeud est la valeur de l'élément de la liste :
  
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -450,7 +473,7 @@ On commence par construire la structure permettant de stocker un \textit{noeud} 
 	\end{center}
 \end{minipage}
 
-L'idée fondamentale des listes chaînées est que chaque noeud sera alloué dynamiquement et sera donc situé dans un espace mémoire indépendant de celui des autres noeuds. Cela permet de libérer la mémoire allouée pour un noeud en conservant les autres noeuds, ou encore d'allouer de nouveaux noeuds sans avoir à s'occuper des adresses des autres noeuds.
+L'idée fondamentale du chaînage\footnote{On observera qu'il est possible d'implanter le type abstrait \textit{Liste} sans chaînage, par des tableaux. Les avantages et inconvénients sont différents et dépendent de l'application.} est que chaque noeud sera alloué dynamiquement et sera donc situé dans un espace mémoire indépendant de celui des autres noeuds. Cela permet de libérer la mémoire allouée pour un noeud en conservant les autres noeuds, ou encore d'allouer de nouveaux noeuds sans avoir à s'occuper des adresses des autres noeuds.
 
 En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud à l'autre grâce aux pointeurs $next$ et $previous$.
 \begin{enumerate}

@@ -151,7 +151,7 @@ Il s'agit exactement du même code à l'exception de l'utilisation des champs de
 
 Le chronométrage a le défaut de dépendre de la machine utilisée. Celle-ci induit un coefficient de vitesse. Il faut donc mesurer le rapport du temps d'exécution de chaque programme l'un par rapport à l'autre. De plus, il faut avoir conscience que la différence de vitesse entre les deux programmes est dû à la manipulation par le processeur de mots \textit{élémentaires} de 8 bits. Un processeur manipulant des mots élémentaires de 1 bit serait probablement plus rapide avec le code utilisant les champs de bits.
 
-Sur un processeur \textit{11th Gen Intel Core i7-11800H}, en compilant sans optimisations (niveau 0)\footnote{Il s'agit du niveau d'optimisations par défaut, raison pour laquelle il n'y pas besoin de le spécifier habituellement. Compiler à un niveau zéro d'optimisation permet de plus grandes facilités de déboguage.} du compilateur par :
+Sur un processeur \textit{11th Gen Intel Core i7-11800H}, en compilant sans optimisations (niveau 0)\footnote{Il s'agit du niveau d'optimisations par défaut, raison pour laquelle il n'y pas besoin de le spécifier habituellement. Compiler à un niveau zéro d'optimisation permet de plus grandes facilités de débuguage.} du compilateur par :
 \begin{minted}{bash}
 gcc main.c -o main -O0
 \end{minted}

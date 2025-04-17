@@ -1,0 +1,267 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+Une liste est un type qui permet le stockage linéaire de données sous forme d'une suite finie $L = [e_1, \dots, e_n]$. La liste est dite \textit{vide} si $n = 0$. Chacune de ces données est repérée par son indice $i\in\llbracket 1;n \rrbracket$ dans la suite $L$. Les éléments de la suite sont soit accessibles directement par leur indice, soit indirectement, quand la liste est représentée par une suite d'objets \textit{chaînés}.
+
+On considère alors :
+\begin{itemize}
+	\item la \textit{place} d'un élément, qui représente son indice et permet alors la manipulation de cet indice (par exemple pour calculer le successeur dans la liste).
+	\item une fonction \textit{contenu} qui pour une place donnée renvoie l'élément $e$ associé
+\end{itemize}
+Les données elles-mêmes ne sont pas ordonnés. Par contre, les places assignées à chaque donnée le sont selon leur rang dans la liste.
+
+On appelle :
+\begin{itemize}
+	\item \textit{n\oe{}ud} de la liste la donnée d'une place et d'un élément contenu à cette place. Un enregistrement de n\oe{}ud dans l'implantation peut contenir d'autres valeurs, comme la place du n\oe{}ud suivant ou précédent.
+	\item \textit{tête} de la liste le premier n\oe{}ud, contenant $e_1$
+	\item \textit{queue} de la liste le dernier n\oe{}ud, contenant $e_n$
+\end{itemize}
+\textbf{Remarque :} la distinction entre ``indice'' et ``place'' est importante pour s'abstraire de l'implantation. La place peut être représentée par une adresse mémoire distincte de l'indice par exemple. Concrètement, on peut envisager de manière assez générale la place comme l'indication d'emplacement mémoire de la donnée représentant l'élément dans la liste.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{listes}
+	\end{center}
+\end{minipage}
+
+La différence fondamentale entre les places et les éléments contenus à ces places tient à l'absence de contraintes sur les valeurs des éléments. Ainsi, il est possible d'avoir deux éléments de valeur identique à deux places différentes, alors que toutes les places sont différentes.
+
+Une signature minimale d'une liste peut alors être :\newline
+\textit{Liste\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément} et \textit{Place}
+\begin{itemize}
+	\item $creer\_vide() \rightarrow Liste$ renvoie une liste vide, sans éléments
+	\item $premier(Liste)\rightarrow Place$ renvoie la place du premier élément, indéfini si la liste est vide
+	\item $est\_dernier(Liste, Place)\rightarrow \textit{Booléen}$ Teste si la place est la dernière de la liste.
+	\item $successeur(Liste, \textit{Place : p})\rightarrow Place$ calcule la place suivant une place, indéfini si $p$ est la dernière place de la liste
+	\item $contenu(Liste,Place) \rightarrow \textit{Élement}$ renvoie l'élément contenu à une certaine place
+	\item $est\_vide(Liste)\rightarrow \textit{Booléen}$ renvoie $Vrai$ si la liste est vide, $Faux$ sinon
+	\item $supprimer\_en\_tete(\textit{mut Liste})\rightarrow \textit{Élément}$ supprime le premier élément de la liste et renvoie sa valeur
+	\item $inserer\_en\_tete(\textit{mut Liste}, \textit{Élément})$ insère un élément comme premier élément de la liste
+\end{itemize}
+On peut étendre cette signature en ajoutant d'autres opérations. Plus on ajoute d'opérations, plus la structure de donnée implantée peut devenir complexe pour rester efficace. On peut ainsi envisager d'ajouter des éléments en queue de la liste ou même d'en insérer/supprimer au milieu. \newline
+Ajouter des éléments en queue de liste induit soit de devoir parcourir toute la liste pour arriver à la fin, soit d'ajouter un accesseur qui renvoie la dernière place de la liste. Pour calculer cet accesseur en $\mathcal{O}(1)$, il faut ajouter un pointeur vers la tête, ce qui constitue une complexification.
+\subsection{Piles}
+Une pile est un cas particulier plus simple de la liste qui explicitement n'autorise la suppression et l'ajout d'éléments que d'un seul côté d'une liste linéaire. Les piles ont un intérêt algorithmique pour la manipulation de structures plus complexes, par exemple pour le parcours en profondeur de graphes.
+
+Pour visualiser, on peut faire assez correctement l'analogie avec une pile d'assiettes : on ne peut prendre que l'assiette du sommet de la pile, et une assiette ajoutée ou enlevée de la pile le sera toujours à son sommet :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=0.1\textwidth]{piles}
+	\end{center}
+\end{minipage}
+
+En anglais, cette structure est aussi appelée \textit{LIFO} (\textit{\underline{L}ast \underline{I}n \underline{F}irst \underline{O}ut}), ce qui résume parfaitement son fonctionnement.
+
+La signature d'une pile est la suivante :
+\textit{Pile\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément}
+\begin{itemize}
+	\item $creer\_vide()\rightarrow Pile$ renvoie une pile vide, sans éléments
+	\item $sommet(Pile)\rightarrow \textit{Élément}$ renvoie l'élément au sommet de la pile qui doit être non vide
+	\item $empiler(Pile, \textit{Élément}) \rightarrow Pile$ insère un élément au sommet de la pile
+	\item $depiler(Pile)\rightarrow Pile$ supprime l'élément au sommet de la pile, qui doit être non vide
+	\item $est\_vide(Pile)\rightarrow \textit{Booléen}$ Teste si la pile est vide
+\end{itemize}
+
+L'avantage de considérer un type abstrait \textit{Pile} distinct du type \textit{Liste} n'est pas évident au premier abord. L'avantage est pourtant dans la grande simplicité de la pile qui laisse à l'implantation la possibilité d'être grandement optimisé. En effet, tout comme l'ajout d'opérations amène à la complexification de l'implantation, avoir peu d'opérations est plus à même de garantir une implantation plus simple et plus efficace.
+
+On peut par exemple envisager l'implantation suivante d'une Pile :
+\begin{minted}{c}
+#include <stdlib.h> // malloc et free
+#include <stdbool.h> // type bool
+
+#include "element.h" // type E
+
+typedef struct Stack {
+	E* elts;
+	unsigned int sp; // stack pointer -> place du sommet
+	unsigned int capacity;
+} Stack;
+
+Stack stack_create_empty() {
+	Stack s;
+	s.elts = (E*)malloc(10*sizeof(E));
+	s.capacity = 10;
+	s.sp = 0;
+	return s;
+}
+
+E stack_top(Stack s);
+inline E stack_top(Stack s) {
+	return s.elts[s.sp - 1];
+}
+
+Stack stack_push(Stack s, E e) {
+	s.elts[s.sp++] = e;
+	if (s.sp == s.capacity) { // dépasse les capacités du tableau => doubler sa taille
+		unsigned int new_capacity = s.capacity * 2; // * 2
+		E* new = (E*)malloc(new_capacity*sizeof(E));
+		for (unsigned int i = 0; i < s.capacity; i++) {
+			new[i] = s.elts[i];
+		}
+		s.capacity = new_capacity;
+		free(s.elts);
+		s.elts = new;
+	}
+	return s;
+}
+
+Stack stack_pop(Stack s) {
+	s.sp--;
+	return s;
+}
+
+bool stack_is_empty(Stack s);
+inline bool stack_is_empty(Stack s) {
+	return s.sp == 0;
+}
+
+Stack stack_destroy(Stack s) {
+	free(s.elts);
+}
+\end{minted}
+On peut encore simplifier l'implantation de $push$ si on connaît d'avance la taille maximal de la pile. Cela évite d'avoir à effectuer des copies de tableau puisqu'on peut immédiatement allouer un tableau de la taille nécessaire pour stocker les éléments.
+\subsection{Files}
+Une pile est un type plus simple qui n'accorde l'ajout d'éléments qu'à un bout de la liste et la suppression d'éléments qu'à l'autre bout de la liste. Les piles ont un intérêt algorithmique pour la manipulation de structures plus complexes, par exemple pour le parcours en largeur de graphes.
+
+Pour visualiser, on peut faire assez correctement l'analogie avec des perles enfilées sur un fil. À ce fil on n'ajoute des perles que d'un côté, et on n'en enlève que de l'autre.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=0.75\textwidth]{files}
+	\end{center}
+\end{minipage}
+
+En anglais, cette structure est aussi appelée \textit{FIFO} (\textit{\underline{F}irst \underline{I}n \underline{F}irst \underline{O}ut}), ce qui résume parfaitement son fonctionnement.
+
+La signature d'une file est la suivante :\newline
+\textit{File\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément}
+\begin{itemize}
+	\item $creer\_vide()\rightarrow File$ renvoie une file vide, sans éléments
+	\item $premier(File)\rightarrow \textit{Élément}$ renvoie le premier élément de la file (celui le plus ``à gauche'' sur le schéma)
+	\item $dernier(File)\rightarrow \textit{Élément}$ renvoie le dernier élément de la file (celui le plus ``à droite'' sur le schéma)
+	\item $enfiler(File, \textit{Élément}) \rightarrow File$ insère un élément \textit{en tête} de la file
+	\item $defiler(File)\rightarrow File$ supprime l'élément \textit{en queue} de la file, qui doit être non vide
+	\item $est\_vide(File)\rightarrow \textit{Booléen}$ Teste si la file est vide
+\end{itemize}
+De même que pour les piles, la signature simplifié des files par rapport aux listes laisse une plus grande liberté d'implantation et donc d'optimisation.
+
+On ne décrira pas une implantation par un tableau des files, qui est laissée en exercice.
+\subsection{Implantation par chaînage}
+Le problème de l'implantation des listes par un tableau est le suivant : dans le cas où le tableau devient trop petit, il n'est pas possible de \textit{l'agrandir}. En effet, les cases mémoires adjacentes peuvent très bien être utilisés par d'autres programmes ou d'autres parties de notre programme. Il faut donc créer un nouveau tableau plus grand et copier les éléments du premier dans le second. Cette opération est très coûteuse en temps ($\Theta(n)$). On observe toutefois qu'en choisissant un bon facteur d'agrandissement, cette opération de copie sera appelée assez rarement et la complexité temporelle d'un ajout en tête ou en queue de liste reste constante ($1 - O\left(\frac{1}{n}\right)$) (la preuve est laissée en exercice). Cela ne résoud pas le problème de l'insertion en milieu qui demande de copier à chaque insertion une partie du tableau pour le décaler.
+
+On s'intéresse ici à une autre manière de procéder qui garantit l'ajout en tête et en queue de liste en $O(1)$ \textit{dans le pire des cas}. L'idée fondamentale est de dissocier les emplacements mémoire des noeuds de la liste. Chacun sera stocké indépendamment des autres, de manière non contigüe, grâce à une allocation sur le tas\footnote{par \textsf{malloc} donc}. Pour conserver les informations de tous les noeuds de la liste, chaque noeud stocke la place du noeud suivant et du noeud précédent :
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{chaine0}
+	\end{center}
+\end{minipage}
+
+En partant de la tête et en sachant calculer la place suivante, on peut donc parcourir toute la liste. De même, en sachant calculer la place précédente, on peut partir de la queue et parcourir toute la liste. En utilisant simplement une adresse mémoire pour implanter une place, on observe qu'aucun calcul n'est à faire. Les noeuds stockent simplement l'adresse des noeuds suivant et précédent.
+
+L'enregistrement d'un noeud en C est alors :
+\begin{minted}[linenos=false]{c}
+typedef struct ListNode ListNode;
+typedef ListNode* Place;
+struct ListNode {
+	Element e;
+	Place next;
+	Place previous;
+};
+\end{minted}
+La dernière question reste dans l'enregistrement de la première place et de la dernière, pour manipuler la liste en tête et en queue. Il faut aussi choisir une convention qui ne soit pas sans queue ni tête pour les listes vides, qui n'ont ni tête ni queue. Des problèmes techniques peuvent aussi apparaître lorsqu'on a qu'un unique élément, puisque la tête et la queue sont à la même place. Libérer deux fois la même mémoire aboutit à une \textit{segmentation fault}, ce qui n'est pas agréable.
+
+Le choix le plus classique est d'utiliser un enregistrement comme suit :
+\begin{minted}[linenos=false]{c}
+typedef struct List {
+	unsigned int length;
+	Place head;
+	Place tail;
+} List;
+\end{minted}
+La valeur \mintinline{c}{NULL} pour les places indique alors l'absence d'éléments. On peut traiter tous ces cas particuliers engendrés dans fonctions de manipulation par des conditions. Le risque d'erreurs est grand et les conditions ralentissent le code.\footnote{Ça reste un bon exercice pratique sur les pointeurs}.
+
+On présente ici une astuce d'implantation qui permet d'éviter de tels soucis, avec la structure de liste suivante :
+\begin{minted}[linenos=false]{c}
+typedef struct List {
+	unsigned int length;
+	Place virtual;
+} List;
+\end{minted}
+On ajoute un noeud virtuel, qui n'appartient pas à la liste au sens abstrait. Il sert uniquement à pointer vers les places de la tête et de la queue. La différence fondamentale est que la liste n'est jamais matériellement vide. Par ailleurs, quand on a un unique élément dans la liste, celui-ci ne pointe pas vers lui-même mais vers le noeud virtuel, ce qui évite des erreurs lors de la suppression de l'élément.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\includesvg[width=\textwidth]{chainage_virtuel}
+	\end{center}
+\end{minipage}
+
+Il n'y a pratiquement plus aucun test à effectuer pour vérifier si les pointeurs de tête et queue sont \mintinline{c}{NULL} ou non, ce qui accélère les fonctions de manipulation.\newline
+Ainsi, l'ajout en queue de liste devient :
+\begin{minted}[linenos=false]{c}
+List list_push_on_tail(List l, Element e) {
+	ListNode *new = malloc(sizeof(ListNode));
+	new->next = l->virtual;
+	l->virtual->prev->next = new;
+	new->prev = l->virtual->prev;
+	l->virtual->prev = new;
+	new->e = e;
+	l->length++;
+	return l;
+}
+\end{minted}
+% \subsection{Récursivité sur les listes}
+% On aborde ici pour la première fois la question de la récursivité et des routines récursives. L'idée fondamentale de la récursivité est d'appeler une routine à l'intérieur de son corps même pour créer une boucle. Cet appel est appelé une récursion. Un exemple très simple de récursion est le calcul d'une factorielle :
+% \begin{minted}[linenos=false]{c}
+% unsigned int fact(unsigned int n) {
+% 	switch (n) {
+% 		case 0:
+% 			return 1;
+% 		default:
+% 			return n*fact(n-1);
+% 	}
+% }
+% \end{minted}
+% On observe deux cas :
+% \begin{itemize}
+% 	\item un cas de terminaison qui met fin aux appels récursifs et donc à la boucle
+% 	\item un cas non terminal qui effectue un appel récursif
+% \end{itemize}
+% Ce sont les paramètres de la fonction qui servent à faire évoluer la boucle.
+
+% On peut par récursion effectuer \textit{en théorie} les mêmes calculs que par des algorithmes itératifs fonctionnant avec des boucles explicites. Cependant, comme les appels récursifs chargent la pile d'exécution et que celle-ci est limitée, on évite en général les programmes récursifs en l'absence d'un langage de programmation spécialisé qui effectue des optimisations de dérécursification.
+% \subsubsection{Récursivité terminale}
+% Dans l'exemple ci-dessus, le calcul de la factorielle est très lent. En effet, on effectue d'abord l'appel à $fact(n)$, puis à l'intérieur un appel à $fact(n-1)$, etc\dots Il faut ensuite dépiler tous les résultats calculés pour remonter dans le premier appel à $fact(n)$ et obtenir le résultat. Il y a donc un facteur 2 devant le nombre d'opérations effectuées.
+
+% L'idée pour régler ce problème est de n'effectuer des calculs récursifs que par procédure. Le résultat lui-même est stocké en paramètre de la routine. Lorsqu'on arrive au cas de terminaison, il suffit d'arrêter la récursion :
+% \begin{minted}[linenos=false]{c}
+% void aux(unsigned int n, unsigned int *acc) {
+% 	switch (n) {
+% 		case 0:
+% 			return;
+% 		default:
+% 			*acc = n * (*acc);
+% 			aux(n-1, acc);
+% 	}
+% }
+% unsigned int fact(unsigned int n) {
+% 	unsigned int p = 1;
+% 	aux(n, &p);
+% 	return p;
+% }
+% \end{minted}
+\subsection{Exercices}
+\exercise{Listes virtuelles}{20} Implanter les routines de la signature d'une liste en utilisant une liste chaînée à n\oe{}ud virtuel. Ajouter une routine \mintinline{c}{void destroy(List l);} qui libère la mémoire de tous les noeuds de la liste\footnote{Cette routine est directement induite par l'implantation.}. \newline
+\textit{\underline{Remarque :} on pourra considérer que les éléments sont entiers, comme pour l'\refexercise{Listes chainées}, pour pouvoir avoir un code fonctionnel.}
+
+\exercise{Listes par tableaux}{23} Implanter une liste avec un tableau, qui permette l'accès, l'insertion et la suppression en tête et queue en complexité amortie $O(1)$ (et le prouver). Quelle est la complexité temporelle des opérations de lecture, d'insertion et de suppression d'éléments à une place quelconque de la liste ? Commenter.
+
+\exercise{Piles et files}{20} Montrer qu'on peut implanter une file avec deux piles et une pile avec deux files. Quelle est la complexité temporelle des opérations ?
+
+\exercise{Listes à un pointeur}{25} Implanter une structure de liste chaînée dont les noeuds ne possèdent qu'un seul pointeur. Écrire alors une procédure de renversement qui inverse l'ordre de la liste en $\mathcal{O}(1)$ \newline
+\textit{\underline{Indication :} utiliser les propriétés du groupe commutatif $(\mathcal{B}^N, \oplus)$}
+
+\exercise{Fusion de listes}{17} Écrire une fonction $fusion(Liste, Liste) \rightarrow Liste$ qui renvoie la fusion de deux listes d'entiers triés. La liste résultante devra également être triée et sans doublons.
+
+\exercise{Skiplists}{28} TODO
+\end{document}

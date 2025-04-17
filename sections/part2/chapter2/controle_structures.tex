@@ -9,7 +9,7 @@ Ce registre est appelé par différents noms :
 	\item \textit{IP} pour \textit{\underline{I}nstruction \underline{P}ointer}
 	\item \textit{IAR} pour \textit{\underline{I}nstruction \underline{A}ddress \underline{R}egister}
 \end{itemize}
-La manipulation de la valeur ce registre permet de se ``déplacer'' dans le programme. Ces modes de déplacements sont décrits dans les sections suivantes.
+La manipulation de la valeur de ce registre permet de se ``déplacer'' dans le programme. Ces modes de déplacements sont décrits dans les sections suivantes.
  
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -32,11 +32,11 @@ Les structures de contrôle plus abstraites sont ensuite construites par l'utili
 
 \subsubsection{Séquence}
 \label{ssub:s_quence}
-La séquence est une structure de contrôle implicite, dont la gestion est réservée au processeur de l'ordinateur. Il s'agit simplement du passage d'une instruction à la suivante. En langage C, c'est le point-virgule indiquant la fin d'une instruction qui se charge d'indiquer le passage à la suivante.
+La séquence est une structure de contrôle implicite, dont la gestion est réservée au processeur de l'ordinateur. Il s'agit simplement du passage d'une instruction à la suivante.
  
 La fin d'un instruction va donc amener à l'incrémentation du registre \textit{IP} de la taille de l'instruction. Imaginons que le processeur exécute la $i^e$ instruction de taille $t_{i}$ octets à l'adresse $a_{i}$. À l'exécution de cette instruction, $IP = a_{i}$. À la fin de l'exécution de l'instruction, $\textit{IP} = a_{i} + t_{i} = a_{i+1}$. Il s'agit de l'adresse de l'instruction suivante, puisque toutes les instructions sont contigües en mémoire.
  
-Certaines architectures de processeur utilisent une taille fixe pour les instructions. Dans ce cas, $\forall{i}, t_{i} = k\in{\mathbb{N}}$ est une constante. Cela accélére l'accès aux instructions par le processeur, mais limite le nombre possible d'instructions.\footnote{Par exemple, les processeurs Intels utilisent des instructions de taille variable tandis que les processeurs ARM utilisent des instructions de taille fixe}
+Certaines architectures de processeur utilisent une taille fixe pour les instructions. Dans ce cas, $\forall{i}, t_{i} = k\in{\mathbb{N}}$ est une constante. Cela accélére l'accès aux instructions par le processeur, mais limite le nombre possible d'instructions.\footnote{Les processeurs Intels utilisent des instructions de taille variable tandis que les processeurs ARM utilisent des instructions de taille fixe}
  
 \subsubsection{Arrêt de programme}
 \label{ssub:arr_t_de_programme}
@@ -477,7 +477,7 @@ L'instruction \textsf{continue} est le dual de l'instruction \textsf{break} pour
 	\end{center}
 \end{minipage}
  
-Plus sérieusement, il est recommandé de ne pas utiliser le \textsf{goto} l'immense majorité du temps.\footnote{Dire ça c'est un coup à avoir un lecteur à l'ego démesuré qui va penser être le type exceptionnel qui a des problèmes si extraordinaires qu'il lui \textit{faut} le \textsf{goto}. Ou qu'il est tellement malin qu'avec son \textsf{goto} à tort et à travers, il révolutionne les styles de programmation. Au risque de le décevoir\dots} En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bogues) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions. Par ailleurs, la lecture seule d'une instruction \textsf{goto} ne donne aucune information supplémentaire à son sujet comme les raisons pour lesquelles le saut est effectué.
+Plus sérieusement, il est recommandé de ne pas utiliser le \textsf{goto} l'immense majorité du temps.\footnote{Dire ça c'est un coup à avoir un lecteur à l'ego démesuré qui va penser être le type exceptionnel qui a des problèmes si extraordinaires qu'il lui \textit{faut} le \textsf{goto}. Ou qu'il est tellement malin qu'avec son \textsf{goto} à tort et à travers, il révolutionne les styles de programmation. Au risque de le décevoir\dots} En effet, ce genre de saut est effectué sans contrôle (donc augmente les risques de bugs) et permet moins d'optimisations de la part du compilateur car son fonctionnement ne possède pas de logique intrinsèque, au contraire des boucles \textit{for} et \textit{while} qui suivent des règles contraintes par des conditions. Par ailleurs, la lecture seule d'une instruction \textsf{goto} ne donne aucune information supplémentaire à son sujet comme les raisons pour lesquelles le saut est effectué.
 
 Cela ne signifie pas que l'outil soit tout à fait inutile, simplement que son utilisation doit être restreinte à des cas d'utilité avéré.\footnote{On peut penser à des transitions de machines d'états.}
 

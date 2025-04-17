@@ -1,0 +1,44 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+On définit ici le minimum de notions nécessaires pour être un minimum ``précis'' par la suite. Il ne s'agit que d'un minimum, donc de pas grand-chose. Faudra voir dans le futur pour développer dans les détails. Pour l'instant, c'est bâclé, notamment par l'absence de la description d'au moins un modèle de calcul. L'idée n'est pas de prouver et détailler tout dans les moindres détails mais quand même\dots
+
+\definition{Étoile de Kleene usuelle} {
+	Soit $E$ un ensemble. On note l'\textit{étoile de Kleene} de $E$ l'ensemble $E^* = \displaystyle\bigcup_{d\in\mathbb{N}}E^d$
+
+	Si $E$ comporte un neutre $0_E$, on notera $E\setminus \{0_E\}$ l'ensemble privé du neutre\footnote{Au lieu du $E^*$ habituel\dots il faut en vouloir à Kleene.}.
+}
+\subsection{Modèles de calcul}
+\definition{Modèle de calcul}{
+	Un modèle de calcul est une structure mathématique munit d'un ensemble d'opérations élémentaires qui manipulent cette structure.\newline	
+}
+\textbf{Exemples\footnote{Faudra voir la motivation pour décrire formellement au moins un modèle de calcul, pour l'instant, ce n'est qu'une liste de noms simplement pour observer la multiplicité des modèles.} :}
+\begin{itemize}
+	\item Machines RAM
+	\item Machines de Turing
+	\item Systèmes de Post
+	\item Lambda calcul
+	\item Fonctions récursivement énumérables
+	\item \dots
+\end{itemize}
+\subsubsection{Problèmes et algorithmes}
+\definition{Problème}{
+	Un problème est une fonction $P:X\rightarrow Y$.\newline
+
+	$X$ est l'ensemble des entrées du problème et $Y$ l'ensemble des sorties du problème. 
+}
+\textbf{Exemple :} Le problème consistant à trier par ordre croissant des listes d'entiers a comme ensembles d'entrées et de sorties $X = Y = \mathbb{Z}^*$ (étoile de Kleene).\newline
+On choisit un élément $x\in X = Z^*$ comme par exemple $(7, 9, -2, -7, 5, 4, -3, 1, 0)\in\mathbb{Z}^8\subset{Z^*}$ (par définition de l'étoile de Kleene).\newline
+C'est un problème de tri croissant, donc $P((7, 9, -2, -7, 5, 4, -3, 1, 0)) = (-7, -3, -2, 0, 1, 4, 5, 7, 9)$.
+\definition{Problème de décision}{
+	Un problème $P:X\rightarrow Y$ est dit \textit{de décision} si $Y = \mathcal{B} = \{Vrai, Faux\}$.
+}
+\textbf{Exemple :} Déterminer si un élément $e\in E$ appartient ou non à un tableau d'éléments d'un ensemble $E$ est un problème de décision. Son ensemble d'entrées est $X = E^*$.
+\definition{Algorithme}{
+	Un algorithme qui résoud un problème $P$ dans un certain modèle de calcul est une suite d'instructions élémentaires de ce modèle qui pour tout $x\in X$ en entrée calcule $P(x)$\footnote{La définition manque un peu de précision et de rigueur\dots Il faudrait définir précisement le modèle  de calcul utilisé}.
+}
+\textbf{Notation :} Soit $P:X\rightarrow Y$ un problème. L'ensemble des algorithmes qui résolvent $P$ dans un certain modèle de calcul est noté $\mathcal{A}(P)$.
+% L'ensemble de tous les algorithmes de $X$ dans $Y$ est noté $X\twoheadrightarrow Y = \Bigcup_{P:X\rightarrow Y}\mathcal{A}(P)$
+
+\textbf{Exemple (Algorithmes \textit{brute force}) :} Les algorithmes \textit{brute force} ne font pas état de la structure sous-jacente du problème. Pour chaque entrée $x\in X$, un algorithme \textit{brute force} parcourt toutes les sorties envisageables\footnote{On précise ``envisageable'' malgré le côté \textit{tout} tester, puisqu'on qualifie toujours de \textit{brute force} un algorithme qui trierai un tableau de $n$ éléments en essayant toutes les permutations de ces $n$ élémeents. Il pourrait \textit{vraiment} tester tous les éléments de $\mathbb{Z}^*$, ce serait juste \textit{infiniment} plus long.} $y\in Y$ et teste si $P(x) = y$
+
+\end{document}

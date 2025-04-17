@@ -5,6 +5,8 @@ Certains exercices sont vraiment difficiles, et ce n'est qu'en y passant du temp
 La solution à chaque exercice n'est pas unique. Il est donc possible souvent de trouver une solution qui diffère. Il peut être intéressant de se poser la question de la raison des différences entre deux solutions (optimalité, lisibilité, rigueur, etc\dots). Il n'est ni garanti que les programmes proposés soient optimaux, ni que les démonstrations proposées soient les plus élégantes.
 
 Toute proposition de démonstration ou de code peut être envoyé au contact donné en préface dans l'optique d'amélioration des futures éditions.
+
+\textbf{Note quant aux codes :} certains codes ne sont ni annotés ni commentés. Pour ne pas surcharger le document, on indique simplement le chemin dans le répertoire des solutions du fichier de code qui contient la correction.
 \section{Première partie}
 On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 \subsection{Opérations logiques sur les mots binaires}
@@ -183,10 +185,12 @@ $$\textsf{0x4F6820210A5175692065732D74752021083F}$$
 \subsection{Bases du langage}
 \subsubsection{Variables}
 \solution{Interversion de variables par effet de bord}
-\inputminted{c}{solutions/inter_var_side_effect.c}
+
+\textbf{Code :} voir \detokenize{solutions/part2/chapter2/inter_var_side_effect.c}
 \subsubsection{Formatage de chaînes de caractères}
 \solution{Taille des types}
-\inputminted{c}{solutions/taille_types.c}
+
+\textbf{Code :} voir \detokenize{solutions/part2/chapter2/taille_types.c}
 \subsubsection{Opérateurs sur les variables}
 \solution{Valeur}
  
@@ -221,7 +225,7 @@ printf("%d", a > 4 && b == 18);
 c = a = b + 10;
 \end{minted}
 \solution{Interversion sans effet de bord (1)}
-\inputminted{c}{solutions/inter_no_side_effect_1.c}
+\inputminted{c}{solutions/part2/chapter2/inter_no_side_effect_1.c}
 On note $a_{p}$ et $b_{p}$ les valeurs de $a$ et $b$ précédent l'interversion, et $a_{s}$ et $b_{s}$ les valeurs de $a$ et $b$ succédant à l'interversion.  
 Les opérateurs $+$ et $-$ conservent l'écriture binaire des mots. L'échange est donc correct quelques soient les signatures de $a$ et $b$. 
 Avec $a$ sur $N_{a}$ bits et $b$ sur $N_{b}$ bits avec $N_{a} > N_{b}$, on peut choisir $a = 2^{N_{b}}$ et $b$ quelconque. Alors $a + b = 2^{N_{b}}+b$ puis $b_{s} = 2^{N_{b}}+b_{p} - b_{p} = 2^{N_{b}} = -1 \neq{a}$. La permutation est donc incorrecte.
@@ -229,17 +233,17 @@ Avec $a$ sur $N_{a}$ bits et $b$ sur $N_{b}$ bits avec $N_{a} > N_{b}$, on peut 
 Cela peut être justifié sans calcul par l'observation suivante : les bits $a_{N_{a}-1}\dots a_{N_b}$ sont perdus par la modulation par $2^{N_{b}}$. La permutation ne peut donc être correcte.
  
 \solution{Interversion sans effet de bord (2)}
-\inputminted{c}{solutions/inter_no_side_effect_2.c}
+\inputminted{c}{solutions/part2/chapter2/inter_no_side_effect_2.c}
 En effet, on rappelle que pour tout ${x\in{\mathcal{B}^{N}}}$, $x\oplus{x} = 0$ et $x\oplus{0} = x$. Ainsi, $b_{s} = a\oplus{b}\oplus{b} = a$ et $a_{s} = a\oplus{b}\oplus{a} = b$.
  
 \solution{Multiplication par décalage} On observe que $14 = (1110)_{2} = 2^{3} + 2^{2} + 2^{1} = (1 \ll 3) + (1 \ll 2) + (1 \ll 1)$. Il est toutefois possible de faire mieux en prêtant plus attention à la représentation binaire de 14. En effet, $14 + 1 = (1111)_{2} = 16 - 1$, c'est-à-dire $14 = 16 - 2 = 2^{4} - 2^{1} = (1 \ll 4) - (1 \ll 1)$
-\inputminted{c}{solutions/mult_decalage.c}
+\inputminted{c}{solutions/part2/chapter2/mult_decalage.c}
 Il est ainsi possible, parfois, d'optimiser l'opération de multiplication grâce à cette technique. La méthode classique de la multiplication est en effet plus lente à calculer, bien que plus générale. Cela est particulièrement visible lors de la multiplication de grands nombres :
 $$987654321\times{65534} = (987654321 \ll 16) - (987654321 \ll 1)$$
 Seules 2 décalages et une soustraction sont effectuées ($65534 = 65536 - 2 = 2^{16} - 2^{1}$)
  
 \solution{Valeur absolue (1)}On utilise la particularité qu'un décalage logique (effectué sur \textsf{unsigned int}) n'effectue pas d'extension du signe :
-\inputminted{c}{solutions/valeur_absolue.c}
+\inputminted{c}{solutions/part2/chapter2/valeur_absolue.c}
 Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujours vrai et \textsf{0 \& x == 0} est toujours vrai.
 \subsubsection{Projection de type}
 \solution{Quelques évaluations entières}
@@ -251,16 +255,20 @@ Par ailleurs, $-1 = 0\textsf{xFFFFFFFF}$, donc \textsf{-1 \& x == x} est toujour
 \end{enumerate}
 \subsubsection{Structures de contrôle du flot d'exécution}
 \solution{}
-\inputminted{c}{solutions/cours_structure_controle.c}
+\inputminted{c}{solutions/part2/chapter2/cours_structure_controle.c}
 À partir de $u_{4}$ inclut, les valeurs de la suite sont fausses. On observe ainsi que $u_{3} = 808602$, d'où $u_{4} = 3\times808602^{2} - 5\times{808602} + 2 = 1961507540204 > 2^{31} - 1 = 2147483647$. Il y a un dépassement de capacité car la variable $u$ est stocké sur trop peu de bits. Le résultat est donc correct modulo $2^{32}$
  
 \solution{Question d'âge}
-\inputminted{c}{solutions/question_d_age.c}
+
+\textbf{Code :} voir \detokenize{solutions/part2/chapter2/question_d_age.c}
+
 \solution{Suite de Fibonacci}
-\inputminted{c}{solutions/suite_fibonacci_1.c}
+
+\textbf{Code :} voir \detokenize{solutions/part2/chapter2/suite_fibonacci_1.c}
+
 \solution{Test de primalité}\newline
 Par définition, un nombre $n$ est premier si il possède exactement deux diviseurs distincts : $n$ et $1$. On peut donc tester la primalité d'un nombre en vérifiant qu'il ne possède pas d'autres diviseurs positifs strictement supérieurs à 1 que lui-même. Un premier algorithme naïf\footnote{Enfin, pas tout à fait puisqu'en ignorant les nombres pairs, on obtient seulement $\dfrac{N}{2}$ tours. Mais cela est équivalent asymptotiquement (les constantes restant des constantes).} est donc le suivant :
-\inputminted{c}{solutions/primal_test.c}
+\inputminted{c}{solutions/part2/chapter2/primal_test.c}
 Considérons maintenant un diviseur $d$ de $n$. Il existe donc $q$ tel que $n = dq$. On observe que si $d \geq \sqrt{n}$ alors $q \leq{\sqrt{n}}$. Par ailleurs, $q$ est un diviseur de $n$ lui aussi. Supposons que l'on ait vérifié que pour tout $1 < m \leq \sqrt{n}$, $m\nmid{n}$, alors il est absurde qu'il existe un diviseur de $n$ supérieur strictement à $\sqrt{n}$ car il existerait alors un diviseur $d$ strictement inférieur à $\sqrt{n}$.
  
 Il suffit donc de vérifier la divisibilité de $n$ par les entiers impairs $m\leq{\sqrt{n}}$ :
@@ -272,15 +280,19 @@ for (int i = 3; i*i <= N && is_primal; i += 2) {
 On a $\dfrac{n}{\sqrt{n}}\underset{n\rightarrow{\infty}}{\rightarrow}\infty$, l'algorithme est donc plus efficace (il ne s'agit pas d'une constante).
 \subsubsection{Routines}
 \solution{Encore Fibonacci}
-\inputminted{c}{solutions/suite_fibonacci_2.c}
+
+\textbf{Code :} voir \detokenize{solutions/part2/chapter2/suite_fibonacci_2.c}
+
 \solution{Puissances entières}
-\inputminted{c}{solutions/int_pow.c}
+\inputminted{c}{solutions/part2/chapter2/int_pow.c}
 On observe que $(2^{31}-1)^{2^{32}-1}\approx{2^{31\times{2^{32}}}}$ est très largement supérieur à $2^{63} - 1$ qui est la valeur maximale d'un \textsf{long int}. En fait, pour stocker le résultat maximal de la fonction \textsf{pow}, il faudrait un disque dur d'environ $4\times{31} = 124\ Go$. Par ailleurs, la fonction \textsf{pow} reste infiniment loin d'être surjective dans $\mathbb{Z}$.
 \subsubsection{Pointeurs}
 \solution{Quelques procédures inutiles pour devenir un bot efficace}
-\inputminted{c}{solutions/become_bot.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/become_bot.c}
+
 \solution{Interversion sans effet de bord (3)}
-\inputminted{c}{solutions/inter_no_side_effect_3.c}
+\inputminted{c}{solutions/part2/chapter2/inter_no_side_effect_3.c}
 En effet, si $x = y$, à la première ligne, on a $*x = *x ^ *x = 0$, et $*y = *x = 0$. Les autres lignes sont inutiles, mais chacune a le même effet que la première.
 
 \solution{Distance de Manhattan}
@@ -292,7 +304,8 @@ double x; // 8 octets
 float *x_left = (float*)&x; // pointeur sur 4 octets de gauche
 float *x_right = (float*)&x + 1; // pointeur sur 4 octets de droite
 \end{minted}
-\inputminted{c}{solutions/manhattan_dist.c}
+\textbf{Code complet :} voir \detokenize{solutions/part2/chapter2/manhattan_dist.c}
+
 \solution{Valeur absolue (2)}
 On veut simplement modifier le bit de signe. Toutefois, les opérations bit-à-bits sont interdites sur les nombres à virgules.
 
@@ -341,17 +354,25 @@ On obtient $\frac{1}{\sqrt{0.01}} = 10 \approx 10.70$. L'erreur est assez élev�
 On peut améliorer la précision en balayant les projections entières adjacentes. Avec \textsf{0x5f31eb85}\footnote{Le jeu \textit{Quake III utilise la constante \textsf{0x5f3759df}, mais utilise la méthode Newton. La constante doit aussi s'adapter à ça pour de meilleurs résultats.}}, on obtient une erreur de moins de $0.1\%$. Cette précision peut encore être améliorée en utilisant la \href{https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Newton}{méthode de Newton}. 
 \subsubsection{Interagir avec les flux standards}
 \solution{Distance Euclidienne}
-\inputminted{c}{solutions/euclidian_dist.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/euclidian_dist.c}
+
 \solution{Somme d'entiers}
-\inputminted{c}{solutions/int_sum.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/int_sum.c}
+
 \solution{Jeu du plus ou moins}
-\inputminted{c}{solutions/plus_ou_moins.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/plus_ou_moins.c}
+
 La stratégie optimale est identique à celle de l'\refexercise{Recherche dichotomique} pour les mêmes raisons. Il faudra au maximum $\lceil log_2(N)\rceil$ tentatives pour trouver le nombre mystère.
 \subsubsection{Tableaux statiques}
 \solution{Les routines, direction la seconde classe !} Une fonction ne peut pas être construite pendant l'exécution du programme en C\footnote{Enfin, en assembleur on peut, mais là n'est pas le sujet, ce n'est plus du C.}.
 
 \solution{Routines classiques de manipulation de tableaux}
-\inputminted{c}{solutions/tab_select_sort.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/tab_select_sort.c}
+
 On pose pour $i\in\llbracket 0; l(T)\rrbracket$ l'hypothèse de récurrence $P(i)$ : \textit{\og après le $i^e$ tour de boucle, on a les invariants suivants :
 \begin{itemize}
 	\item $T[0:i]$ est trié dans l'ordre croissant
@@ -383,7 +404,7 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 	\item si $x > T[i_m]$, $T\leftarrow T[i_m:l(T)]$ et boucler
 \end{itemize}
 Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \leq 1$ et le programme termine.
-\inputminted{c}{solutions/dichotomique.c}
+\inputminted{c}{solutions/part2/chapter2/dichotomique.c}
 \solution{Liste des nombres premiers} 
 TODO
 % \textbf{Questions 1 et 2 :}
@@ -464,21 +485,26 @@ TODO
 % Comme $$\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$$, on a bien l'inégalité recherchée à partir d'un certain rang.
 \subsubsection{Tableaux dynamiques}
 \solution{Conversion en binaire}
-\inputminted{c}{solutions/nat2bin.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/nat2bin.c}
 \subsubsection{Tableaux multidimensionnels}
-\solution{Afficher un tableau \textit{2d}}
-\inputminted{c}{solutions/tab_display_2d.c}
+\solution{Afficher un tableau 2D}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/tab_display_2d.c}
+
 \solution{Affichage du triangle}\newline
-Version généralisée pour \textsf{N\_LINES} quelconque : 
-\inputminted{c}{solutions/triangle.c}
+Version généralisée pour \textsf{N\_LINES} quelconque.
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/triangle.c}
+
 \solution{Matrices (1)} \newline
 Soit $m$ une matrice implantée en C. Il faut d'abord déterminer ce que signifie $mat[i] \equiv ^*((char^*)m + i\times sizeof(double^*))$. Le $double^*$ est le type d'une ligne. Donc $l_{i} = mat[i]$ est le pointeur vers la $i^{e}$ ligne. On a alors $l_{i}[j]$ le $j^e$ élément de la $i^e$ ligne. En remplaçant $l_{i}$ par son expression, on a :
 $$mat[i][j] \equiv\ ^*(^*(mat + i) + j) \equiv (^*((char^*)mat + i\times sizeof(double^*)) + j\times sizeof(double)) $$
-\inputminted{c}{solutions/matrix.c}
+\textbf{Code :} \detokenize{solutions/part2/chapter2/matrix.c}
 \subsubsection{Structures}
 \solution{Matrices (2)} \newline
 Il suffit d'utiliser l'interface suivante, les modifications des routines sont assez triviales :
-\inputminted{c}{solutions/matrix.h}
+\inputminted{c}{solutions/part2/chapter2/matrix.h}
 \solution{Optimisation d'alignement}
 Avec un \textsf{double} à la place d'un \textsf{int} :
 \begin{itemize}
@@ -486,13 +512,14 @@ Avec un \textsf{double} à la place d'un \textsf{int} :
 	\item $\textsf{sizeof(struct ExampleAligned)} = 16$
 \end{itemize}
 \solution{Listes chaînées}
-\inputminted{c}{solutions/linkedlist_1.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/linkedlist_1.c}
 \subsubsection{Modulation et entêtes}
 \solution{Un module de listes chaînées} \newline
 On écrit le code des fonctions de l'exercice précédent dans un fichier \textit{``linkedlist.c''}\footnote{Dans le répertoire de travail du fichier \textit{``main.c''}} que l'on fait débuter par la ligne \textsf{\#include "linkedlist.h"}. On écrit ensuite dans le même répertoire de travail le fichier \textit{``linkedlist.h''} suivant, qui contient les prototypes et les structures :
-\inputminted{c}{solutions/linkedlist_2.h}
+\inputminted{c}{solutions/part2/chapter2/linkedlist_2.h}
 Il conserve la même fonction \textsf{main} du fichier \textit{``main.c''} avec une inclusion du module :
-\inputminted{c}{solutions/linkedlist_2.c}
+\inputminted{c}{solutions/part2/chapter2/linkedlist_2.c}
 Et compilation puis exécution :
 \begin{minted}[frame=single]{bash}
 user@computer ~/working_directory> gcc main.c linkedlist.c -o main
@@ -501,19 +528,26 @@ user@computer ~/working_directory> ./main
 user@computer ~/working_directory>
 \end{minted}
 \solution{Calculatrice}
-\inputminted{c}{solutions/calculatrice.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/calculatrice.c}
+
 \solution{AtoI}
-\inputminted{c}{solutions/atoi.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter2/atoi.c}
 \subsubsection{Interagir avec les flux de fichiers}
 \subsection{Concepts avancés}
 \subsubsection{Passage d'arguments au programme}
 \solution{Liste des arguments}
-\inputminted{c}{solutions/list_args.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter3/list_args.c}
+
 \solution{Un cat minimaliste}
-\inputminted{c}{solutions/cat.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter3/cat.c}
 \subsubsection{Pointeurs de routines}
 \solution{Mapping}
-\inputminted{c}{solutions/mapping.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter3/mapping.c}
 \subsubsection{Directives du préprocesseur (2)}
 \solution{Tout dépend du système}
 \begin{minted}{c}
@@ -535,5 +569,6 @@ int main() {
 \end{minted}
 \subsubsection{Routines variadiques}
 \solution{À un doigt du zéro}
-\inputminted{c}{solutions/un_doigt_du_zero.c}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter3/un_doigt_du_zero.c}
 \end{document}

@@ -23,9 +23,6 @@
 % Graphismes %
 %%%%%%%%%%%%%%
 
-% Ben tikz... pas besoin d'épiloguer
-\RequirePackage{tikz}
-
 % Couleurs de Minitel
 \RequirePackage[table, dvipsnames]{xcolor}
 	\definecolor{minitelgreen1}{rgb}{0.56, 0.75, 0.07}
@@ -44,19 +41,26 @@
 % Maths %
 %%%%%%%%%
 
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \RequirePackage{amssymb}
 \RequirePackage{amsmath}
 \RequirePackage{bbm}
 \RequirePackage{stmaryrd}
+\RequirePackage{tikz}
 
 %%%%%%%%%%%%%%%%
 % Informatique %
 %%%%%%%%%%%%%%%%
 
 % Pour les algorithmes
-\RequirePackage[lined,boxed,commentsnumbered, ruled,vlined,linesnumbered, french]{algorithm2e}
+\RequirePackage[lined,boxed,commentsnumbered, ruled,vlined,linesnumbered, french, onelanguage]{algorithm2e}
+	\SetNlSty{}{}{}
+	\let\oldnl\nl% Store \nl in \oldnl
+	\newcommand\nonl{%
+	  \renewcommand{\nl}{\let\nl\oldnl}}% Remove line number for one line
 	\SetKwComment{Comment}{/* }{ */}
-	\SetKwInput{kwQuand}{Quand}
 
 % Pour les arborescences de fichiers
 \RequirePackage{forest}
@@ -143,6 +147,7 @@
 %%%%%%%%%%%%%%%%
 % Mise en page %
 %%%%%%%%%%%%%%%%
+\RequirePackage{setspace}
 \RequirePackage{tocloft}
 
 \makeatletter
@@ -154,7 +159,7 @@
 	\pagestyle{fancyplain}
 	\fancyhf{}
 	\makeatletter
-	\lhead{ \fancyplain{}{\@title : \@subtitle} }
+	\lhead{ \fancyplain{}{\@title\:\@subtitle} }
 	\makeatother
 	\rhead{ \fancyplain{}{\rightmark} }
 	\rfoot{ \fancyplain{}{\thepage} }
@@ -193,7 +198,7 @@
   {\normalfont\bfseries}
   {}
   {0pt}
-  {\color{minitelgreen3}\normalfont\bfseries}
+  {\color{minitelgreen3}\large\bfseries}
 
 % Jolis chapitres
 \RequirePackage[Rejne]{fncychap}
@@ -254,12 +259,18 @@
 	\vspace*{0.5\fill}
 	\begin{center}
 		\linespread{3}
+
 		\HUGE
-		\centerline{\textbf{\@title}}
-		\Large
-		\centerline{\textbf{\@subtitle}}
+		
+		\textbf{\@title}
+		
+		\huge
+		
+		\textbf{\@subtitle}
+		
 		\normalsize
-		\centerline{\@variant}
+		
+		\@variant
 	\end{center}
 	\begin{minipage}{\textwidth}
 		\begin{center}

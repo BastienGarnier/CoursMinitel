@@ -48,7 +48,7 @@ int array[n]; // incorrect
 Cette syntaxe provoque une erreur de compilation pour tous les compilateurs conformes aux normes du langage C avant la version C99. 
 En effet, la taille d'un tableau statique doit pouvoir être déterminé par le compilateur au moment de la compilation. Celui-ci peut ainsi produire des instructions machines pour stocker ce tableau sur la pile d'exécution comme $n$ variables de tailles déterminées.
 
-Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante \ref{sec:allocation_dynamique}). Pour des raisons de compatibilité et pour éviter certains bogues, il est expressément recommandé d'éviter cette pratique douteuse.
+Certaines versions de certains compilateurs plus récents peuvent cependant accepter cette syntaxe et remplacer le code par une \textit{allocation dynamique} (voir section suivante \ref{sec:allocation_dynamique}). Pour des raisons de compatibilité et pour éviter certains bugs, il est expressément recommandé d'éviter cette pratique douteuse.
  
 Il est par contre tout à fait possible de préciser la taille d'un tableau par un symbole définie par une directive pré-processeur :
 \begin{minted}[linenos=false]{c}

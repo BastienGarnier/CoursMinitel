@@ -1,11 +1,11 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
-La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bogues en tous genres, dont les origines sont humaine.
+La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bugs en tous genres, dont les origines sont humaine.
 
 L'idée est alors simple : il faut compartimenter, diviser le programme en sous-programmes qui effectuent chacun une action bien précise. C'est ensuite la fonction \textit{main} qui va s'occuper d'agencer ces sous-programmes. Le programme vu de manière globale devient alors :
 \begin{itemize}
 	\item très flexible, puisque chaque fonctionnalité est identifiée à un sous-programme précis et qu'il suffit d'appeler dans la fonction \textit{main} les sous-programmes utiles
-	\item facilement déboguable puisqu'il suffit de corriger chaque sous-programme, tous très simples, et de corriger l'agencement de ces sous-programmes dont on sait que chacun est correct
+	\item facilement débuguable puisqu'il suffit de corriger chaque sous-programme, tous très simples, et de corriger l'agencement de ces sous-programmes dont on sait que chacun est correct
 \end{itemize}
 Nous allons voir un cas particulier de sous-programme appelé la \textit{routine}\footnote{Un autre type de sous-programme notable apparaissant par exemple en Python 	(et en C) est la \textit{coroutine}, qui possède la propriété de pouvoir être suspendu au cours de son exécution puis reprise là où elle s'est arrêtée.}, dont il n'existe que deux formes\footnote{Nativement. Il est possible d'en simuler d'autres, comme les méthodes par exemple en programmation orientée objet, qui ont comme particularité d'être partie d'une entité appelée un objet.} en langage C :
 \begin{itemize}
@@ -74,20 +74,33 @@ void afficher_diff_0(int x) {
 \end{minted}
 \subsection{Signature et prototype}
 \label{sub:signature_et_prototype}
-\definition{Prototype}{Le prototype d'une routine est la donnée de :
+\definition{Signature}{La signature d'une routine est la donnée de :
 \begin{itemize}
 	\item son type de retour
 	\item son nom
 	\item les types de ses paramètres
 	\item l'ordre des paramètres
 \end{itemize}
-}
+La signature est l'identité de la routine, elle est indépendante du langage.
 
-En fait, un prototype se déclare en C comme une routine absente de code :
+On retiendra la notation suivante pour les signatures  : $nom(t_1, \dots, t_n) \rightarrow t_r$, où les $t_i$ sont les types abstraits des paramètres et $t_r$ est le type abstrait de la valeur de retour. Dans le cas d'une procédure, on peut ``oublier'' le retour et écrire $procname(t_1,\dots,t_n)$
+}
+\textbf{Exemple :} $addition(int, int) \rightarrow int$ est une signature d'une fonction \textit{addition} qui prend en entrée deux paramètres entiers et renvoie un entier.
+
+\textbf{Remarque :} Une signature ne contient que des informations syntaxiques. Rien n'est dit de la sémantique de la routine. Les informations syntaxiques sont cependant suffisantes pour déterminer lors d'un appel de routine à quelle routine cet appel fait référence.\footnote{On pourra se demander pourquoi d'autres informations que le nom seraient nécessaire. En C++ et dans d'autres langages que le C, il est possible de \textit{surcharger} des routines en utilisant le même nom mais une signature différente. Le compilateur peut toujours identifier l'appel et cela permet de simplifier l'interface pour le programmeur.}
+
+\definition{Prototype}{
+	Le prototype est une notion spécifique aux langages C et C++. Il sert à indiquer au compilateur que le corps (c'est-à-dire le contenu) d'une routine sera bien défini plus tard dans le programme.
+
+	L'utilisation d'un prototype permet d'utiliser la routine avant que le compilateur lise son corps.
+}
+Un prototype se déclare en C comme une routine absente de code :
 \begin{minted}[linenos=false]{c}
 int addition(int a, int b); // Prototype de la fonction 'addition'
 
-int addition(int a, int b) { // Déclaration de la fonction 'addition'
+// potentielles utilisations de la fonction 'addition'
+
+int addition(int a, int b) { // Corps de la fonction 'addition'
 	return a + b;
 }
 \end{minted}
@@ -112,9 +125,6 @@ int addition(int a, int b) { // Déclaration de la fonction 'addition'
 	return a + b;
 }
 \end{minted}
-\definition{Signature}{La signature d'une routine consiste en son nom, les types de ses paramètres et l'ordre de ceux-ci. À la différence du prototype, le type de retour de la routine n'est pas donné.}
- 
-\textbf{Remarque :} Si le concept de \textit{signature} de routine est général à une grande quantité de langages, celui de \textit{prototype} de routine tel que définit ci-avant est spécifique aux langages C, C++ et à ceux dérivant de C et C++.
 \subsection{Note relative à la copie des arguments}
 \label{sub:note_relative_la_copie_des_arguments}
 Notons que les identifiants à l'intérieur d'une routine évoluent dans un \textit{espace local} :
@@ -230,7 +240,7 @@ La pile contient \textit{entre autre} :
 Les variables contenues dans la pile ne sont accessibles que dans la routine qui les a créé. Par ailleurs, dès l'instant où une routine exécute l'instruction \textsf{return}, les variables utilisées dans cette routine sont libérées, c'est-à-dire que l'espace mémoire qui était réservé pour elles devient à nouveau libre de contenir n'importe quelle autre valeur (opération de \textit{dépilement} de la pile d'exécution).
 
 \begin{minitelbasicbox}{\textbf{Petit apparté :} À propos de l'allocation de la mémoire}
-	L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bogues.
+	L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bugs.
  
 	Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable.
 
@@ -265,7 +275,7 @@ est une procédure agissant sur son environnement. Elle interagit avec la consol
 
 Une action d'une routine différente d'un renvoi de valeur hors de son environnement local est nommée un \textit{effet de bord}.
 \subsection{Exercices}
-\exercise{Encore Fibonacci}{11}\newline Écrire une fonction de prototype \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
+\exercise{Encore Fibonacci}{11}\newline Écrire une fonction de signature \textsf{unsigned int fibo(int n);} qui à $n$ renvoie $f_{n}$ où $(f_{n})_{n\in{\mathbb{N}}}$ est définie telle que :
  $$
 \left\{\begin{array}{llcl}
 & f_{0} & = & 0 \\
@@ -275,7 +285,7 @@ Une action d'une routine différente d'un renvoi de valeur hors de son environne
 $$
 Tester ensuite cette fonction pour toutes les valeurs de $n\in{\llbracket 0; 100\rrbracket}$
  
-\exercise{Puissances entières}{10} Écrire une routine équivalente à la fonction :
+\exercise{Puissances entières}{10} Écrire une routine équivalente à la fonction mathématique :
  $$
  \begin{array}{lclcl}
 f & : & \llbracket-2^{31}, 2^{31}\llbracket\times{\llbracket0, 2^{32}\llbracket}& \rightarrow & \mathbb{Z} \\

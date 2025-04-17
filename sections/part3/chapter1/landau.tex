@@ -1,0 +1,111 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+\definition{Modèle de coût}{
+	Le modèle de coût spécifie la quantité de ressources que consomme une opération élémentaire d'un modèle de calcul sur une entrée donnée. Plusieurs modèles de coût différents sont possibles pour chaque modèle de calcul.
+}
+\textbf{Exemple (modèle à coût unitaire) :} chaque opération élémentaire coûte une unité, quelque soit l'entrée. On peut potentiellement spécifier que certaines opérations sont de coût nulle pour concentrer l'analyse sur des coûts spécifiques.
+
+\textbf{Exemple :} Dans un modèle RAM, les calculs sont effectués par la lecture et l'écriture des registres selon certaines opérations. On peut spécifier le coût d'une opération dépendamment des entrées. Par exemple, si $x, y\in\mathbb{N}$ sont non bornés, on peut poser que $x + y$ a un coût proportionnel au $log_2$ de $x$ et $y$.
+
+\textbf{Exemple (modèle de coût de stockage) :} au lieu de considérer que la ressource est le temps, comme cela était implicitement supposé dans les deux exemples précédents, on peut considérer que la ressource est l'espace. Par exemple, l'écriture d'un espace mémoire \textit{non encore utilisé} par un algorithme peut avoir un coût $1$ et tout autre écriture d'espace mémoire \textit{déjà utilisé} par l'algorithme est de coût $0$. La  \textit{libération} d'un espace mémoire peut avoir un coût $-1$. On peut alors mesurer la ``complexité spatiale'' d'un algorithme.
+
+Si le modèle de coût n'est pas spécifié et qu'on parle d'une ressource ``temporelle'' on suit par défaut un modèle à coût unitaire. Dans le cas où la ressource considérée dans le contexte est spatiale, on suit par défaut le modèle de coût de stockage décrit juste précédemment.
+
+Toute la question est de comparer les différents algorithmes qui résolvent un même problème $P:X\rightarrow Y$, c'est-à-dire de comparer leurs coûts respectifs.
+\definition{Fonction de coût}{
+	Soit $P:X\rightarrow Y$. La fonction de coût d'un algorithme $A\in\mathcal{A}(P)$ est une fonction $f_A:X\rightarrow \mathbb{R}_+$ qui à chaque entrée $x\in X$ du problème donne la quantité de ressources utilisées par $A$ pour calculer $P(x)$.
+}
+\subsection{Notations de Landau}
+\textbf{Exemple :} Soient deux fonctions de coût $f_A$ et $f_B$ de $\mathbb{N}$ dans $\mathbb{R}_+$ définies par $f_A(n) = 0.5n + 2$ et $f_B(n) = 0.5n^2 + 1$.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[xmin=0, ymin=0, xmax=4,ymax=6, samples=50]
+			  \addplot[dashed] (x,0.5*x+2);
+			  \addplot[solid] (x,0.5*x*x + 1);
+			\end{axis}
+		\end{tikzpicture}
+		\captionof{figure}{$f_A$ en ligne pointillée, $f_B$ en ligne continue}
+	\end{center}
+\end{minipage}
+Selon que $n$ est inférieur ou supérieur à $3$, on a soit $f_A(n) > f_B(n)$, soit $f_A(n) < f_B(n)$. On veut toutefois pouvoir comparer les algorithmes $A$ et $B$ sans ambiguité. Par ailleurs, on veut aussi que l'analyse de $A$ et $B$ soit robuste, c'est-à-dire que de petites modifications de $A$ et $B$ n'invalident pas l'analyse de la fonction de coût de ceux-ci. Sinon, toutes les analyses d'algorithmes utilisant $A$ et $B$ sont aussi invalidés. Comme la modification légère d'un algorithme est monnaie courante en programmation, une absence de robustesse est inenvisageable.
+
+Il faut définir avec plus de précision ce que signifie ``modification légère''. Si on modifie un algorithme $A$ en un nouvel algorithme $A'$, on veut que le coût de $A$ par rapport à $A'$ soit petit. Par ``petit'', disons \textit{borné}. C'est-à-dire que $\dfrac{f_A}{f_{A'}}$ soit borné.
+
+On en induit que étant donnés deux algorithmes $A$ et $B$, $A$ est meilleur que $B$ si $\frac{f_B}{f_A}$ est non borné.
+\definition{Domination linéaire}{
+	Soit $X$ un ensemble. On considère $\preceq_X$ la relation de préordre\footnote{Réflexivité et transitivité, évidentes ici.} définie par :
+	$$\forall f, g\in\mathcal{F}(X, \mathbb{R}_+), f\preceq_X g \Leftrightarrow \exists c\in\mathbb{R}_+\setminus{\{0\}} /f\leq cg$$
+	Si $f$ et $g$ sont deux fonctions telles que $f\preceq_X g$, on dit que $f$ est \textit{dominée linéairement} par $g$.
+}
+\textbf{Relations déduites :} On déduit du préodre de domination linéaire les relations suivantes, pour toutes fonctions $f, g:X\rightarrow \mathbb{R}_+$
+\begin{itemize}
+	\item $f\approx_X g \Leftrightarrow (f\preceq_X g) \wedge (g\preceq_X f)$
+	\item $f\prec_X g \Leftrightarrow (f\preceq_X g) \wedge (f \not\approx g)$
+	\item $f\succ_X g \Leftrightarrow g\prec_X f$
+	\item $f\succeq_X g \Leftrightarrow g\preceq_X f$
+\end{itemize}
+\definition{Notation de Landau}{
+	Soit $X$ un ensemble, et $f:X\rightarrow \mathbb{R}_+$ une fonction coût. On note :
+	$$O_X(f) = \{g:X\rightarrow \mathbb{R}_+\ |\ g\preceq_X f\}$$
+	C'est la classe des fonctions de coût d'algorithmes ``au moins aussi rapides'' que celui associé à $f$
+}
+\textbf{Notations déduites :} 
+\begin{itemize}
+	\item $\Theta_X(f) = \{g:X\rightarrow \mathbb{R}_+\ |\ g\approx_X f\}$ est la classe d'équivalence de coût de $f$
+	\item $\Omega_X(f) = \{g:X\rightarrow \mathbb{R}_+\ |\ g\succeq_X f\}$ est la classe des fonctions de coût d'algorithmes ``plus lents'' que celui associé à $f$
+\end{itemize}
+\textbf{Remarque :} dans la pratique, une habitude des informaticiens est de ne pas préciser l'ensemble $X$, qui doit être déduit selon le contexte. Le plus souvent, $X\subseteq \mathbb{N}$.
+\subsection{Analyse de cas pour la complexité}
+On note par la suite, pour toute fonction $f:X\rightarrow Y$ :
+\begin{itemize}
+	\item pour $S\subset X$, $\overrightarrow{f}(S) = \{f(x)\ |\ x\in S\}$ est l'image de $S$ par $f$
+	\item pour $S\subset Y$, $\overleftarrow{f}(S) = \{x\in X\ |\ f(x)\in S\}$ est l'ensemble des antécédents des éléments de $S$ par $f$
+\end{itemize}
+L'analyse de complexité d'un algorithme n'a pas pour but de déterminer entièrement sa fonction de coût. On s'intéresse à des cas particuliers d'entrées (pire cas ou meilleur cas) ou à des cas très généraux (cas moyen ou amorti).
+\definition{Cas} {
+	Soient $X$, $Y$ et $Z$ trois ensembles. Soit $P:X\rightarrow Y$ un problème.\newline
+
+	On considère une fonction de groupement $g:X\rightarrow Z$ qui à chaque entrée va associer une ``mesure''. Un cas $s:\overrightarrow{g}(X)\rightarrow X$ selon ce groupement est une fonction qui à chaque mesure d'une entrée de $g$ va renvoyer un élément de $X$ de même mesure. C'est-à-dire que $g\circ s = id_Z$.	
+}
+\textbf{Exemple pour comprendre :} Si $X$ est l'ensemble des tableaux d'entiers, un groupement peut être défini par : 
+$$
+\begin{array}{lclcl}
+g & : & \mathbb{Z}^* & \rightarrow & \mathbb{N} \\
+  &   & x & \mapsto & |x|
+\end{array}
+$$
+qui à chaque tableau associe sa longueur. Un cas est alors une fonction de $\mathbb{N}$ dans $\mathbb{Z}^*$ qui à chaque longueur $n\in\mathbb{N}$ possible de tableau va attribuer un tableau de longueur $n$ (parmi l'infinité des tableaux de taille $n$ possibles) qui sera celui traité par l'algorithme dans ce cas.\newline
+L'utilisation de groupements permet d'indiquer n'importe quel moyen de mesure de l'entrée d'un problème.
+
+\textbf{Remarque :} si le groupement choisi est à valeurs dans $\mathbb{N}$ ou $\mathbb{R}_+$ et représente la complexité spatiale de l'entrée (comme le nombre de bits nécessaire pour sa représentation), on peut parler de $\overrightarrow{g}(X)$ comme de l'ensemble des \textit{tailles des entrées} du problème. C'est généralement le cas\footnote{Sans jeu de mots aucun $\wedge\wedge$}.
+\definition{Pire cas} {
+	Soit $g:X\rightarrow Z$ un groupement. Soit $s:\overrightarrow{g}(X)\rightarrow X$ un cas selon $g$. Soit $f:X\rightarrow \mathbb{R}_+$ une fonction coût. \newline
+
+	$s$ est un pire cas de $f$ si pour tout $z\in\overrightarrow{g}(X)$, $(f\circ s)(z) = sup \overrightarrow{f}\left(\overleftarrow{g}\left(\{z\}\right)\right)$
+}
+Intuitivement, cela signifie que la fonction coût sur le pire cas est \textit{maximale} pour toutes les ``tailles'' d'entrées (toutes les mesures d'entrées) possibles prises individuellement.
+\definition{Meilleur cas} {
+	Soit $g:X\rightarrow Z$ un groupement. Soit $s:\overrightarrow{g}(X)\rightarrow X$ un cas selon $g$. Soit $f:X\rightarrow \mathbb{R}_+$ une fonction coût. \newline
+
+	$s$ est un meilleur cas de $f$ si pour tout $z\in\overrightarrow{g}(X)$, $(f\circ s)(z) = inf \overrightarrow{f}(\overleftarrow{g}(\{z\}))$
+}
+Intuitivement, cela signifie que la fonction coût sur le pire cas est \textit{minimale} pour toutes les ``tailles'' d'entrées (toutes les mesures d'entrées) possibles prises individuellement.
+
+\textbf{Remarque :} Comme la borne inférieure et la borne supérieure de la fonction coût ne sont pas nécessairement atteintes, le pire et le meilleur cas n'existent toujours.
+
+\definition{Analyse de complexité du pire cas} {
+	L'analyse de complexité du pire cas d'une fonction de coût $f:X\rightarrow \mathbb{R}_+$ selon un groupement $g:X\rightarrow Z$ est le processus de recherche de la fonction de $Z$ dans $\mathbb{R}_+$ :
+	$$z\mapsto sup \overrightarrow{f}\left(\overleftarrow{g}\left(\{z\}\right)\right)$$
+	ou d'un ensemble $O_X$ qui la contienne.
+}
+\definition{Analyse de complexité du meilleur cas} {
+	L'analyse de complexité du pire cas d'une fonction de coût $f:X\rightarrow \mathbb{R}_+$ selon un groupement $g:X\rightarrow Z$ est le processus de recherche de la fonction de $Z$ dans $\mathbb{R}_+$ :
+	$$z\mapsto inf \overrightarrow{f}\left(\overleftarrow{g}\left(\{z\}\right)\right)$$
+	ou d'un ensemble $\Omega_X$ qui la contienne.
+}
+On remarque que l'interprétation des analyses du pire ou un meilleur cas dépend du groupement choisi.
+
+\textbf{Exemple :} Dans le cas de l'analyse de complexité d'un algorithme de tri de tableaux, on aurait pu choisir un groupement qui à chaque tableau associe la somme de ses éléments. La fonction de coût dans le pire cas doit être maximale pour toutes les valeurs possibles de sommes, c'est-à-dire que pour chaque somme $s\in\mathbb{N}$, il faut trouver un tableau qui maximise le coût de tri. Comme on peut choisir un tableau de taille arbitrairement grande, pour tout $z$, $sup \overrightarrow{f}\left(\overleftarrow{g}\left(\{z\}\right)\right) = \infty$. De même, pour le meilleur cas, on a un tableau d'une unique valeur qu'on fait varier, d'où pour tout $z$, $inf \overrightarrow{f}\left(\overleftarrow{g}\left(\{z\}\right)\right) \approx 0$. Cela signifie que l'opération consistant à trier un tableau ne dépend pas de la somme du tableau. On arrive à des conclusions différentes selon le groupement choisi.
+\end{document}

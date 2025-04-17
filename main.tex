@@ -3,7 +3,7 @@
 \graphicspath{
 	{sections/part1/images/}
 	{sections/part2/images/}
-	{sections/part3/imagees}
+	{sections/part3/images/}
 	{sections/part4/images/}
 }
 
@@ -24,7 +24,7 @@
 
 \newcommand{\exercise}[2]{
 	\refstepcounter{exercisescounter}
-	\textbf{Exercice \arabic{exercisescounter}\IfNoValueF{#1}{ (#1)} [#2]. \label{exercise:#1}}
+	\textbf{Exercice \arabic{exercisescounter}\ifthenelse{\equal{#1}{}}{}{\label{exercise:#1} (#1)} [#2].}
 }
 
 \newcommand{\refexercise}[1]{
@@ -38,7 +38,7 @@
 
 \newcommand{\solution}[1]{
 	\stepcounter{solutioncounter}
-	\textbf{Solution \arabic{solutioncounter}\IfNoValueF{#1}{ (#1)}.}
+	\textbf{Solution \arabic{solutioncounter}\ifthenelse{\equal{#1}{}}{}{\label{solution:#1} (#1)}.}
 }
 
 \newcommand{\listdefinitionsname}{Liste des définitions}
@@ -56,23 +56,39 @@
 \setcounter{propositioncounter}{0}
 
 \newcommand{\proposition}[1]{
-	\stepcounter{propositioncounter}
-	\textbf{Proposition \arabic{propositioncounter}\ifthenelse{\equal{#1}{}}{}{ (#1)}. }
+	\refstepcounter{propositioncounter}
+	\textbf{Proposition \arabic{propositioncounter}\ifthenelse{\equal{#1}{}}{}{\label{prop:#1} (#1)}.}
+}
+
+\newcommand{\refproposition}[1]{
+	\textbf{Proposition \ref{prop:#1}}
+}
+
+\newcounter{lemmacounter}
+\setcounter{lemmacounter}{0}
+
+\newcommand{\lemma}[1]{
+	\refstepcounter{lemmacounter}
+	\textbf{Lemme \arabic{lemmacounter}\ifthenelse{\equal{#1}{}}{}{\label{lemma:#1} (#1)}.}
+}
+
+\newcommand{\reflemma}[1]{
+	\textbf{Lemme \ref{lemma:#1}}
 }
 
 \usepackage{subfiles}
 \begin{document}
-	\title{Informatique}
-	\subtitle{Le C pour les (pas) nuls}
-	\variant{je-sais-pas-combien-mais-pas-encore-la-1.0}
+	\title{Algo/Prog}
+	% \subtitle{pour les (pas) nuls}
+	\variant{loin d'être finie}
 	\author{
 		B. Garnier
 		% \\ A. Utre
 	}
 	\licence{CC-BY-NC-SA}
-	% date : automatique
+	% date : automatique, sert de version
 	\maketitle
-\begin{refsection} % enlève des warnings et des bogues sur les réfèrences longue portée (biblio ou multifichier)
+\begin{refsection} % enlève des warnings et des bugs sur les réfèrences longue portée (biblio ou multifichier)
 \section*{Préface}
 \subfile{sections/preface}
 \tableofcontents
@@ -191,43 +207,79 @@
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part3/introduction}
-	\chapter{Calculabilité}
-	\label{cha:calcul_et_calculabilite}
 	\chapter{Complexité}
 	\label{cha:complexite}
+		\section{Calcul}
+			\label{sec:calcul}
+			\subfile{sections/part3/chapter1/calcul}
 		\section{Mesures du coût} % comptage des instructions/tours de boucle
-		\section{Notation de Landau} % pire, average, amorti
-		\section{Récurrences} % sur les sous-problèmes
-	\chapter{Structures de données classiques}
+			\label{sec:mesures_du_cout}
+			\subfile{sections/part3/chapter1/landau}
+		% \section{Récurrences} % sur les sous-problèmes
+		% 	\label{sec:recurrences}
+		% 	\subfile{sections/part3/chapter1/recurrences}
+	\chapter{Structures de données}
 	\label{cha:structures_de_donn_es_classiques}
-		\section{Type abstrait de données} % algébrique et classique
+		\section{Retour sur les types abstraits} % algébrique et classique
 			\label{sec:type_abstrait_de_donn_es}
-		\section{Tableaux}
-			\label{sec:tableaux}
-		\section{Listes chaînées}
-			\label{sec:listes_cha_n_es}
-		\section{Partitions}
-			\label{sec:partitions}
+			\subfile{sections/part3/chapter2/type_abstrait}
+		\newpage
+		\section{Listes}
+			\label{sec:listes}
+			\subfile{sections/part3/chapter2/listes}
+		\newpage
 		\section{Arbres binaires}
 			\label{sec:arbres_binaires}
-		\section{Dictionnaire et hashage}
-			\label{sec:dictionnaire_et_hashage}
-		\section{Graphes}
+			\subfile{sections/part3/chapter2/arbres}
+		\newpage
+		\section{Files de priorité}
+			\label{sec:files_de_priorite}
+			\subfile{sections/part3/chapter2/priority_fifo}
+		\newpage
+		\section{Dictionnaires}
+			\label{sec:dictionnaires}
+			\subfile{sections/part3/chapter2/dictionnaires}
+		\newpage
+		% \section{Ensembles}
+		% 	\label{sec:ensembles}
+		% 	\subfile{sections/part3/chapter2/ensembles}
+		% \newpage
+		\section{Graphes (1)}
 			\label{sec:graphes}
-		\section{Enrichissement de structures}
-			\label{sec:enrichissement_de_structures}
+			\subfile{sections/part3/chapter2/graphes}
+		\newpage
+		\section{Partitions d'ensembles finis}
+			\label{sec:partitions}
+			\subfile{sections/part3/chapter2/partitions}
+		\newpage
+		% \section{Enrichissement de structures}
+		% 	\label{sec:enrichissement_de_structures}
+		% 	\subfile{sections/part3/chapter2/enrichissement}
+		% \newpage
+		\section{Graphes (2) : valuation}
+			\label{sec:graphes_values}
+			\subfile{sections/part3/chapter2/graphes_values}
+		\newpage
+		\section{Graphes (3) : flots}
+			\label{sec:graphes_et_flots}
+			\subfile{sections/part3/chapter2/graphes_flots}
 	\chapter{Approches algorithmiques}
 	\label{cha:approches_algorithmiques}
 		\section{Recherche exhaustive}
 			\label{sec:recherche_exhaustive}
+			\subfile{sections/part3/chapter3/exhaustif}
 		\section{Algorithmes gloutons}
 			\label{sec:algorithmes_gloutons}
+			\subfile{sections/part3/chapter3/gloutons}
 		\section{Diviser pour régner}
 			\label{sec:diviser_pour_r_gner}
+			\subfile{sections/part3/chapter3/dpr}
 		\section{Programmation dynamique}
 			\label{sec:programmation_dynamique}
+			\subfile{sections/part3/chapter3/prgm_dyn}
 		\section{Prétraitement}
 			\label{sec:pr_traitement}
+			\subfile{sections/part3/chapter3/pretraitement}
 \part{Le vrai monde de la réalité réelle}
 \label{part:le_vrai_monde_de_la_réalité_réelle}
 	\phantomsection
@@ -244,8 +296,8 @@
 		\section{Makefiles}
 			\label{sec:makefiles}
 			\subfile{sections/part4/chapter2/makefile}
-		\section{Utiliser un débogueur}
-			\label{sec:utiliser_un_d_bogueur}
+		\section{Utiliser un débugueur}
+			\label{sec:utiliser_un_d_bugueur}
 			\subfile{sections/part4/chapter2/gdb}
 		\section{Git}
 			\label{sec:git}

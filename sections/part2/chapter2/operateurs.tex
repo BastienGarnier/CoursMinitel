@@ -2,12 +2,12 @@
 \begin{document}
 \definition{Opérateurs et opérandes}{Les opérateurs sont des fonctions d'arité strictement positive. Les opérandes sont les ``termes'' des opérateurs, c'est-à-dire les entités sur lesquels les opérateurs effectuent leur opération.}
 
-Il existe quatre familles principales d'opérateurs sur les variables en C :
+Il existe quatre familles principales d'opérateurs en C, qui permettent d'agir soit sur la donnée de représentation d'une variable (le mot binaire) soit sur la valeur de la variable (dans l'ensemble déterminé par son type).
 \begin{itemize}
-	\item les opérateurs arithmétiques
-	\item les opérateurs bit-à-bit
-	\item les opérateurs logiques/relationnels
-	\item les opérateurs d'assignation
+	\item les opérateurs arithmétiques agissent sur les valeurs
+	\item les opérateurs bit-à-bit agissent sur la représentation
+	\item les opérateurs logiques/relationnels agissent sur les valeurs
+	\item les opérateurs d'assignation agissent sur les valeurs
 \end{itemize}
 La syntaxe générale des opérateurs sur les variables est la suivante (selon l'arité de l'opérateur) :
 \begin{minted}[linenos=false]{c}
@@ -20,14 +20,14 @@ TYPE v2 = VALEUR2;
 // opérateur binaire :
 v1 <OPERATION> v2; // le résultat n'est pas stocké
 \end{minted}
-Par ailleurs, certains opérateurs sont prioritaires sur d'autres. Pour forcer une opération à être évaluée avant une autre, il est possible de parenthéser les expressions :
+Certains opérateurs sont prioritaires sur d'autres. Pour forcer une opération à être évaluée avant une autre, il est possible de parenthéser les expressions :
 \begin{minted}[linenos=false]{c}
 TYPE v1 = VALEUR1;
 TYPE v2 = VALEUR2;
 
 TYPE v3 = (v2 <OP2> (v1 <OP1> v2)); // l'opérateur OP1 est calculé avant OP2
 \end{minted}
-Par ailleurs, le langage organise les opérations selon une priorité par défaut. Si on écrit :
+Le langage organise les opérations selon une priorité par défaut. Si on écrit :
 \begin{minted}[linenos=false]{c}
 TYPE v3 = v2 <OP2> v1 <OP1> v2;
 \end{minted}
@@ -75,7 +75,7 @@ Priorité & Opérateur & Description & Associativité \\
 La priorité indique l'ordre de consommation des opérandes. Ainsi, un opérateur de priorité 1 effectuera son calcul sur ses opérandes avant les opérateurs de priorité 2, 3, etc\dots
 \subsection{Opérateurs arithmétiques}
 \label{sub:op_rateurs_arithm_tiques}
-On liste les opérateurs arithmétiques suivants :
+Les opérateurs arithmétiques agissent sur la valeur de la variable selon son type. On peut donc se référer aux interprétations décrites dans l'introduction du cours et aux opérations relatives à ces interprétations;
 \begin{center}
 \begin{tabular}{l|c|c|c}
 Opération & Arité & Symbole mathématique & Symbole en C \\
@@ -97,11 +97,11 @@ int main() {
 	int a = 18;
 	int b = 67;
 	printf("a = %d; b = %d\n", a, b);
-	printf("a + b = %d\n");
-	printf("a - b = %d\n");
-	printf("a * b = %d\n");
-	printf("a / b = %d\n");
-	printf("b / a = %d\n");
+	printf("a + b = %d\n", a + b);
+	printf("a - b = %d\n", a - b);
+	printf("a * b = %d\n", a * b);
+	printf("a / b = %d\n", a / b);
+	printf("b / a = %d\n", b / a);
 
 	return EXIT_SUCCESS;
 }
@@ -111,6 +111,7 @@ On observe que la division est bien entière en posant les divisions euclidienne
 	\item $\left\lfloor{\dfrac{18}{67}}\right\rfloor = 0$ car $18 = 67\times{\textbf{0}} + 18$
 	\item $\left\lfloor{\dfrac{67}{18}}\right\rfloor = 3$ car $67 = 18\times{\textbf{3}} + 13$
 \end{itemize}
+Pour modifier la valeur déjà existente d'une variable, il faut ajouter un opérateur d'assignation de valeur (voir sous-section \ref{ssub:op_rateur_l_mentaire_d_assignation_egal}) qui va modifier en mémoire la valeur (c'est-à-dire la représentation binaire selon le type) de la variable.
 % \textbf{Priorité des opérateurs arithmétiques :}
 %  
 % Bien que le parenthésage puisse permettre de forcer les priorités, le langage C impose par défaut une certaine priorité aux opérations :
@@ -121,14 +122,14 @@ On observe que la division est bien entière en posant les divisions euclidienne
 
 \subsection{Opérateurs bit-à-bit}
 \label{sub:op_rateurs_bit_bit}
-On liste les opérateurs bit-à-bit suivants :
+Les opérateurs bit-à-bit agissent directement sur la représentation binaire d'une variable et ne tiennent pas compte de sa valeur. La modification de la représentation entraîne la modification de la valeur.
 \begin{center}
 \begin{tabular}{l|c|c|c}
 Opération & Arité & Symbole mathématique & Symbole en C \\
 \hline
 ET & 2 & $\wedge$ & $\&$ \\
 OU inclusif & 2 & $\vee$ & $|$ \\
-OU exclusif & 2 & $\oplus$ & $\wedge$ \\
+OU exclusif & 2 & $\oplus$ & \textasciicircum \\
 NON & 1 & $\neg$ & $\sim$ \\
 Décalage à droite signé (ou arithmétique) & 2 & $\gg_{a}$ & $>>$ \\
 Décalage à droite non signé (ou logique) & 2 & $\gg_{l}$ & $>>$ \\
@@ -136,14 +137,32 @@ Décalage à gauche & 2 & $\ll$ & $<<$
 \end{tabular}
 \captionof{table}{Opérateurs bit-à-bit}
 \end{center}
-Ces opérateurs sont décrits en détails dans la partie 1 du cours.
+Ces opérateurs sont décrits en détails dans la partie \ref{part:prol_gom_nes} du cours, dans la section \ref{sec:op_rations_logiques}
+
+\textbf{Attention :} Les symboles utilisés pour le OU exclusif en C et le ET mathématique sont ressemblant.
+\begin{minitelbasicbox}{\textbf{À propos des flottants :}}
+Les nombres à virgules ne sont pas traités physiquement par la même unité de calcul que les nombres entiers. En particulier, l'unité de calcul des nombres flottants ne contient pas d'opérateurs bit-à-bit.
+
+Le code suivant provoque donc une erreur à la compilation :
+\begin{minted}{c}
+float pi = 3.14; // sur 32 bits
+float abs_pi = (pi & 0x8fffffff); // est censé annuler le bit de signe -> ERREUR
+\end{minted}
+Il est nécessaire d'appliquer une projection de type (voir section \ref{sec:projection_type}) en entier qui va changer le registre du processeur utilisé pour stocker la représentation. Sur le nouveau registre sera susceptible d'être appliqués des opérations bit-à-bit.
+\end{minitelbasicbox}
 \subsection{Opérateurs logiques, ou relationnels}
 \label{sub:op_rateurs_logiques_ou_relationnels}
-\definition{Vérité d'une expression}{On dit qu'une expression est \textit{fausse} si sa valeur est égale à 0. On dit qu'elle est \textit{vraie} sinon.}
- 
-Les opérateurs logiques, contrairement aux opérateurs bit-à-bits, ne travaillent pas sur les valeurs de variables mais sur leur valeur de vérité. En particulier, ils ne renvoient que 1 ou 0, c'est-à-dire \textit{vrai} ou \textit{faux}.
- 
-On liste les opérateurs logiques suivants :
+\definition{Type booléen et valeur de vérité d'une expression}{
+Le type abstrait \textit{booléen} est déterminé par l'ensemble $\{Vrai, Faux\}$ et des opérations logiques $\vee$, $\wedge$, $\oplus$ ou $\neg$.
+
+La représentation en mémoire de $Faux$ est le mot binaire nul, dont la valeur selon une interprétation entière est 0.
+
+Tous les autres mots binaires correspondent à la valeur $Vrai$.
+
+On dit alors qu'une expression numérique (à valeur dans $\mathbb{R}$) est \textit{fausse} si sa valeur est égale à 0. On dit qu'elle est \textit{vraie} sinon.
+}
+
+Les opérateurs logiques, contrairement aux opérateurs bit-à-bits, ne travaillent pas sur les valeurs de variables mais sur leur valeur de vérité. En particulier, ils ne renvoient que \textit{Vrai} ou \textit{Faux}, représentés par 1 ou 0.
 \begin{center}
 \begin{tabular}{l|c|c|c}
 Opération & Arité & Symbole mathématique & Symbole en C \\
@@ -156,18 +175,19 @@ NON & 1 & $\neg$ & $!$
 \end{tabular}
 \captionof{table}{Opérateurs logiques}
 \end{center}
-\textbf{Remarque :} Il s'agit d'un OU \textit{inclusif}. Le OU exlusif n'a pas de version ``logique'' en C.
+\textbf{Remarque :} Il s'agit d'un OU \textit{inclusif}. Le OU exlusif n'a pas de version ``logique'' en C. Ainsi, en C, 2 \textasciicircum{} $1 = 3$ est toujours vrai alors que mathématiquement $Vrai \oplus Vrai = Faux$
  
 Quelques exemples :
 \begin{minted}[frame=single]{c}
 int a = 5;
 int b = 7;
+printf("%d\n" a == b); // -> 0
+printf("%d idem que %d\n", a != b, !(a == b)); // -> 1
+printf("%d\n", a != b && a == b); // -> 0
+
 printf("%d\n", !(b-a)); // b-a = 2 est vrai donc !(b-a) est faux -> 0
 printf("%d\n", !!(a + b)); // -> !0 = 1
-printf("%d\n", a != b); // -> 1
-printf("%d\n" a == b); // -> 0
 printf("%d\n", !!(a+b) == (a != b)); // -> 1
-printf("%d\n", a != b && a == b); // -> 0
 printf("%d\n", a == b || (a + b)); // -> 1
 printf("%d\n", a-b && (a != b)); // -> 1 car les deux propositions sont vraies
 \end{minted}
@@ -242,8 +262,8 @@ L'équivalence à l'expression en commentaire est totale. Ainsi, ces combinaison
 \label{ssub:incr_mentation_et_d_cr_mentation}
 En raison de présence extraordinairement récurrente des deux opérations d'incrémentation et de décrémentation (c'est-à-dire l'ajout de 1 à la valeur d'une variable, ou sa diminution de 1), deux opérateurs spécifiques existent pour performer de manière optimisé ces opérations :
 \begin{itemize}
-	\item \textsf{++variable;}\footnote{Ce qui a d'ailleurs amené au nommage du langage \textit{C++} comme une version ``incrémentée'', étendue, du langage C}
-	\item \textsf{--variable;}
+	\item \mintinline{c}{++variable}\footnote{Ce qui a d'ailleurs amené au nommage du langage \textit{C++} comme une version ``incrémentée'', étendue, du langage C}
+	\item \mintinline{c}{--variable}
 \end{itemize}
 Il y a équivalence entre les expressions suivantes :
  
@@ -262,7 +282,7 @@ int a = 0;
 \end{minted}
 \end{minipage}
 
-Ainsi, $++a$ renvoie la valeur de $a$ \textit{après} incrémentation et $--a$ renvoie la valeur de $a$ \textit{après} décrémentation.
+Ainsi, \mintinline{c}{++a} renvoie la valeur de $a$ \textit{après} incrémentation et \mintinline{c}{--a}  renvoie la valeur de $a$ \textit{après} décrémentation.
  
 Toutefois, la forme la plus connue de l'incrémentation et de la décrémentation est la suivante :
 \begin{minted}[linenos=false]{c}
