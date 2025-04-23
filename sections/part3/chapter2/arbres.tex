@@ -93,7 +93,7 @@ La définition d'un arbre montre que tout arbre peut être construit par composi
 	\item $fixer\_contenu(ArbreBinaire:T, Element:x)\rightarrow ArbreBinaire$ où $T = (g, \dots, d)$ renvoie $(g, x, d)$
 	\item $fixer\_droit(ArbreBinaire:T, ArbreBinaire:d)\rightarrow ArbreBinaire$ où $T = (g, x, \dots)$ renvoie $(g, x, d)$
 	\item $fixer\_gauche(ArbreBinaire:T, ArbreBinaire:g)\rightarrow ArbreBinaire$ où $T = (\dots, x, d)$ renvoie $(g, x, d)$
-	\item $chercher(ArbreBinaire:T, Element:x)\rightarrow Boolen$ teste si $x$ apparaît dans un des noeuds de l'arbre
+	\item $chercher(ArbreBinaire:T, Element:x)\rightarrow Booleen$ teste si $x$ apparaît dans un des noeuds de l'arbre
 \end{itemize}
 En C, on peut, par exemple, utiliser des pointeurs d'arbres et poser par convention $E = \textsf{NULL}$ :
 \begin{minted}[linenos=false]{c}
@@ -264,7 +264,7 @@ Ce qu'on peut traduire en français par : les éléments du sous-arbre droit son
 	\draw (2) -- (5);
 	\draw (4) -- (6);
 	\end{tikzpicture} 
-	\captionof{figure}{Un ABR\label{fig:abre_bin}}
+	\captionof{figure}{Un ABR\label{fig:abr}}
 \end{center}
 \subsubsection{Signature}
 La signature d'\textit{ABR} (pour \textit{ArbreBinaireDeRecherche}) est différente de celle d'un \textit{ArbreBinaire} puisqu'il faut supprimer toutes les routines de manipulation qui ne tiennent pas compte des propriétés d'ordre. Il faut en ajouter de nouvelles qui permettent de construire des \textit{ABR}.
@@ -280,6 +280,8 @@ La signature d'\textit{ABR} (pour \textit{ArbreBinaireDeRecherche}) est différe
 	\item $inserer(ABR:T, Element:x)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(T)\cup\{x\}$
 	\item $supprimer(ABR:T, Element:x)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(T)\setminus\{x\}$
 \end{itemize}
+
+Ces routines sont les seules à pouvoir être utilisés en externe. Les routines elles-même peuvent en interne utiliser des routines de manipulation d'\textit{ArbreBinaire}. Pour rester rigoureux, on peut simplement considérer que les routines d'\textit{ArbreBinaire} restent définis \textit{si et seulement si} elles préservent la structure d'ABR.
 \subsubsection{Recherche d'élément}
 Si on veut trouver $x\in X$ dans un arbre $T = (g, y, d)$ et que $x \neq y$, alors selon la comparaison d'ordre entre $x$ et $y$ on sait dans quel sous-arbre $g$ ou $d$ chercher $x$ :
 \begin{itemize}
@@ -303,34 +305,67 @@ Si on veut trouver $x\in X$ dans un arbre $T = (g, y, d)$ et que $x \neq y$, alo
 Pour insérer un élément, il suffit de chercher une place pour lui conserve la propriété d'arbre binaire de recherche. Or on sait comment chercher, il suffit d'effectuer des comparaisons successives avec les éléments rencontrés. Quand on descend dans l'arbre et qu'on rencontre un arbre vide, c'est là qu'il faut insérer l'élément.
 \begin{algorithm}
 \caption{Insertion d'un élément \label{alg:insertion_abr}}
-$\textit{Booleen } G = \textit{Vrai}$ \tcp*{Gauche = Vrai}
-$\textit{Booleen } D = \textit{Faux}$ \tcp*{Droite = Faux}
-
-\KwIn{$\textit{ABR\textless{}Element\textgreater}:T, Element:x$}
-
-$\textit{ABR\textless{}Element\textgreater{} Parent} \leftarrow E$\;
-$\textit{Booleen direction}$\;
-\If {$T = E$} {
-	\Return $(E, x, E)$\;
-}
-\While {$(T\neq E) \wedge (contenu(T)\neq x)$} {
-	$Parent \leftarrow T$\;
-	$direction\leftarrow (x\leq contenu(T))$\;
-	\eIf {$x \leq contenu(T)$} {
-		$T\leftarrow arbre\_gauche(T)$\;
-	} {
-		$T\leftarrow arbre\_droit(T)$\;
+\SetKwFunction{abrinserer}{\textsc{InsererElement}}
+\Indm\nonl\abrinserer{$ABR:A$, $Element:x$} \\
+\Indp
+\Switch {$A$} {
+	\Case {$A = E$} {
+		\Return $(E, x, E)$
+	}
+	\Case {$A = (g, y, d)$} {
+		\eIf {$x > y$} {
+			$fixer\_droit(A, \abrinserer{d, x})$\;
+		} {
+			$fixer\_gauche(A, \abrinserer{g, x})$\;
+		}
+		\Return $A$
 	}
 }
-\eIf {$direction = G$} {
-	$Parent \leftarrow fixer\_gauche(Parent, (E, x, E))$\;
-} {
-	$Parent \leftarrow fixer\_droit(Parent, (E, x, E))$\;
-}
-\Return $T$ \tcp*{On suppose modifier $Parent\Rightarrow$ modifier $T$}
 \end{algorithm}
+\textbf{Remarque :} on peut dérécursifier l'algorithme assez facilement ou l'écrire en récursif terminal. Dans les deux cas, on retire la nécessité de remonter la pile d'exécution, mais on ajoute plusieurs conditions supplémentaires.
 \subsubsection{Suppression d'élément}
+La suppression d'éléments dans un arbre est légèrement plus délicate pour s'assurer que l'arbre résultant est toujours un ABR. La recherche du noeud à supprimer est identique aux cas de recherche et d'insertion. Lorsqu'on trouve le noeud à supprimer $(g, x, d)$, si $d = E$ ou $g = E$, il suffit de remplacer le noeud par son seul sous-arbre différent de $E$. Dans le cas où chacun des deux sous-arbre est différent de $E$, il est très compliqué de supprimer le noeud tel quel. Par contre, on peut chercher à remplacer la valeur du noeud par celle d'un noeud du sous-arbre droit ou du sous-arbre gauche qui conserve l'ordre. Les deux seules valeurs possibles sont $max(elts(g))$ et $min(elts(d))$. On choisit donc arbitrairement entre les deux et on supprime le noeud correspondant après remplacement de $x$.
 
+\begin{algorithm}
+\caption{Suppression d'un élément \label{alg:suppression_abr}}
+\SetKwFunction{parcoursrecursif}{\textsc{SupprimerMax}}
+\Indm\nonl\parcoursrecursif{$ABR:A$, $Element:x$} \\
+\Indp
+\Case {$A = (g, y, E)$} {
+	\Return $g$
+}
+\Case {$A = (g, y, d\neq E)$} {
+	\Return \parcoursrecursif{d, x}
+}
+\SetKwFunction{abrsupprimer}{\textsc{SupprimerElement}}
+\Indm\nonl\abrsupprimer{$ABR:A$, $Element:x$} \\
+\Indp
+\Switch {$A$} {
+	\Case {$A = E$} {
+		\Return $E$ \tcp*{Element pas présent dans l'arbre : rien à supprimer}
+	}
+	\Case {$A = (g, y, d)$} {
+		\Case {$x > y$} {
+			$fixer\_droit(A, \abrsupprimer(d, x))$\;
+		}
+		\Case {$x < y$} {
+			$fixer\_gauche(A, \abrsupprimer(g, x))$\;
+		}
+		\Case {$x = y$} {
+			\If {$d = E$} {
+				\Return $g$
+			}
+			\If {$g = E$} {
+				\Return $d$
+			}
+			$Element:m\leftarrow max(g)$\;
+			$g\leftarrow \parcoursrecursif{g}$\;
+			\Return $(g, m, d)$
+		}
+		\Return $A$
+	}
+}
+\end{algorithm}
 \subsubsection{Tri ABR}
 \proposition{Ordre du parcours infixe} Le parcours infixe d'un arbre binaire de recherche $a\in A^r_X$ résulte en une liste triée selon la relation d'ordre sur $X$, avec une complexité temporelle fonction de $\Theta(n)$ où $n$ est le nombre d'éléments de $a$.
 
@@ -432,7 +467,7 @@ Chacun est asymptotiquement équivalent en terme de classe de complexité tempor
 	$$R_d(((A, x, B), y, C)) = (A, x, (B, y, C))$$
 	On appelle \textit{rotation gauche} l'opération $R_g = R_d^{-1}$ inverse de $R_d$ :
 	$$R_g((A, x, (B, y, C))) = ((A, x, B), y, C)$$
-	Il est évident que le parcours infixe de l'arbre est invariant par chacune des rotations. En particulier, un arbre binaire de recherche qui subit des rotations gauche ou droite reste un arbre binaire de recherche
+	Il est directement visible que le parcours infixe de l'arbre est invariant par chacune des rotations. En particulier, un arbre binaire de recherche qui subit des rotations gauche ou droite reste un arbre binaire de recherche
 }
 \textbf{Visuellement :} \begin{center}
 		\includesvg[width=0.7\textwidth]{rotations}
@@ -484,7 +519,7 @@ e(R_d(T)) & = & max(h(B), h(C)) + 1 - h(A)\\
 	\item Si $e(A, x, B) = 1$, on a $B = (B_1, b, B_2)$. On a $h(B_1) = h(A)$ ou $h(B_1) = h(A) - 1$. \textit{idem} pour $h(B_2)$. Après rotation gauche de $(A, x, B)$, on a l'arbre $R_g(A, x, B) = ((A, x, B_1), b, B_2)$ qui n'est lui pas nécessairement équilibré. Par contre l'arbre $R_d(R_g(A, x, B), y, C)$ est lui équilibré et ses sous-arbres le sont. \newline
 	En effet, $R_d(R_g(A, x, B), y, C) = ((A, x, B_1), b, (B_2, y, C))$. Comme $max(h(B_1), h(B_2)) = h(A)$ et $min(h(B_1), h(B_2)) \geq h(A)-1$, alors $(A, x, B_1)$ est équilibré de hauteur $h(A)$. On rappelle que $h(B) + 1\geq h(C) + 2$ donc $h(B_2)\geq h(C)$. Donc l'arbre $R_d(R_g(A, x, B), y, C)$ est équilibré à l'équilibrage de $(B_2, y, C)$ près. Si $h(B) = h(C) + 2$, l'arbre est équilibré. Si $h(B) > h(C) + 2$, $(B_2, y, C)$ est plus équilibré que l'arbre originel puisque $h(B_2) < h(B)$.
 \end{itemize}
-\textbf{Important :} on déduit de la démonstration que si $e(g, x, d) = -2$, soit $R_d(g, x, d)$ est équilibré, soit $R_d((R_g(g), x, d))$ est équilibré. C'est cette propriété qui est utilisé pour l'implantation les arbres AVLs.
+\textbf{Important :} on déduit de la démonstration que si $e(g, x, d) = -2$, soit $R_d(g, x, d)$ est équilibré, soit $R_d((R_g(g), x, d))$ est équilibré. \textit{idem} pour $e(g, x, d) = 2$. C'est cette propriété qui est utilisé pour l'implantation les arbres AVLs, notamment pour garantir l'équilibrage et par suite la complexité temporelle des opérations.
 
 \textbf{Exemple :} La rotation droite du sous-arbre filiforme $(((E, 0, E), 1, E), 2, E)$ de la figure \ref{fig:abr_desequilibre} rééquilibre l'arbre :
 \begin{center}
@@ -536,6 +571,12 @@ Si un arbre équilibré a $n$ élément, sa hauteur maximum $h(n)$ est fonction 
 }
 Les opérations d'insertion, de suppression et de recherche sont donc de complexité temporelle fonction de $O(log_2(n))$, où $n\in\mathbb{N}$ est le nombre d'éléments de l'arbre.
 \subsection{Exercices}
+\exercise{Type abstrait d'arbre binaire} Implanter la signature d'\textit{ArbreBinaire} présenté dans le cours en C :
+\begin{enumerate}
+	\item d'abord avec les enregistrements proposés dans le cours
+	\item ensuite avec un tableau qui contient tous les noeuds de l'arbre
+\end{enumerate}
+
 \exercise{Arbres binaire de recherche}{23} Implanter la signature d'\textit{ArbreBinaireDeRecherche} en C.\newline
 \textit{\underline{Remarque :} identique à la structure d'un arbre binaire. La seule différence est dans le corps des routines, qui doit préserver la structure d'ordre, comme décrit dans le cours.}
 

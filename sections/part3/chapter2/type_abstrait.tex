@@ -110,7 +110,7 @@ unsigned int tableau_taille(Tableau t);
 \end{minted}
 L'interface du module respecte la signature du type abstrait. On observe qu'il faudrait effectuer autant d'implantations que de types \textit{Element} différents utilisés (par exemple \textit{Tableau\textless Entier\textgreater} $\neq$ \textit{Tableau\textless Flottant\textgreater}). C'est une limitation du langage C, dont ne souffre pas le C++ par exemple, qui peut automatiser l'implantation de dépendances à d'autres types.
 \subsection{Exercices}
-\exercise{Entiers de taille quelconque}{25} En représentant les nombres de $\mathbb{Z}$ sur un nombre d'octets déterminé dynamiquement selon la taille des éléments, implanter une structure de données \textit{Integer} de l'anneau $\mathbb{Z}$ muni de l'addition et de la multiplication. Les choix de \textit{design} et d'implantation sont laissés à la liberté du lecteur.
+\exercise{Entiers de taille quelconque}{30} En représentant les nombres de $\mathbb{Z}$ sur un nombre d'octets déterminé dynamiquement selon la taille des éléments, implanter une structure de données \textit{Integer} de l'anneau $\mathbb{Z}$ muni de l'addition et de la multiplication. Les choix de \textit{design} et d'implantation sont laissés à la liberté du lecteur.
 
 \exercise{Nombres rationnels}{15} Implanter le type abstrait du corps $\mathbb{Q}$ muni de l'addition et de la multiplication en représentant chaque élément comme un couple $(a, b)\in\mathbb{Z}\times{\mathbb{N}}$ \newline
 \textit{\underline{Remarque :} on pourra utiliser la structure construite à l'\refexercise{Entiers de taille quelconque}}

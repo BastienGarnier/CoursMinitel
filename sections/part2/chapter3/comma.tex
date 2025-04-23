@@ -23,19 +23,18 @@ expr2;
 expr<N-1>;
 expression = exprN;
 \end{minted}
-Un exemple purement technique consistant à compter le nombre d’assignations à des variables :
+Un exemple purement technique consistant à compter le nombre d’assignations à des variables\footnote{On pourra ``cacher'' le comptage par une macro dans la section \ref{sec:directives_de_pr_processeurs_2_}} :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdio.h>
 
 unsigned int _assign_count = 0;
-#define ASSIGN(X) (_assign_count++, X)
 
 int main(int argc, char **argv) {
-	int a = ASSIGN(42);
-	int b = ASSIGN(64);
-	b = ASSIGN(a + b);
-	int c = ASSIGN(_assign_count*b + a);
+	int a = (_assign_count++, 42);
+	int b = (_assign_count++, 64);
+	b = (_assign_count++, a + b);
+	int c = (_assign_count*b + a);
 	printf("Nombre d'assignations : %u\n", _assign_count);
 	return EXIT_SUCCESS;
 }
@@ -62,7 +61,38 @@ est incorrect car équivalent à :
 \end{minted}
 qui n’a pas de sens.
 \subsubsection{Expression à partir d'un bloc}
-TODO
+L'opérateur virgule permet d'exécuter des expressions par effet de bord. Mais ces expressions sont assez courtes, alors qu'on voudrait plutôt pouvoir exécuter des blocs de code entier.
+
+Cette technique sera aussi utile pour la définition de macros.
+
+Un bloc de code entre accolades défini un environnement local. On peut en fait transformer ce bloc de code en expression par un parenthésage.
+\begin{minted}[linenos=false]{c}
+// Ceci est une expression :
+({
+	// CODE
+});
+\end{minted}
+La valeur de l'expression est la valeur de la dernière ligne :
+\begin{minted}[linenos=false]{c}
+int sum = ({
+	int x = 4;
+	int y = 5;
+	x + y;
+});
+// sum = 9
+\end{minted}
+Le programme suivant est donc syntaxiquement parfaitement valide, compile et s'exécute sans problème :
+\begin{minted}[linenos=false]{c}
+int result = ({
+	printf("Du CODE !\n");
+	result = ...; // symbole défini assignation donc 'result' est bien défini ici.
+	f(result);
+});
+\end{minted}
+En particulier, un bloc de code ``expressionnisé'' peut être sans problème utilisé par l'opérateur virgule :
+\begin{minted}[linenos=false]{c}
+(..., ({}), ...); // valide (si le reste l'est)
+\end{minted}
 \subsection{La virgule comme séparateur}
 \label{sub:la_virgule_comme_s_parateur}
 La virgule sert également dans un cas déjà observé : la séparation des déclarations de variables.

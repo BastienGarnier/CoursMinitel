@@ -6,9 +6,7 @@ void array_map(int array[], unsigned int length, void (*const f)(int*)) {
 
 void linkedlist_map(struct LinkedList *l, void (*const f)(int*)) {
 	if (linkedlist_error_access(l)) {return;}
-	struct Node *tmp = l->head;
-	while (tmp != NULL) {
+	for (struct Node *tmp = l->head; tmp != NULL; tmp = tmp->next) {
 		f(tmp->value);
-		tmp = tmp->next;
 	}
 }

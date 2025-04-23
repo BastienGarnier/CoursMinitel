@@ -114,7 +114,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Il est évident qu'un ensemble d'un produit cartésien soit lui-même un produit cartésien. Ainsi, $\mathbb{R}\times{(\mathbb{N}\times{\mathbb{N}})}$ est toujours un produit cartésien.
+Il est immédiat qu'un ensemble d'un produit cartésien soit lui-même un produit cartésien. Ainsi, $\mathbb{R}\times{(\mathbb{N}\times{\mathbb{N}})}$ est toujours un produit cartésien.
 De même en C, on peut définir un champ d'une structure comme étant lui-même une structure :
 \begin{minted}{c}
 #include <stdio.h>
@@ -460,7 +460,7 @@ et modifier les routines de l'\refexercise{Matrices (1)} pour qu'elles utilisent
 
 \exercise{Optimisation d'alignement}{03} Déterminer les tailles des structures \textsf{ExampleAligned} et \textsf{ExampleUnaligned} avec un \textsf{double} à la place d'un \textsf{int}.
 
-\exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La section \ref{sec:listes} est consacrée à cette structure\footnote{L'idée de mettre sous forme d'exercice ce qui apparaîtra plus tard dans le cours est de rendre la partie 2 sur le langage C complète vis-à-vis des cours Algo/Prog 1 de l'ISMIN sans  alourdir trop le cours. La section sur les listes semblera parfois un peu de la redite, bien qu'elle plus avant dans les détails.}
+\exercise{Listes chainées}{27}L'objectif de cet exercice est d'introduire une nouvelle manière de structurer les données. La section \ref{sec:listes} est consacrée à cette structure\footnote{L'idée de mettre sous forme d'exercice ce qui apparaîtra plus tard dans le cours est de rendre la partie 2 sur le langage C complète vis-à-vis des cours Algo/Prog 1 de l'ISMIN sans  alourdir trop le cours. La section sur les listes semblera parfois un peu de la redite, mais sera bien plus rigoureuse grâce à l'introduction à la section \ref{sec:type_abstrait_de_donn_es} des types abstraits de données.}
 
 La structure de données dite de \textit{liste chaînée} permet de stocker des données non adjacentes en mémoire, au contraire des tableaux. Les \textit{listes chaînées} ont l'avantage inédit par rapport aux tableaux de pouvoir changer de taille au cours de l'exécution du programme. Il devient possible d'ajouter ou de supprimer des éléments \textit{dynamiquement}. On peut ainsi imaginer une liste d'items d'un utilisateur qui pourrait s'accroitre indéfiniment\footnote{Dans la limite de la mémoire de l'ordinateur}, comme un carnet d'adresses par exemple.
  
@@ -502,8 +502,18 @@ En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud �
 	\item De même, écrire une procédure \textsf{void linkedlist\_push\_on\_tail(struct LinkedList *l, int value);} qui crée un noeud de valeur $value$ et l'insère \textit{en queue de liste}.
 	\item Écrire deux fonctions \textsf{int linkedlist\_pop\_from\_head(struct LinkedList *l);} et \textsf{int linkedlist\_pop\_from\_tail(struct LinkedList *l);} qui suppriment respectivement le noeud en tête et en queue de liste et renvoient la valeur de ce noeud. On pensera à libérer la mémoire associée à l'allocation dynamique de ce noeud (c'est-à-dire utiliser \textsf{free} sur le pointeur vers le noeud).
 	\item Écrire une fonction \textsf{void linkedlist\_destroy(struct LinkedList *l);} qui détruit une liste en libérant la mémoire de chacun de ses noeuds et de la liste elle-même.
-	\item En utilisant un pointeur temporaire vers les noeuds, écrire une procédure \textsf{void linkedlist\_display(struct LinkedList *l);} qui affiche les valeurs des noeuds de la liste.
+	\item En utilisant un pointeur temporaire vers les noeuds, écrire une procédure \textsf{void linkedlist\_display(struct LinkedList *l);} qui affiche les valeurs des noeuds de la liste.\newline
+	\textit{\underline{Note :} On pourra implanter l'algorithme \ref{alg:exercice_parcours_liste} ci-dessous par une boucle \textit{for}.}
 \end{enumerate}
+\begin{algorithm}
+\caption{Parcours de liste\label{alg:exercice_parcours_liste}}
+\KwIn{$Liste:l$, $Procedure:p$}
+$Noeud tmp \leftarrow tete(l)$\;
+\While {$successeur(tmp)$ existe} {
+	$p(contenu(tmp))$\;
+	$tmp \leftarrow successeur(tmp)$\;
+}
+\end{algorithm}
 % \exercise{Raymarching}Un environnement procédural est un environnement généré par des procédures, constitués de calculs mathématiques. L'algorithme de \textit{raymarching} permet de visualiser depuis un point de l'espace un tel environnement, comme le ferait une caméra\footnote{Voir \url{https://www.youtube.com/watch?v=BFld4EBO2RE} pour une démonstration de création d'un environnement procédural par un ancien ingénieur de Pixar.}
 % Cet exercice \textit{extrêmement guidé} présente, en deux dimensions, le principe de l'algorithme de \textit{raymarching} utilisé pour visualiser de tels environnements.
 % \begin{enumerate}

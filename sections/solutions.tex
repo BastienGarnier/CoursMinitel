@@ -380,7 +380,7 @@ On pose pour $i\in\llbracket 0; l(T)\rrbracket$ l'hypothèse de récurrence $P(i
 \end{itemize}
 \fg}
 
-\underline{Initialisation} : le tableau $T[0:0]$ est vide. Les deux propositions constitutives de $P(0)$ sont trivialement vraies.
+\underline{Initialisation} : le tableau $T[0:0]$ est vide. Les deux propositions constitutives de $P(0)$ sont immédiates car le tableau est vide.
 
 \underline{Hérédité} : Soit $i\in\llbracket 0; l(T) - 1\rrbracket$. Supposons $P(i)$. Au $(i + 1)^e$ tour de boucle, on a $i_{min}$ l'indice de l'élément minimal dans $T[i:l(A)]$. Par HR, tous les éléments de $T[0:i]$ sont inférieurs à ceux de $T[i:l(A)]$ et donc à $T[i + i_{min}]$. Après le $(i+1)^e$ tour de boucle, on a échangé $T[i]$ et $T[i + i_{min}]$ donc $T[0:i+1]$ contient des éléments tous inférieurs à ceux de $T[i+1:l(A)]$ et $T[i]$ majore $T[0:i+1]$ qui est donc trié par ordre croissant. \newline
 Donc les deux propositions de $P(i+1)$ sont vraies.
@@ -391,7 +391,7 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 
 \solution{Recherche dichotomique}
 
-\textbf{Question 1 :} La démonstration est presque triviale. Supposons que $x\in T$. Il existe donc $i_x\in \llbracket{0; l(T)-1}\rrbracket$ tel que $T[i_x] = x$. 
+\textbf{Question 1 :} La démonstration est assez immédiate. Supposons que $x\in T$. Il existe donc $i_x\in \llbracket{0; l(T)-1}\rrbracket$ tel que $T[i_x] = x$. 
 \begin{itemize}
 	\item Supposons $x\leq T[i]$. Comme $T$ est trié par ordre croissant, $i_x \leq i$
 	\item Supposons $x > T[i]$. Comme $T$ est trié par ordre croissant, $i_x > i$ 
@@ -405,84 +405,151 @@ En particulier, pour $i = l(T)$, d'après le premier invariant, le tableau $T[0:
 \end{itemize}
 Grâce au choix de $i_m$ effectué, on divise par deux la taille du tableau. Après au maximum $\lceil log_2(l(T))\rceil$ étapes, on a $l(T) \leq 1$ et le programme termine.
 \inputminted{c}{solutions/part2/chapter2/dichotomique.c}
-\solution{Liste des nombres premiers} 
-TODO
-% \textbf{Questions 1 et 2 :}
-% La structure du code est la même dans les deux cas :
-% \begin{minted}{c}
-% #include <stdio.h>
+\solution{Liste des nombres premiers}
 
-% #define N ...
+Dans la suite, on note\footnote{Voir section \ref{sec:mesures_du_cout} pour plus de détails. Ces notations ne sont pas \textit{nécessaires} pour la démonstration. Elles allègent l'écriture, c'est tout.} :
+\begin{itemize}
+	\item $O(f) = \{g:\mathbb{N}\rightarrow\mathbb{R}\ |\ \exists c\in\mathbb{R}_+^{*}, g\leq cf\}$.\newline
+	C'est l'ensemble des fonctions dominés linéairement par $f$
+	\item $\Omega(f) = \{g:\mathbb{N}\rightarrow \mathbb{R}\ |\ \exists c\in\mathbb{R}_+^*, f\leq cg\}$.\newline
+	C'est l'ensemble des fonctions qui dominent linéairement $f$.
+	\item $\Theta(f) = O(f)\cap \Omega(f)$ est l'ensemble des fonctions linéairement équivalentes à $f$
+\end{itemize}
+On écrit $a(n)\approx b(n)$, ou $a(n)\in\Theta(b(n))$, de manière équivalente à la phrase $\exists C_1, C_2\in\mathbb{R_+^*}, \forall n\in\mathbb{R}, C_1b(n) \leq a(n) \leq C_2b(n)$. 
 
-% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter);
+On utilise les résultats suivants découlant du théorème des nombres premiers :
+\begin{itemize}
+	\item $\pi(i)\approx \dfrac{i}{ln(i)}$
+	\item $p_i\approx i.ln(i)$, où $p_i$ désigne le $i^e$ nombre premier
+\end{itemize}
+\textbf{Questions 1 et 2 :}
 
-% int main() {
-% 	unsigned int primes[N];
-% 	unsigned int i = 3;
-% 	unsigned int counter = 0;
-% 	primes[0] = 2;
-% 	while (i <= N) {
-% 		if (primal_test(i, primes, counter)) {
-% 			primes[++counter] = i;
-% 			printf("%u;", primes[counter]);
-% 		}
-% 		i += 2;
-% 	}
-% }
-% \end{minted}
-% Les paramètres $primes$ et $counter$ sont inutiles pour la première question :
-% \begin{minted}{c}
-% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
-% 	char is_primal = n == 2 || (n > 2 && n % 2 != 0); // nécessaire
-% 	for (int i = 3; i*i <= n && is_primal; i += 2) {
-% 		is_primal = (n % i == 0) ? 0 : is_primal;
-% 	}
-% 	return is_primal;
-% }
-% \end{minted}
-% Pour la seconde :
-% \begin{minted}{c}
-% char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
-% 	char is_primal = 1; // premier par défaut
-% 	for (unsigned int k = 0; k <= counter && is_primal && primes[k] * primes[k] <= i; k++) {
-% 		is_primal = (i % primes[k] == 0 ? 0 : is_primal);
-% 	}
-% 	return is_primal;
-% }
-% \end{minted}
-% \textbf{Question 3 :} L'algorithme décrit ne suit pas la même structure. Cette structure semble seulement plus complexe à écrire pour aboutir au même résultat. On montre à la dernière question que tel n'est pas le cas et que le crible d'Eratosthène est plus rapide que l'algorithme "naïf" précédent.
-% \inputminted{c}{solutions/eratosthene.c}
-% \textbf{Question 4 :}
-% Comparons avec l'algorithme précédent, il faut d'abord déterminer le nombre de tours de boucle effectué par le test de primalité :
+La structure du code est la même dans les deux cas :
+\begin{minted}{c}
+#include <stdio.h>
+#include <stdlib.h>
 
-% Si $n, p\in\mathbb{N}$ avec $p$ premier, en se restreignant au groupe $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$, $\mathbb{P}(p\ |\ n) = \dfrac{1}{p}$ (car il n'y a qu'un élément égal à 0 modulo $p$ dans un ensemble à $p$ éléments). Si on sait que $n$ n'est pas divisible par $p_2$ un autre nombre premier, on sait qu'une autre des valeurs de $\dfrac{\mathbb{Z}}{p\mathbb{Z}}$ ne peut être prise par $n$. Ainsi, $\mathbb{P}_{(p_{2}\ \nmid\ n)}(p\ |\ n) = \dfrac{1}{p-1}$. On note $B_N$ la variable aléatoire dénotant le nombre de tours de boucle atteint par le programme pour le test de primalité de l'entier $N$. Alors, la probabilité que le test de primalité effectue $k\in{\llbracket1; \pi(n)\rrbracket}$  tours de boucle est :
-% $$\mathbb{P}(B_N = k) = \mathbb{P}_{\left(\bigcap_{j=1}^{k-1}(p_j\ \nmid\ n)\right)}(p_k\ |\ n)\displaystyle\prod_{i = 1}^{k-1}\mathbb{P}_{\left(\bigcap_{j=1}^{i-1}(p_j\ \nmid\ n)\right)}(p_i\ \nmid\ n)\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
-% C'est-à-dire :
-% $$\mathbb{P}(B_N = k) = \dfrac{1}{p_k - k}\displaystyle\prod_{i = 1}^{k-1}\dfrac{p_i - i}{p_i - i + 1}\text{, où }p_{i}\text{ désigne le }i^e\text{ premier nombre premier}$$
-% L'espérance du nombre de tours de boucle atteint est donc :
-% $$\mathbb{E}(B_N) = \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{k}{p_k - k}\prod_{i = 1}^{k-1}\left(1 - \dfrac{1}{p_i - i + 1}\right)$$
-% Comme pour $i \geq 2$, on a $p_i \geq i.ln(i)$, alors :
-% $$\mathbb{E}(B_N) \geq \displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{k}{2(p_k - k)}\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$$
+#define N ...
 
-% On observe que $\sqrt{N}$ minore $\displaystyle\sum_{k = 1}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}}$ à partir d'un certain rang. En effet, par comparaison série intégrale :
-% $$\begin{array}{lcll}
-% \displaystyle\sum_{k = 2}^{\pi(N)}\dfrac{ln(k)}{\sqrt{k}} & \geq & \displaystyle\int_{1}^{\pi(N)}\dfrac{ln(x)}{\sqrt{x}}\mathrm{d}x \\
-%  & \geq & \sqrt{\frac{N}{ln(N)}}(2(ln(N) - ln(ln(N))) - 4) + 4 & \text{ car }\pi(N)\geq \frac{N}{ln(N)} \\
-%  & \sim_{+\infty} & 2\sqrt{Nln(N)}
-% \end{array}$$
-% et donc plus grand que $\sqrt{N}$ à partir d'un certain rang. Ainsi, si à partir d'un certain rang, la suite des $\frac{ln(k)}{\sqrt{k}}$ minore  la suite des $\frac{1}{2(p_k - k)}k\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1}$, alors le test de primalité est plus lent que celui en $\sqrt{N}$, et on  a donc $T(N) > N^{\frac{3}{2}}$ à partir d'un certain rang.
+char primal_test(unsigned int n, unsigned int primes[], unsigned int counter);
 
-% On veut ainsi montrer qu'à partir d'un certain rang :
-% $$\frac{1}{2(p_k - k)}k^{\frac{3}{2}}\displaystyle\prod_{i = 2}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} \geq ln(k)$$
-% On pose $C = \frac{1}{2}\frac{2.ln(2)}{2.ln(2) + 1}$.
+int main() {
+	unsigned int primes[N];
+	unsigned int i = 3;
+	unsigned int counter = 0;
+	primes[0] = 2;
+	while (i <= N) {
+		if (primal_test(i, primes, counter)) {
+			primes[++counter] = i;
+			printf("%u;", primes[counter]);
+		}
+		i += 2;
+	}
+	unsigned nb_primes = counter + 1; // + 1 car 2 est aussi premier
+	return EXIT_SUCCESS;
+}
+\end{minted}
+Si on note pour $3\leq i\leq N$, $c_{test}(i)$ le nombre de tour de boucle effectué par $primal\_test(i)$, le cout total $C(N)$ est de :
+$$C(N) = \displaystyle\sum_{i=3}^{N}c_{test}(i)$$
 
-% On remarque que pour $i \geq 3$, $\dfrac{iln(i)}{iln(i) + 1}\geq \dfrac{iln(i)}{(i+1)ln(i+1)}$
-% D'où :
-% $$\begin{array}{lcll}
-% Ck^{\frac{3}{2}}\displaystyle\prod_{i = 3}^{k-1}\dfrac{i.ln(i)}{i.ln(i) + 1} & \geq & C\dfrac{k^{\frac{3}{2}}}{p_k - k}\times\dfrac{3ln(3)}{kln(k)} & \text{ par produit télescopique} \\
-% & \geq & C'\dfrac{\sqrt{k}}{ln(k)} & \text{ où }C'=3ln(3)C
-% \end{array}$$
-% Comme $$\dfrac{\sqrt{k}}{ln^{2}(k)}\underset{k\rightarrow+\infty}{\rightarrow}+\infty$$, on a bien l'inégalité recherchée à partir d'un certain rang.
+Les paramètres $primes$ et $counter$ sont inutiles pour la première question :
+\begin{minted}{c}
+char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
+	char is_primal = n == 2 || (n > 2 && n % 2 != 0); // nécessaire
+	for (int i = 3; i*i <= n && is_primal; i += 2) {
+		is_primal = (n % i == 0) ? 0 : is_primal;
+	}
+	return is_primal;
+}
+\end{minted}
+On  a $c_{test}(i) = 0.5\sqrt{i} - 3$, d'où $C(N) = O(N^{\frac{3}{2}})$.
+
+Pour la seconde :
+\begin{minted}{c}
+char primal_test(unsigned int n, unsigned int primes[], unsigned int counter) {
+	char is_primal = 1; // premier par défaut
+	for (unsigned int k = 0; k <= counter && is_primal && primes[k] * primes[k] <= n; k++) {
+		is_primal = (n % primes[k] == 0 ? 0 : is_primal);
+	}
+	return is_primal;
+}
+\end{minted}
+Si $n$ est premier, il faut tester tous les premiers inférieurs à $\sqrt{n}$. Le test fait donc au plus $\pi(\sqrt{n})$.
+
+\textbf{Question 3 :}
+
+L'algorithme décrit ne suit pas la même structure. Cette structure semble seulement plus complexe à écrire pour aboutir au même résultat. On montre à la dernière question que tel n'est pas le cas et que le crible d'Eratosthène est plus rapide que l'algorithme "naïf" précédent.
+\inputminted{c}{solutions/part2/chapter2/eratosthene.c}
+\textbf{Question 4 :}
+
+\textbf{Analyse du crible d'Eratosthène :}
+
+La boucle \textit{for} fait $\left\lceil\frac{N}{p_i}\right\rceil - p_i$ tours de boucle et la boucle \textit{do-while} en fait $p_{i+1} - p_i$ puisqu'elle part de $p_i$ pour s'arrêter au premier juste suivant, c'est-à-dire $p_{i+1}$.\newline
+D'où :
+$$C_{e}(N) = \displaystyle\sum_{i = 1}^{\pi(\sqrt{N})}\left\lceil\frac{N}{p_i}\right\rceil + p_{i+1} - 2p_i$$
+Par ailleurs :
+$$\begin{array}{lcll}
+p_{i+1} - 2p_i & \approx & (i+1)ln(i+1) - 2iln(i) \\
+ & = &i(ln(1 + \frac{1}{i})) + ln(i+1) - i.ln(i)\\
+ &\leq & iln(2) + ln(i+1)-i.ln(i) \\
+ &\leq &0 &\text{pour $i \geq 4$}
+\end{array}$$ 
+D'où :
+$$\begin{array}{lcl}
+C_{e}(N) & \approx & \displaystyle\sum_{i = 4}^{\pi(\sqrt{N})} \left\lceil\frac{N}{p_i}\right\rceil + p_{i+1} - 2p_i \\
+&\leq & \displaystyle\sum_{i = 4}^{\pi(\sqrt{N})} \frac{N}{p_i}
+\end{array}
+$$
+On conclut une comparaison série-intégrale :
+$$\begin{array}{lcl}
+C_{e}(N) & \approx & N\displaystyle\sum_{i=4}^{2\frac{\sqrt{N}}{ln(N)}}\frac{1}{i.ln(i)} \\
+& \leq & N\displaystyle\int_3^{2\frac{\sqrt{N}}{ln(N)}}\frac{1}{x.ln(x)}\mathrm{d}x \\
+& \approx & N.ln\left(\dfrac{2\sqrt{N}}{ln(N)}\right) \\
+C_{e}(N) & \in & O(N.ln(ln(N)))
+\end{array}
+$$
+
+\textbf{Analyse de l'algorithme par test de primalité :}
+
+On cherche d'abord un majorant, pour se donner une idée du nombre d'opérations effectués par l'algorithme. On a environ $\dfrac{N}{p_i}$ multiples de $p_i$ inférieurs à $N$. Pour être certain de disqualifier chacun de ces multiples, il faut vérifier sa divisibilité par les $i$ premiers nombres premiers. Ainsi, les multiples de $p_1 = 2$ doivent être disqualifiés par une division par 2. Les multiples de $p_2 = 3$ doivent être disqualifiés par une division par 2 et une division par 3, etc\dots On compte clairement trop d'opérations, puisque certains multiples de $p_i$ sont aussi multiples de $p_j < p_i$ et nécessiterons moins de $i$ opérations pour être disqualifiés.
+
+Cela donne :
+$$\begin{array}{lcll}
+C_{pt}(N) & \leq & \displaystyle\sum_{i = 1}^{\pi(\sqrt{N})}i\dfrac{N}{p_i} \\
+& \approx & \dfrac{N}{2} + 2\dfrac{N}{3} + N\displaystyle\sum_{i = 3}^{2\frac{\sqrt{N}}{ln(N)}}\frac{1}{ln(i)} \\
+& \leq & 7\dfrac{N}{6} + N\displaystyle\int_{2}^{2\frac{\sqrt{N}}{ln(N)}}\dfrac{1}{ln(x)}\mathrm{d}x & \text{comparaison série-intégrale}\\
+& = & 7\dfrac{N}{6} + N\times Ei\left(ln\left(2\frac{\sqrt{N}}{ln(N)}\right)\right) & \text{Exponentielle intégrale en posant $u = ln(x)$} \\
+\end{array}$$
+On utilise le développement en série entière :
+$$\begin{array}{lcl}Ei(x) & = & \gamma + ln|x| + \displaystyle\sum_{k = 0}^{+\infty}\frac{x^k}{k.k!} \\
+& \leq & \gamma + ln|x| + e^x
+\end{array}$$
+Alors :
+$$\begin{array}{lcl}C_{pt}(N) & \leq & (\frac{7}{6} + \gamma)N + N\left[ln\left|ln\left(2\frac{\sqrt{N}}{ln(N)}\right)\right| + 2\frac{\sqrt{N}}{ln(N)}\right] \\
+& \in & O\left(\frac{N\sqrt{N}}{ln(N)}\right)
+\end{array}$$
+On cherche ensuite un minorant en supposant que l'algorithme de la \textbf{Question 2} ne teste que les nombres premiers. Il s'agit d'une sous-estimation du nombre d'opérations effectués :
+$$\begin{array}{lcll}
+C_{pt}(N) & \geq & \displaystyle\sum_{i = 3}^{\pi(N)}\pi(\sqrt{p_i}) \\
+ & \approx & \displaystyle\sum_{i = 3}^{\frac{N}{ln(N)}}\frac{\sqrt{i.ln(i)}}{ln(\sqrt{i.ln(i)})} \\
+& \approx & 2\displaystyle\int_{3}^{\frac{N}{ln(N)}} \frac{\sqrt{i.ln(i)}}{ln(i.ln(i))}\mathrm{d}i& \text{ par comparaison série-intégrale}\\
+\end{array}$$
+On ne va pas s'amuser à essayer d'intégrer cette merde\footnote{Btw j'ai essayé\dots ça s'est pas bien passé\dots}.
+
+Par contre, on peut utiliser le résulat de majoration. On a :
+$$
+\left(\frac{x\sqrt{x}}{ln(x)}\right)' = \frac{\sqrt{x}(\frac{3}{2}ln(x) - 1)}{ln^2(x)}
+$$
+On va donc comparer $A(x) = \frac{\sqrt{x.ln(x)}}{ln(x.ln(x))}$ et $B(x) = \frac{\sqrt{x}(\frac{3}{2}ln(x) - 1)}{ln^2(x)}$ :
+$$\dfrac{A(x)}{B(x)} = \dfrac{ln^{2.5}(x)}{(ln(x) + ln(ln(x)))(\frac{3}{2}ln(x) - 1)}$$
+On a $\frac{A(x)}{B(x)}\underset{x\rightarrow +\infty}{\rightarrow}+\infty$. En particulier, il existe $r\in\mathbb{R}_+^*$ tel que pour tout $x\geq r$, $A(x) \geq B(x)$. $A$ et $B$ sont positifs. Donc :
+$$\begin{array}{lcl}
+\displaystyle\int_r^{\frac{N}{ln(N)}}A(x)\mathrm{d}x & \geq & \displaystyle\int_r^{\frac{N}{ln(N)}}B(x)\mathrm{d}x \\
+& = & \dfrac{\frac{N}{ln(N)}\sqrt{\frac{N}{ln(N)}}}{ln\left(\frac{N}{ln(N)}\right)} + C \\
+& \in & \Omega\left(\dfrac{N\sqrt{N}}{ln^{1.5}(N)ln(\frac{N}{ln(N)})}\right)
+\end{array}
+$$
+L'algorithme de la \textbf{Question 2} est donc asymptotiquement plus lent que le crible d'Eratosthène\footnote{Le résultat est moins précis que celui de M. O'Neill, professeur au département d'informatique de l'université de Harvey Mudd, qui trouve que l'algorithme de la \textbf{Question 2} est en $\Theta\left(\frac{N\sqrt{N}}{(ln(N))^2}\right)$.}
 \subsubsection{Tableaux dynamiques}
 \solution{Conversion en binaire}
 
@@ -571,4 +638,5 @@ int main() {
 \solution{À un doigt du zéro}
 
 \textbf{Code :} \detokenize{solutions/part2/chapter3/un_doigt_du_zero.c}
+\section{Troisième partie}
 \end{document}

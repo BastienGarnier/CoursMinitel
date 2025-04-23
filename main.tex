@@ -89,6 +89,17 @@
 	% date : automatique, sert de version
 	\maketitle
 \begin{refsection} % enlève des warnings et des bugs sur les réfèrences longue portée (biblio ou multifichier)
+TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoir) :
+\begin{itemize}
+	\item tables de hachage : load factor et analyse de complexité 
+	\item algorithmes sur graphes valués : dijkstra, johnson et cycles négatifs (et aucune illustration pour faire passer la pilule formelle)
+	\item algo sur les flots
+	\item détail des opérations de tamisage de tas
+	\item Approches algorithmiques
+	\item Partie 3 : correction des exercices 
+	\item Partie 4 : GDB, Git, Programmation propre, opt constantes
+\end{itemize}
+À réfléchir pour mettre en annexe toutes les démonstrations longues dont seuls importent les résultats. Dépendra des avis. Pour l'instant, les démos sont à la suite des propositions.
 \section*{Préface}
 \subfile{sections/preface}
 \tableofcontents
@@ -263,30 +274,30 @@
 		\section{Graphes (3) : flots}
 			\label{sec:graphes_et_flots}
 			\subfile{sections/part3/chapter2/graphes_flots}
-	\chapter{Approches algorithmiques}
-	\label{cha:approches_algorithmiques}
-		\section{Recherche exhaustive}
-			\label{sec:recherche_exhaustive}
-			\subfile{sections/part3/chapter3/exhaustif}
-		\section{Algorithmes gloutons}
-			\label{sec:algorithmes_gloutons}
-			\subfile{sections/part3/chapter3/gloutons}
-		\section{Diviser pour régner}
-			\label{sec:diviser_pour_r_gner}
-			\subfile{sections/part3/chapter3/dpr}
-		\section{Programmation dynamique}
-			\label{sec:programmation_dynamique}
-			\subfile{sections/part3/chapter3/prgm_dyn}
-		\section{Prétraitement}
-			\label{sec:pr_traitement}
-			\subfile{sections/part3/chapter3/pretraitement}
+	% \chapter{Approches algorithmiques}
+	% \label{cha:approches_algorithmiques}
+	% 	\section{Recherche exhaustive}
+	% 		\label{sec:recherche_exhaustive}
+	% 		\subfile{sections/part3/chapter3/exhaustif}
+	% 	\section{Algorithmes gloutons}
+	% 		\label{sec:algorithmes_gloutons}
+	% 		\subfile{sections/part3/chapter3/gloutons}
+	% 	\section{Diviser pour régner}
+	% 		\label{sec:diviser_pour_r_gner}
+	% 		\subfile{sections/part3/chapter3/dpr}
+	% 	\section{Programmation dynamique}
+	% 		\label{sec:programmation_dynamique}
+	% 		\subfile{sections/part3/chapter3/prgm_dyn}
+	% 	\section{Prétraitement}
+	% 		\label{sec:pr_traitement}
+	% 		\subfile{sections/part3/chapter3/pretraitement}
 \part{Le vrai monde de la réalité réelle}
 \label{part:le_vrai_monde_de_la_réalité_réelle}
 	\phantomsection
 	\section*{Introduction}
 	\addcontentsline{toc}{section}{Introduction}
 	\subfile{sections/part4/introduction}
-	\chapter{Outils à la programmation}
+	\chapter{Outils pour la programmation}
 	\label{chap:outils}
 		% \section{Se documenter}
 		% \subfile{sections/part4/chapter1/trouver_doc}
@@ -319,11 +330,11 @@
 		\section{Benchmarks}
 			\label{sec:benchmarks}
 			\subfile{sections/part4/chapter3/benchmarks}
-	\chapter{Optimisation des constantes}
-	\label{cha:optimisation_des_constantes}
-		\section{Le monde n'est pas théorique}
-		\section{Cache du processeur}
-		\section{Calcul à la compilation}
+	% \chapter{Optimisation des constantes}
+	% \label{cha:optimisation_des_constantes}
+	% 	\section{Le monde n'est pas théorique}
+	% 	\section{Cache du processeur}
+	% 	\section{Calcul à la compilation}
 \part{Annexes}
 \label{part:annexes}
 	\chapter{Correction des \theexercisescounter\ exercices}

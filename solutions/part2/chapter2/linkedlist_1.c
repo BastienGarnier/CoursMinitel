@@ -120,10 +120,8 @@ int linkedlist_pop_from_tail(struct LinkedList *l) {
 
 void linkedlist_display(struct LinkedList *l) {
 	if (linkedlist_error_access(l)) {return;}
-	struct Node *tmp = l->head;
-	while (tmp != NULL) {
+	for (struct Node *tmp = l->head; tmp != NULL; tmp = tmp->next) {
 		printf("->%d", tmp->value);
-		tmp = tmp->next;
 	}
 	printf("\n");
 }

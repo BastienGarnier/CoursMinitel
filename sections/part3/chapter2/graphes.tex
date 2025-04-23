@@ -194,7 +194,7 @@ $$
 $$
 \end{minipage}
 \underline{\textbf{Complexité spatiale :}}\newline
-Cette représentation est de complexité spatiale en $\Theta(|S|^2)$
+Cette représentation est de complexité spatiale en $\Theta(|S|^2)$.
 
 \underline{\textbf{Complexités temporelles des routines de parcours :}}\newline
 On peut déduire, pour tout $u\in S$
@@ -769,6 +769,8 @@ Pour tous $i, j\in \{1, \dots, n\}$
 
 \underline{Conclusion} : L'hypothèse de récurrence est initialisée et héréditaire. Donc le programme calcule bien les $G_k$. À la fin de l'exécution, $G_n$ est le graphe d'accessibilité de $G$.
 \subsection{Exercices}
+\exercise{Limite de la représentation matricielle}{3} Supposons un cas d'application réel des graphes, comme par exemple la représentation des connexions entre les différents serveurs d'Internet, ou le réseau routier en France, qui relie les différentes villes. Dans chaque cas, on a \textit{au moins} $10^6$ serveurs/villes. Que dire de la réalisabilité \textit{pratique} d'une représentation par matrice d'adjacence d'un tel graphe ?
+
 \exercise{Représentation et implantation}{28} 
 \begin{enumerate}
 	\item Implanter en C les enregistrements \mintinline{c}{struct MatrixGraph {...};} et \mintinline{c}{struct ListGraph {...};} contenant :
@@ -801,4 +803,26 @@ Pour tous $i, j\in \{1, \dots, n\}$
 \exercise{Plus court chemin}{15}
 
 \exercise{Labyrinthe}{} On s'intéresse à la génération et à l'exploration de labyrinthes parfaits.
+
+\exercise{Arbres et graphes}{24} On s'intéresse dans cet exercice à la relation entre les arbres et les graphes.
+\definition{Arbre non orienté} {
+	En théorie des graphes, un \textit{arbre non orienté} est un graphe non orienté connexe acyclique.
+}
+\begin{enumerate}
+	\item Justifier que cette définition contient celle donnée à la section \ref{sec:arbres_binaires}.
+	\item Montrer que les propriétés suivantes sont toutes équivalentes pour $G = (S, A)$ un graphe non orienté :
+	\begin{enumerate}
+		\item $G$ est un arbre non orienté
+		\item $G$ est connexe et a $(n-1)$ arêtes
+		\item $G$ est acyclique et a $(n-1)$ arêtes
+		\item Pour tous $x, y\in S$, il existe une unique chaîne entre $x$ et $y$
+		\item $G$ est connexe minimal, c'est-à-dire que $G$ est connexe et la suppression d'une arête de $G$ détruit la connexité.
+		\item $G$ est acyclique maximal, c'est-à-dire que $G$ est acyclique et ajouter une arête à $G$ crée un cycle.
+	\end{enumerate}
+	On en déduit la définition :
+\definition{Arbre couvrant} {
+	Soit $G = (S, A)$ un graphe connexe \textit{non orienté}. Un \textit{arbre couvrant} de $G$ est un sous-graphe de $G$ connexe minimal dont les sommets sont ceux de $G$.
+}\vspace*{5mm}
+	\item Quel algorithme du cours permet de calculer un arbre couvrant de $G$ ?
+\end{enumerate}
 \end{document}

@@ -1,5 +1,6 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
+``Le test de programmes peut être une façon très efficace de montrer la présence de bugs mais est désespérément inadéquat pour prouver leur absence'' (Edsger Dijkstra)
 \begin{minipage}{\textwidth}
 	\begin{center}
 		\includegraphics[width=0.4\textwidth]{meme1}
@@ -9,12 +10,12 @@
 La gestion d'erreurs en programmation est absolument fondamentale :
 \begin{itemize}
 	\item un ordinateur physique n'est pas théorique, et un programme subit tous les défauts de l'implantation physique de l'ordinateur. On peut par exemple penser à la limitation de la mémoire, qui n'est pas infini. Une allocation dynamique peut donc échouer dans le cas où on arrive ``au bout''
-	\item les programmes développés sur un ordinateur ont été écrits par des humaines faillibles. Ainsi, il n'est jamais sûr à 100\% qu'un programme écrit soit correct, bien qu'il soit démontré correct en théorie.
+	\item les programmes développés sur un ordinateur ont été écrits par des humains faillibles. Ainsi, il n'est jamais sûr à 100\% qu'un programme écrit soit correct, bien qu'il soit démontré correct en théorie.
 	\item etc\dots
 \end{itemize}
-Bien sûr, dans le cas de ``petits'' programmes, ne pas gérer les erreurs n'a qu'une incidence minime sur le développement. Dans le cas de plus grands projets, des erreurs humaines ont de fortes chances de se glisser dans certaines étapes du développement et les tester et les gérer est extrêmement important pour éviter des bugs incontrôlés et surtout non localisés.
+Dans le cas de ``petits'' programmes, ne pas gérer les erreurs n'a qu'une incidence minime sur le développement. Dans le cas de plus grands projets, des erreurs humaines ont de fortes chances de se glisser dans les petits programmese qui constituent certaines étapes du développement et les tester et les gérer est extrêmement important pour éviter \textit{au moins pire} des bugs incontrôlés et surtout non localisés.
 
-Par ailleurs, les manquements à la gestion des erreurs et aux tests sont la source première des failles de sécurité des systèmes informatiques.\footnote{Le test logiciel fait malgré tout partie (de mon point de vue subjectif) des domaines de l'informatique pratique les plus atrocement chiants dont j'ai pu faire l'expérience\dots Je veux dire par chiant : un ennui morbide qui fabrique des boules de déprime calées devant des écrans à se demander toutes les cinq secondes l'heure qu'il est \dots Et le pire, c'est l'automatisation de tests logiciels en PowerShell sous Windows. Ça c'est particulièrement horrible.}
+Par ailleurs, les manquements à la gestion des erreurs et aux tests sont la source première des failles de sécurité des systèmes informatiques.\footnote{Le test logiciel fait malgré tout partie (de mon point de vue subjectif) des domaines de l'informatique pratique les plus atrocement chiants dont j'ai pu faire l'expérience\dots Je veux dire par chiant : un ennui morbide qui fabrique des boules de déprime calées devant des écrans à se demander toutes les cinq secondes l'heure qu'il est \dots Et le pire, c'est l'automatisation de tests logiciels en PowerShell sous Windows. Ça c'est particulièrement horrible et je sais de quoi je parle.}
 \subsection{Un petit exemple pour prendre la température}
 Lorsque l'on commence à programmer, en C notamment, les erreurs de segmentation sont parmi les plus fréquentes.\footnote{Ah bon ?} Pour les réduire, il faut au maximum réduire les probabilités de manipuler des
 pointeurs non initialisés. Pour cela, il faudrait tester après chaque initialisation de pointeur (par un malloc par exemple) si le pointeur est effectivement non \textsf{NULL}.

@@ -4,6 +4,7 @@ On considère un ensemble fini $E$. Comme $E$ est fini, il est en bijection avec
 
 La manipulation de partitions de $E$ est équivalente à la manipulation de classes d'équivalence de $E$. Les classes d'équivalences apparaissent dans de nombreux problèmes dans lesquels les objets sont mis en relation, en particulier en théorie des graphes\footnote{Un graphe non valué est une relation sur un ensemble fini}.
 \subsection{Principe et signature}
+\label{sub:partition_principe_et_signature}
 L'objectif est principalement de travailler sur les classes d'équivalences de la partition, c'est-à-dire :
 \begin{itemize}
 	\item construire les classes d'équivalence de la partition par unions itérés de classes
@@ -16,6 +17,7 @@ On en déduit la signature du type abstrait \textit{Partition} :
 	\item $creer(Entier:n)\rightarrow Partition$ renvoie une partition d'un ensemble à $n$ éléments en $n$ classes d'équivalences où chaque élément de l'ensemble est représentant de sa propre classe d'équivalence d'un seul élément.
 	\item $unir(Partition, Entier:a, Entier:b)\rightarrow Partition$ renvoie la partition de $E$ où les classes d'équivalence de $\dot{a}$ et $\dot{b}$ sont unies en une seule classe d'équivalence
 	\item $trouver(Partition, Entier:i)\rightarrow Entier$ renvoie $\dot{i}$ le représentant de la classe d'équivalence de $i$
+	\item $nombre\_classes(Partition)\rightarrow Entier$ renvoie le nombre de classes d'équivalences de la partition.
 \end{itemize}
 Observe que pour chaque classe d'équivalence, on peut choisir, arbitrairement, un représentant. Par exemple, dans $\dfrac{\mathbb{Z}}{n\mathbb{Z}}$, $2\equiv 5\text{ mod }3$ et en considérant comme représentant de la classe le plus petit entier positif appartenant à la classe, on a $\dot{5} = \dot{2} = 2$.
 
@@ -26,6 +28,7 @@ On note finalement une partition de $E$ :
 $$P = \{E_0, \dots, E_{k-1}\}$$
 C'est-à-dire que :
 $$E = \displaystyle\bigsqcup_{E\in P}E = \displaystyle\bigsqcup_{i=0}^{k-1} E_i$$
+où $\sqcup$ désigne l'union disjointe.
 
 \textbf{Exemple :} Prenons l'ensemble $E = \{0, 1, 2, 3, 4, 5\}$. Sa partition la plus fine est constituée des $6$ classes $\{0\}_0, \dots, \{5\}_5$.
 \begin{itemize}
@@ -36,12 +39,14 @@ $$E = \displaystyle\bigsqcup_{E\in P}E = \displaystyle\bigsqcup_{i=0}^{k-1} E_i$
 	\item $P \leftarrow unir(P, 5, 4) = unir(P, 1, 4) = \{\{0, 4, 1, 5\}_4, \{2\}_2, \{3\}_3\}$
 	\item $trouver(P, 1) \rightarrow 4$
 \end{itemize}
+À la fin, on a $0\equiv 1\equiv 4\equiv 5$ dans $P$.
 \subsection{Implantation}
 On veut associer à chaque élément de $\{0, \dots, n-1\}$ le représentant de sa classe d'équivalence. C'est une fonction de $\{0, \dots, n-1\}$ dans $\{0, \dots, n-1\}$. Un tableau d'entiers convient très bien. Il suffit de lire le tableau pour trouver le représentant :
 \begin{minted}[linenos=false]{c}
 struct UnionFind {
 	unsigned int *repr;
 	unsigned int cardinal;
+	unsigned int classes_count;
 };
 
 struct UnionFind unionfind_create(unsigned int cardinal) {
@@ -51,6 +56,7 @@ struct UnionFind unionfind_create(unsigned int cardinal) {
 	for (unsigned int i = 0; i < cardinal; i++) {
 		uf.repr[i] = i;
 	}
+	uf.classes_count = cardinal;
 	return uf;
 }
 
@@ -58,11 +64,13 @@ unsigned int unionfind_find(struct UnionFind uf, unsigned int e) {
 	return uf.repr[e]; // logique... mais faux
 }
 
-void unionfind_union(struct UnionFind uf, unsigned a, unsigned b) {
+struct UnionFind unionfind_union(struct UnionFind uf, unsigned a, unsigned b) {
 	unsigned int r_a = unionfind_find(a);
 	unsigned int r_b = unionfind_find(b);
 
 	uf.repr[r_a] = r_b; // pourquoi pas... le choix est arbitraire
+	uf.classes_count--;
+	return uf;
 }
 \end{minted}
 \textbf{Remarque 1 :} le type \textit{Partition} est communément appelé \textit{UnionFind} de par le nom des deux opérations élémentaires fondamentales du type.
@@ -157,19 +165,21 @@ Prenons la partition représentée par la figure \ref{fig:foret_partition}. Supp
 \centering \captionof{figure}{Choix de $4$ comme représentant}\label{fig:choix_union_4}
 \end{minipage}
 
-Le second choix est évidemment optimal. Le critère est de choisir comme enfant l'arbre le moins haut. On ajoute donc dans \mintinline{c}{struct UnionFind} un tableau \textsf{highs}, rempli de $0$ à la création et on modifie la routine d'union par :
+Le second choix est optimal puisque l'arbre est moins haut. Remonter l'arbre pour trouver le représentant est moins long. Donc le critère est de choisir comme enfant l'arbre le moins haut, pour minimiser la hauteur du nouvel arbre. On ajoute donc dans \mintinline{c}{struct UnionFind} un tableau \textsf{highs}, rempli de $0$ à la création et on modifie la routine d'union par :
 \begin{minted}[linenos=false]{c}
 #define MAX(X, Y) (((X) < (Y)) ? (Y) : (X))
 
-void unionfind_union(struct UnionFind uf, unsigned a, unsigned b) {
-	unsigned int r_a = unionfind_find(a);
-	unsigned int r_b = unionfind_find(b);
+struct UnionFind unionfind_union(struct UnionFind uf, unsigned a, unsigned b) {
+	unsigned int r_a = unionfind_find(uf, a);
+	unsigned int r_b = unionfind_find(uf, b);
 	if (uf.highs[r_a] > uf.highs[r_b]) {
 		uf.repr[r_b] = r_a;
 	} else {
 		uf.repr[r_a] = r_b;
 		uf.highs[r_b] = MAX(1 + uf.highs[r_a], uf.highs[r_b]);
 	}
+	uf.classes_count--;
+	return uf;
 }
 \end{minted}
 \textbf{Notation :} Après $i$ opérations d'unions sur la partition, on note pour tous $x\in E$ :
@@ -209,16 +219,22 @@ unsigned int unionfind_find(struct UnionFind uf, unsigned int e) {
 	do {
 		r = uf.repr[r];
 	} while (r != uf.repr[r]); // tant que 'r' n'est pas le vrai représentant
-// Compression du chemin : on parcours à nouveau le chemin pour lier directement au vrai représentant 'r'
+// Compression du chemin :
+// on parcours à nouveau le chemin pour lier directement au vrai représentant 'r'
 	do {
 		unsigned tmp = e;
 		e = uf.repr[e];
 		uf.repr[tmp] = r; // le sommet est lié directement au représentant
-	} while (e != uf.repr[e])
+	} while (e != uf.repr[e]);
 	return r;
 }
 \end{minted}
 La première fois qu'on cherche le représentant de $e$, on double le nombre d'opérations effectués, pour effectuer la compression. Cependant, toutes les prochaines opérations $trouver$ sur les éléments du chemin seront beaucoup plus rapide. C'est donc une optimisation au niveau global.
 \subsection{Exercices}
-
+\exercise{Affichage d'une partition}{19} Écrire une procédure :
+\begin{center}
+\mintinline{c}{void unionfind_display(struct UnionFind uf, char* buffer);}
+\end{center}
+qui affiche la partition dans un tampon \textit{buffer} grâce à la fonction \mintinline{c}{sprintf} du module \textit{stdlib} de la bibliothèque standard.\newline
+\textit{\underline{Note :} on pourra utiliser la commande ``man sprintf'' dans un terminal Linux pour lire la documentation de la fonction.}
 \end{document}

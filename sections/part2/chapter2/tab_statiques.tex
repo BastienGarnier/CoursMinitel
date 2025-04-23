@@ -286,7 +286,6 @@ $i\leftarrow 0$\;
 \end{algorithm}
 \item démontrer par récurrence la correction de l'algorithme précédent, c'est-à-dire une démonstration que cet algorithme trie effectivement le tableau dans l'ordre croissant.
 \end{enumerate}
-\newpage
 \exercise{Recherche dichotomique}{12M} On reprend les notations introduites dans l'\refexercise{Routines classiques de manipulation de tableaux}.
 \begin{enumerate}
 	\item Soit $T$ un tableau d'entiers trié par ordre croissant. Soit $i\in \llbracket 0; l(T)-1\rrbracket$.Soit $x\in\mathbb{Z}$. Montrer que :
@@ -297,33 +296,29 @@ $i\leftarrow 0$\;
 \end{enumerate}
 \exercise{Liste des nombres premiers}{37HM} Cet exercice tient à montrer, dans un exemple particulier, l'importance fondamentale du détail, et comment ce qui semble une infime différence dans la manière d'écrire un code peut changer fondamentalement l'efficacité de l'algorithme mis en oeuvre.
 \begin{enumerate}
-	\item En programmant une routine du test de primalité l'\refexercise{Test de primalité}, écrire un programme qui liste les nombres premiers inférieurs à $N$ en au plus $N^{\frac{3}{2}}$ tours de boucles.
-	\item En utilisant un tableau de taille $N$ qui stocke les nombres premiers déjà trouvés, utiliser cette fois-ci un test de primalité en au plus $\pi(\sqrt{N})$ tours de boucle
+	\item En programmant une routine du test de primalité de l'\refexercise{Test de primalité}, écrire un programme qui liste les nombres premiers inférieurs à $N$ en au plus $N^{\frac{3}{2}}$ tours de boucles.
+	\item En utilisant un tableau de taille $N$ qui stocke les nombres premiers déjà trouvés, utiliser cette fois-ci un test de primalité qui teste si $n\in\mathbb{N}$ est premier en au plus $\pi(\sqrt{n})$ tours de boucle
 	\item Programmer l'algorithme du \textit{crible d'Eratosthène} décrit ci-dessous.
 	\item Démontrer que l'algorithme de la \textbf{Question 2.} est asymptotiquement plus lent que le crible d'Eratosthène
 \end{enumerate}
-\textit{\underline{Note :} $\pi(x)$ est le nombre de nombres premiers inférieurs ou égaux à $x$. Les théorèmes de théorie des nombres peuvent a priori être utilisés librement, ou la démonstration de la dernière question passe à une difficulté 45 environ}
 \begin{algorithm}
 \caption{Algorithme du crible d'Eratosthène}
-\Entree{$N > 0$ un entier naturel}\;
-\Sortie{les entiers naturels inférieurs à $N$}\;
-
-\textit{Initialisation}
+\Entree{$N > 0$ un entier naturel}
+\Sortie{les entiers naturels inférieurs à $N$}
 
 Déclarer un tableau $P$ de $N$ booléens\;
-Initialiser : $P[0] = Faux$ et $\forall i\in\llbracket 1; l(P)-1\rrbracket, P[i] = Vrai$\;
-
-\textit{Boucle}
+Initialiser : $P[0] = Faux$ et $\forall i\in\llbracket 1; N-1\rrbracket, P[i] = Vrai$\;
 
 On pose $p := 2$\;
 \Tq{$p^2\leq N$} {
-	\Pour{($f := p$ to $\left\lceil \dfrac{N}{p}\right\rceil$)}{
+	\Pour{($f := p$ à $\left\lceil \dfrac{N}{p}\right\rceil - 1$)}{
 		$P[pf] = Faux$\;
 	}
 	\Tq{$P[p] = Faux$}{
 		$p \leftarrow p + 1$\;
 	}
 }
-
 \end{algorithm}
+\textit{\underline{Note :} On pourra utiliser librement les résultats mathématiques non spécifiques au problème, comme les théorèmes de théorie des nombres ou certains résultats de calcul intégral.
+}
 \end{document}

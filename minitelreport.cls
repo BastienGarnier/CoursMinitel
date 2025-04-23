@@ -45,6 +45,30 @@
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \RequirePackage{amssymb}
+
+%command for alg-closure that automatically adapts its 'bar' to the arg based on the args length (including '\')
+\newcommand{\ols}[1]{\mskip.5\thinmuskip\overline{\mskip-.5\thinmuskip {#1} \mskip-.5\thinmuskip}\mskip.5\thinmuskip} % overline short
+\newcommand{\olsi}[1]{\,\overline{\!{#1}}} % overline short italic
+\makeatletter
+\newcommand\closure[1]{
+  \tctestifnum{\count@stringtoks{#1}>1} %checks if number of chars in arg > 1 (including '\')
+  {\ols{#1}} %if arg is longer than just one char, e.g. \mathbb{Q}, \mathbb{F},...
+  {\olsi{#1}} %if arg is just one char, e.g. K, L,...
+}
+% FROM TOKCYCLE:
+\long\def\count@stringtoks#1{\tc@earg\count@toks{\string#1}}
+\long\def\count@toks#1{\the\numexpr-1\count@@toks#1.\tc@endcnt}
+\long\def\count@@toks#1#2\tc@endcnt{+1\tc@ifempty{#2}{\relax}{\count@@toks#2\tc@endcnt}}
+\def\tc@ifempty#1{\tc@testxifx{\expandafter\relax\detokenize{#1}\relax}}
+\long\def\tc@earg#1#2{\expandafter#1\expandafter{#2}}
+\long\def\tctestifnum#1{\tctestifcon{\ifnum#1\relax}}
+\long\def\tctestifcon#1{#1\expandafter\tc@exfirst\else\expandafter\tc@exsecond\fi}
+\long\def\tc@testxifx{\tc@earg\tctestifx}
+\long\def\tctestifx#1{\tctestifcon{\ifx#1}}
+\long\def\tc@exfirst#1#2{#1}
+\long\def\tc@exsecond#1#2{#2}
+\makeatother
+
 \RequirePackage{amsmath}
 \RequirePackage{bbm}
 \RequirePackage{stmaryrd}

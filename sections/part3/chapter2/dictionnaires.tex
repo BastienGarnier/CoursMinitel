@@ -203,13 +203,18 @@ uint32_t reduction(uint32_t f_k, uint32_t card_T) {
 \subsection{Gestion des collisions}
 On distingue deux méthodes principalement utilisées de gestion des collisions :
 \begin{itemize}
-	\item par liste
+	\item par collisions séparées
 	\item par adressage ouvert
 \end{itemize}
 
 Le choix de la méthode influence surtout les constantes pour la vitesse d'exécution et la mémoire. De fait, cela dépend de l'architecture du processeur sur lequel le code est exécuté, et induit une bonne gestion du cache du processeur pour être efficace.
-\subsubsection{Liste de couples}
-La méthode par listee apparaît comme la solution la plus évidente : stocker toutes les collisions dans une liste. Au lieu d'avoir une table de valeurs, on a alors une table de listes de couples $(clef, valeur)$.
+\subsubsection{Collisions séparées par listes chaînées}
+La méthode par de collisions séparées apparaît comme la solution la plus ``simple'' : stocker toutes les collisions dans un/des espace(s) séparé(s) de la table. Exemples :
+\begin{itemize}
+	\item une table de collisions supplémentaire, qui contient toutes les clés dont la tentative d'ajout a généré une collision
+	\item une table de hachage avec une liste chaînée pour chaque valeur de hachage possible. On a alors une table de listes chaînées
+\end{itemize}
+On s'intéresse à la deuxième possibilité : stocker les collisions dans des listes chaînées.
 
 \begin{minipage}{\textwidth}
 	\begin{center}
@@ -235,17 +240,17 @@ Pour la recherche d'un élément, on suit alors l'algorithme suivant :\newline
 
 \begin{algorithm}
 \caption{Recherche d'un élément par sondage}\label{alg:dict_sondage}
-\KwIn{\textit{Table T}}
-\KwIn{\textit{Clef K}}
+\KwIn{$Table:T$}
+\KwIn{$Clef:K$}
 $hash \leftarrow r(T, f(K))$\;
 $n \leftarrow 0$\;
 $place \leftarrow hash + s(n)$\;
-\While {$clef(T, place) \neq K \wedge n < |T|$} {
+\While {$\left(clef(T, place) \neq K\right) \wedge \left(n < |T|\right)$} {
 	$n\leftarrow n + 1$\;
 	$place\leftarrow hash + s(n)$\;
 }
 \eIf {$clef(T, place) = K$} {
-	\Return valeur(T, place)\;
+	\Return $valeur(T, place)$\;
 } {
 	Comportement indéfini\dots \tcp*{La clef n'est pas trouvée}
 }
@@ -253,7 +258,17 @@ $place \leftarrow hash + s(n)$\;
 
 \textbf{Remarque :} le test $n < |T|$ est optionnel si on suppose l'algorithme définit \textit{ssi} la clé est présente dans le dictionnaire.
 
-Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser un algorithme très similaire, en se munissant d'une fonction $est\_utilise(Table T, Place p)\rightarrow \textit{Booléen}$ qui renvoie $Vrai$ si la place est utilisée pour un couple $(clef, valeur)$ et $Faux$ sinon. La condition de la boucle devient simplement $est\_utilise(T, place) \wedge n < |T|$.
+Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser un algorithme très similaire, en se munissant d'une fonction $est\_utilise(Table:T, Place:p)\rightarrow \textit{Booléen}$ qui renvoie $Vrai$ si la place est utilisée pour un couple $(clef, valeur)$ et $Faux$ sinon. La condition de la boucle devient simplement $est\_utilise(T, place) \wedge n < |T|$.
+% \subsection{Taux d'occupation}
+% \definition{Taux d'occupation} {
+% Si la table de hachage de $m$ cases contient $n$ couples $(clef, valeur)$, le \textit{taux d'occupation} de la table\footnote{``Load Factor'' en anglais} est le rapport $\dfrac{n}{m}$.
+% }
+% \textbf{Remarques :}
+% \begin{itemize}
+% 	\item pour une table par adressage ouvert, on a toujours $\dfrac{n}{m}\leq 1$
+% 	\item pour une table de listes chaînées, on peut avoir $\dfrac{n}{m} > 1$ puisqu'il est possible de stocker plusieurs couples par case de la table
+% \end{itemize}
+
 \subsection{Exercices}
 \exercise{Hachage de chaînes de caractères}{12}Proposer une fonction de hachage permettant de hacher des chaînes de caractères.
 
@@ -265,13 +280,13 @@ Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser
 			\item avec une gestion des collisions par chaînage
 			\item avec une gestion des collisions par adressage ouvert en sondage linéaire
 		\end{itemize}
-		La fonction de hachage et la fonction de réduction doivent pouvoir être spécifier pour chaque instance d'enregistrement de \textit{Dictionnary}\footnote{Les identifiants dans le code sont en anglais, toujours.}.
+		La fonction de hachage et la fonction de réduction doivent pouvoir être spécifier pour chaque instance d'enregistrement de \textit{Dictionary}\footnote{Les identifiants dans le code sont en anglais, toujours.}.
 \end{enumerate}
 
 \exercise{Dictionnaire par ABR}{20}On considère ici un type abstrait de dictionnaire dont les clefs sont des chaînes de caractères.
 \begin{enumerate}
 	\item Donner une relation d'ordre sur les clefs
-	\item Implanter une structure de dictionnaire par arbre binaire de recherche, où les clefs des noeuds de l'arbre sont les clefs des couples $(clef, valeur)$ du dictionnaire.
+	\item Implanter une structure de dictionnaire par arbre binaire de recherche, où les valeurs des noeuds de l'arbre sont les clefs des couples $(clef, valeur)$ du dictionnaire.
 	\item Quelles sont les complexités temporelles de chaque opération de recherche, d'insertion et de suppression ?
 \end{enumerate}
 

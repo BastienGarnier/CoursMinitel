@@ -235,27 +235,28 @@ int main()
 } // sortie de l'environnement local de 'main'
 
 \end{minted}
-\textbf{Remarque :} Le code ci-dessous montre que la déclaration d'une variable dans un sous-environnement local est prioritaire sur la définition précédente d'une variable de même nom dans un environnement hiérarchiquement supérieur.
+\textbf{Remarque :} Le code ci-dessus montre que la déclaration d'une variable dans un sous-environnement local est prioritaire sur la définition précédente d'une variable de même nom dans un environnement hiérarchiquement supérieur.
 
 Ces blocs peuvent être définis partout dans un code. Il est possible de déclarer des variables dans ou hors de ces blocs.
  
-En particulier, il est possible de définir des variables hors du bloc \textsf{main}. Ces variables appartiennent alors comme \textsf{main} à l'environnement global du programme.
-
-Ces variables sont alors dites globales. Elles sont accessibles dans tous les blocs du programmes même ceux qui ne sont pas le bloc de la fonction \textsf{main} :
+En particulier, il est possible de définir des variables hors du bloc \textsf{main}. Ces variables appartiennent alors comme \textsf{main} à l'environnement global du programme. Ces variables sont alors dites \textit{globales}. Elles sont accessibles dans tous les blocs du programmes même ceux qui ne sont pas le bloc de la fonction \textsf{main} :
 \begin{minted}{c}
 #include <stdlib.h>
 
-int some_global_variable = VALUE;
+int some_variable = VALUE; // variable globale
 int main() {
-	char some_global_variable = OTHER_VALUE;
+	// variable locale qui remplace 'some_variable' dans 'main' :
+	char some_variable = OTHER_VALUE;
 	// du code
 }
 
-// Un autre code peut aussi accéder à 'some_global_variable' et à 'main'
+// Un autre code peut aussi accéder à 'some_variable' et à 'main'
 \end{minted}
 \textbf{Remarque :} il est assez rare d'avoir à utiliser la fonction \textsf{main} hors de celle-ci durant l'exécution du programme.
 
 \textbf{Cas d'application réel :} On essaie en général d'alléger, dans la mesure où cela est utile\footnote{Je veux dire\dots Créer un sous-environnement local pour \textit{chaque} contexte de variable, c'est un peut-être un peu abusé. Quoique\dots}, les environnements les plus globaux. Cela permet principalement de réduire la taille de l'espace des noms utilisés à un endroit donné du programme et donc de réduire les bugs d'origine humaine qui consistent à réutiliser deux fois le même nom d'un même environnement dans des contextes différents.
+
+De plus, cela simplifie les dépendances dans le programme et permet au compilateur d'optimiser plus efficacement le code. En effet, le compilateur ne va pas optimiser un code si il n'est pas certain que son optimisation ne va pas modifier le comportement du programme ailleurs.
 \subsection{Exercices}
 \exercise{Interversion de variables par effet de bord}{10} Écrire un programme en C qui initialise deux variables $a$ et $b$ de valeurs différentes. En déclarant au maximum une seule variable supplémentaire, échanger les valeurs des deux premières variables. Ainsi, si $a = 8$ et $b = 6$ à leurs initialisations, alors en fin d'exécution il faut avoir $b = 8$ et $a = 6$ sans que les assignations soient explicites. C'est-à-dire que le code ne doit pas avoir à être modifié si les valeurs de $a$ et $b$ sont changées.
 \end{document}
