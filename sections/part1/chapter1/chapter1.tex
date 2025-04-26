@@ -15,21 +15,16 @@ rien d'évidente. Calculer est au départ une notion que l'on peut qualifier d'a
 est donc difficile d'apporter une définition formelle claire qui satisfasse ce qu'un humain peut
 subjectivement appeler le ``calcul''.
 
-La notion de calculabilité, qui définit ce qui est calculable et ce qui ne l'est pas, apporte une
-définition du calcul. Cette notion est fondé sur des modèles fondamentaux du calcul (tous
-équivalents, et heureusement !) comme les machines de Turing et le $\lambda$-calcul. Les ordinateurs
-contemporains sont fondés sur le modèle de la machine de Turing et sont dits équivalents au
-modèle de la machine de Turing.
+Le calcul est le plus généralement associé à une série d'actions pouvant être automatisés par un système physique. Certains modèles théoriques représentent cette automatisation et sont d'ailleurs constructibles (comme le modèle RAM qui se rapproche beaucoup des ordinateurs classiques). Il existe en fait des modèles mathématiques parfaitement abstraits dont on a montré qu'ils sont absolument équivalents aux modèles plus ``intuitifs'' d'ordinateurs.
 
-Sans plus de détail\footnote{Pour plus de détail, voir le livre \cite{XFI}} car cela serait tout à fait hors-sujet, la machine de Turing est basiquement une bande infinie de caractères munit d'une tête de lecture/écriture qui se déplace latéralement
-sur cette bande et agit selon la valeur des caractères lues grâce à une fonction de transition.
+Ce qui résulte principalement des analyses de ces modèles de calcul est que certains problèmes ne peuvent pas être résolus par des ordinateurs, quelles que soient la forme de ceux-ci, tant qu'ils fonctionnent par le calcul\footnote{C'est-à-dire : même en supposant qu'ils aient une puissance et une vitesse de calcul arbitrairement grande et une mémoire infinie.}.
 \end{minitelbasicbox}
 Le symbole \textit{I/O} est extrêmement récurrent puisqu'il apparaît dans tous les cas où existe un système d'entrée et de sortie d'informations.
 \subsection{À l'intérieur}
 \label{sub:_l_int_rieur}
 Les périphériques permettent l'interaction avec le système de l'ordinateur. Pourtant, celui-ci peut très bien fonctionner sans. Par exemple, on lisait les résultats des premiers ordinateurs directement à l'intérieur, et on y entrait les programmes ``à la main'', en modifiant les branchements des câbles pour ``écrire le programme''. En soi, cette notion d'écriture est assez récente, puisqu'elle date des ordinateurs disposant d'un clavier et d'un écran, périphériques d'entrée/sortie fondamentales pour une interaction ``facile'' avec un ordinateur.
 
-L'ordinateur lui-même est uniquement un calculateur possédant une mémoire. Il est représenté de manière simplifié par le schéma suivant qui représente la modélisation d'un ordinateur appelée \textit{architecture de Von Neumann} :
+L'ordinateur lui-même est uniquement un calculateur possédant une mémoire. Il est représenté de manière \textit{très} simplifiée par le schéma ci-dessous qui représente la modélisation d'un ordinateur selon l'\textit{architecture de Von Neumann}. Les ordinateurs modernes suivent des architectures bien plus complexes\footnote{C'est-à-dire que l'architecture de Von Neumann est pas loin d'être centenaire\dots}.
 \begin{center}
   \includegraphics[height=6cm]{structure_von_neumann}
 \end{center}

@@ -82,7 +82,50 @@ Dans le cas de la programmation de systèmes embarquées ou pour des structures 
 grand nombre de fois en mémoire, le gain de place est non négligeable. Il est ici d’un facteur 2 car il
 n’y a que deux évènements. La bibliothèque \textit{Xlib} qui sert d’interface au serveur de fenêtrage X11 de
 Linux utilise une union de 33 structures pour stocker les évènements.\footnote{Voir : \url{https://tronche.com/gui/x/xlib/events/structures.html}}
-
+\subsection{Le problème de sélection}
+Dans le cas précédent de l'union \textsf{union Event}, il est impossible étant seulement donné l'union de déterminer lequel des deux champs utiliser. On peut imaginer un programme qui renvoie une liste d'évènements pour laquel il serait parfaitement envisageable que chaque évènement utilise un champ différent. Une solution pourrait être de renvoyer autant de listes qu'il y a de type d'évènement différents. Si on a $100$ évènements différents et seulement $2$ évènements réellement utilisés, beaucoup de temps est perdu à vérifier chaque liste vide\footnote{Sans parler des allocations mémoire supplémentaires, l'impossibilité de tout stocker dans un seul tableau et les problèmes de cache qui vont avec.}. Une autre solution consiste à utiliser une énumération pour indiquer par un champ supplémentaire le type de l'évènement :
+\begin{minted}[linenos=false]{c}
+enum Type {
+	T_MOUSE,
+	T_KEYBOARD
+};
+struct Event {
+	union {
+		struct {
+			unsigned x;
+			unsigned y;
+		};
+		struct {
+			int keycode;
+			char is_maj_enabled;
+			char is_ctrl_enabled;
+		};
+	} e;
+	enum Type t;
+};
+\end{minted}
+On peut alors utiliser un aiguillage lors du parcours des évènements sur le champ \textsf{t} pour adapter le code :
+\begin{minted}[linenos=false]{c}
+for (struct Noeud nd = first(list); not_last(list, nd); nd = next(list, nd)) {
+	struct Event event = value(nd);
+	switch (event.t) {
+		case T_MOUSE:
+			// Code pour souris sur :
+			event.e.x;
+			event.e.y;
+			break;
+		case T_KEYBOARD:
+			// Code pour clavier sur :
+			event.e.keycode;
+			event.e.is_maj_enabled;
+			event.e.is_ctrl_enabled;
+			break;
+		default:
+			// Inconnu
+			break;
+	}
+}
+\end{minted}
 Utiliser les unions à la place de structures quand cela est possible est une bonne pratique de programmation
 à assimiler.
 \subsection{Exercices}

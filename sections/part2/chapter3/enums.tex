@@ -1,0 +1,58 @@
+\documentclass[../../../main.tex]{subfiles}
+\begin{document}
+\subsection{Motivation}
+Il arrive régulièrement d'utiliser des constantes d'état lors de l'écriture de programmes. La valeur réelle de ces constantes importe souvent peu. Il faut simplement que chacune soit unique. Par exemple, les codes d'erreurs de fonctions peuvent requérir de tels constantes d'états. 
+Il faut pouvoir donner un symbole à chaque constante pour qu'un programmeur tiers puisse lire le programme.
+
+On imaginer un programme qui effectue une requête HTTP\footnote{J'aime les chats : \url{https://http.cat/}} par exemple :
+
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{c}
+int c = requete();
+switch (c) {
+	case 200:
+		...
+		break;
+	case 408:
+		...
+		break;
+	default:
+		printf("Code inconnu\n");
+		break;
+}
+\end{minted}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{minted}{c}
+HttpsCode c = requete();
+switch (code) {
+	case E_OK:
+		...
+		break;
+	case E_TIMEOUT:
+		...
+		break;
+	default:
+		printf("Code inconnu\n");
+}
+\end{minted}
+\end{minipage}
+
+À gauche, c'est illisible à moins de connaître par coeur tous les codes, tandis qu'à droite, la compréhension du code est aisée.
+\subsection{Syntaxe}
+Le mot-clé \mintinline{c}{enum} permet de déclarer des énumérations.
+
+\begin{minted}{c}
+enum HttpsCode {
+	E_CONTINUE = 100,
+	E_SWITCHING_PROTOCOLS, // = 101, incrémente de 1 depuis la dernière valeur explicite
+	E_PROCESSING, // = 102
+	E_EARLY_HINTS, // = 103
+	E_OK = 200,
+	E_CREATED, // = 201
+	// etc...
+};
+\end{minted}
+\textbf{Remarque :} Une constante définie par une énumération est systèmatiquement un \mintinline{c}{int}
+\subsection{Exercices}
+\end{document}
