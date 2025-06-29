@@ -1,7 +1,5 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
-On a défini à la section \ref{sec:variables} les types de données et à la section \ref{sec:structures} les enregistrements. Ce chapitre, intitulé \textit{Structures de données}, semble d'un premier abord répétitif vis-à-vis de ces deux sections. Pourtant, les structures du langage C et les structures de données de manière générale doivent être distinguées puisqu'il s'agit en fait d'un même mot pour désigner deux choses tout à fait différentes.
-
 Le type abstrait de données est un objet mathématique, qui décrit un ensemble abstrait et les opérations abstraites que l'on peut effectuer sur les éléments de cet ensemble. Il s'agit d'une structure algébrique pure. Par exemple, le corps $\mathbb{R}$ muni de l'addition et de la multiplication peut être assimilé à un type abstrait de données. Les anneaux $\frac{\mathbb{Z}}{2^N\mathbb{Z}}$ munis de l'addition et de la multiplication présents nativement en langage C sont aussi des types abstraits de données. Les enregistrements munis des opérations sur chaque champ sont aussi des types abstraits de données.
 
 L'idée fondamentale est de ne pas avoir à se soucier de la représentation lors de la programmation. Il suffit de connaître le type. Ainsi, il n'est pas nécessaire de connaître la représentation des nombres flottants (signe, mantisse et exposant) pour les manipuler. Il n'y a pas besoin de connaître l'\textit{offset} de chaque champ d'une structure en mémoire pour manipuler les instances d'enregistrement qu'elle implante.
@@ -11,7 +9,7 @@ On peut considérer deux démarches possibles pour la construction de types abst
 	\item ascendante : on se donne une représentation concrète du type de données en terme d'objets du langage et des routines de manipulation correspondant aux opérations du type. Si on ne manipule plus la représentation que par ces routines, on manipule en fait le type abstrait.
 	\item descendante : on se donne une spécification d'un type abstrait et on conçoit l'algorithme à ce niveau. On donne une représentation concrète des types et opérations pour obtenir un programme exécutable.
 \end{itemize}
-\textbf{Remarque :} on peut considérer plusieurs couches d'abstraction entre la représentation binaire et le plus haut niveau d'abstraction. Le type le plus abstrait est construit avec comme représentation ``concrète'' d'autres types abstraits eux-mêmes construits sur des types abstraits, jusqu'à des types abstraits \textit{élémentaires} qui ont comme représentation concrète un mot binaire.
+\textbf{Remarque :} on peut considérer plusieurs couches d'abstraction entre la représentation binaire et le plus haut niveau d'abstraction. Le type le plus abstrait a comme représentation ``concrète'' d'autres types abstraits eux-mêmes représentés par des types abstraits, etc\dots, jusqu'à des types abstraits \textit{élémentaires} qui ont comme représentation concrète un mot binaire.
 
 \subsection{Spécification d'un type abstrait sur un exemple}
 Les types abstraits servent à décrire des objets bien plus complexes que des réels ou des booléens. Il faut pouvoir définir avec précision un type, qui ne dépende pas de l'implantation dans un langage spécifique.
@@ -22,65 +20,75 @@ Il faut pouvoir décrire :
 	\item la signature des opérateurs sur le type, qui décrit aussi leur syntaxe
 	\item la sémantique des opérateurs sur le type
 \end{itemize}
-On appelle signature d'un type l'ensemble des signatures de chacune de ses opérations.
+On appelle signature d'un type l'ensemble des signatures de chacune de ses opérations (au sens donné à la \refdefinition{Signature}).
 
 On rappelle qu'il est possible de spécifier avec précision la syntaxe d'une opération sur un type grâce à la signature de l'opération. Ainsi, un type abstrait \textit{Tableau} pourrait avoir la signature suivante :\newline
 \textit{Tableau\textless Element\textgreater} utilise \textit{Entier} et \textit{Element}
 \begin{itemize}
 	\item $creer(Entier) \rightarrow Tableau$
+	\item $copier(Tableau, Entier)\rightarrow Tableau$
 	\item $lire(Tableau, Entier) \rightarrow Element$
-	\item $ecrire(Tableau, Entier, Element) \rightarrow Tableau$
+	\item $ecrire(\&Tableau, Entier, Element)$
 	\item $taille(Tableau) \rightarrow Entier$
 \end{itemize}
-Les chevrons indiquent que \textit{Element} est un type abstrait quelconque dont \textit{Tableau} dépend. Ainsi, \textit{Tableau\textless Flottant\textgreater} est un tableau d'entiers ($Element\equiv Flottant$)
+Les chevrons indiquent que \textit{Element} est un type abstrait quelconque dont \textit{Tableau} dépend. Ainsi, \textit{Tableau\textless Flottant\textgreater} est un tableau de \mintinline{c}{float} ($Element\equiv Flottant$)
 \begin{minitelbasicbox}{\textbf{Point vocabulaire}}
 On appelle :
 \begin{itemize}
 	\item \textit{accesseur} un opérateur qui prend en paramètre un élément d'un type défini et renvoi un élément d'un type prédéfini. C'est le cas par exemple de \textit{lire} ci-dessus
-	\item \textit{constructeur} un opérateur qui prend ne prend en paramètre que des éléments de types prédéfinis et renvoi un élément de type défini. C'est le cas par exemple de \textit{creer} ci-dessus
-	\item \textit{mutateur} un opérateur qui prend en paramètre un élément d'un type défini et renvoi un élément d'un type défini. C'est le cas par exemple de \textit{ecrire} ci-dessus
+	\item \textit{constructeur} un opérateur qui prend ne prend en paramètre des éléments de types prédéfinis ou de type défini et renvoi un élément de type défini. C'est le cas par exemple de \textit{creer} et de \textit{copier} ci-dessus.
+	\item \textit{mutateur} un opérateur qui prend en paramètre une référence\footnote{On rappelle que les références en C sont construites et manipulées grâce aux opérateurs unaires $*$ et $\&$.} vers un élément d'un type défini et renvoi un élément d'un type défini. C'est le cas par exemple de \textit{ecrire} ci-dessus
 \end{itemize}
-Dans la pratique, il est possible que les mutateurs travaillent par effet de bord en mémoire et ne renvoient donc rien. À ce moment là, on précise dans la signature que l'objet manipulé est \textit{mutable}, c'est-à-dire non constant par la routine : $$ecrire(\text{mut}\textit{ Tableau, Entier, Élément})$$
+Dans la théorie, on peut assimiler un mutateur à une fonction équivalente renvoyant l'objet modifié. Cela permet de raisonner sur les propriétés de l'objet résultantes de la mutation, ce qui est particulièrement utile pour l'écriture des équations de spécification. Si le mutateur devait renvoyer une valeur $v$, on peut considérer que la fonction équivalente renvoie un couple $(v, \textit{objet modifié})$.
 \end{minitelbasicbox}
-On observe que les noms des signatures ne sont pas suffisant pour décrire la sémantique du type. En effet, ces noms sont arbitraires. La signature ci-dessus est équivalente à la suivante :
+On observe que les noms des signatures ne sont pas suffisants pour décrire la sémantique du type. En effet, ces noms sont arbitraires. La signature ci-dessus est équivalente à la suivante :
 \textit{T\textless E\textgreater} utilise \textit{I} et \textit{E}
 \begin{itemize}
 	\item $c(I) \rightarrow T$
+	\item $cc(T, I)\rightarrow T$
 	\item $l(T, I) \rightarrow E$
 	\item $e(T,I, E) \rightarrow T$
 	\item $t(T)\rightarrow I$
 \end{itemize}
 Et on ne comprend rien, car aucune sémantique n'est définie par les signatures.
 
-Il faut pouvoir déterminer le comportement voulu d'une opération sans l'implanter dans un langage. En effet, il faut laisser toute sa liberté au programmeur dans la manière d'implanter le type\footnote{Cela est nécessaire pour l'optimisation par exemple.}. 
+Il faut pouvoir déterminer le comportement voulu d'une opération sans l'implanter dans un langage. En effet, il faut laisser toute sa liberté au programmeur dans la manière d'implanter le type (pour des raisons d'optimisation par exemple) tout en contraignant son comportement.
 
-Une solution mathématique à ce problème est de décrire par des axiomes le comportement de chaque opération. Ces axiomes doivent être \textit{cohérents} et \textit{complets}. Par cohérence, on entend qu'il doit être impossible par une séquence d'opérations d'arriver à des comportements contradictoires comme $acces(t, 0) = e_1 \wedge acces(t, 0) = e_2$ avec $e_1 \neq e_2$. Par complétude, on entend qu'il faut que les axiomes permettent de déterminer avec certitude le comportement de tous les accesseurs du type sur leur domaine de définition. En effet, c'est le comportement observable du type qui correspond à sa sémantique. La restriction au domaine de définition est importante, puisqu'il est par exemple impossible de lire un élément dans un tableau hors de celui-ci.
+Une solution mathématique à ce problème est de décrire par des axiomes le comportement de chaque opération. Ces axiomes doivent être \textit{cohérents} et \textit{complets}. Par cohérence, on entend qu'il doit être impossible par une séquence d'opérations d'arriver à des comportements contradictoires comme $acces(t, 0) = e_1 \wedge acces(t, 0) = e_2$ avec $e_1 \neq e_2$, c'est-à-dire qu'on ne doit pas pouvoir \textit{prouver} deux états différents de la structure de données par un même algorithme. Par complétude, on entend qu'il faut que les axiomes permettent de déterminer avec certitude le comportement de tous les accesseurs du type sur leur domaine de définition. En effet, c'est le comportement observable du type qui correspond à sa sémantique. La restriction au domaine de définition est importante, puisqu'il est par exemple impossible de lire un élément dans un tableau hors de celui-ci.
 
 On appelle un type abstrait décrit par de tels axiomes algébriques un \textit{type abstrait algébrique}.
 
 Dans l'exemple ci-dessus, on peut poser les axiomes suivants, où $t$ est un \textit{Tableau}, $i$ et $j$ deux \textit{Entier}s et $e$ un \textit{Element} : 
 \begin{itemize}
+	\item $taille(creer(i)) = i$
+	\item $taille(ecrire(t, i, e)) = taille(t)$ (conservation de la taille par modification)
+
+	\item $taille(copier(t)) = taille(t)$ (conservation de la taille par copie)
+	\item $0\leq i < taille(t) \Rightarrow lire(copier(t), i) = lire(t, i)$ (conservation des valeurs par copie)
+	
 	\item $0\leq i < taille(t) \Rightarrow ecrire(lire(t, i), i, e) = e$ (conservation après modification)
 	\item $0\leq i, j < taille(t) \wedge i \neq j \Rightarrow lire(ecrire(t, j, e), i) = lire(t, i)$ (modification locale)
-	\item $taille(ecrire(t, i, e)) = taille(t)$
 \end{itemize}
 Cela \textit{semble} suffisant pour décrire complètement le type. Mais si on utilise $creer$, on ne peut pas déterminer les valeurs de sortie de l'observateur $lire$ puisque aucune valeur n'a été écrite. On pourrait supposer l'existence d'un neutre $0_E$ de type \textit{Element} et ajouter l'axiome $0\leq i < j \Rightarrow lire(creer(j), i) = 0_E$.
 
 Pour éviter cette supposition sur \textit{Element}, on peut ajouter un prédicat supplémentaire de signature $init(Tableau, Entier) \rightarrow \textit{Booléen}$ qui renvoie \textit{Vrai}. On ajoute alors une contrainte sur l'existence de $lire(t, i)$ : il faut non seulement que $0\leq i < taille(t)$ mais aussi $init(t, i) = Vrai$. On ajoute alors les trois axiomes :
 \begin{itemize}
-	\item $init(creer(i), j) = Faux$
-	\item $0\leq i < taille(v), init(ecrire(v, i, e), i) = Vrai$
-	\item $0\leq i < taille(v) \wedge i\neq j \Rightarrow init(ecrire(v, i, e), j) = init(v, j)$
+	\item $0\leq j < i \Rightarrow init(creer(i), j) = Faux$
+	\item $0\leq i < taille(t) \Rightarrow init(ecrire(t, i, e), i) = Vrai$
+	\item $0\leq i < taille(t) \wedge i\neq j \Rightarrow init(ecrire(t, i, e), j) = init(t, j)$
+	\item $0\leq i < taille(t) \Rightarrow init(copier(t), i) = init(t, i)$
 \end{itemize}
 On a alors complètement défini le type abstrait algébrique \textit{Tableau}, contenant des éléments de type \textit{Element}. On observe qu'aucune hypothèse n'a été conduite sur le type \textit{Element}, et que celui-ci peut donc être quelconque.
 \subsection{Structure de données}
-C'est bien beau de décrire tous les types abstraits algébriquement, cela permet d'éviter tout malentendu et toute erreur d'interprétation. On peut également utiliser ces axiomes pour prouver formellement les algorithmes auxquels on fait face. D'un point de vue théorique c'est super, mais dans la pratique, on voudrait bien pouvoir lire facilement la description d'un type sans avoir à décortiquer des axiomes. Dans la suite, on ne décrira donc pas la spécification formelle de chaque type abstrait\footnote{On laisse la lecture du livre de Froidevaux \cite{Froidevaux} en complément.}.
+C'est bien beau de décrire tous les types abstraits algébriquement, cela permet d'éviter tout malentendu et toute erreur d'interprétation. On peut également utiliser ces axiomes pour prouver formellement les algorithmes auxquels on fait face. D'un point de vue théorique c'est super, et pour certaines applications critiques qui mettent en jeu des vies humaines, cela se révèle même relativement nécessaire.
+
+Mais dans la pratique la plus commune, on voudrait bien pouvoir lire facilement la description d'un type sans avoir à décortiquer des axiomes. Dans la suite, on ne décrira donc pas la spécification formelle de chaque type abstrait\footnote{On laisse la lecture du livre de Froidevaux \cite{Froidevaux} en complément.}.
 
 \textbf{Compromis clarté/rigueur :} Dans la suite, on se contentera de décrire les signatures des opérations sur les types suivis d'une description et d'explications \textit{informelles} qui se fonderont sur la formalisation mathématique des types. Si une opération nécessite une justification/explication/démonstration de son comportement, on la donnera le plus souvent possible.
 
 \textbf{À propos des pseudo-codes :} On utilise la signature dans les algorithmes en pseudo-code pour garantir la non-interprétation de ceux-ci. Si possible, on utilise directement la formalisation mathématique équivalente pour être le plus précis possible.
 
-C'est dans l'implantation des corps de fonctions d'un type que l'on va trouver tous les détails de manipulation des représentations et des types d'abstraction inférieur. C'est cette implantation qu'on appelle \textit{structure de données}. On décrira plusieurs possibilités d'implantation des types abstraits de données, c'est-à-dire plusieurs \textit{structures de données} associées au type abstrait.
+C'est dans l'implantation des corps de fonctions d'un type que l'on va trouver tous les détails de manipulation des représentations et des types d'abstraction inférieurs. C'est cette implantation qu'on appelle \textit{structure de données}. On décrira plusieurs possibilités d'implantation des types abstraits de données, c'est-à-dire plusieurs \textit{structures de données} associées au type abstrait.
 
 \definition{Structure de données} {
 	Une structure de données est l'implantation concrète explicite d'un type abstrait de données. Elle est donc dépendante du langage, du système d'exploitation et de l'architecture du/des processeur(s).
@@ -102,17 +110,25 @@ typedef struct Tableau {
 } Tableau;
 
 Tableau tableau_creer(unsigned int length);
-Tableau tableau_lire(Tableau t, unsigned int i);
-Tableau tableau_ecrire(Tableau t, unsigned int i, Element e);
+Tableau tableau_copier(Tableau t);
+Element tableau_lire(Tableau t, unsigned int i);
+void tableau_ecrire(Tableau t, unsigned int i, Element e);
 unsigned int tableau_taille(Tableau t);
 
 #endif
 \end{minted}
 L'interface du module respecte la signature du type abstrait. On observe qu'il faudrait effectuer autant d'implantations que de types \textit{Element} différents utilisés (par exemple \textit{Tableau\textless Entier\textgreater} $\neq$ \textit{Tableau\textless Flottant\textgreater}). C'est une limitation du langage C, dont ne souffre pas le C++ par exemple, qui peut automatiser l'implantation de dépendances à d'autres types.
 \subsection{Exercices}
+\exercise{Tableaux dynamiques}{20}
+\begin{itemize}
+	\item Implanter en C la structure de donnée \textit{Tableau} dont la spécification a été donnée dans le cours.\newline
+	\textit{\underline{Note :} on pourra poser $Element \equiv int$ pour simplifier. Dans le cadre de la gestion de la mémoire en C, une procédure de libération de la mémoire du tableau est bienvenue.}
+	\item Étendre la spécification de la structure \textit{Tableau} à une procédure \textit{redimensionner($\&$Tableau : t, Entier : n)} qui ajoute ou supprime des cases de $t$ de sorte à ce qu'il ne fasse plus que $n$ cases après la mutation. Implanter cette opération selon la spécification écrite.
+\end{itemize}
 \exercise{Entiers relatifs et rationnels}{35} 
 \begin{enumerate}
 	\item En représentant les nombres de $\mathbb{Z}$ sur un nombre d'octets déterminé dynamiquement selon la taille des éléments, implanter une structure de données \textit{Integer} de l'anneau $\mathbb{Z}$ muni de l'addition et de la multiplication. Les choix de \textit{design} et d'implantation sont laissés à la liberté du lecteur.
+	% \item Écrire un programme de calculatrice similaire à l'\refexercise{Calculatrice} avec cette fois-ci $x, y\in \mathbb{Z}$ qui lit des calculs \textit{en base décimale} depuis un terminal et affiche les résultats \textit{en base décimale}. 
 	\item Implanter le type abstrait du corps $\mathbb{Q}$ muni de l'addition et de la multiplication en représentant chaque élément comme un couple $(a, b)\in\mathbb{Z}\times{\mathbb{N}}$
 \end{enumerate}
 \end{document}

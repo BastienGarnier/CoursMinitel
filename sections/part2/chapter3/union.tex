@@ -32,7 +32,7 @@ some_update_function(&e);
 printf("Position souris : (%u, %u)\n", e.mouse.x, e.mouse.y);
 \end{minted}
 On observe alors que la structure \textsf{mouse} et la structure \textsf{keyboard} ne seront jamais utilisées en même
-temps. C’est-à-dire qu’une instance de la structure Event n’``utilisera'' jamais les deux sous-structures
+temps. C’est-à-dire qu’une instance de la structure \textsf{Event} n’``utilisera'' jamais les deux sous-structures
 dans un même bloc de code. En effet, cette structure n’est destiné qu’à stocker un seul évènement.
 Analysons l’utilisation mémoire de la structure \textsf{Event} :
 \begin{itemize}
@@ -128,6 +128,6 @@ for (struct Noeud nd = first(list); not_last(list, nd); nd = next(list, nd)) {
 \end{minted}
 Utiliser les unions à la place de structures quand cela est possible est une bonne pratique de programmation
 à assimiler.
-\subsection{Exercices}
+% \subsection{Exercices}
 % \exercise{Arbres binaires}Une nouvelle structure de donnée va être abordée dans cet exercice : les arbres binaires. Il s'agit avec les listes chaînées et les tableaux d'une des structures de données les plus élémentaires. Par ailleurs, une immense quantité de structures de données plus complexes ont comme base l'arbre binaire.
 \end{document}

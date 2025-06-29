@@ -231,7 +231,7 @@ unsigned int unionfind_find(struct UnionFind uf, unsigned int e) {
 \end{minted}
 La première fois qu'on cherche le représentant de $e$, on double le nombre d'opérations effectués, pour effectuer la compression. Cependant, toutes les prochaines opérations $trouver$ sur les éléments du chemin seront beaucoup plus rapide. C'est donc une optimisation au niveau global.
 \subsection{Exercices}
-\exercise{Affichage d'une partition}{19} Écrire une procédure :
+\exercise{Affichage d'une partition}{16} Écrire une procédure :
 \begin{center}
 \mintinline{c}{void unionfind_display(struct UnionFind uf, char* buffer);}
 \end{center}

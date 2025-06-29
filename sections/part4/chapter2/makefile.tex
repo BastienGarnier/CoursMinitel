@@ -10,7 +10,7 @@ Les fichiers de production \textit{make} ont par convention un des noms suivants
 	\item make-file
 	\item Makefile
 \end{enumerate}
-Il est possible de préciser un autre nom au logiciel \textit{make}, mais par défaut, \textit{make} ne prendra en considération qu'un fichier ayant un de ces noms. Il choisira le premier trouvé dans la liste ci-dessus, qu'il cherchera dans le \textit{répertoire de travail}.
+Il est possible de préciser un autre nom au logiciel \textit{make}, mais par défaut, \textit{make} ne prendra en considération qu'un fichier ayant un de ces noms. Il choisira le premier trouvé dans la liste ci-dessus, qu'il cherchera dans le \textit{répertoire de travail}\footnote{Sous-entendu : il faut placer un fichier \textit{Makefile} dans le répertoire où il y a le code, sinon ça fonctionne pas.}.
 \subsection{Principe et premiers exemples}
 \textit{make} fonctionne sur le principe de règles de production. Ces règles sont constitués :
 \begin{itemize}
@@ -207,14 +207,14 @@ On utilise la syntaxe suivante :
 SRC = *.c
 OBJS = $(SRC:%.c=%.o)
 \end{minted}
-qui signifie : \textit{``dans la variable SRC, chaque mot finissant par .c est remplacé par le même mot finit par .o''}
+qui signifie : \textit{``dans la variable SRC, chaque mot finissant par .c est remplacé par le même mot finissant cette fois-ci par .o''}
  
-Ce qui résoud effectivement le problème. On peut maintenant écrire le \textit{Makefile} suivant :
+Ce qui résout effectivement le problème. On peut maintenant écrire le \textit{Makefile} suivant :
 \begin{minted}{make}
 EXE_NAME = main
 COMPILER = gcc
 SRC = $(wildcard *.c)
-OBJS = $(SRC:%c=%.o)
+OBJS = $(SRC:%.c=%.o)
 
 $(EXE_NAME): $(OBJS)
 	$(COMPILER) $^ -o $@
@@ -229,7 +229,7 @@ Certaines règles d'un \textit{Makefile} peuvent simplement servir d'utilitaires
 clean:
 	rm -f *.o $(EXE_NAME)
 \end{minted}
-Si cette règle est par mégarde appelée par \textit{make}, celui-ci va croire qu'une erreur aura survenue puisque l'action ne produit pas la cible. Il faut donc préciser que cette règle est fausse à \textit{make} (\textit{phony} en anglais) :
+Si cette règle est par mégarde appelée par \textit{make}, celui-ci va croire qu'une erreur sera survenue puisque l'action ne produit pas la cible. Il faut donc préciser que cette règle est fausse à \textit{make} (\textit{phony} en anglais) :
 \begin{minted}[linenos=false]{make}
 clean:
 	rm -f *.o $(EXE_NAME)
@@ -249,8 +249,6 @@ user@computer ~/working_directory>
 \end{minted}
 \subsection{Idées pour aller plus loin}
 Cette sous-section ne présente pas des particularités de \textit{make} mais simplement quelques ``idées'' pour travailler dans un espace un peu plus propre.
-
-Un exemple complet est accessible sur le GitHub suivant % TODO
 \subsubsection{Arborescence du répertoire de travail}
 Il peut être intéressant :
 \begin{itemize}

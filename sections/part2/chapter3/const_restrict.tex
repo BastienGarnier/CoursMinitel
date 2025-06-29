@@ -186,7 +186,7 @@ La syntaxe est similaire à celle de \textsf{const} sur les pointeurs eux-mêmes
 	// déclaration qu'aucun alias de ptr n'est présent dans ce bloc.
 }
 \end{minted}
-Ce déclarateur d'intention surtout l'optimisation par le compilateur qui croit en la rigueur du programmeur. L'utilisateur des pointeurs est alors optimale. Par ailleurs, utiliser le mot-clé \textsf{restrict} \textit{indique} au programmeur qu'il faut faire attention à ne pas utiliser d'alias, dans la déclaration d'une routine par exemple.
+Ce déclarateur d'intention autorise surtout l'optimisation par le compilateur qui croit en la rigueur du programmeur. L'utilisateur des pointeurs est alors optimale. Par ailleurs, utiliser le mot-clé \textsf{restrict} \textit{indique} au programmeur qu'il faut faire attention à ne pas utiliser d'alias, dans la déclaration d'une routine par exemple.
 
 La routine d'échange précédente devient :
 \begin{minted}{c}
@@ -202,5 +202,5 @@ Ainsi :
 \begin{minted}[linenos=false]{c}
 swap(&x, &x);
 \end{minted}
-ne provoque aucune erreur et le comportement est tout à fait \textit{incorrect} vis-à-vis de ce qui est souhaité par le programmeur.
+ne provoque aucune erreur et le comportement est tout à fait \textit{incorrect} vis-à-vis de ce qui est souhaité par le programmeur. Mais le mot-clé \textsf{restrict} a ``prévenu'' le programmeur que l'appel \mintinline{c}{swap(&x, &x);} provoque un comportement indéterminé.
 \end{document}

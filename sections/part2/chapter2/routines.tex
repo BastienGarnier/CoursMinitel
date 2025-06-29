@@ -1,11 +1,12 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
-La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bugs en tous genres, dont les origines sont humaine.
+La modulation d'un programme est probablement le point le plus important qu'il puisse y avoir en programmation. Pour de très petits projets, de très petites applications, il est possible de programmer toute l'application d'un seul tenant. Mais au fur-et-à-mesure que l'application grandit, il devient très compliqué, voire impossible de modifier correctement le programme sans introduire une quantité phénoménale de bugs en tous genres, dont les origines sont humaines.
 
 L'idée est alors simple : il faut compartimenter, diviser le programme en sous-programmes qui effectuent chacun une action bien précise. C'est ensuite la fonction \textit{main} qui va s'occuper d'agencer ces sous-programmes. Le programme vu de manière globale devient alors :
 \begin{itemize}
 	\item très flexible, puisque chaque fonctionnalité est identifiée à un sous-programme précis et qu'il suffit d'appeler dans la fonction \textit{main} les sous-programmes utiles
 	\item facilement débuguable puisqu'il suffit de corriger chaque sous-programme, tous très simples, et de corriger l'agencement de ces sous-programmes dont on sait que chacun est correct
+	\item relativement facilement optimisable, puisqu'optimiser un sous-programme une seule fois peut optimiser en plusieurs endroits le programme principal si celui-ci appelle régulièrement le sous-programme optimisé.
 \end{itemize}
 Nous allons voir un cas particulier de sous-programme appelé la \textit{routine}\footnote{Un autre type de sous-programme notable apparaissant par exemple en Python 	(et en C) est la \textit{coroutine}, qui possède la propriété de pouvoir être suspendu au cours de son exécution puis reprise là où elle s'est arrêtée.}, dont il n'existe que deux formes\footnote{Nativement. Il est possible d'en simuler d'autres, comme les méthodes par exemple en programmation orientée objet, qui ont comme particularité d'être partie d'une entité appelée un objet.} en langage C :
 \begin{itemize}
@@ -18,7 +19,7 @@ Ces deux formes en langage C se voient écrites de manière semblable par les sy
 \begin{minted}[linenos=false]{c}
 void procedure_name(parametres) {
 	// bloc d'instructions
-	return; // termine la routine, c'est-à-dire saute à la suite de l'instruction ayant appelée la routine
+	return; // termine la routine
 }
 \end{minted}
 \end{minipage}
@@ -30,7 +31,7 @@ TYPE function_name(parametres) {
 }
 \end{minted}
 \end{minipage}
- 
+
 Les paramètres sont indiqués comme des variables non initialisées, séparées par des virgules :
 \begin{minted}[linenos=false]{c}
 int addition(int a, int b) {
@@ -45,6 +46,16 @@ addition & : & \llbracket{-2^{31}}; 2^{31}-1\rrbracket^{2} & \rightarrow & \llbr
  & & (a, b) & \mapsto & a + b
 \end{array}
 $$
+
+\textbf{Précision :} dans les faits, l'instruction \textsf{return} saute à la suite de l'instruction ayant appelée la routine. Ainsi \textsf{return} peut être placé n'importe où dans la routine. Elle y mettra fin :
+\begin{minted}[linenos=false]{c}
+void afficher_diff_0(int x) {
+	if (x == 0) {
+		return; // termine la routine en sautant à la suite de l'instruction qui l'a appelée
+	}
+	printf("x != 0\n"); // jamais exécuté si x = 0
+}
+\end{minted}
 
 Il est alors possible d'appeler cette fonction \textit{dans la suite du programme}. En effet, les instructions précédentes à la définition de la procédure/fonction n'en ont pas connaissance. C'est d'ailleurs pour cette raison que les directives \textsf{\#include} sont écrites au début du programme et pas à la fin.
 \begin{minted}{c}
@@ -62,16 +73,6 @@ int main() {
 }
 \end{minted}
 Il faut donc que les routines soient définies \textit{avant} tous leurs appels. Pour permettre une plus grande flexibilité dans l'écriture du code, il est cependant possible d'\textit{annoncer} la définition d'une routine avant de l'écrire réellement, grâce aux \textit{prototypes}.
- 
-\textbf{Remarque :} L'instruction \textsf{return} peut en fait être placé n'importe où dans la routine. Elle y mettra fin :
-\begin{minted}[linenos=false]{c}
-void afficher_diff_0(int x) {
-	if (x == 0) {
-		return; // termine la routine
-	}
-	printf("x != 0\n"); // jamais exécuté si x = 0
-}
-\end{minted}
 \subsection{Signature et prototype}
 \label{sub:signature_et_prototype}
 \definition{Signature}{La signature d'une routine est la donnée de :
@@ -92,7 +93,7 @@ On retiendra la notation suivante pour les signatures  : $nom(t_1, \dots, t_n) \
 \definition{Prototype}{
 	Le prototype est une notion spécifique aux langages C et C++. Il sert à indiquer au compilateur que le corps (c'est-à-dire le contenu) d'une routine sera bien défini plus tard dans le programme.
 
-	L'utilisation d'un prototype permet d'utiliser la routine avant que le compilateur lise son corps.
+	L'utilisation d'un prototype permet d'utiliser la routine avant que le compilateur ne lise son corps.
 }
 Un prototype se déclare en C comme une routine absente de code :
 \begin{minted}[linenos=false]{c}
@@ -202,7 +203,11 @@ int main() {
 On trouve alors une limitation à l'action des fonctions, puisque celles-ci semblent ne pouvoir agir que sur une unique valeur, celle de retour. Grâce aux pointeurs, on pourra cependant abroger cette limitation\dots
 \subsection{La pile d'exécution}
 \label{sub:la_pile_d_ex_cution}
-Lorsque le système charge en mémoire un programme informatique et l'exécute, il ne contient pas que le code. Il faut aussi pouvoir stocker les variables et enregistrer l'historique des appels de routines. En effet, il faut bien	gérer en mémoire le passage d'un argument à une routine, et également stocker l'adresse mémoire à laquelle le \textsf{return} doit revenir. On pourrait imaginer le code suivant :
+Lorsque le système charge en mémoire un programme informatique et l'exécute, il ne contient pas que le code. Il faut aussi pouvoir stocker les variables et enregistrer l'historique des appels de routines. En effet, il faut bien	gérer en mémoire le passage d'un argument à une routine, et également stocker l'adresse mémoire à laquelle le \textsf{return} doit revenir.
+
+La \textit{pile d'exécution} est une zone mémoire allouée à un processus qui lui permet de stocker les paramètres de fonctions et les variables internes à la fonction. Il faut voir cette pile comme une pile d'assiettes (qui sont les paramètres, etc\dots). Les éléments ne peuvent être ajoutés à la pile d'exécution qu'en les empilant ou en les dépilant du dessus de la pile.
+
+Prenons comme exemple le code suivant :
 \begin{minted}{c}
 #include <stdio.h>
 #include <stdlib.h>
@@ -227,10 +232,8 @@ int main() {
 	printf("%u x %u = %u\n", X, Y, multiply(X, Y));
 	return EXIT_SUCCESS;
 }
-\end{minted}
-La \textit{pile d'exécution} est une zone mémoire allouée à un processus qui lui permet de stocker les paramètres de fonctions et les variables internes à la fonction. Il faut voir cette pile comme une pile d'assiettes (qui sont les paramètres, etc\dots). Les éléments ne peuvent être ajoutés à la pile d'exécution qu'en les empilant ou en les dépilant du dessus de la pile.
- 
-Ainsi, l'appel à \textsf{multiply} va \textit{empiler} l'adresse mémoire de l'instruction suivant l'appel à la fonction, va empiler les arguments sur la pile puis va sauter à l'adresse mémoire de la fonction \textsf{multiply}. Cela sera réitéré pour chaque appel à la fonction \textsf{addition}.
+\end{minted} 
+L'appel à \textsf{multiply} \textit{empile} l'adresse mémoire de l'instruction suivant l'appel à la fonction, empile les arguments sur la pile puis saute à l'adresse mémoire de la fonction \textsf{multiply}, qui est ensuite exécutée. Cela est réitéré pour chaque appel à la fonction \textsf{addition}.
  
 La pile contient \textit{entre autre} :
 \begin{itemize}
@@ -240,16 +243,16 @@ La pile contient \textit{entre autre} :
 Les variables contenues dans la pile ne sont accessibles que dans la routine qui les a créé. Par ailleurs, dès l'instant où une routine exécute l'instruction \textsf{return}, les variables utilisées dans cette routine sont libérées, c'est-à-dire que l'espace mémoire qui était réservé pour elles devient à nouveau libre de contenir n'importe quelle autre valeur (opération de \textit{dépilement} de la pile d'exécution).
 
 \begin{minitelbasicbox}{\textbf{Petit apparté :} À propos de l'allocation de la mémoire}
-	L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bugs.
+	L'allocation de mémoire de variables est entièrement géré par le compilateur. En effet, les variables crées dans un programme sont analysés avant la compilation et le programme en binaire finale sera en vérité une alternative au code écrit par le programmeur qui sécurisera l'accès à la mémoire pour éviter certains bugs. \newline
  
-	Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable.
+	Par exemple, la taille de la pile au chargement du programme est généralement de taille fixe (cela dépend du système d'exploitation, mais on considère ici des systèmes classiques comme Linux ou Windows). Ainsi, empiler de trop nombreux appels de routines les uns sur les autres peut amener à une erreur de dépassement de pile (\textit{stack overflow} en anglais). De la même façon, il ne devrait pas être possible d'allouer de trop nombreuses variables sur la pile dans une seule fonction. Certaines techniques permettent toutefois d'éviter des erreurs à ce niveau en stockant les variables les plus anciennes/les moins utilisées ailleurs que sur la pile, comme par exemple sur le tas ou même sur le disque dur (pour d'immenses programmes) malgré la perte de vitesse que cela engendre. On suppose en effet que ces variables ne sont utilisées que rarement et qu'une baisse de vitesse pour leur accès est négligeable. \newline
 
-	Il est cependant possible de gérer par soi-même l'allocation des variables en mémoire. C'est ce qu'on appelle l'\textit{allocation dynamique}. La pile n'est jamais\footnote{à deux trois détails près...} utilisée pour ce type d'allocation.
+	\textbf{Note :} le dépilement de la pile d'exécution ne dépend pas de sa taille. Il ne s'agit que d'un décalage de l'adresse de haut de pile. On peut donc utiliser autant de variables que l'on veut sans craindre de perte de \textit{vitesse} du programme. \newline
+
+	Il est possible de gérer par soi-même l'allocation des variables en mémoire. C'est ce qu'on appelle l'\textit{allocation dynamique} (voir section \ref{sec:allocation_dynamique}). La pile n'est jamais\footnote{à deux trois détails près...} utilisée pour ce type d'allocation.
 \end{minitelbasicbox}
 
-Pour la raison précité, on essaye de compartimenter les programmes en une multitude de routines, surtout lorsque les calculs effectués par ces routines utilisent beaucoup de variables temporaires. En effet, au lieu de stocker toutes ces variables dans l'espace mémoire du programme principal même lorsqu'elles sont inutiles, l'espace mémoire n'est utilisé pour stocker ces variables que lors de l'exécution de la routine.
-
-\textbf{Remarque 1 :} l'utilisation de blocs de code fait aussi bien le travail. Il s'agit donc d'abord de structuration du code et de facilité d'utilisation par un tiers.
+\textbf{Remarque 1 :} on minimise le stockage de variables sur la pile grâce à des blocs de code
 
 \textbf{Remarque 2 :} si un calcul n'utilise que peu de variables temporaires, il n'est pas intéressant de compartimenter le programme en trop de routines car ces routines utiliseront la mémoire pour stocker les paramètres et pour stocker l'appel de fonction. Un exemple\footnote{Extrême et peu réaliste, certes} est le suivant :
 \begin{minted}{c}
@@ -262,7 +265,9 @@ int sum(int a, int b, int c, int d, int e, int f, int g, int h, int i) {
 int result = sum(1, 2, 3, 4, 5, 6, 7, 8, 9);
 \end{minted}
 
-Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel.\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines. Toutefois, il ne peut optimiser que munit de la certitude de ne pas modifier la sémantique du programme. Cela réduit grandement son champ d'action pour l'optimisation. Il est recommandé d'écrire par soi-même un code optimisé $\wedge\wedge$} Il est par exemple absurde de programmer une routine qui est si spécfique qu'elle ne sera appelée qu'une seule fois dans tout un programme.
+Par ailleurs, l'appel d'une routine prend du temps, puisqu'il faut empiler les arguments, allouer de la mémoire pour les variables temporaires sur la pile d'exécution, etc\dots L'utilisation de nombreuses routines peut être utile pour structurer le code, mais seulement si ces routines ont un sens en tant que tel. Il est par exemple étrange de programmer une routine qui est si spécfique qu'elle ne sera appelée qu'une seule fois dans tout un programme.
+
+Pour les raisons précitées, on peut penser à minimiser le nombre de routines dans un programme pour optimiser sa vitesse. Cependant, le compilateur s'occupe généralement de ``déroutiniser''\footnote{Le compilateur, lorsque les drapeaux d'optimisation sont activés, peut s'occuper de copier le code des routines directement dans le code principal, sans véritable appel de routines, pour aller plus vite et ne plus avoir ce désavantage majeur de l'utilisation des routines. Toutefois, il ne peut optimiser que munit de la certitude de ne pas modifier la sémantique du programme. Cela réduit grandement son champ d'action pour l'optimisation. Il est recommandé d'écrire par soi-même un code optimisé $\wedge\wedge$} les routines de peu de lignes. En général, le gain obtenu par un programme bien pensé et bien structuré est donc très largement supérieur à celui d'un programme absent de routines.
 \subsection{Effet de bord}
 \label{sub:effet_de_bord}
 Une fonction peut agir sur son environnement, c'est-à-dire sur le résultat de l'exécution d'un programme, grâce à sa valeur de retour. Toutefois, une procédure ne le peut pas. Cela ne signifie pour autant pas qu'une procédure ne puisse pas agir sur son environnement. Ainsi, une procédure peut, sans renvoyer de valeur, agir sur les valeurs d'adresses mémoires extérieurs à sa région propre de code. Par exemple :

@@ -25,11 +25,11 @@ L'idée des pointeurs est simple : au lieu de stocker directement une valeur, on
 	\end{center}
 \end{minipage}
  
-Les pointeurs sont fondamentaux en C\footnote{Et presque seulement en C\dots}. En particulier, ils permettent une flexibilité très importante des programmes écrits. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Pourtant, une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques, et l'utilisation de pointeurs permet de manipuler des variables bien qu'étant hors de l'environnement local de cette variable.
+Les pointeurs sont fondamentaux en C\footnote{Et pas seulement en C\dots}. En particulier, ils permettent une flexibilité très importante des programmes écrits. Ainsi, une variable d'une routine est locale à cette routine, et n'existe pas en dehors. Pourtant, une adresse mémoire peut potentiellement être utilisée hors de routines spécifiques, et l'utilisation de pointeurs permet de manipuler des variables bien qu'étant hors de l'environnement local de cette variable.
 
 L'utilisation des pointeurs pour manipuler des adresses non locales décuple les possibilités des routines puisque celles-ci peuvent interagir avec leur environnement autrement que par la valeur de retour (dans le cas d'une fonction). Cela donne également une plus grande importance aux procédures.
 
-% Cela amène cependant un inconvénient : en perdant un contrôle absolu sur l'existence de données, il devient possible \textit{par erreur} d'accéder à des zones mémoires qui ne sont plus utilisés. Il s'agit là de l'erreur la plus classique en programmation en C\footnote{traduite par le fameux message d'erreur \textit{Segmentation Fault}}.
+Cela amène cependant un inconvénient : si les données d'un environnement local sont accessibles hors de celui-ci, il devient facilement possible d'écrire des bugs. Il s'agit de la source d'erreurs la plus classique en programmation en C. Cette erreur est traduite par le fameux message d'erreur \textit{Segmentation Fault}, c'est-à-dire littéralement : accès non autorisé (écriture ou exécution) à un segment de mémoire.
  
 Un pointeur est définit selon la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
@@ -91,7 +91,7 @@ Un programme informatique d'ordinateur est généralement composé de plusieurs 
 On distingue principalement :
 \begin{itemize}
 	\item les segments de code : contiennent les instructions exécutables du programme
-	\item les segments de donnée : contiennent les variables globales du programme\footnote{À peu près, voir les \textbf{Classes de stockage} pour plus de détails.}
+	\item les segments de donnée : contiennent les variables globales du programme\footnote{À peu près, voir les \textbf{Classes de stockage} (section \ref{sec:classes_de_stockage}) pour plus de détails.}
 	\item le segment de pile : contient la pile d'exécution
 \end{itemize}
 Une erreur de segmentation provient principalement de la tentative d'accès à un segment de manière non autorisée. Il peut s'agir d'un segment du programme propre ou d'un autre programme. Dans tous les cas, cela est représentatif de l'accès non autorisé par le système d'exploitation ou par le processeur à une adresse mémoire de la RAM.
@@ -130,7 +130,7 @@ L'utilisation de $\ast$ pour accéder \textit{indirectement} à la valeur d'une 
 
 \subsection{Détails sur les références : \textit{lvalue} et \textit{rvalue}}
 \label{sub:lvalue_et_rvalue}
-Les codes ci-dessus peut avoir provoquer chez le lecteur un froncement de sourcils, en particulier si celui-ci est porté à la rigueur des détails\dots
+Les codes ci-dessus peut avoir provoquer chez le lecteur un froncement de sourcils, en particulier si celui-ci est pointilleux sur la rigueur et les détails\dots
 
 Il pourrait après avoir essayé ceci avec succès :
 \begin{minted}[linenos=false]{c}
@@ -205,7 +205,7 @@ Alors, $*a$ dans \textsf{interversion} est la valeur de $a$ dans la fonction \te
  
 \subsection{Arithmétique des pointeurs et projection de type}
 \label{sub:arithm_tique_des_pointeurs_et_projection_de_type}
-Un point important n'a pas été abordé sur les pointeurs\footnote{Sans jeux de mots aucun\dots puisque les jeux de mots laids font des gambettes ;)} : l'arithmétique des pointeurs, fortement liée à la projection de type sur les pointeurs.
+Un point important n'a pas été abordé sur les pointeurs\footnote{Sans jeux de mots aucun\dots puisque les jeux de mots laids font des gambettes $\wedge\wedge$} : l'arithmétique des pointeurs, fortement liée à la projection de type sur les pointeurs.
  
 Considérons le code suivant :
 \begin{minted}{c}

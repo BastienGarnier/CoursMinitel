@@ -7,7 +7,7 @@ On considère alors :
 	\item la \textit{place} d'un élément, qui représente son indice et permet alors la manipulation de cet indice (par exemple pour calculer le successeur dans la liste).
 	\item une fonction \textit{contenu} qui pour une place donnée renvoie l'élément $e$ associé
 \end{itemize}
-Les données elles-mêmes ne sont pas ordonnés. Par contre, les places assignées à chaque donnée le sont selon leur rang dans la liste.
+Les données elles-mêmes ne sont pas \textit{nécessairement} ordonnés. Par contre, les places assignées à chaque donnée le sont selon leur rang dans la liste.
 
 On appelle :
 \begin{itemize}
@@ -251,17 +251,15 @@ List list_push_on_tail(List l, Element e) {
 % }
 % \end{minted}
 \subsection{Exercices}
-\exercise{Listes virtuelles}{20} Implanter les routines de la signature d'une liste en utilisant une liste chaînée à n\oe{}ud virtuel. Ajouter une routine \mintinline{c}{void destroy(List l);} qui libère la mémoire de tous les noeuds de la liste\footnote{Cette routine est directement induite par l'implantation.}. \newline
-\textit{\underline{Remarque :} on pourra considérer que les éléments sont entiers, comme pour l'\refexercise{Listes chainées}, pour pouvoir avoir un code fonctionnel.}
+\exercise{Listes virtuelles}{20} Implanter les routines de la signature d'une liste en utilisant une liste chaînée à n\oe{}ud virtuel. Ajouter une routine \mintinline{c}{void destroy(List l);} qui libère la mémoire de tous les n\oe{}uds de la liste\footnote{Cette routine est directement induite par l'implantation.}. \newline
+\textit{\underline{Remarque :} on pourra considérer que les éléments sont des entiers, comme pour l'\refexercise{Listes chainées}, pour pouvoir avoir un code fonctionnel et directement testable.}
 
-\exercise{Listes par tableaux}{23} Implanter une liste avec un tableau, qui permette l'accès, l'insertion et la suppression en tête et queue en complexité amortie $O(1)$ (et le prouver). Quelle est la complexité temporelle des opérations de lecture, d'insertion et de suppression d'éléments à une place quelconque de la liste ? Commenter.
+\exercise{Listes par tableaux}{23} Implanter une liste avec un tableau, qui permette l'accès, l'insertion et la suppression en tête et queue. On veut que le coût dans le pire cas de l'accès et de la suppression soit fonction de $O(1)$ et que le coût dans le pire cas des $n$ premières insertions soit fonction de $O(n)$\footnote{On dira que le coût \textit{amorti} d'une seule insertion est fonction de $O(1)$}. Quelle est le coût temporel des opérations de lecture, d'insertion et de suppression d'éléments à une place quelconque de la liste ? Comparer à l'implantation par chaînage.
 
-\exercise{Piles et files}{20} Montrer qu'on peut implanter une file avec deux piles et une pile avec deux files. Quelle est la complexité temporelle des opérations ?
+\exercise{Piles et files}{20} Montrer qu'on peut implanter une file avec deux piles et une pile avec deux files. Quelle est la complexité temporelle amortie des opérations ?
 
-\exercise{Listes à un pointeur}{25} Implanter une structure de liste chaînée dont les noeuds ne possèdent qu'un seul pointeur. Écrire alors une procédure de renversement qui inverse l'ordre de la liste en $\mathcal{O}(1)$ \newline
-\textit{\underline{Indication :} utiliser les propriétés du groupe commutatif $(\mathcal{B}^N, \oplus)$}
+\exercise{Optimizing greater than abstraction}{29} Implanter une structure de liste \textit{doublement} chaînée dont les noeuds ne possèdent qu'un seul pointeur qui contient l'information à la fois du pointeur avant et du pointeur arrière. Écrire alors une procédure de renversement qui inverse l'ordre de la liste avec un coût fonction de $\mathcal{O}(1)$ \newline
+\textit{\underline{Indication :} utiliser les propriétés du groupe commutatif $(\mathcal{B}^N, \oplus)$ et analyser le titre de l'exercice.}
 
-\exercise{Fusion de listes}{17} Écrire une fonction $fusion(Liste, Liste) \rightarrow Liste$ qui renvoie la fusion de deux listes d'entiers triés. La liste résultante devra également être triée et sans doublons.
-
-\exercise{Skiplists}{28} TODO
+\exercise{Fusion de listes}{17} Écrire une fonction $fusion(Liste, Liste) \rightarrow Liste$ qui renvoie la fusion de deux listes d'entiers triés. La liste résultante devra également être triée et sans doublons. Si les deux listes possèdent $n$ et $m$ éléments, le coût dans le pire cas doit être fonction de $O(n + m)$.
 \end{document}

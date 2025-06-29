@@ -30,9 +30,9 @@ De manière générale, un flux peut être de deux types :
 	\item \textit{textuel} : suites de caractères terminées par le caractère de fin de ligne `\textsf{$\setminus$n}' qui forment des lignes
 	\item \textit{binaire} : suites de mots binaires regroupés en blocs de multiplets
 \end{itemize}
-\textbf{Remarque :} On peut aussi considérer qu'un flux textuel est un flux binaire dans le sens où du texte est représenté par des mots binaires dans un ordinateur. Cependant, considérer de manière abstraite qu'il s'agit de texte au sens humain permet de faciliter l'analyse théorique.\footnote{Voir la théorie du langage dans la bibliothèque Minitel}
- 
-En particulier, trois flux \textit{textuels} sont créés par défaut au moment de l'ouverture d'un terminal :
+\textbf{Remarque :} On peut aussi considérer qu'un flux textuel est un flux binaire dans le sens où du texte est représenté par des mots binaires dans un ordinateur. Cependant, considérer de manière abstraite qu'il s'agit de texte au sens humain permet de faciliter la manipulation dans beaucoup de cas.
+
+En particulier, trois flux \textit{textuels} sont créés par défaut au moment de l'inclusion du module \textit{stdio.h} :
 \begin{itemize}
 	\item le flux de sortie standard représenté en C par \textit{stdout}
 	\item le flux d'entrée standard représenté en C par \textit{stdin}
@@ -102,11 +102,11 @@ Petite erreur !
 \end{minted}
 \end{minipage}
  
-Le texte envoyé sur \textit{stderr} s'affiche alors que le texte envoyé sur \textit{stdout} non. La question, simple et bête, est la suivante : \textit{pourquoi ?}
+Le texte envoyé sur \textit{stderr} s'affiche alors que le texte envoyé sur \textit{stdout} non. La question, simple mais pas si bête, est la suivante : \textit{pourquoi ?}
  
-La réponse, quant-à-elle, n'est pas particulièrement compliqué, mais tout de même moins évidente que la question.\newline
-Pour des raisons d'optimisation, les flux peuvent utiliser un \textit{tampon mémoire} (\textit{memory buffer} en anglais). En effet, l'accès en écriture à des supports comme la carte vidéo ou un disque dur est en général beaucoup plus lent que l'écriture dans la RAM. Pour cette raison, les fonctions d'affichage tentent de minimiser le nombre d'accès effectués par le programme à ces supports. Au lieu d'envoyer directement à travers le flux les données textuelles, on les stockent d'abord dans une zone mémoire appelée un \textit{tampon} et on vide ensuite d'un seul coup l'entièreté du tampon.
- 
+La réponse, quant-à-elle, n'est pas particulièrement compliqué, mais tout de même un peu plus que la question.\newline
+Pour des raisons d'optimisation, les flux peuvent utiliser un \textit{tampon mémoire} (\textit{memory buffer} en anglais). En effet, l'accès en écriture à des supports comme la carte vidéo ou un disque dur est en général beaucoup plus lent que l'écriture dans la RAM. Pour cette raison, les fonctions d'affichage tentent de minimiser le nombre d'accès effectués par le programme à ces supports. Au lieu d'envoyer directement à travers le flux les données textuelles, on les stocke d'abord dans une zone mémoire appelée un \textit{tampon} et on vide ensuite d'un seul coup l'entièreté du tampon.
+
 Il existe plusieurs stratégies de manipulation des tampons :
 \begin{itemize}
 	\item Flux sans tampon (\textit{unbuffered stream}) : les données textuelles sont transmises individuellement dès que possible
@@ -174,7 +174,7 @@ Le nombre mystere est plus grand
 Youpiii tu as trouve le nombre mystere en 3 tentatives !
 user@computer ~/working_directory>
 \end{minted}
-\begin{minitelbasicbox}{Génération de nombres pseudo-aléatoires}
+\textbf{Génération de nombres pseudo-aléatoires :}
 Un ordinateur ne peut pas en soi générer des nombres aléatoires puisqu'il est absolument déterministe. La seule chose qui est possible est d'utiliser des suites à comportements chaotiques dont la valeur initiale est différente à chaque exécution du programme. On utilise en général la date à laquelle le programme est exécuté, c'est-à-dire le nombre de secondes écoulées depuis le $1^{er}$ janvier 1970. On peut utiliser pour cela le module \textsf{time.h} du C :
 \begin{minted}{c}
 #include <time.h>
@@ -196,11 +196,7 @@ Dans la pratique :
 
 int main() {
 	srand(time(NULL));
-
-	/*
-	Reste du programme utilisant rand()
-	*/
+	...
 }
 \end{minted}
-\end{minitelbasicbox}
 \end{document}

@@ -51,10 +51,12 @@ sort_proc(array, 10, cmp_y_x);
 \definition{Fonction d'ordre supérieur}{
 Une fonction d'ordre supérieur, en mathématiques, est une fonction qui a comme espace d'arrivée ou de sortie un espace de fonctions.
 }
-La possibilité d'utiliser des fonctions d'ordre supérieur en informatique est très intéressante puisqu'elle permettrait par exemple de programmer la fonction de composition de fonctions, ou encore une procédure qui appliquerait une même procédure à chaque élément d'un conteneur (liste, tableau, etc\dots)
+La possibilité d'utiliser des fonctions d'ordre supérieur en informatique est très intéressante puisqu'elle permet par exemple de programmer la fonction de composition de fonctions, ou encore une procédure qui appliquerait une même procédure à chaque élément d'un conteneur (liste, tableau, etc\dots)
+
+Le langage C n'est cependant pas un langage fonctionnel, c'est-à-dire qu'il n'est pas pensé pour la manipulation de fonctions d'ordres supérieurs. Sans parler de la syntaxe relativement immonde, la construction des fonctions à la compilation complique sérieusement la création de fonctionnelles\footnote{Il est nécessaire de passer par des \textit{macros} (voir section \ref{sec:directives_de_pr_processeurs_2_} suivante), ce qui en dit long sur l'absence de support natif pour la programmation fonctionnelle.}.
 \subsection{Syntaxe}
 \label{sub:syntaxe_pointeurs_routines}
-Une routine en mémoire est une simple adresse, stockée l'est une variable statique. L'unique différence est que l'adresse d'une routine est en section de code, alors que l'adresse d'une variable statique est en section de données. Il est donc tout à fait possible d'utiliser un pointeur routines, et même de définir des tableaux de routines.
+Une routine en mémoire est une simple adresse, stockée comme l'est une variable statique. L'unique différence est que l'adresse d'une routine est en section de code, alors que l'adresse d'une variable statique est en section de données. Il est donc tout à fait possible d'utiliser un pointeur de routines, et même de définir des tableaux de routines. Par contre, il est extrêmement difficile de construire des fonctions à la volée durant l'exécution du programme\footnote{Ce qu'on appelle de la compilation JIT (\textit{Just In Time}), qui consiste à faire écrire et exécuter un programme par le programme principal lui-même. La compilation JIT est utilisée pour l'interpréteur Python par exemple.}
 
 La syntaxe pour déclarer un pointeur de routine est la suivante :
 \begin{minted}[linenos=false]{c}
@@ -135,6 +137,6 @@ int main() {
 \exercise{Mapping}{10}
 \begin{enumerate}
 	\item Écrire une fonction \textsf{void array\_map(int array[], unsigned int length, void (*const f)(int*));} qui applique une procédure $f$ à chacun des éléments du tableau $array$.
-	\item Reprendre l'\refexercise{Listes chainées} et implanter une fonction \textsf{void linkedlist\_map(struct LinkedList *l, void (*const f)(int*));} qui applique la procédure $f$ à chacun des éléments de la liste chaînée.
+	\item Reprendre l'\refexercise{Listes chainées} et implanter une fonction \textsf{void linkedlist\_map(struct LinkedList *l, void (*const p)(int*));} qui applique la procédure $p$ à chacun des éléments de la liste chaînée.
 \end{enumerate}
 \end{document}

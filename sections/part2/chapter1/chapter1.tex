@@ -23,8 +23,8 @@ Dit autrement, l'ensemble des identifiants est l'ensemble des mots formés d'une
 \end{itemize}
 Il existe un certain nombre d'identifiant dit \textit{réservés} par le langage qui ne peuvent pas être utilisés ou dont l'utilisation amène un comportement imprévisible du programme. On distingue deux catégories de ces symboles :
 \begin{itemize}
-	\item les mot-clés
-	\item les identifiants débutant par un underscore
+	\item les mot-clés $\rightarrow$ clairement interdits
+	\item les identifiants débutant par un underscore $\rightarrow$ déconseillées, car potentiellement utilisées par la bibliothèque standard
 \end{itemize}
 Certains mot-clés ont été affublés d'une version du langage C. Ces mot-clés ne sont donc présents qu'à partir de cette version (correspondant à l'année de publication). .
  
@@ -78,6 +78,7 @@ Lorsque le compilateur détecte un texte indiqué comme un commentaire, il l'ign
 \begin{itemize}
 	\item un développeur qui n'a plus touché à son code depuis six mois peut trouver extrêmement utile de l'avoir commenté lorsqu'il revient dessus
 	\item dans le cas d'un projet conséquent, le développement est effectué en équipe. Un développeur peut avoir besoin de comprendre/modifier ce qui a déjà été écrit par un autre.
+	\item lorsqu'une bibliothèque est fournie à un client ou publiée sur Internet, les commentaires permettent de fournir une \textit{spécification} à chacun des modules, où des détails d'implantations utiles pour permettre aux codes d'être modifiés par des tiers.
 \end{itemize}
 \subsubsection{Internationalité des commentaires}\label{ssub:internationalit_des_commentaires}
 Le code d'un programme doit être lisible par n'importe qui sur Terre. Dans le cas des programmes libres de droit (dits \textit{open-sources} en anglais) par exemple, il est nécessaire que des développeurs de plusieurs pays puissent se comprendre. Dans le cas d'une entreprise de taille internationale, cela a aussi son importance. Pour cette raison, les commentaires d'un programme doivent tous être écrits en anglais.\footnote{C'est triste mais c'est la vie\dots Comment ça je me répète ?}
@@ -120,7 +121,7 @@ int main() { // Définit la fonction principale du programme
 	return 0; // Signifie une exécution réussie du programme
 }
 \end{minted}
-\section{Lignes de code} \label{sec:lignes_de_code}
+% \section{Lignes de code} \label{sec:lignes_de_code}
 
 \section{Le point-virgule}\label{sec:le_point_virgule}
 Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer la fin d'une instruction. Les commentaires et les directives préprocesseurs ne finissent pas par un point-virgule car ils ne sont pas considérés comme des instructions du langage (voir sections \ref{sec:commentaires} et \ref{sec:directives_pr_processeurs_1_}).

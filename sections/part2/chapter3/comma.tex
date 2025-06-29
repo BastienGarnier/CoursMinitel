@@ -11,6 +11,8 @@ c’est-à-dire qui agit en dehors de son environnement local. Par exemple, une 
 texte est une routine à effet de bord. Une routine qui modifie la valeur d’un tableau entré en argument
 est une routine à effet de bord.
 
+La virgule permet d'étendre la notion d'effet de bord aux expressions.
+
 La syntaxe est la suivante :
 \begin{minted}[linenos=false]{c}
 expression = (expr1, ..., exprN);
@@ -47,11 +49,10 @@ int tmp = (tmp = a, a = b, b = tmp);
 print("a = %d et b = %d\n", a, b);
 \end{minted}
 \textbf{Remarque :} Oublier les parenthèses dans ce deuxième exemple est rédhibitoire puisque le compilateur
-va considérer que les variables a et b sont redéfinies dans le même bloc, ce qui amène à une erreur de
+va considérer que les variables $a$ et $b$ sont redéfinies dans le même bloc, ce qui amène à une erreur de
 compilation.
 
-En particulier, il faut rester attentif à la priorité des opérateurs. L’opérateur d’assignation est en effet
-prioritaire sur la virgule.
+En particulier, il faut rester attentif à la priorité des opérateurs. D'après le tableau \ref{tab:priorite_operateurs}, la virgule est le moins prioritaire des opérateurs. Ainsi :
 \begin{minted}[linenos=false]{c}
 int x = 1, 2, 3;
 \end{minted}

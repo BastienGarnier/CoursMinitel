@@ -2,14 +2,14 @@
 \begin{document}
 \textit{\underline{Recommandation} : revoir le vocabulaire sur les fichiers de la partie 1 du cours}.
  
-La manipulation de fichiers est vitale pour l'écriture de programmes persistents, c'est-à-dire dont certains états peuvent durer même quand le programme n'est pas en cours d'exécution. On peut par exemple penser à des fichiers de configuration de logiciels. La sauvegarde de certains états particuliers permet aussi au logiciel de traiter des données différentes et de stocker de manière persistente les résultats du/des traitements. On peut penser à tous les fichiers édités par des éditeurs de texte, des sauvegardes de jeux-vidéos, ou de manière beaucoup plus générique à la simple existence de l'entièreté des fichiers sur un disque dur qui permettent de donner une ``mémoire longue durée'' à l'ordinateur pour qu'il puisse s'exécuter en conservant une part des traitements effectuées.
+La manipulation de fichiers est vitale pour l'écriture de programmes persistents\footnote{À ne pas confondre avec la persistence de structures de données immutables.}, c'est-à-dire dont certains états peuvent durer même quand le programme n'est pas en cours d'exécution. On peut par exemple penser à des fichiers de configuration de logiciels. La sauvegarde de certains états particuliers permet aussi au logiciel de traiter des données différentes et de stocker de manière persistente les résultats du/des traitements. On peut penser à tous les fichiers édités par des éditeurs de texte, des sauvegardes de jeux-vidéos, ou de manière beaucoup plus générique à la simple existence de l'entièreté des fichiers sur un disque dur qui permettent de donner une ``mémoire longue durée'' à l'ordinateur pour qu'il puisse s'exécuter en conservant une part des traitements effectuées.
  
-La bibliothèque standard vous fournit différentes fonctions pour manipuler les fichiers, toutes déclarées dans l’en-tête \textit{$<$stdio.h$>$}. Toutefois, celles-ci manipulent non pas des fichiers, mais des flux de données en provenance ou à destination de fichiers.
- 
-Cela permet notamment d'effectuer à nouveau des optimisations grâce aux tampons, et de rediriger des flux. On peut par exemple imaginer rediriger un flux standard de sortie vers un fichier pour écrire un \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}, ou rediriger le flux de lecture d'un fichier vers la console (pour en afficher le contenu par exemple).
+La bibliothèque standard fournit différentes fonctions pour manipuler les fichiers, toutes déclarées dans l’en-tête \textit{$<$stdio.h$>$}. Celles-ci manipulent non pas directement des fichiers, mais des flux de données en provenance ou à destination de fichiers.
+
+Cela permet notamment d'effectuer à nouveau des optimisations grâce aux tampons, et de rediriger des flux. On peut par exemple imaginer rediriger un flux standard de sortie vers un fichier pour écrire un \textit{log}\footnote{\url{https://fr.wikipedia.org/wiki/Historique_(informatique)}}, ou rediriger le flux de lecture d'un fichier vers la console pour en afficher le contenu, comme le ferait la commande \textit{cat} du terminal.
 \subsection{Droits des fichiers}
 \label{sub:droits_des_fichiers}
-Cette sous-section n'est destiné qu'aux utilisateurs des systèmes Unix comme Linux. En effet, sous Windows, le système est légèrement différent bien que par certains aspects plus proche qu'il n'y paraît. Il ne sera pas traité.\footnote{Pour plus d'informations : \url{https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control}} Le but est simplement de comprendre l'existence de droits. Pour plus de détails, voir \url{https://www.linuxtricks.fr/wiki/droits-sous-linux-utilisateurs-groupes-permissions}.
+Cette sous-section n'est destiné qu'aux utilisateurs des systèmes Unix comme Linux. En effet, sous Windows, le système est légèrement différent bien que plus proche qu'il n'y paraît par certains aspects. Il ne sera pas traité.\footnote{Pour plus d'informations : \url{https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control}} Le but est simplement de comprendre l'existence de droits. 
  
 Les fichiers sous Linux ont 3 types de droits :
 \begin{itemize}
@@ -33,13 +33,13 @@ On distingue parmi les utilisateurs qui peuvent potentiellement accéder au fich
 Chaque fichier possède donc en données supplémentaires les droits de $r$, $w$ et $x$ pour chacune de ces catégories. \newline
 Pour observer les droits des fichiers on peut utiliser l'argument \textit{-l} (pour \textit{long list}) de la commande \textit{ls} dans un terminal Linux :
 \begin{minted}{bash}
-user@computer ~/working_directory> ls -la
+user@computer ~/working_directory> ls -l
 total 20
 -rwxrwxr-x 1 user user 15960 sept. 21 18:38 main
--rw-rw-r-- 1 user user	 105 sept. 21 18:37 main.c
+-rw-rw-r-- 1 user user   105 sept. 21 18:37 main.c
 \end{minted}
 \begin{minitelbasicbox}{\textbf{Petit apparté :} Taille virtuelle et taille sur disque des fichiers}
-Le total indiqué est le nombre de ko utilisés ($1\ ko = 1024\ octets$) pour stocker en mémoire les données affichés par \textit{ls}. Observe que le total d'octets utilisés est $20\times{1024} = 20480>15960 + 105$ qui est la taille réelle des fichiers présents. En effet, le système de fichiers utilise des zones mémoires par blocs de $4\ ko$ appelés \textit{pages}. On a :
+Le total indiqué est le nombre de ko utilisés ($1\ ko = 1024\ octets$) pour stocker en mémoire les données affichés par \textit{ls}. On observe que le total d'octets utilisés est $20\times{1024} = 20480>15960 + 105$ qui est la taille réelle des fichiers présents. En effet, le système de fichiers utilise des zones mémoires par blocs de $4\ ko$ appelés \textit{pages}. On a :
 \begin{itemize}
 	\item \textit{``main''} avec $\left\lceil\dfrac{15960}{4096}\right\rceil = 4 \text{ pages}$
 	\item \textit{``main.c''} avec $\left\lceil\dfrac{105}{4096}\right\rceil = 1\text{\ page}$
@@ -51,7 +51,7 @@ $$\underbrace{-}_{\text{type}}\underbrace{---}_{\text{propriétaire}}\underbrace
 Le type peut indiquer si un fichier est spécial. Par exemple, les répertoires sont considérés comme des fichiers spéciaux de type \textit{`d'}. Un fichier classique n'a pas de type précisé (un simple trait horizontal).
  
 Les droits pour chaque catégorie d'accesseurs au fichier sont individuellement sous la forme $(r, w, x)$. Indiquer la lettre indique le droit d'accès. Ainsi, un fichier dont les droits d'utilisateurs sont décrits par :
-$$-rwxrw----$$
+$$\underbrace{\text{-}}_{\text{type}}\underbrace{rwx}_{\text{propriétaire}}\underbrace{rw-}_{\text{groupe}}\underbrace{---}_{\text{autres}}$$
 donne les informations suivantes :
 \begin{itemize}
 	\item il s'agit d'un fichier classique
@@ -217,5 +217,5 @@ int main() {
 }
 \end{minted}
 \subsection{Exercices}
-Voir les annales d'\textit{Algorithme et Programmation 1}. Toutes les notions nécessaires ont été abordées. Une correction par Minitel (et par les profs (beurk !)) sera proposé aussi vite que possible sur le NextCloud.
+Voir les annales d'\textit{Algorithme et Programmation 1}. Toutes les notions nécessaires ont été abordées (voir l'\refexercise{Listes chainées} de la section \ref{sec:structures} pour les listes chaînées). Une correction par Minitel (et par les profs (beurk !)) sera proposé aussi vite que possible sur le NextCloud.
 \end{document}

@@ -521,11 +521,11 @@ C_{pt}(N) & \leq & \displaystyle\sum_{i = 1}^{\pi(\sqrt{N})}i\dfrac{N}{p_i} \\
 & = & 7\dfrac{N}{6} + N\times Ei\left(ln\left(2\frac{\sqrt{N}}{ln(N)}\right)\right) & \text{Exponentielle intégrale en posant $u = ln(x)$} \\
 \end{array}$$
 On utilise le développement en série entière :
-$$\begin{array}{lcl}Ei(x) & = & \gamma + ln|x| + \displaystyle\sum_{k = 0}^{+\infty}\frac{x^k}{k.k!} \\
-& \leq & \gamma + ln|x| + e^x
+$$\begin{array}{lcl}Ei(x) & = & \gamma + ln|x| + \displaystyle\sum_{k = 1}^{+\infty}\frac{x^k}{k.k!} \\
+& \leq & \gamma + ln|x| + e^x - 1
 \end{array}$$
 Alors :
-$$\begin{array}{lcl}C_{pt}(N) & \leq & (\frac{7}{6} + \gamma)N + N\left[ln\left|ln\left(2\frac{\sqrt{N}}{ln(N)}\right)\right| + 2\frac{\sqrt{N}}{ln(N)}\right] \\
+$$\begin{array}{lcl}C_{pt}(N) & \leq & (\frac{1}{6} + \gamma)N + N\left[ln\left|ln\left(2\frac{\sqrt{N}}{ln(N)}\right)\right| + 2\frac{\sqrt{N}}{ln(N)}\right] \\
 & \in & O\left(\frac{N\sqrt{N}}{ln(N)}\right)
 \end{array}$$
 On cherche ensuite un minorant en supposant que l'algorithme de la \textbf{Question 2} ne teste que les nombres premiers. Il s'agit d'une sous-estimation du nombre d'opérations effectués :
@@ -639,4 +639,75 @@ int main() {
 
 \textbf{Code :} \detokenize{solutions/part2/chapter3/un_doigt_du_zero.c}
 \section{Troisième partie}
+\subsection{Types abstraits}
+\solution{Tableaux dynamiques}
+
+On considère la signature de la fonction équivalente de la procédure de redimensionnement :
+$$redimensionner(Tableau, Entier)\rightarrow Tableau$$
+On étend la spécification par les équations suivantes, définies pour tout tableau $t$, et pour tous entiers $i$ et $n$ :
+\begin{itemize}
+	\item $taille(redimensionner(t, n)) = n$
+	\item $taille(t)\leq i < n \Rightarrow init(redimensionner(t, n), i) = Faux$ (ok même si $n < taille(t)$)
+	\item $0\leq i < min\left(n, taille(t)\right) \Rightarrow init(redimensionner(t, n), i) = init(t, i)$
+	\item $0\leq i < min\left(n, taille(t)\right)\wedge init(redimensionner(t, n), i) = Vrai \Rightarrow lire(redimensionner(t, n), i) = lire(t, i)$
+\end{itemize}
+\textbf{Code :} \detokenize{solutions/part3/chapter2/tableaux_dynamiques}
+
+\solution{Entiers relatifs et rationnels}
+
+Malgré la formulation de la question, la difficulté n'est pas théorique mais technique. D'ailleurs, le code proposé pour l'implantation de $(\mathbb{Z}, +, \times)$ est \textit{très largement} optimisable.
+
+Il est surtout fondamental de comprendre la différence entre le type abstrait algébrique $(\mathbb{Z}, +, \times)$, qui est implanté dans cet exercice, et les types abstraits $\frac{\mathbb{Z}}{2^N\mathbb{Z}}$ où $N$ est le nombre de bits maximal, qui sont les types donnés nativement par le langage C (\textsf{char}, \textsf{short int}, \textsf{int}, etc\dots).
+
+Le type $(\mathbb{Z}, +, \times)$ est beaucoup plus lourd à implanter en termes de performances car il est plus difficile d'avoir une accélération matérielle (au niveau du processeur) pour le gérer. Par ailleurs, la plupart des cas d'utilisations n'en ont pas l'utilité, ce qui justifie l'obligation de l'implanter logiciellement.
+
+\textbf{Code :} \detokenize{solutions/part3/chapter2/adt_entiers_et_rationnels}
+
+\subsection{Listes}
+\solution{Listes virtuelles}
+
+\textbf{Code :} \detokenize{solutions/part3/chapter2/listes_virtuelles}
+
+\solution{Listes par tableaux} C'est l'implantation des listes de Python.
+
+\textbf{Code :} \detokenize{solutions/part3/chapter2/listes_tableaux}
+
+\textbf{Coûts en tête et queue de liste :}
+
+Les coûts d'accès et de suppression sont visiblement fonctions de $O(1)$. Pour l'insertion en tête ou en queue de liste, c'est le redimensionnement du tableau qui pose problème. On note $c(k)$ le coût de la $k^e$ insertion. Initialement, la liste est de longueur $0$ L'insertion de l'élément numéro $1 = 2^0$ amène à doubler sa taille. Par récurrence, on obtient que l'insertion $2^i$ dans la liste coûte $2^{i+1}$ opérations tandis que les autres insertions coûtent toutes $1$ opération à un facteur indépendant de $k$ près (qui ne change pas le résultat final puisque la domination linéaire ``écrase'' le facteur). Autrement dit :
+$$c(k) \approx \left\{\begin{array}{ll}
+k + 1 & \text{si } k = 2^i \\
+1 & \text{sinon}
+\end{array}\right.$$
+\textbf{Remarque :} On approxime $2k\approx k + 1$ car les deux ne diffèrent qu'à une transformation linéaire indépendante de $k$ près.
+
+On observe que $\sum_{k = 2^i}^{2^{i+1} - 1}c(k) = 2^{i+1} = \sum_{k = 2^i}^{2^{i+1} - 1}2$. Le coût est linéaire.
+
+Soit $n\in\mathbb{N}$. On note $e = $ $n = \lfloor{log_2(n)}\rfloor$. On a $n = 2^e + r$, où $0\leq r < 2^e$. Le coût des $n$ premières insertions est finalement :
+$$\begin{array}{lcl}
+C(n) & = & \displaystyle\sum_{i = 0}^{e - 1}\sum_{k = 2^i}^{2^{i+1}-1}c(k) + r \\
+ & = & \displaystyle\sum_{i = 0}^{e - 1}\sum_{k = 2^i}^{2^{i+1} - 1}2 + r \\
+ & \in & O(2^e + r) \\
+ & = & O(n)
+ \end{array}$$
+ Donc le coût amortie d'une seule insertion est fonction de $O(1)$.
+
+ \textbf{Coûts en milieu de liste :}
+
+ Contrairement à l'implantation par listes chaînées, l'accès à un élément quelconque est en $O(1)$ puisqu'il s'agit d'un tableau. L'insertion et la suppression sont en $O(n)$ \textit{dans tous les cas} puisqu'il faut décaler tous les éléments suivants du tableau. Pour une liste chaîné, l'accès à un élément quelconque dans le cas général est en $O(n)$. Par contre, pour l'insertion et la suppression, on observe que bien que le coût soit $O(n)$ en général, si on parcours la liste pour d'autres raisons, on peut supprimer des éléments \textit{au passage} en $O(1)$.
+
+ \textbf{Conclusion des \refexercise{Listes virtuelles} et \refexercise{Listes par tableaux}}
+
+ Le point le plus remarquable des codes C des deux exercices tient à l'identicité des fichiers \textit{main.c} et de l'implantation de \textit{list\_display}. Le fait d'implanter la signature de liste permet de ne se servir que d'elle et d'être absolument indépendant de l'implantation.
+
+ Du point de vue des coûts asymptotiques, on observe que l'implantation par tableau permet des accès plus rapide et l'implantation par chaînage permet des modifications plus rapides.
+
+ Du point de vue des constantes, le code des listes chaînés est plus complexe et demande certaines optimisations comme un noeud virtuel pour éviter trop de branchements conditionnels. Si on ne fait qu'ajouter en tête ou en queue de liste, l'implantation par tableau semble relativement correcte au défaut du surcoût de redimensionnement. Par contre, l'implantation par tableau évite trop d'allocations dynamiques et est optimal pour la quantité de mémoire utilisée \textit{par élément}. Si la taille de la liste est bornée et proche par le dessous d'une puissance de 2, l'implantation par tableau est relativement optimale.
+
+\solution{Piles et files}
+
+\solution{Optimizing greater than abstraction}
+
+\textbf{Code :} \detokenize{solutions/part3/chapter2/listes_xor}
+
 \end{document}

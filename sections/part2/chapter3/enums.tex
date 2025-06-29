@@ -24,7 +24,7 @@ switch (c) {
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{minted}{c}
-HttpsCode c = requete();
+enum HttpsCode c = requete();
 switch (code) {
 	case E_OK:
 		...
@@ -54,5 +54,11 @@ enum HttpsCode {
 };
 \end{minted}
 \textbf{Remarque :} Une constante définie par une énumération est systèmatiquement un \mintinline{c}{int}
-\subsection{Exercices}
+
+\begin{minitelbasicbox}{\textit{Compile time} vs \textit{Running time}}
+Comme les \textsf{DEFINE}, les énumérations sont remplacés dans le code à la compilation. La différence principale tient au fait que les énumérations ne permettent pas de définir autre chose que des entiers (voir section \ref{sec:directives_de_pr_processeurs_2_}).
+
+Comme les énumérations sont définies et calculés au moment de la compilation du programme, il est impossible durant l'exécution du programme d'étendre une énumération. 
+\end{minitelbasicbox}
+L'intérêt des énumérations vis-à-vis des \textsf{define} tient surtout à l'incrémentation automatique et à la lisibilité du code, ce qui est \textit{très} important. On pourrait s'en passer et n'utiliser que des \textsf{define}, bien qu'un lecteur tiers ait moins d'informations. Ce n'est pas conseillé.
 \end{document}

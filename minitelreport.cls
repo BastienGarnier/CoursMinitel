@@ -178,6 +178,16 @@
 	\newcommand\HUGE{\@setfontsize\Huge{50}{60}}
 \makeatother
 
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
 \RequirePackage{fancyhdr}
 	\setlength{\headheight}{15.2pt}
 	\pagestyle{fancyplain}

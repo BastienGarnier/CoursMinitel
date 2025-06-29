@@ -138,24 +138,24 @@ On observe que le hachage par modulo n'est pas une bonne fonction de hachage sel
 On pose $w$ le nombre de bits d'un mot machine (\textit{a priori} 32 bits) et alors $W = 2^w$
 
 Le hachage multiplicatif est effectué par la fonction :
-$$f_\alpha(K) = \left\lfloor\dfrac{M}{W}(\alpha K\text{ mod }W)\right\rfloor$$
-dont la qualité dépend du choix de $\alpha$. On choisit alors $\alpha$ premier avec $W$.
+$$f_c(K) = \left\lfloor\dfrac{M}{W}(c K\text{ mod }W)\right\rfloor$$
+dont la qualité dépend du choix de $c$. On choisit alors $c$ premier avec $W$.
 
-\textbf{Justification du choix de $\alpha$ :} Pour une fonction de hachage fonctionnelle, on veut \textit{a minima} assurer $K_1\neq K_2\Rightarrow f(K_1)\neq f(K_2)$ pour $0 \leq K_1, K_2 < W$. Si $\alpha$ est premier avec $W$, il existe d'après le théorème de Bachet-Bézout $A, B$ tels que $A\alpha + BW = 1$. On a alors : $K\alpha A = KBW + K$.\newline
+\textbf{Justification du choix de $c$ :} Pour une fonction de hachage fonctionnelle, on veut \textit{a minima} assurer $K_1\neq K_2\Rightarrow f(K_1)\neq f(K_2)$ pour $0 \leq K_1, K_2 < W$. Si $c$ est premier avec $W$, il existe d'après le théorème de Bachet-Bézout $A, B$ tels que $Ac + BW = 1$. On a alors : $Kc A = KBW + K$.\newline
 Si $0\leq K < W$, il s'ensuit :
 $$\begin{array}{lcll}
-K & = & AK\alpha \text{ mod }W \\
-  & = & A(K\alpha\text{ mod }W)\text{ mod }W \\
+K & = & AKc \text{ mod }W \\
+  & = & A(Kc\text{ mod }W)\text{ mod }W \\
   & = & Af(K)\text{ mod } W\end{array}$$
 Supposons $K_1\neq K_2$. Si $f(K_1) = f(K_2)$, on a $K_1 = K_2$, c'est absurde.\newline
 D'où $K_1 \neq K_2 \Rightarrow f(K_1)\neq f(K_2)$.
 
 On remarque que le calcul de $f$ ne nécessite aucune division. En effet, le modulo de $2^w$ est effectué naturellement par le processeur et $\frac{M}{W} = 2^{m-w}$. D'où :
 \begin{minted}{c}
-#define ALPHA ...
+#define C ...
 #define m ... // M = 2^m
 uint32_t f(uint32_t K) {
-	return (ALPHA * K) >> (m - sizeof(K))
+	return (C * K) >> (m - sizeof(K))
 }
 \end{minted}
 \subsubsection{Hachage par pliage}
@@ -166,18 +166,20 @@ $$f(K) = \displaystyle\bigoplus_{i = 1}^{q}(K_{(i - 1)m}, \dots, K_{im - 1})_2$$
 Cette méthode ne peut être efficace que pour des clés de taille très supérieure à $M$.
 % \subsubsection{Hachage par conversion de base}
 \subsection{Réduction}
-Supposons que la table $T$ utilisé soit de taille $|T|\in\mathbb{N}$. Pour toute clef $k$, il faut donc $0\leq r(f(k)) < |T|$.
+Supposons que la table $T$ utilisé soit de capacité $|T|\in\mathbb{N}$. Pour toute clef $k$, il faut donc $0\leq r(f(k)) < |T|$. En particulier, $r$ dépend de $T$. On écrit donc dès à présent $r(T, f(k))$.
 
 Idéalement, on veut exactement $\dfrac{|Im(f)|}{|T|}$ clés pour chaque indice dans l'intervalle $\llbracket 0; |T| - 1\rrbracket$. Ce n'est possible que si $|Im(f)|$ est divisible par $|T|$, ce qui n'est généralement pas le cas. Au mieux, on peut avoir soit $\left\lfloor \dfrac{|Im(f)|}{|T|}\right\rfloor$ soit $\left\lceil \dfrac{|Im(f)|}{|T|}\right\rceil$ valeurs pour chaque indice. Si $|T|$ est petit par rapport à $|Im(f)|$, on peut considérer la réduction comme parfaite.
 
 Le modulo est à nouveau la solution la plus simple :
-$$r(f(K)) = f(K)\text{ mod }|T|$$
+$$r(T, f(K)) = f(K)\text{ mod }|T|$$
 \textbf{Remarque :} Dans le cas où on a $f : K\mapsto K$, la réduction sert également de hachage dans l'implantation. Il apparaît que certaines valeurs de $|T|$ sont meilleures que d'autres par la même analyse que celle du hachage par modulo décrit précédemment. % TODO : à justifier -> superposition des bits de la clé si non premier.
 
 On peut programmer facilement cette réduction :
 \begin{minted}{c}
-uint32_t reduction(uint32_t f_k, uint32_t card_T) {
-	return f_k % card_T;
+// a priori, on passe plutôt en paramètre l'enregistrement de la table
+// et on accède à sa capacité par accès au champ
+uint32_t reduction(uint32_t capa_T, uint32_t f_k) {
+	return f_k % capa_T;
 }
 \end{minted}
 Le problème de cette fonction est sa lenteur. En effet, la division sur un ordinateur est une opération coûteuse, \textit{a minima} deux fois plus lente qu'une multiplication.
@@ -206,8 +208,14 @@ On distingue deux méthodes principalement utilisées de gestion des collisions 
 	\item par collisions séparées
 	\item par adressage ouvert
 \end{itemize}
-
-Le choix de la méthode influence surtout les constantes pour la vitesse d'exécution et la mémoire. De fait, cela dépend de l'architecture du processeur sur lequel le code est exécuté, et induit une bonne gestion du cache du processeur pour être efficace.
+\definition{Taux d'occupation} {
+Si la table de hachage de $m$ cases contient $n$ couples $(clef, valeur)$, le \textit{taux d'occupation} de la table\footnote{``Load Factor'' en anglais} est le rapport $\dfrac{n}{m}$.
+}
+\textbf{Remarques :}
+\begin{itemize}
+	\item pour une table par adressage ouvert, on a toujours $\dfrac{n}{m}\leq 1$
+	\item pour une table de listes chaînées, on peut avoir $\dfrac{n}{m} > 1$ puisqu'il est possible de stocker plusieurs couples par case de la table
+\end{itemize}
 \subsubsection{Collisions séparées par listes chaînées}
 La méthode par de collisions séparées apparaît comme la solution la plus ``simple'' : stocker toutes les collisions dans un/des espace(s) séparé(s) de la table. Exemples :
 \begin{itemize}
@@ -225,6 +233,17 @@ On s'intéresse à la deuxième possibilité : stocker les collisions dans des l
 Lors de la recherche de la valeur de ``Horloge'', il suffit de parcourir la liste de la cellule calculée par la fonction $r\circ f$, et pour chaque élément de comparer la clef avec celle recherchée.
 
 \textbf{Remarque :} comme les fonctions de hachage et de réduction sont supposées répartir uniformément les clés parmi les indices de la table, il n'y a que peu d'éléments en collisions en moyenne. L'implantation d'une liste par tableau dynamique peut être plus rapide car les données sont stockés dans la même localité mémoire et rentrent mieux dans le cache du processeur.
+
+
+\textbf{Redimensionnement :} Si la table est très remplie ($\alpha \gg 1$), 
+
+\textbf{Analyse du coût d'accès :}
+
+Pour $0\leq i < m$, on note $N_i$ la variable aléatoire dénotant le nombre d'éléments dans la liste chaînée d'indice $i$ dans la table. Comme la fonction de hachage est supposée uniforme, on a pour tous $0\leq i, j, < m$, $\mathbb{E}(N_i) = \mathbb{E}(N_j)$. Par ailleurs, on a $n$ éléments au total donc $\sum_{i = 0}^{m-1}\mathbb{E}(N_i) = n$, c'est-à-dire que pour tout $0\leq i < m$, $\mathbb{E}(N_i) = \frac{n}{m} = \alpha$.
+
+Donc le coût d'accès en moyenne est égal au taux d'occupation. Si la table est très remplie, et qu'on a $\alpha \gg 1$, il ne semble pas y avoir beaucoup d'avantage par rapport à une simple liste que l'on parcourt, sinon d'avoir accéléré par un facteur constant l'accès.
+
+L'idée est de \textit{doubler la taille du tableau} dès que $\alpha$ s'approche de $1$. Cela signifie qu'on copie tout le tableau, mais relativement rarement si le seuil pour $\alpha$ est assez grand.
 \subsubsection{Adressage ouvert par sondage linéaire}
 La méthode d'adressage ouvert consiste à stocker les paires $(clef, valeur)$ en collision dans des cases différentes de la table de hachage. Pour calculer les cases vers lesquelles stocker les couples en collisions, on utilise une fonction de sondage $s:\mathbb{N}\rightarrow \mathbb{N}$. Le choix de la fonction de sondage est alors important pour garantir l'efficacité de la table. On ne présente ici que le sondage linéaire. D'autres choix sont présentés dans les exercices.
 
@@ -259,16 +278,6 @@ $place \leftarrow hash + s(n)$\;
 \textbf{Remarque :} le test $n < |T|$ est optionnel si on suppose l'algorithme définit \textit{ssi} la clé est présente dans le dictionnaire.
 
 Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser un algorithme très similaire, en se munissant d'une fonction $est\_utilise(Table:T, Place:p)\rightarrow \textit{Booléen}$ qui renvoie $Vrai$ si la place est utilisée pour un couple $(clef, valeur)$ et $Faux$ sinon. La condition de la boucle devient simplement $est\_utilise(T, place) \wedge n < |T|$.
-% \subsection{Taux d'occupation}
-% \definition{Taux d'occupation} {
-% Si la table de hachage de $m$ cases contient $n$ couples $(clef, valeur)$, le \textit{taux d'occupation} de la table\footnote{``Load Factor'' en anglais} est le rapport $\dfrac{n}{m}$.
-% }
-% \textbf{Remarques :}
-% \begin{itemize}
-% 	\item pour une table par adressage ouvert, on a toujours $\dfrac{n}{m}\leq 1$
-% 	\item pour une table de listes chaînées, on peut avoir $\dfrac{n}{m} > 1$ puisqu'il est possible de stocker plusieurs couples par case de la table
-% \end{itemize}
-
 \subsection{Exercices}
 \exercise{Hachage de chaînes de caractères}{12}Proposer une fonction de hachage permettant de hacher des chaînes de caractères.
 

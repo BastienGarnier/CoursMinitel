@@ -1,18 +1,17 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
-Dans le cas du développement d'une application complexe, il arrive très souvent que la division d'un programme informatique en routines dans un unique fichier soit insuffisante. En effet, ces routines peuvent couvrir des domaines très différents. Dans le cas d'un jeu-vidéo, cela peut aller des routines pour s'occuper de l'inventaire d'un personnage jusqu'aux routines s'occupant de la physique des objets du jeu en passant par les routines pour ouvrir, lire et écrire les fichiers de sauvegarde. Toutes ces routines très différentes ont besoins de structures de données différentes qui peuvent être accompagnés elles-mêmes d'une multitude de routines de manipulation.  
+Quand un programme est suffisamment petit, on peut garder en tête tous les détails de ce programme dans notre tête à chaque instant. Cependant, les applications réelles sont en général plusieurs ordres de magnitude plus grandes que celles écrites durant les cours de programmation. Elles deviennent alors simplement trop complexes pour tenir de bout en bout dans notre tête, et sont développées par plusieurs programmeurs. Dans le cas du développement d'une application complexe, il arrive donc souvent que la division d'un programme informatique en routines dans un unique fichier soit insuffisante pour organiser le code. En effet, ces routines peuvent couvrir des domaines très différents. Dans le cas d'un jeu-vidéo, cela peut aller des routines pour s'occuper de l'inventaire d'un personnage jusqu'aux routines s'occupant de la physique des objets du jeu en passant par les routines pour ouvrir, lire et écrire les fichiers de sauvegarde. Toutes ces routines très différentes ont besoins de structures de données différentes qui peuvent être accompagnés elles-mêmes d'une multitude de routines de manipulation.
+
 Bref\dots Autant dire que mettre tout ça dans un seul et unique fichier de code, ça risque d'être un poil touffu. En particulier, la gestion de l'évolution d'un unique aspect du code source indépendamment du reste devient extrêmement confuse, sans parler de l'organisation en équipes quand les travaux de toute une équipe peuvent interférer. 
  
-La solution à cela est simple : écrire dans des fichiers différents les routines qui s'occupent d'aspects différents du programme/de l'application développé(e).
- 
-Pour cela, on distingue en langage C deux catégories de fichiers :
+La solution à cela est simple : écrire dans des fichiers différents les routines qui s'occupent d'aspects différents du programme/de l'application développé(e). Le code est alors divisé en plusieurs \textit{modules}. Un module est un composant du programme, et peut lui-même utiliser d'autres modules pour son bon fonctionnement. On appelle \textit{programmation modulaire} le développement d'une application par modules.
+
+En C, on utilise deux fichiers pour définir un module :
 \begin{itemize}
-	\item les fichiers d'entêtes (\textit{headers} en anglais) d'extensions \textit{.h}
-	\item les fichiers de code source d'extensions \textit{.c}
+	\item un fichier d'entête (\textit{header} en anglais) d'extension \textit{.h} qui sert d'interface du module, et indique les structures, routines et constantes définies par celui-ci
+	\item un fichier de code source d'extension \textit{.h} qui fournit l'implantation réelle de l'interface, c'est-à-dire des routines du module
 \end{itemize}
-\definition{Module et programmation modulaire}{Un module est la donnée d'un fichier d'entête et d'un fichier de code source. Un programme informatique \textit{modulaire} est un programme constitué de plusieurs modules. On appelle \textit{programmation modulaire} le développement d'un programme par modules. Un module est un composant du programme qui peut lui-même utiliser d'autres modules pour son bon fonctionnement.}
- 
-On peut penser aux modules informatiques comme aux modules d'un vaisseau spatial. Chacun est indépendant dans son fonctionnement interne mais tous les modules sont interdépendants d'un point de vue abstrait puisqu'ils sont chacun constitutif du programme et ne peuvent pas résoudre le problème individuellement.\footnote{Si cela est le cas, le programme n'est plus modulaire. On peut alors s'interroger sur la qualité de la conception.}
+On peut penser aux modules informatiques comme aux modules d'une fusée spatiale. Chacun est indépendant dans son fonctionnement interne mais tous les modules sont interdépendants d'un point de vue abstrait puisque chacun est constitutif du programme et ne peut pas résoudre le problème individuellement.\footnote{Si cela est le cas, le programme n'est plus modulaire. On peut donc s'interroger sur la qualité de la conception.}
  
 \begin{minted}{bash}
 user@computer ~/working_directory> ls
@@ -27,14 +26,16 @@ L'objectif du fichier d'entête d'un module est de donner au compilateur toutes 
 	\item des définitions de type (structures)
 	\item des prototypes de routines
 \end{itemize}
-Le fichier d'entête décrit donc l'interface du module, puisqu'il s'agit de toutes les fonctionnalités qui seront accessibles au programmeur qui inclut le module. En effet, il s'agit du fichier que l'on inclut par la directive de préprocesseur \textsf{\#include} :
+Le fichier d'entête décrit donc l'\textit{interface} du module, puisqu'il s'agit de toutes les fonctionnalités qui seront accessibles au programmeur qui inclut le module dans son code. Il agit donc comme un genre de \textit{spécification} du module, nécessaire pour le compilateur et utile pour le programmeur.
+
+Il s'agit en fait du fichier que l'on inclut par la directive de préprocesseur \textsf{\#include} :
 \begin{minted}[linenos=false]{c}
 #include "chemin/vers/mon/module.h"
 \end{minted}
 Le fichier peut se situer théoriquement n'importe où dans le système de fichiers du système d'exploitation.
 \subsection{Fichier de code source}
 \label{sub:fichier_de_code_source}
-Le fichier de code source, ou simplement fichier source, fournit le code des fonctions décrites par le fichier d'entête. Il peut également décrire des fonctions internes au module non présentes dans le fichier d'entête, qui ne pourront donc pas être utilisés en externe du module.
+Le fichier de code source, ou simplement fichier source, fournit l'implantation de l'interface décrite par le fichier d'entête. Il peut également décrire des fonctions internes au module non présentes dans le fichier d'entête, qui ne pourront donc pas être utilisés en externe du module.
  
 L'unique particularité du fichier source est de devoir inclure, par la directive \textsf{\#include}, le fichier d'entête auquel il est associé :
 \begin{minted}[linenos=false]{c}
@@ -47,6 +48,9 @@ non accessibles hors du module
 
 // Code source des fonctions déclarées dans l'entête
 \end{minted}
+Cela permet au compilateur d'avoir accès aux définitions de l'interface, notamment les types et les constantes du préprocesseur.
+
+\textbf{Remarque :} on peut très bien programmer une routine dans le fichier de code source sans donner son prototype dans le fichier d'entête. Cette routine n'est donc accessible qu'en interne du module, et ne l'est pas par un programme extérieur.
 \subsection{Un exemple simple}
 \label{sub:un_exemple_simple}
 On se propose ici de coder un module \textit{vec2} qui contient des outils pour la manipulation de vecteurs en deux dimensions.\footnote{Il s'agit d'un exemple, et il n'y aura donc que le strict minimum pour la bonne compréhension de la programmation modulaire en langage C.}
@@ -57,7 +61,7 @@ On suppose se situer dans un répertoire de travail \detokenize{<some_path>}. On
 	\item ``vec2.c''
 	\item ``vec2.h''
 \end{itemize}
-On nomme identiquement le fichier d'entête et le fichier source d'un module pour des raisons de lisibilités.\footnote{Cette pratique est d'ailleurs si répandue que certains tutoriels sur Internet vont jusqu'à affirmer qu'il est impossible que le fichier d'entête et le fichier source aient un radical différent.} Toutefois, la liaison d'un fichier source avec un fichier d'entête passe uniquement par l'inclusion en début de fichier source du fichier d'entête associé.
+On nomme identiquement le fichier d'entête et le fichier source d'un module pour des raisons de lisibilité\footnote{Cette pratique est d'ailleurs si répandue que certains tutoriels sur Internet vont jusqu'à affirmer qu'il est impossible que le fichier d'entête et le fichier source aient un radical différent.}. Toutefois, la liaison d'un fichier source avec un fichier d'entête passe uniquement par l'inclusion en début de fichier source du fichier d'entête associé.
  
 Commençons par le fichier d'entête, puisque c'est ce que le fichier \textit{``main.c''} va inclure :
 \begin{lstlisting}[title=vec2.h]
@@ -80,7 +84,6 @@ struct Vec2 vec2_copy(struct Vec2 p);
 void vec2_display(struct Vec2 p);
 struct Vec2 vec2_scalar_multiply(struct Vec2 p, double k);
 struct Vec2 vec2_add(struct Vec2 p1, struct Vec2 p2);
-struct Vec2 vec2_sub(struct Vec2 p1, struct Vec2 p2);
 \end{minted}
 \textit{``vec2.h''} décrit bien l'interface du module qui sera implanté réellement dans le fichier source :
 \begin{lstlisting}[title=vec2.c]
@@ -112,11 +115,6 @@ struct Vec2 vec2_add(struct Vec2 p1, struct Vec2 p2) {
 	struct Vec2 v = {p1.x + p2.x, p1.y + p2.y};
 	return v;
 }
-
-struct Vec2 vec2_sub(struct Vec2 p1, struct Vec2 p2) {
-	struct Vec2 v = {p1.x - p2.x, p1.y - p2.y};
-	return v;
-}
 \end{minted}
 Finalement, le fichier \textit{``main.c''} peut inclure le module \textit{vec2} pour utiliser les structures et routines proposés :
 \begin{lstlisting}[title=main.c]
@@ -135,6 +133,8 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
+
+\textbf{Remarque :} tous les prototypes sont connus par le fichier de code source grâce à l'inclusion de l'entête. Le problème de devoir définir une routine strictement avant son utilisation est donc résolu. On peut donc écrire le code de chaque routine dans un ordre quelconque.
 \subsection{Compilation modulaire}
 \label{sub:compilation_modulaire}
 La compilation modulaire introduit quelques notions plus complexes relatives à la compilation d'un programme. En effet, compiler ``naïvement'' le programme comme à l'habitude en ne précisant que le fichier \textit{``main.c''} conduit à un dramatique message d'erreur, passablement incompréhensible sans plus d'informations :
@@ -189,7 +189,7 @@ user@computer ~/working_directory> ls
 main.c main.s vec2.c vec2.h
 user@computer ~/working_directory>
 \end{minted}
-qui peut être lu par un éditeur de texte classique.\footnote{Assez évident puisqu'un programme assembleur est un texte\dots Enfin je dis ça\dots}
+qui peut être lu par un éditeur de texte classique puisqu'il s'agit simplement d'un programme écrit dans un langage bas niveau.
 \subsubsection{Assemblage}
 \label{ssub:assemblage}
 \textit{gcc} fait appel à un programme tiers nommé \textit{assembleur} qui génère le code machine associé au code assembleur.\footnote{On distingue donc les \textit{langages assembleurs} qui sont les langages au sens linguistique et les \textit{programmes assembleurs} qui traduisent les programmes écrits en langage assembleur en code machine.}.

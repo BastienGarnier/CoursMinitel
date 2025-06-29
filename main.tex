@@ -46,10 +46,14 @@
 
 \newcommand{\definition}[2]{
 	\refstepcounter{definition}
-	\begin{minitelbasicbox}{\textbf{Définition \arabic{definition}\IfNoValueF{#1}{ : #1}}}
+	\begin{minitelbasicbox}{\textbf{Définition \arabic{definition}\IfNoValueF{#1}{\label{definition:#1} : #1}}}
 #2
 	\end{minitelbasicbox}
 	\addcontentsline{def}{figure}{\protect\numberline{\thesection.\thedefinition}\qquad#1}
+}
+
+\newcommand{\refdefinition}[1]{
+	\textbf{Définition \ref{definition:#1}}
 }
 
 \newcounter{propositioncounter}
@@ -104,8 +108,8 @@ TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoi
 \section*{Préface}
 \subfile{sections/preface}
 \tableofcontents
-\listoftables
 \listofdefinition
+\listoftables
 \newpage
 \part{Prolégomènes}
 \label{part:prol_gom_nes}
@@ -235,6 +239,7 @@ TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoi
 		% 	\subfile{sections/part3/chapter1/recurrences}
 	\chapter{Structures de données}
 	\label{cha:structures_de_donn_es_classiques}
+	On a défini à la section \ref{sec:variables} les types de données et à la section \ref{sec:structures} les enregistrements. Ce chapitre, intitulé \textit{Structures de données}, semble d'un premier abord répétitif vis-à-vis de ces deux sections. Pourtant, les structures du langage C et les structures de données de manière générale doivent être distinguées puisqu'il s'agit en fait d'un même mot pour désigner deux choses tout à fait différentes.
 		\section{Retour sur les types abstraits} % algébrique et classique
 			\label{sec:type_abstrait_de_donn_es}
 			\subfile{sections/part3/chapter2/type_abstrait}

@@ -24,7 +24,13 @@ Un enregistrement permet de définir une structure complexe fixe de stockage. C'
 	\end{center}
 \end{minipage}
 
-L'enregistrement est analogue aux produits cartésiens en mathématique. Si les ensembles de chaque type sont $E_1, \dots, E_n$, l'ensemble des éléments que peut représenter un enregistrement est $E_1\times\dots\times E_n$. Une \textit{instance} d'un enregistrement est un élément du produit cartésien, c'est-à-dire un $n\text{-uplet}$ dont chaque \textit{champ} appartient à un ensemble $E_i$.
+L'enregistrement est analogue aux produits cartésiens en mathématique\footnote{Il arrive donc qu'on appelle les enregistrements des \textit{types produits}. On peut les comparer avec les \textit{types sommes} définis en C par les \textit{unions} ou les \textit{énumérations} (voir sections \ref{sec:unions} et \ref{sec:enums})}. Si les ensembles de chaque type sont $E_1, \dots, E_n$, l'ensemble des éléments que peut représenter un enregistrement est $E_1\times\dots\times E_n$. Une \textit{manifestation} (\textit{instance} en anglais\footnote{On notera que l'anglicisme \textit{instance} est utilisé en lieu et place de \textit{manifestation} dans la littérature en français. Je n'aime pas les anglicismes, donc y a le choix entre :
+\begin{enumerate}
+	\item mettre en italique toutes les occurences de \textit{instance}
+	\item utiliser le mot ``manifestation''
+\end{enumerate}
+Comme le but est ensuite de pouvoir lire plein d'autres livres, on adopte la première convention.
+}) d'un enregistrement est un élément du produit cartésien, c'est-à-dire un $n\text{-uplet}$ dont chaque \textit{champ} appartient à un ensemble $E_i$.
 
 On appelle aussi les enregistrements des structures de données passives. L'enregistrement est représenté par des champs de valeurs passifs.
 
@@ -40,23 +46,28 @@ Dans la suite, on utilisera le mot ``enregistrement'' pour parler du type abstra
 
 La syntaxe de définition d'un enregistrement en C est la suivante :
 \begin{minted}[linenos=false]{c}
-struct NomEnregistrement { // Aucun objet n'est créé, il s'agit d'une description
+struct RecordName { // Aucun objet n'est créé, il s'agit d'une description
 	TYPE1 var1;
 	TYPE2 var2;
 	TYPE3 var3;
 	// etc...
 };
 \end{minted}
-Il s'agit d'une définition, et non d'une déclaration. \textit{On définit un nouveau type}. Pour cette raison, aucune variable interne, ou \textit{champ}, de l'enregistrement ne peut être initialisée. Pour utiliser un enreigstrement, il faut au final l'\textit{instancier}. On rappelle qu'un enregistrement est la description d'un produit cartésien. Il faut donc déclarer une varible dont le type est cet enregistrement :
+Il s'agit d'une définition, et non d'une déclaration. \textit{On définit un nouveau type}. Pour cette raison, aucune variable interne, ou \textit{champ}, de l'enregistrement ne peut être initialisée. Pour utiliser un enreigstrement, il faut au final en construire des \textit{instances}. On rappelle qu'un enregistrement est la description d'un produit cartésien. Il faut donc déclarer une varible dont le type est cet enregistrement :
 \begin{minted}[linenos=false]{c}
-struct NomEnregistrement instance; // 'instance' est créé sans champs initialisés.
+struct RecordName instance; // 'instance' est créé sans champs initialisés.
 \end{minted}
 À tout instant de l'exécution du programme, \mintinline{c}{instance} représentera un tuple élément de ce produit cartésien.
 
 Il est possible d'y penser un peu comme à la construction d'une maison : on commence par dessiner le plan de la maison et une fois cela fait il suffit de fabriquer plein de maisons grâce à ce plan.
 
-On observe qu'un type abstrait tel que défini dans la section \ref{sec:variables} sur les variables est un ensemble muni d'opérations. L'utilisation d'enregistrements permet de définir des ensembles par produits cartésiens, ce qui facilite la définition de types abstraits. On peut par exemple implanter $\mathbb{Q}$ comme l'ensemble $\mathbb{Z}\times{\mathbb{N}}$, pour définir les rationnels comme des rapports $\frac{a}{b}$
-
+On observe qu'un type abstrait tel que défini dans la section \ref{sec:variables} sur les variables est un ensemble muni d'opérations. L'utilisation d'enregistrements permet de définir des ensembles par produits cartésiens, ce qui facilite la définition de types abstraits. On peut par exemple implanter $\mathbb{Q}$ comme l'ensemble $\mathbb{Z}\times{\mathbb{N}}$, pour définir les rationnels comme des rapports $\frac{a}{b}$ :
+\begin{minted}[linenos=false]{c}
+struct Rationnal {
+	signed int num; // numérateur
+	unsigned int den; // dénominateur
+};
+\end{minted}
 On peut ensuite accéder aux membres d'une instance d'une structure via un nouvel opérateur binaire, l'opérateur d'accès à un champ noté ``.'' :
 \begin{minted}[linenos=false]{c}
 instance.var1 = ...; // accède au champ 'var1' de 'instance'
@@ -85,7 +96,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 \end{minted}
-Ici, \textsf{Point3D} est une implantation de $\mathbb{R}_{f64}^{3}$
+Ici, \textsf{Point3D} est une implantation de $\mathbb{R}_{f64}^{3} = \mathbb{R}_{f64}\times \mathbb{R}_{f64}\times \mathbb{R}_{f64}$
 
 \textbf{Remarque 1 :} Une structure en C ne peut contenir au maximum que 127 champs. Il s'agit d'une limitation technique à l'implantation des enregistrements.
  
@@ -203,7 +214,7 @@ struct Point {
 	double y;
 };
 
-struct Point p = {.y = 4.5, 3.2}; // Pointe vers x = 3.2, y = 4.5
+struct Point p = {.y = 4.5, .x = 3.2}; // p.x = 3.2; p.y = 4.5;
 \end{minted}
 Il est parfaitement possible de mélanger les initialisations séquentielles et sélectives. Dans un tel cas, l’initialisation séquentielle reprend au dernier champ désigné par une initialisation sélective. Partant, le code suivant initialise le membre $a$ à 1 et le membre $d$ à 30.560.
 \begin{minted}[linenos=false]{c}
@@ -212,6 +223,10 @@ struct MyRecord s = {1, .d = 30.560};
 Alors que le code ci-dessous initialise le champ $c$ à \textsf{NULL}, le champ $d$ à 48, le champ $b$ à 0 et le champ $c$ à $\&s$.
 \begin{minted}[linenos=false]{c}
 struct MyRecord s = {.c = NULL, 48, .b = 0, &s}; // d non initialisé
+\end{minted}
+Par contre, le code suivant provoque une erreur à la compilation :
+\begin{minted}[linenos=false]{c}
+struct Point p = {.y = 4.5, 3.2}; // erreur, car il n'y a pas de champ avec 'y'
 \end{minted}
 \subsection{Méchanisme de construction}
 La question ici est de comprendre quel est le méchanisme qui permet d'accéder à chacun des champs d'une structure à partir de sa définition, c'est-à-dire comment fonctionne concrètement, techniquement, matériellement\footnote{Je rajoute des caisses d'adverbes pour le plaisir} l'opérateur d'indirection.
@@ -291,9 +306,9 @@ s.c == (char)(*(ptr + sizeof(s.a) + sizeof(s.b)));
 
 Les adresses des champs d'une instance de structure sont seulement des décalages (\textit{offsets} en anglais) vis-à-vis de l'adresse de l'instance elle-même.
 
-Comme ces décalages sont calculés à la compilation programme, l'opération d'accès à un membre peut aussi être calculée à la compilation.
+Comme ces décalages sont calculés à la compilation du programme, l'opération d'accès à un membre peut aussi être calculée à la compilation.
 
-L'utilisation de structures ne ralenti donc pas l'exécution du programme.
+L'utilisation de structures ne ralentit donc pas l'exécution du programme.
 \subsection{Tableaux de structures}
 \label{sub:tableaux_de_structures}
 Comme les structures définies sont considérés comme des entités de première classe et sont compactes en mémoire, il est évidemment possible de créer statiquement des tableaux de ces structures :
@@ -508,7 +523,7 @@ En utilisant un pointeur temporaire vers les noeuds, on peut passer d'un noeud �
 \begin{algorithm}
 \caption{Parcours de liste\label{alg:exercice_parcours_liste}}
 \KwIn{$Liste:l$, $Procedure:p$}
-$Noeud tmp \leftarrow tete(l)$\;
+\textit{Noeud} $tmp \leftarrow tete(l)$\;
 \While {$successeur(tmp)$ existe} {
 	$p(contenu(tmp))$\;
 	$tmp \leftarrow successeur(tmp)$\;
