@@ -27,14 +27,16 @@ On définit ici le minimum de notions nécessaires pour être un minimum ``préc
 	$X$ est l'ensemble des entrées du problème et $Y$ l'ensemble des sorties du problème. 
 }
 \textbf{Exemple :} Le problème consistant à trier par ordre croissant des listes d'entiers a comme ensembles d'entrées et de sorties $X = Y = \mathbb{Z}^*$ (étoile de Kleene).\newline
-On choisit un élément $x\in X = Z^*$ comme par exemple $(7, 9, -2, -7, 5, 4, -3, 1, 0)\in\mathbb{Z}^8\subset{Z^*}$ (par définition de l'étoile de Kleene).\newline
+On choisit un élément $x\in X = \mathbb{Z}^*$ comme par exemple $(7, 9, -2, -7, 5, 4, -3, 1, 0)\in\mathbb{Z}^8\subset{\mathbb{Z}^*}$ (par définition de l'étoile de Kleene).\newline
 C'est un problème de tri croissant, donc $P((7, 9, -2, -7, 5, 4, -3, 1, 0)) = (-7, -3, -2, 0, 1, 4, 5, 7, 9)$.
 \definition{Problème de décision}{
 	Un problème $P:X\rightarrow Y$ est dit \textit{de décision} si $Y = \mathcal{B} = \{Vrai, Faux\}$.
 }
-\textbf{Exemple :} Déterminer si un élément $e\in E$ appartient ou non à un tableau d'éléments d'un ensemble $E$ est un problème de décision. Son ensemble d'entrées est $X = E^*$.
+\textbf{Exemple :} Déterminer si un élément $e\in E$ appartient ou non à un tableau d'éléments d'un ensemble $E$ est un problème de décision. Son ensemble d'entrées est $X = E\times E^*$.
 \definition{Algorithme}{
-	Un algorithme qui résoud un problème $P$ dans un certain modèle de calcul est une suite d'instructions élémentaires de ce modèle qui pour tout $x\in X$ en entrée calcule $P(x)$\footnote{La définition manque un peu de précision et de rigueur\dots Il faudrait définir précisement le modèle  de calcul utilisé}.
+	Un algorithme qui résoud un problème $P$ dans un certain modèle de calcul est une suite d'instructions élémentaires de ce modèle qui pour tout $x\in X$ en entrée calcule $P(x)$\footnote{La définition manque un peu de précision et de rigueur\dots Il faudrait définir précisement le modèle  de calcul utilisé}. \\
+
+	C'est donc une réalisation effective du calcul de $P$ selon un modèle de calcul donné.
 }
 \textbf{Notation :} Soit $P:X\rightarrow Y$ un problème. L'ensemble des algorithmes qui résolvent $P$ dans un certain modèle de calcul est noté $\mathcal{A}(P)$.
 % L'ensemble de tous les algorithmes de $X$ dans $Y$ est noté $X\twoheadrightarrow Y = \Bigcup_{P:X\rightarrow Y}\mathcal{A}(P)$

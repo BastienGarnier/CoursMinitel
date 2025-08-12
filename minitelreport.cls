@@ -259,9 +259,9 @@
 
 % Pour multiplier les options d'énumération de type itemize ou enumerate
 \RequirePackage[shortlabels]{enumitem}
-	\setlist[itemize, 1]{font=\color{minitelgreen3}, label=\ding{110}}
-	\setlist[itemize, 2]{font=\color{minitelgreen2}, label=\textbullet}
-	\setlist[itemize, 3]{font=\color{minitelgreen1}, label=\ding{117}}
+	\setlist[itemize, 1]{font=\color{minitelgreen3}, label=\textbullet}
+	\setlist[itemize, 2]{font=\color{minitelgreen2}, label=\ding{117}}
+	\setlist[itemize, 3]{font=\color{minitelgreen1}, label=\ding{110}}
 
 % Page de garde
 \makeatletter

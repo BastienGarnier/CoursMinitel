@@ -2,8 +2,8 @@
 \begin{document}
 \section{Identifiants}\label{sec:identifiants}
 \definition{Identifiant}{Un identifiant est un symbole qui identifie une entité du langage (variable, routine, structure, etc\dots), c'est-à-dire qui la désigne. Un identifiant est composé de caractères compris dans l'ensemble :
-$$\Sigma = \{0, \dots, 9\}\cup{\{\_\}}\cup\{a, \dots, z\}\cup\{A, \dots, Z\}$$
- Le symbole \_ s'appelle l'\textit{underscore} (ou tiret du ``8'' en français, on conservera toutefois l'appellation anglaise car plus commune).}
+$$\mathcal{A} = \{0, \dots, 9\}\cup{\{\_\}}\cup\{a, \dots, z\}\cup\{A, \dots, Z\}$$
+ Le symbole \_ s'appelle l'\textit{underscore} (ou ``tiret du 8'' en français, on conservera toutefois l'appellation anglaise car plus commune).}
  
 % Dit autrement, l'ensemble des identifiants est décrit formellement par le langage régulier suivant ($\bullet$ désigne la concaténation de deux langages) :
 % $$I = (\Sigma\setminus\{0, \dots, 9\})\bullet{\Sigma^{*}}$$
@@ -17,7 +17,7 @@ Dit autrement, l'ensemble des identifiants est l'ensemble des mots formés d'une
 	\item le mot \textsf{J3\_su1s\_Un\_SymboLe\_Qu31qu0nQu3} est un identifiant
 	\item le mot \textsf{nombre\_2} est un identifiant
 	\item le mot \textsf{2\_nombres} n'est pas un identifiant (car il commence par un chiffre)
-	\item le mot \textsf{dire\_\#\_bonjour} n'est pas un identifiant (car $\#\notin{\Sigma}$)
+	\item le mot \textsf{dire\_\#\_bonjour} n'est pas un identifiant (car $\#\notin{\mathcal{A}}$)
 	\item le mot \textsf{\_\_\_\_} est un identifiant
 	\item le mot \textsf{Salut\_0uille} est un identifiant
 \end{itemize}
@@ -122,7 +122,7 @@ int main() { // Définit la fonction principale du programme
 }
 \end{minted}
 % \section{Lignes de code} \label{sec:lignes_de_code}
-
+\newpage
 \section{Le point-virgule}\label{sec:le_point_virgule}
 Le point-virgule (\textit{semicolon} en anglais) en langage C permet d'indiquer la fin d'une instruction. Les commentaires et les directives préprocesseurs ne finissent pas par un point-virgule car ils ne sont pas considérés comme des instructions du langage (voir sections \ref{sec:commentaires} et \ref{sec:directives_pr_processeurs_1_}).
  
@@ -144,16 +144,27 @@ Pourtant on fait l'observation que le compilateur agit formellement sur le langa
 
 La frustration peut être évitée en comprenant parfaitement les raisons d'être de chaque message d'erreur. Ainsi, le programmeur peut y réagir de manière appropriée. Un des objectifs de ce livre est aussi d'apporter un ensemble de connaissances pour cela.
 \end{minitelbasicbox}
+\newpage
 \section{Point d'entrée du programme}\label{sec:point_d_entr_e_du_programme}
+
+\definition{Exécutable}{Un fichier exécutable (ou plus simplement un exécutable) est un fichier contenant un entête d'informations générales et une séquence d'instructions. L'entête peut par exemple définir le point d'entrée du programme, c'est-à-dire l'adresse (relative) dans la séquence d'instructions à laquelle l'ordinateur doit débuter sa lecture des instructions.
+
+\begin{minipage}{\textwidth}
+	\begin{center}
+		\hspace*{-3cm}\includesvg[width=.5\textwidth]{executable}
+	\end{center}
+\end{minipage}
+}
+
 Lorsqu'un programme est chargé en mémoire rapide pour être exécuté par l'ordinateur, il commence à une adresse $a_{0}$ et fini à une adresse $a_{0} + l$, où $l$ est la taille du programme, c'est-à-dire le nombre d'octets du fichier binaire généré par le compilateur.
- 
+
 Cependant, le programme lui-même ne débute pas nécessairement à $a_{0}$. À cette adresse peut commencer la déclaration de données globales au programme, d'instructions tierces, de fonctionnalités autres, etc\dots C'est pourquoi le fichier enregistré sur le disque dur contient aussi un entête qui n'est pas le programme lui-même mais contient certaines informations sur le programme.
 
 À l'exécution du programme, ce sont les $l$ octets du programme \textit{sans l'entête} qui sont chargés en mémoire.
 
 \begin{minipage}{\textwidth}
 	\begin{center}
-		\includesvg[width=.5\textwidth]{entrypoint}
+		\includesvg[width=\textwidth]{entrypoint}
 		\captionof{figure}{Schéma simplifié d'un programme en mémoire}\label{img:prgm}
 	\end{center}
 \end{minipage}
@@ -187,6 +198,7 @@ int main() {
 }
 \end{minted}
 Ces constantes sont définies au sein du module \textsf{stdlib} par la directive de préprocesseur \textsf{\#define}.
+\newpage
 \section{Directives du préprocesseur (1)}\label{sec:directives_pr_processeurs_1_}
 Les directives préprocesseurs sont des instructions qui seront exécutés avant le compilateur par un programme nommé le \textit{préprocesseur}. Elles ne font donc pas partie du programme lui-même mais permettent de ``préparer'' la compilation du programme. Elles permettent par exemple de ne compiler certaines parties du code que sur un système d'exploitation spécifique, où plus généralement d'écrire dans un programme plusieurs versions d'un même bloc de code dont seule celle compatible avec le système d'exploitation sera choisie. Les directives préprocesseurs permettent également d'inclure du code d'autres programmes dans le nôtre, ou de définir des symboles représentant des valeurs constantes\footnote{Et en fait beaucoup plus, détaillé dans une partie ultérieure.}.
  
@@ -211,5 +223,5 @@ int main()
  
 Aucune directive de préprocesseur ne devrait être utilisé à tort et à travers. L'objectif des directives telles que celles-ci est la portabilité du code pour la compilation, et la facilitation d'écriture pour de très gros projets. Ainsi, en incluant d'autres codes, il devient possible de partitionner des programmes très long\footnote{De l'ordre de la centaine de milliers voire de	quelques millions de lignes de code par exemple, et sans aller jusque-là, de quelques milliers de lignes}. Ces directives ne font pas partie \textit{en soi} du langage.
  
-Un approfondissement technique sera effectué ultérieurement.
+Un approfondissement technique sera effectué ultérieurement (voir la section \ref{sec:directives_de_pr_processeurs_2_}).
 \end{document}

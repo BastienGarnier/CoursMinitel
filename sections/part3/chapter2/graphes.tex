@@ -686,7 +686,7 @@ $$\forall u, v\in S, M_{u, v} = \left\{
 \textit{Faux} & \text{si} & u\not\rightarrow^*v & \text{(il n'existe pas de chemin de $u$ à $v$)}
 \end{array}\right.
 $$
-C'est la matrice dénotant la clôture réflexive-transitive $\rightarrow^*$.
+C'est la matrice dénotant la clôture transitive\footnote{Réflexive si le graphe est non orienté puisque $a\rightarrow a\Leftrightarrow a\leftarrow a$} $\rightarrow^*$.
 
 Cet algorithme est assez classique mais est en fait bien moins rapide \textit{pour la simple détermination de la matrice d'accessibilité} que d'autres algorithmes comme l'algorithme de Tarjan\footnote{L'algorithme de Tarjan sert à déterminer les composantes fortement connexes d'un graphe. Il est de même classe de complexité que l'algorithme de Kosaraju, mais ses constantes sont bien plus faibles. Les composantes fortement connexes d'un graphe induise facilement sa matrice d'accessibilité. On ne présente par ici l'algorithme de Tarjan car il nécessite l'introduction de la notion de \textit{points d'attache}, qui est technique et relativement difficile à expliquer clairement sans passer par 10 pages de démonstrations. Peut-être que ce sera ajouté, mais quand la motivation et une idée d'explication claire seront là.}. Toutefois, l'algorithme de Roy-Warshall peut être facilement généralisé aux graphes valués sans perte d'efficacité. Il reste donc incontournable.
 

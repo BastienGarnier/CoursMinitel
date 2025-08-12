@@ -54,7 +54,11 @@ Et on ne comprend rien, car aucune sémantique n'est définie par les signatures
 
 Il faut pouvoir déterminer le comportement voulu d'une opération sans l'implanter dans un langage. En effet, il faut laisser toute sa liberté au programmeur dans la manière d'implanter le type (pour des raisons d'optimisation par exemple) tout en contraignant son comportement.
 
-Une solution mathématique à ce problème est de décrire par des axiomes le comportement de chaque opération. Ces axiomes doivent être \textit{cohérents} et \textit{complets}. Par cohérence, on entend qu'il doit être impossible par une séquence d'opérations d'arriver à des comportements contradictoires comme $acces(t, 0) = e_1 \wedge acces(t, 0) = e_2$ avec $e_1 \neq e_2$, c'est-à-dire qu'on ne doit pas pouvoir \textit{prouver} deux états différents de la structure de données par un même algorithme. Par complétude, on entend qu'il faut que les axiomes permettent de déterminer avec certitude le comportement de tous les accesseurs du type sur leur domaine de définition. En effet, c'est le comportement observable du type qui correspond à sa sémantique. La restriction au domaine de définition est importante, puisqu'il est par exemple impossible de lire un élément dans un tableau hors de celui-ci.
+Une solution mathématique à ce problème est de décrire par des axiomes le comportement de chaque opération. Ces axiomes doivent être \textit{cohérents} et \textit{complets}. 
+
+Par \textit{cohérence}, on entend qu'il doit être impossible par une séquence d'opérations d'arriver à des comportements contradictoires comme $acces(t, 0) = e_1 \wedge acces(t, 0) = e_2$ avec $e_1 \neq e_2$, c'est-à-dire qu'on ne doit pas pouvoir \textit{prouver} deux états différents de la structure de données par un même algorithme. 
+
+Par \textit{complétude}, on entend qu'il faut que les axiomes permettent de déterminer avec certitude le comportement de tous les accesseurs du type sur leur domaine de définition. En effet, c'est le comportement observable du type qui correspond à sa sémantique. La restriction au domaine de définition est importante, puisqu'il est par exemple impossible de lire un élément dans un tableau hors de celui-ci.
 
 On appelle un type abstrait décrit par de tels axiomes algébriques un \textit{type abstrait algébrique}.
 
@@ -80,7 +84,7 @@ Pour éviter cette supposition sur \textit{Element}, on peut ajouter un prédica
 \end{itemize}
 On a alors complètement défini le type abstrait algébrique \textit{Tableau}, contenant des éléments de type \textit{Element}. On observe qu'aucune hypothèse n'a été conduite sur le type \textit{Element}, et que celui-ci peut donc être quelconque.
 \subsection{Structure de données}
-C'est bien beau de décrire tous les types abstraits algébriquement, cela permet d'éviter tout malentendu et toute erreur d'interprétation. On peut également utiliser ces axiomes pour prouver formellement les algorithmes auxquels on fait face. D'un point de vue théorique c'est super, et pour certaines applications critiques qui mettent en jeu des vies humaines, cela se révèle même relativement nécessaire.
+C'est bien beau de décrire tous les types abstraits algébriquement, cela permet d'éviter tout malentendu et toute erreur d'interprétation. On peut utiliser ces axiomes pour prouver formellement les algorithmes que l'on construit (voir l'\refexercise{Piles et files} pour un exemple ``simple''). D'un point de vue théorique c'est super et pour certaines applications critiques qui mettent en jeu des vies humaines, cela se révèle même assez nécessaire.
 
 Mais dans la pratique la plus commune, on voudrait bien pouvoir lire facilement la description d'un type sans avoir à décortiquer des axiomes. Dans la suite, on ne décrira donc pas la spécification formelle de chaque type abstrait\footnote{On laisse la lecture du livre de Froidevaux \cite{Froidevaux} en complément.}.
 

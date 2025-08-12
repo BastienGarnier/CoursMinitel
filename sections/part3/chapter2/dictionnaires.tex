@@ -18,15 +18,35 @@ Sont à ajouter :
 	\item le \textit{load factor} et son seuil d'agrandissement d'une table
 	\item correction des exercices
 \end{itemize}
-\subsection{Motivation}
+\subsection{Introduction}
 \label{sub:dict_motivation}
-Un problème important de calcul est la mise en correspondance d'éléments d'un premier ensemble avec des éléments d'un second ensemble. L'exemple le plus typique est celui des mots du dictionnaire mis en correspondance avec leur définition. Il faut pouvoir :
+Un problème important de calcul est la mise en correspondance d'éléments d'un premier ensemble avec des éléments d'un second ensemble. C'est-à-dire qu'on veut pouvoir \textit{associer} à un premier élément de type fixé un second élément d'un autre type également fixé.
+
+\begin{definition}{Clefs et valeurs}{
+On appelle donc dans la suite :
+\begin{itemize}
+	\item \textit{clef} : l'élément dont on cherche le correspondant
+	\item \textit{valeur} : le correspondant d'une clef
+\end{itemize}
+L'\textit{espace des clefs} est l'ensemble des valeurs possibles que peuvent prendre les clefs.
+}
+\textbf{Remarque :} Les clefs et les valeurs peuvent être de nature différente. Il peut s'agir d'associer à une donnée simple comme une chaîne de caractères un objet complexe décrit par un enregistrement.
+
+L'exemple le plus typique est celui des mots du dictionnaire auxquels on associe leur définition. Il faut pouvoir :
 \begin{itemize}
 	\item ajouter/supprimer des mots efficacement
 	\item lire la définition d'un mot efficacement
 \end{itemize}
-Les mots sont appelés les \textit{clefs} du dictionnaire et les définitions sont les \textit{valeurs} associées aux clefs.
 
+On appelle donc dans la suite un \textit{dictionnaire} une structure de donnée permettant une telle correspondance, puisque toutes les mises en correspondance peuvent se ramener au cas du dictionnaire (ensemble fini de clefs différentes, taille fini de chaque définition, un type pour les clefs, un type pour les valeurs).
+
+\textbf{Exemples réels d'applications :}
+\begin{itemize}
+	\item les différents niveaux de la mémoire cache d'un processeur fonctionnent en construisant électroniquement un dictionnaire. Les clefs sont (grossièrement) des adresses mémoires de la RAM et les valeurs sont les données devant être stockées \textit{in fine} à ces adresses
+	\item associer à chaque utilisateur (la clef peut être une adresse mail) d'une application ses données personnelles (en 2018, $5\%$ de la RAM des serveurs de Google étaient utilisée pour stocker des dictionnaires)
+\end{itemize}
+
+\subsubsection{Une tentative naïve}
 L'idée la plus simple semble être d'utiliser une liste chaînée de mots :
 \begin{minted}{c}
 struct Word {
@@ -38,25 +58,14 @@ struct Word {
 
 WordList words;
 \end{minted}
-On peut bien insérer et supprimer des couples $(mots, definition)$ efficacement. Le problème est alors qu'il n'est pas possible de lire la définition d'un mot quelconque sans parcourir la liste jusqu'à le trouver.
+On peut bien insérer et supprimer des couples $(mots, definition)$ efficacement. Le problème est alors qu'il n'est pas possible de lire la définition d'un mot quelconque sans parcourir la liste jusqu'à le trouver. Les arbres ne servent pas plus puisqu'il est toujours nécessaire de parcourir chaque noeuds/feuilles de l'arbre pour comparer le mot.
 
-On peut aussi implanter la liste comme un tableau, mais le problème n'est pas résolu. Si on cherche la définition du mot ``horloge'', il va falloir parcourir le tableau et comparer le champ \textit{word} avec ``horloge''. Les arbres ne servent pas plus puisqu'il est toujours nécessaire de parcourir chaque noeuds/feuilles de l'arbre pour comparer le mot.
-
-Les structures vues jusqu'à présent sont des structures de stockage qui se prêtent très mal à la correspondance. Ce dont on rêve est une structure telle qu'il soit possible d'écrire :
+Les structures vues jusqu'à présent sont des structures de stockage qui se prêtent très mal à la correspondance. Ce dont on \textit{rêve} est une structure telle qu'il soit possible d'écrire :
 \begin{minted}{c}
 char* definition = structure_find(structure, "horloge");
 \end{minted}
-sans avoir à parcourir l'entièreté des éléments de la structure.
-
-On appelle dans la suite :
-\begin{itemize}
-	\item \textit{clef} : l'élément dont on cherche le correspondant
-	\item \textit{valeur} : le correspondant d'une clef
-\end{itemize}
-L'espace des clefs est l'ensemble des valeurs possibles que peuvent prendre les clefs.
-
-\textbf{Remarque :} Les clefs peuvent être de nature différente. Il peut s'agir d'une donnée simple comme une chaîne de caractères ou d'un enregistrement. Un enregistrement désigne simplement un espace de clefs comme produit cartésien.
-
+sans avoir à parcourir l'entièreté des éléments de la structure. C'est-à-dire que les coûts de lecture/écriture soient en $O(1)$
+\subsubsection{Signature}
 Le type abstrait qui décrit un tel comportement est appelé un \textit{dictionnaire}. \newline
 \textit{Dictionnaire\textless Clef, Element\textgreater} utilise \textit{Booléen}, \textit{Entier}, \textit{Clef} et \textit{Element}
 \begin{itemize}
@@ -70,7 +79,7 @@ Le type abstrait qui décrit un tel comportement est appelé un \textit{dictionn
 \end{itemize}
 On observe que les routines $insertion$ et $modifier$ sont complémentaires. On peut donc l'implanter avec une unique routine qui ajoute le couple si la clef n'existe pas déjà et le met à jour sinon.
 
-\textbf{Remarque :} les tableaux sont l'implantation d'un cas particulier des dictionnaires où les indices du tableau sont les clés. En fait, si on arrive à transformer par un calcul les éléments d'un ensemble dans un ensemble borné d'entiers, on peut utiliser ce premier ensemble comme pour indicer le tableau, et on a une implantation générique d'un dictionnaire au prix du calcul.
+\textbf{Remarque :} les tableaux sont l'implantation d'un cas particulier des dictionnaires où les indices du tableau sont les clés et dont certaines cases ne sont simplement pas utilisées. En fait, si on arrive à transformer par un calcul les éléments d'un ensemble de clefs dans un ensemble borné d'entiers, on peut utiliser ce premier ensemble de clefs comme pour indicer le tableau \textit{via} la transformation, et on a une implantation générique d'un dictionnaire au prix seulement du calcul de la transformation.
 
 C'est cette remarque qui guide l'implantation par \textit{tables de hachages}. 
 % On peut aussi implanter les dictionnaires grâce aux $ABR$ (voir exercices).

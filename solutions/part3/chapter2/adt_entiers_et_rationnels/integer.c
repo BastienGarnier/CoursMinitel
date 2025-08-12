@@ -182,9 +182,10 @@ Integer integer_uaddm(Integer *a, Integer b) {
 	free(a->weights);
 	a->weights = weights;
 	a->length = maxl + 1;
+	a->sign = POSITIVE;
 }
 
-// on suppose a > b
+// on suppose |a| > |b|
 Integer integer_usub(Integer a, Integer b) {
 	int16_t* weights = (int16_t*)malloc(sizeof(int16_t) * a.length);
 
@@ -213,16 +214,16 @@ Integer integer_add(Integer a, Integer b) {
 	}
 
 	Integer r;
-	if (a.sign > b.sign) {
-		if (integer_ucmp(a, b) == 1) { // a > b
+	if (a.sign > b.sign) { // => a >= b car POSITIVE = 1 et NEGATIVE = 0
+		if (integer_ucmp(a, b) == 1) { // |a| > |b|
 			r = integer_usub(a, b);
 			r.sign = POSITIVE;
-		} else {
+		} else { // |a| <= |b| et b - a <= 0
 			r = integer_usub(b, a);
 			r.sign = NEGATIVE;
 		}
-	} else {
-		if (integer_ucmp(b, a) == 1) { // a > b
+	} else { // b > a
+		if (integer_ucmp(b, a) == 1) { // |b| > |a|
 			r = integer_usub(b, a);
 			r.sign = POSITIVE;
 		} else {
@@ -281,6 +282,7 @@ Integer integer_inverse(Integer n) {
 void integer_addm(Integer *a, Integer b) {
 	if (a->sign == b.sign) {
 		integer_uaddm(a, b);
+		a->sign = b.sign;
 		return;
 	}
 

@@ -38,16 +38,27 @@ int main() {
 	printf("m = %s\n", (integer_display_b256(m, buffer), buffer));
 	switch (integer_cmp(n, m)) {
 	case 0:
-		printf("647 == -256\n");
+		printf("-647 == -256\n");
 		break;
 	case 1:
-		printf("647 > -256\n");
+		printf("-647 > -256\n");
 		break;
 	case -1:
-		printf("647 < -256\n");
+		printf("-647 < -256\n");
 		break;
 	}
-	
+
+	Integer shifted = integer_shift_left(n, 10);
+	printf("n << 10 = %s\n", (integer_display_b256(shifted, buffer), buffer));
+
+	Integer subbed = integer_usub(shifted, n);
+	printf("|(n << 10)| - |n| = %s\n", (integer_display_b256(subbed, buffer), buffer));
+
+	subbed.sign = NEGATIVE;
+	n.sign = POSITIVE;
+	integer_uaddm(&subbed, n);
+	printf("|(n << 10)| - |n| + n = %s\n", (integer_display_b256(subbed, buffer), buffer));
+
 	integer_addm(&m, n);
 	printf("647 + 256 = %s", (integer_display_b256(m, buffer), buffer));
 	// Integer m = integer_new("646");

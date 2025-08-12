@@ -1,93 +1,53 @@
 \documentclass[../../main.tex]{subfiles}
 \begin{document}
-\section{L'ordinateur}
-\label{sec:l_ordinateur}
-\subsection{Vue de haut} \label{sub:vue_de_haut}
-On peut considérer un ordinateur comme un système évoluant selon des entrées pour produire des sorties :
-\begin{center}
-  \includegraphics[width=\textwidth]{system}
-\end{center}
-Ces entrées et sorties sont captés et produites via des appareils appelés périphériques d'entrée/sortie. On garde généralement l'appellation en anglais \textit{\underline{I}nput/\underline{O}utput Drivers} ou simplement \textit{\underline{I}/\underline{O} Drivers}.
-
-\begin{minitelbasicbox}{\textbf{Petit apparté :} De la rigueur de la définition d'un ``ordinateur''}
-Un ordinateur est appareil qui ``calcule''. La signification mathématique du terme ``calculer'' n'a
-rien d'évidente. Calculer est au départ une notion que l'on peut qualifier d'assez intuitive et il
-est donc difficile d'apporter une définition formelle claire qui satisfasse ce qu'un humain peut
-subjectivement appeler le ``calcul''.
-
-Le calcul est le plus généralement associé à une série d'actions pouvant être automatisés par un système physique. Certains modèles théoriques représentent cette automatisation et sont d'ailleurs constructibles (comme le modèle RAM qui se rapproche beaucoup des ordinateurs classiques). Il existe en fait des modèles mathématiques parfaitement abstraits dont on a montré qu'ils sont absolument équivalents aux modèles plus ``intuitifs'' d'ordinateurs.
-
-Ce qui résulte principalement des analyses de ces modèles de calcul est que certains problèmes ne peuvent pas être résolus par des ordinateurs, quelles que soient la forme de ceux-ci, tant qu'ils fonctionnent par le calcul\footnote{C'est-à-dire : même en supposant qu'ils aient une puissance et une vitesse de calcul arbitrairement grande et une mémoire infinie.}.
-\end{minitelbasicbox}
-Le symbole \textit{I/O} est extrêmement récurrent puisqu'il apparaît dans tous les cas où existe un système d'entrée et de sortie d'informations.
-\subsection{À l'intérieur}
-\label{sub:_l_int_rieur}
-Les périphériques permettent l'interaction avec le système de l'ordinateur. Pourtant, celui-ci peut très bien fonctionner sans. Par exemple, on lisait les résultats des premiers ordinateurs directement à l'intérieur, et on y entrait les programmes ``à la main'', en modifiant les branchements des câbles pour ``écrire le programme''. En soi, cette notion d'écriture est assez récente, puisqu'elle date des ordinateurs disposant d'un clavier et d'un écran, périphériques d'entrée/sortie fondamentales pour une interaction ``facile'' avec un ordinateur.
-
-L'ordinateur lui-même est uniquement un calculateur possédant une mémoire. Il est représenté de manière \textit{très} simplifiée par le schéma ci-dessous qui représente la modélisation d'un ordinateur selon l'\textit{architecture de Von Neumann}. Les ordinateurs modernes suivent des architectures bien plus complexes\footnote{C'est-à-dire que l'architecture de Von Neumann est pas loin d'être centenaire\dots}.
-\begin{center}
-  \includegraphics[height=6cm]{structure_von_neumann}
-\end{center}
-\textbf{UAL} signifie \underline{U}nité \underline{A}rithmétique et \underline{L}ogique. Ce système constitué de circuits informatiques permet d'effectuer toutes les opérations fondamentales de l'ordinateur, comme l'addition, la multiplication, la soustraction, la division, la lecture de la mémoire et l'écriture dans la mémoire.
-
-\textbf{UCP} signifie \underline{U}nité de \underline{C}ontrôle de \underline{P}rogramme. Ce système supervise l'UAL, et contrôle son exécution. Il s'occupe en particulier de ``comprendre'' les instructions lues dans la mémoire pour faire exécuter par l'UAL les opérations correctes. Il effectue aussi le passage d'une instruction à l'autre.
-
-Les registres forment un système de stockage de capacité très (très (très)) faible, destinés à stocker des valeurs temporaires. Ils servent en particulier de tampons pour les calculs de l'UAL et de l'UCP.
-
-\textbf{Remarque 1 :} L'UCP et l'UAL, avec les registres, forment l'\textbf{UCC} (\underline{U}nité \underline{C}entrale de \underline{C}alcul, \textbf{CPU} en anglais).
-
-\textbf{Remarque 2 :} Le schéma de l'ordinateur présenté ici permet de comprendre \textit{dans les grandes lignes} le fonctionnement d'un ordinateur, mais n'est ni complet ni particulièrement détaillé. Ainsi, ni l'alimentation, ni la carte mère, ni une potentielle carte graphique ne sont explicités ici. Ce schéma propose une vision très abstraite de ce qu'est un ordinateur et ne détaille rien des techniques mises en oeuvre.
-
-La mémoire elle-même n'est dans les faits pas constituée d'un unique bloc mais de plusieurs supports de mémoire dont la vitesse et la capacité varient. On distingue par ordre de vitesse croissante et de capacité décroissante :
-\begin{itemize}
-    \item les bandes magnétiques (très lents, capacité native de $18\ To$ avec la technologie LTO-9, voir \url{https://fr.wikipedia.org/wiki/Linear_Tape-Open})
-    \item les disques durs (lents, capacité allant de $250\ Go$ à $2\ To$)
-    \item la mémoire RAM (pour \underline{R}andom \underline{A}ccess \underline{M}emory) (rapide, capacité allant de $1\ Go$ à $8\ Go$, et par agrégation jusqu'à $128\ Go$ voire plus).
-    \item la mémoire SRAM  (pour \underline{S}tatic RAM) (5 à 10 fois plus rapide que la RAM, même capacité mais beaucoup plus chère)
-    \item les registres (extrêmement rapide, capacité allant de 1 octet à 8 octets, 16 octets pour les ordinateurs spécialisés en calcul scientifique).
-\end{itemize}
-Ces types de support mémoire ne seront pas tous détaillés dans la suite, en tout cas pas dans leur principe de fonctionnement. L'utilité de certains supports sera tout de même expliqué (notamment le disque dur et la mémoire RAM, ainsi que certains registres ultérieurement).
-
-\textbf{Remarque :} En considérant seulement l'ensemble constitué de l'UAL et de l'UCP, la mémoire peut aussi être vue comme un support d'entrée/sortie. Ainsi, la lecture d''une information dans la mémoire constitue une entrée du système (UAL + UCP), et l'écriture d'une information dans la mémoire constitue une sortie du système (UAL + UCP).
-\subsection{Données manipulées}
-\label{sub:donn_es_manipul_es}
-\subsubsection{Binaire}
-\label{ssub:binaire}
+\section{Binaire}
 Un ordinateur est une machine constituée de circuits électroniques. Les informations qui circulent à l'intérieur de celui-ci sont donc des signaux électriques, caractérisés par leur tension. Cette tension traduit deux états, pour des raisons de stabilité et de facilité d'implantation. Le premier état représente l'absence de tension ($U \approx 0\ V$), et le second état représente la présence d'une tension ($U \approx V_{ref} > 0$).
 
-Le premier état est représenté par le chiffre\footnote{Il ne s'agit que d'un symbole sans signification.} 0 et le second par le chiffre\footnote{\textit{idem}} 1. Chaque chiffre (0 ou 1) est appelé un \textit{bit} (\textit{\underline{b}inary dig\underline{it}} en anglais). Cette modélisation sera justifiée par la suite de par les liens efficaces que l'on peut établir entre ces séquences d'états et $\mathbb{N}$.
+Le premier état est représenté par le chiffre\footnote{Il ne s'agit que d'un symbole sans signification.} 0 et le second par le chiffre\footnote{\textit{idem}} 1. Chaque chiffre (0 ou 1) est appelé un \textit{bit} (\textit{\underline{b}inary dig\underline{it}} en anglais). Cette modélisation est justifiée par les liens efficaces que l'on peut établir entre ces séquences d'états et $\mathbb{N}$, l'ensemble des entiers naturels.
 
-Toutes les données manipulées par un ordinateur sont donc constituées de 0 et de 1. L'ensemble $\{0, 1\}$ est en théorie du langage un ensemble de \textit{lettres}. Une séquence de lettres est appelée un \textit{mot} et le langage binaire est l'ensemble des mots écrits avec l'alphabet $\{0, 1\}$. On ne peut pas encore appeler le mot $1000010$ un nombre puisqu'il ne lui est pour l'instant associé aucune interprétation numérique\footnote{Il existe des interprétations non numériques de mots binaires. Par exemple, on peut associer à chaque lettres \textit{a}, \textit{b}, \dots, \textit{z} un mot binaire spécifique. Cela revient à interpréter un mot binaire comme une lettre.}.
-\subsubsection{Octets}
+Toutes les données manipulées par un ordinateur sont donc constituées de 0 et de 1. L'ensemble $\{0, 1\}$ est en théorie du langage un ensemble de \textit{lettres}. Une séquence de lettres est appelée un \textit{mot} et le langage binaire est l'ensemble des mots écrits avec l'alphabet $\{0, 1\}$. On ne peut pas encore appeler le mot $1000010$ un nombre puisqu'il ne lui est pour l'instant associé aucune interprétation numérique. Il existe des interprétations non numériques de mots binaires. Par exemple, on peut associer à chaque lettres \textit{a}, \textit{b}, \dots, \textit{z} un mot binaire spécifique. Cela revient à interpréter un mot binaire comme une lettre (voir la sous-section \ref{sub:caract_res_ascii}) et les mots formés de ces lettres comme des textes. 
+\subsection{Octets}
 \label{ssub:octets}
 Pour structurer l'information, on regroupe ces bits par paquets de 8 appelés \textit{octets}. Un octet est donc un nombre écrit avec 8 bits.
 
 On a ensuite les mêmes préfixes du système international que pour n'importe quelle unité physique :
-\begin{itemize}
-  \item $1\ Ko = 1000\ o$
-  \item $1\ Mo = 1000\ Ko$
-  \item $1\ Go = 1000\ Mo$
-  \item $1\ To = 1000\ Go$
-  \item $1\ Po = 1000\ To$
-  \item etc\dots
-\end{itemize}
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+  \hline 
+  \textbf{Nom} & \textbf{Symbole} & \textbf{Valeur} \\
+  \hline
+  kilooctet & $1\ \rm{Ko}$ & $10^3\ \rm{octets}$ \\
+  megaoctet & $1\ \rm{Mo}$ & $10^6\ \rm{octets}$ \\
+  gigaoctet & $1\ \rm{Go}$ & $10^9\ \rm{octets}$ \\
+  teraoctet & $1\ \rm{To}$ & $10^{12}\ \rm{octets}$ \\
+  petaoctet & $1\ \rm{Po}$ & $10^{15}\ \rm{octets}$ \\
+  \hline
+  \end{tabular}
+\end{center}
+
 Ainsi que d'autres préfixes plus spécifiques à l'informatique qui sont basés sur l'interprétation entière des mots binaires :
-\begin{itemize}
-  \item $1\ Kio \text{ (kibioctet)} = 2^{10}\ o = 1024\ o$
-  \item $1\ Mio \text{ (mebioctet)} = 2^{10}\ Kio = 1024\ Kio$
-  \item $1\ Gio \text{ (gibioctet)} = 2^{10}\ Mio = 1024\ Mio$
-  \item $1\ Tio \text{ (tebioctet)} = 2^{10}\ Gio = 1024\ Gio$
-  \item $1\ Pio \text{ (pebioctet)} = 2^{10}\ Tio = 1024\ Tio$
-  \item etc\dots
-\end{itemize}
-\begin{minitelbasicbox}{\textbf{Petit apparté :} octet comme unité d'information}
-L'octet est l'unité de l'information. Il permet de mesurer la quantitée d'information enregistrée (voir théorie de l'information de Shannon). En informatique pratique, il est utilisé comme mesure du stockage de l'information (ce qui est légèrement différent de la mesure de l'information qui est son sens premier). La pratique a donc légèrement déformé le sens originel du bit.
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+  \hline 
+  \textbf{Symbole} & \textbf{Valeur} \\
+  \hline
+  $1\ \rm{Kio}$ & $2^{10}\ \rm{octets}$ \\
+  $1\ \rm{Mio}$ & $2^{20}\ \rm{octets}$ \\
+  $1\ \rm{Gio}$ & $2^{30}\ \rm{octets}$ \\
+  $1\ \rm{Tio}$ & $2^{40}\ \rm{octets}$ \\
+  $1\ \rm{Pio}$ & $2^{50}\ \rm{octets}$ \\
+  \hline
+  \end{tabular}
+\end{center}
+
+\begin{minitelbasicbox}{\textbf{Petit apparté :} le bit comme unité d'information}
+Le bit est l'unité de l'information. Il permet de mesurer la quantitée d'information enregistrée\footnote{voir théorie de l'information de Shannon} puisqu'il correspond à un choix binaire et que le nombre de choix nécessaires pour construire une manifestation d'un type d'objet constitue la quantité d'information contenue par l'objet. En informatique pratique, il est utilisé comme mesure du stockage de l'information (ce qui est légèrement différent de la mesure de l'information qui est son sens premier). La pratique a donc légèrement déformé le sens originel du bit.
 
 On parle d'ailleurs souvent d'un \textit{bit d'information}, qui fait référence à la théorie de l'information de Shannon.
 \end{minitelbasicbox}
-Les données sur un ordinateur sont mesurés en octets. La mémoire vive, ou d'un disque dur, consiste en un immense mot binaire, qui puisqu'il est divisé en groupes de 8 est en fait un immense tableau de cases de un octet chacune.
-
-Le numéro de chaque case est appelé son adresse. La première case est d'adresse 0 et la dernière dans une mémoire de $T$ octets est $T-1$.
+Les données sur un ordinateur sont mesurés en octets. Originellement, les processeurs n'étaient toutefois pas standardisé et pouvaient diviser les bits par paquets dont la taille différait selon le modèle de l'appareil (par exemple, en paquets de 4 bits).
 \section{Opérations logiques}
 \label{sec:op_rations_logiques}
 Les opérateurs sur les mots binaires sont des fonctions qui permettent d'agir sur les mots binaires, de les modifier.
@@ -137,15 +97,15 @@ $$
 \label{sub:op_rations_logiques_l_mentaires}
 Il existe quelques opérateurs logiques classiques très largement utilisés en informatique :
 \begin{itemize}
-	\item le OU logique exclusif
-	\item le OU logique inclusif
-	\item le ET logique
-	\item le NON logique
+  \item le OU logique exclusif
+  \item le OU logique inclusif
+  \item le ET logique
+  \item le NON logique
 \end{itemize}
 On peut expliquer les noms donnés à ces opérateurs en considérant l'interprétation suivante des symboles 0 et 1 :
 \begin{itemize}
-	\item 0 correspond à la valeur logique \og Faux \fg{}
-	\item 1 correspond à la valeur logique \og Vrai \fg{}
+  \item 0 correspond à la valeur logique \og Faux \fg{}
+  \item 1 correspond à la valeur logique \og Vrai \fg{}
 \end{itemize}
 \subsubsection{OU logique inclusif}
 \label{ssub:ou_logique_inclusif}
@@ -342,28 +302,6 @@ Par exemple, trouvons la représentation binaire de $53$ :
 \end{itemize}
 D'où $53 = 1\times{2^{5}} + 1\times{2^{4}} + 0\times{2^{3}} + 1\times{2^{2}} + 0\times{2^{1}} + 1\times 2^{0} = (110101)_{2}$
 
-\exercise{Du décimal au binaire}{15}\newline
-Trouver la représentation binaire des dix entiers naturels ci-dessous :
-
-\begin{minipage}{0.5\textwidth}
-\begin{itemize}
-     \item $76$
-     \item $188$
-     \item $33$
-     \item $109$
-     \item $92$
-\end{itemize}
-\end{minipage}
-\begin{minipage}{0.5\textwidth}
-\begin{itemize}
-     \item $211$
-     \item $4$
-     \item $238$
-     \item $161$
-     \item $126$
-\end{itemize}
-\end{minipage}
-
 Ici sont détaillées l'ensemble des opérations logiques et arithmétiques les plus communes qui peuvent être appliquées aux $N$-uplets de $B^{N}$. La bijection $btoi$ sera considéré implicitement pour la suite, c'est-à-dire que toute fonction ou relation appliquable sur $\mathcal{B}^{N}$ le sera aussi sur $\llbracket 0; 2^{N}\llbracket $, en considérant un nombre par sa représentation binaire.
 
 Plus formellement, pour toute fonction $\ast : \mathcal{B}^{N} \rightarrow E$, on peut considérer de manière équivalente la fonction :
@@ -387,28 +325,14 @@ $$
 
 \proposition{} $\dot{(btoi_{s}(v))} = \dot{(btoi_{u}(w))} \Leftrightarrow v = w$
 
-\textbf{Démonstration :} $(btoi_{s}(v)) \equiv \displaystyle\sum_{i = 0}^{N-2}(b_{i}2^{i}) - b_{N-1}2^{N-1} + b_{N-1}2^{N} [2^{N}]$ \newline
-Donc $\dot{(btoi_{s}(v))} = \dot{(btoi_{u}(v))}$, or la représentation en base 2 d'un entier naturel est unique, donc $v = w$.
-
-\textbf{Interprétation :} Quelque soit l'interprétation du mot binaire (signé ou non signé), la représentation binaire est unique. Ainsi, la proposition précédente est équivalente à $\forall{x, y\in{\mathbb{Z}}}, \dot{x} = \dot{y} \Leftrightarrow btoi^{-1}(x) = btoi^{-1}(y)$
+\textbf{Interprétation :}\newline Quelque soit l'interprétation du mot binaire (signé ou non signé), la représentation binaire est unique. Ainsi, la proposition précédente est équivalente à $\forall{x, y\in{\mathbb{Z}}}, \dot{x} = \dot{y} \Leftrightarrow btoi^{-1}(x) = btoi^{-1}(y)$ (ce qui peut d'ailleurs aussi servir de preuve).
 
 \proposition{} $b_{N-1} = 1 \Leftrightarrow btoi_{s}(v) < 0$.
-
-\textbf{Démonstration :} $\displaystyle\sum_{i = 0}^{N-2}(b_{i}2^{i})$ est majoré par $\displaystyle\sum_{i = 0}^{N-2}(2^{i}) = 2^{N-1} - 1 < b_{N-1}2^{N-1}$
 
 \textbf{Interprétation :} Il suffit de regarder le bit de poids fort d'un nombre pour connaître son signe.
 
 \proposition{} $btoi_{s}(v) = -(btoi_{s}(\neg{v}) + 1)$
 
-\textbf{Démonstration :}
-\[
-\begin{array}{lcl}
--(btoi_{s}(\neg{v}) + 1) & = & -(\displaystyle\sum_{i = 0}^{N-2}((1-b_{i})2^{i}) - (1-b_{N-1})2^{N-1} + 1) \\
-& = & \displaystyle\sum_{i = 0}^{N-2}((b_{i}2^{i}) - \displaystyle\sum_{i = 0}^{N-2}(2^{i}) + (1 - b_{N-1})2^{N-1} - 1 \\
-& = & \displaystyle\sum_{i = 0}^{N-1}((b_{i}2^{i}) - 2^{N-1} - b_{N-1}2^{N-1} \\
-& = & btoi_{s}(v)
-\end{array}
-\]
 \subsection{Addition} \label{sub:addition}
 On définit l'opération d'addition de deux $N$-uplets de $\mathcal{B}^{N}$ comme l'opération :
 $$
@@ -421,20 +345,10 @@ $$
 
 \proposition{Pseudo-linéarité} $\forall{x, y\in{\llbracket 0; 2^{N}\llbracket}}, x + y \equiv btoi_{u}(btoi^{-1}(x) + btoi^{-1}(y)) [2^{N}]$
 
-\textbf{Démonstration :}
+\textbf{Interprétation :} Additionner deux entiers naturels directement ou d'abord représenter en binaire ces entiers et ensuite additionner produit le même résultat modulo $2^{N}$ par la représentation sur $N$ bits. \\
+Autrement dit, $+$ définit un isomorphisme de $\dfrac{\mathbb{Z}}{2^{N}\mathbb{Z}}$ dans $\mathcal{B}^{N}$.
 
-\[
-\begin{array}{lcl}
-\dot{btoi_{u}(btoi^{-1}(x) + btoi^{-1}(y))} & = & \dot{btoi_{u}(btoi^{-1}(btoi_{u}(btoi^{-1}(x))) + btoi_{u}(btoi^{-1}(y)))} \\
- & = & \dot{(btoi_{u}(btoi^{-1}(x)) + btoi_{u}(btoi^{-1}(y)))} \\
- & = & \dot{(btoi_{u}(btoi^{-1}(x)))} + \dot{(btoi_{u}(btoi^{-1}(y)))} \\
- & = & \dot{x} + \dot{y} \\
- & = & \dot{(x + y)}
-\end{array}
-\]
-\textbf{Interprétation :} Additionner deux entiers naturels directement ou d'abord représenter en binaire ces entiers et ensuite additionner produit le même résultat modulo $2^{N}$ par la représentation sur $N$ bits.
-
-\textbf{Exemples : (pour $N = 8$)}
+\textbf{Exemples (pour $N = 8$) :}
 \begin{itemize}
   \item $(0011\ 0101)_{2} + (0001\ 1000)_{2} = (0100\ 1101)_{2}$\newline
     c'est-à-dire $53 + 24 = 77$
@@ -470,27 +384,34 @@ $\gg_{a}$ conserve le signe, puisque le bit de poids fort reste constant (voir \
 
 \proposition{} $\forall{v\in{\mathcal{B}^{N}}}, btoi_{u}(v\gg_{l}1) = \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor$
 
-\textbf{Démonstration :} Soit $v = v_{N-1}\dots v_{0}\in{\mathcal{B}^{N}}$.
-\[
-\begin{array}{lcll}
-btoi_{u}(v\gg_{l}1)  & = & btoi_{u}(0v_{N-1}\dots v_{1}) \\
-& = & \displaystyle\sum_{i = 1}^{N-1}(v_{i}2^{i-1}) + \underbrace{\left\lfloor\dfrac{v_{0}}{2}\right\rfloor}_{=0} \\
-& = &  \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor & \text{ car $\forall{(n, x)}\in{\mathbb{N}\times{\mathbb{R}}}, n + \lfloor{x}\rfloor = \lfloor{n + x}\rfloor$}
-\end{array}
-\]
 \proposition{} $\forall{v\in{\mathcal{B}^{N}}}, btoi_{s}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor$
 
-\textbf{Démonstration :} Soit $v = v_{N-1}\dots v_{0}\in{\mathcal{B}^{N}}$.
-\[
-\begin{array}{lcl}
-btoi_{s}(v\gg_{a}1)  & = & btoi_{s}(v_{N-1}v_{N-1}\dots v_{1}) \\
-& = & \displaystyle\sum_{i = 1}^{N-1}(v_{i}2^{i-1}) - v_{N-1}2^{N-1} + \underbrace{\left\lfloor\dfrac{v_{0}}{2}\right\rfloor}_{=0} \\
-& = &  \left\lfloor{\displaystyle\sum_{i = 0}^{N-1}(v_{i}2^{i-1}) - v_{N-1}2^{N-1}}\right\rfloor \\
-& = &  \left\lfloor{\displaystyle\sum_{i = 0}^{N-2}(v_{i}2^{i-1}) - v_{N-1}2^{N-2}}\right\rfloor \\
-& = & \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor
-\end{array}
-\]
-\textbf{Remarque :} $btoi_{s}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor$ et $btoi_{u}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor$ ne sont vraies \textit{a priori} que pour des entiers naturels. En effet, le bit de signe ne doit pas être conservé en représentation non signée alors qu'il doit l'être en représentation signée.
+\textbf{Remarque :} $btoi_{s}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor$ et $btoi_{u}(v\gg_{a}1) = \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor$ ne sont vraies \textit{a priori} que pour des entiers naturels. En effet, le bit de signe ne doit pas être conservé en représentation non signée tandis qu'il doit l'être en représentation signée.
+\subsection{Exercices}
+\exercise{Du décimal au binaire}{15}\newline
+Trouver la représentation binaire des dix entiers naturels ci-dessous :
+
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+     \item $76$
+     \item $188$
+     \item $33$
+     \item $109$
+     \item $92$
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+     \item $211$
+     \item $4$
+     \item $238$
+     \item $161$
+     \item $126$
+\end{itemize}
+\end{minipage}
+
+\exercise{P'tites démos}{18}Vérifier les propositions 1, 2, 3, 4, 5 et 6.
+
 \section{Opérations flottantes} \label{sec:op_rations_flottantes}
 \subsection{Représentation des nombres à virgules}
 \label{sub:repr_sentation_des_nombres_virgules}
@@ -498,8 +419,8 @@ La manipulation de valeurs réelles est extrêmement importante, et même néces
 
 Pourtant, on peut observer simplement qu'un ordinateur manipule des données finies. En ce sens, il n'est envisageable de ne manipuler que des sous-ensembles de $\mathbb{Q}$. Par exemple :
 \begin{itemize}
-     \item $\pi$ possède un nombre infini de chiffres dont l'information ne peut être stockée par une formule \textit{calculable}\footnote{En informatique, une fonction est dite \textit{calculable} si il existe un algorithme qui pour tout $x$, détermine $f(x)$ en temps fini.}
-     \item $\dfrac{1}{3}$ possède un nombre infini de chiffres après la virgule. Il suffit de stocker la partie entière $0$ ainsi que la partie répétée des décimales, c'est-à-dire $3$ (avec l'information de la répétition)
+     \item $\pi$ possède un nombre infini de chiffres dont l'information ne peut être stockée par une formule \textit{calculable}\footnote{En informatique, une application $f\ :\ E \rightarrow F$ est dite \textit{algorithmiquement calculable} ou simplement \textit{calculable} si il existe un algorithme (\textit{i.e.} procédé effectif de calcul) qui pour tout $x\in E$ détermine $f(x)$ en temps fini.}
+     \item $\dfrac{1}{3}$ possède un nombre infini de chiffres après la virgule mais l'information reste finie puisqu'il suffit de stocker la partie entière $0$ et la partie répétée des décimales, c'est-à-dire $3$ (ainsi l'information d'une répétition)
      \item $1.414$ possède un nombre fini de chiffres après la virgule. Il suffit alors de stocker deux entiers : celui avant la virgule, et celui après.
 \end{itemize}
 Dépendamment du type de nombre manipulé (avec un nombre infini de chiffre après la virgule ou non), le stockage des informations contenus par ce nombre diffère (et est parfois impossible comme dans le cas de $\pi$).
@@ -512,10 +433,10 @@ Dépendamment du type de nombre manipulé (avec un nombre infini de chiffre apr�
 
 \textbf{Remarque 4 :} Imaginons qu'on choisisse de représenter \textit{naïvement} des nombres à virgules sur $N = 32$ bits en stockant sur 16 bits la partie entière et la partie flottante. Cela limite particulièrement la précision des nombres représentés puisqu'il ne peut y avoir que $65536$ parties fractionnaires différentes.
 
-Une norme est donc née de l'\textit{\underline{I}nstitute of \underline{E}lectrical and \underline{E}lectronics \underline{E}ngineers} (\textit{IEEE}), nommée la norme \textit{IEEE 754}. Il s'agit de la norme la plus largement utilisé en informatique, qui se base sur la notation scientifique.
+Une norme est donc née de l'\textit{\underline{I}nstitute of \underline{E}lectrical and \underline{E}lectronics \underline{E}ngineers} (\textit{IEEE}), nommée ``norme \textit{IEEE 754}''. Il s'agit de la norme la plus largement utilisé en informatique, qui se base sur la notation scientifique, qui permet d'éviter l'écueil soulevé par les remarques 3 et 4.
 \subsection{Écriture en base 2 de nombres décimaux} \label{sub:_criture_en_base_2_de_nombres_d_cimaux}
 Avant de décrire la norme \textit{IEEE 754}, on commence par détailler l'écriture en base 2 d'un nombre réel. 
-On rappel qu'un nombre $x\in{\mathbb{R}}$ s'écrit de manière générique en base 10 sous la forme suivante :
+On \textit{rappelle} qu'un nombre $x\in{\mathbb{R}}$ s'écrit de manière générique en base 10 sous la forme suivante :
 $$x = \lfloor{x}\rfloor + fract(x)$$
 La partie entière de $x$ s'écrit en base 10 : 
 $$\lfloor{x}\rfloor = c_{n-1}10^{n-1} + c_{n-2}10^{n-2} + \dots + c_{0}10^{0}\text{, où $n = \lceil log_{10}(\lfloor{x}\rfloor)\rceil$}$$
@@ -530,9 +451,9 @@ fract(x) & = & c_{-1}2^{-1} + c_{-2}2^{-2} + \dots
 \end{array}\right.$$
 avec pour tout $i\in\mathbb{Z}$, $c_{i}\in{\llbracket{0; 1\rrbracket}}$
 
-On relève au passage la propriété qui permet de calculer la représentation en base $b$ d'un nombre réel $x$ :
+On en déduit une propriété qui permet de calculer la représentation en base $b$ d'un nombre réel $x$ :
 
-\proposition{} $\forall{n\in{\mathbb{N}^{*}}}, \lfloor b^{n}fract(x)\rfloor \equiv c_{(-n)}[b]$, où $c_{(-i)}$ est le $i^e$ après la virgule dans l'écriture de $x$ en base $b$.
+\proposition{} $\forall{n\in{\mathbb{N}^{*}}}, \lfloor b^{n}fract(x)\rfloor \equiv c_{(-n)}[b]$, où $c_{(-i)}$ est le $i^e$ chiffre après la virgule dans l'écriture de $x$ en base $b$.
 
 \textbf{Exemple :} On peut appliquer récursivement cette propriété sur $x = 21.125 = (10101)_{2} + 0.125$ :
 \begin{itemize}
@@ -580,12 +501,13 @@ Selon la norme \textit{IEEE 754}, sur 32 bits :
 \end{itemize}
 Visuellement :
 $$\underbrace{0}_{s}\underbrace{00000000}_{e}\underbrace{00000000000000000000000}_{m}$$
+La précision de la mantisse est implicitement de 24 bits en précision simple (23 bits explicites). Elle est implicitement de 53 bits en précision double (52 bits explicites). On en déduit :
+
 \proposition{Limite de précision de la représentation des entiers} Soit $x\in\mathbb{Z}$ : 
 \begin{itemize}
   \item si $|x| \leq 2^{24}$, sa représentation en précision simple (32 bits) selon la norme \textit{IEEE 754} est exacte.
   \item si $|x| \leq 2^{53}$, sa représentation en précision double (64 bits) selon la norme \textit{IEEE 754} est exacte.
 \end{itemize}
-\textbf{Démonstration :} La précision de la mantisse est implicitement de 24 bits en précision simple (23 bits explicites). Elle est implicitement de 53 bits en précision double (52 bits explicites).
 \subsubsection{Calcul du signe} \label{ssub:calcul_du_signe}
 Si $x < 0$, $s = 1$, et $s= 0$ sinon.
 \subsubsection{Calcul de la mantisse} \label{ssub:calcul_de_la_mantisse}
@@ -639,7 +561,7 @@ Sur 32 bits, $biais = 127$, donc $N + biais = 0$. Le nombre est donc dénormalis
   \item le nombre est dénormalisé donc $m = (11000111101011100001010)_2$
 \end{itemize}
 Finalement, $x = -9.1688559\times{10^{-39}}$ est représenté selon la norme \textit{IEEE 754} par le mot binaire 32 bits : $$10000000011000111101011100001010$$
-\subsection{Notation pour la suite du cours} \label{sub:notation_pour_la_suite_du_cours}
+\subsection{Notation pour la suite} \label{sub:notation_pour_la_suite_du_cours}
 On notera pour la suite $\mathbb{R}_{f32}$ (resp. $\mathbb{R}_{f64}$ et $\mathbb{R}_{f128
 }$) l'ensemble des nombres réels dont il existe une représentation binaire sur 32 bits (resp. 64 et 128 bits) exacte selon la norme \textit{IEEE 754}.
 
@@ -716,10 +638,10 @@ La représentation hexadécimale n'est qu'une compression de l'écriture de mots
 Le choix de la base s'explique par l'observation suivante : $16 = 2^{4}$, donc les seizes chiffres peuvent représenter les nombres $0, \dots, 15$, c'est-à-dire en binaire $0000, \dots, 1111$. On pourrait choisir de manière équivalente n'importe quelle base qui soit une puissance de $2$.\footnote{En particulier la base octale (c'est-à-dire la base 8) a été utilisé pendant longtemps bien que maintenant assez obsolète.} En effet, écrire en base 2 revient à décomposer selon les puissances de 2. En choisissant une puissance de 2 comme base d'écriture, on divise d'autant le nombre de chiffres requis.
 
 \textbf{Chiffres en base 16 :} Les chiffres en base seize sont les suivants :
-$$\Sigma = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, \textsf{A}, \textsf{B}, \textsf{C}, \textsf{D}, \textsf{E}, \textsf{F}\}$$
+$$\mathcal{C} = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, \textsf{A}, \textsf{B}, \textsf{C}, \textsf{D}, \textsf{E}, \textsf{F}\}$$
 Ainsi, $(\textsf{A})_{16} = 10$, $(\textsf{B})_{16} = 11$, $(\textsf{C})_{16} = 12$, $(\textsf{D})_{16} = 13$, $(\textsf{E})_{16} = 14$ et $(\textsf{F})_{16} = 15$.
 
-Soit $n = (c_{N-1}\dots c_{0})_{16}\in{\mathbb{N}}$, où $\forall{i\in{\llbracket0; N-1\rrbracket}}, c_{i}\in{\Sigma}$
+Soit $n = (c_{N-1}\dots c_{0})_{16}\in{\mathbb{N}}$, où $\forall{i\in{\llbracket0; N-1\rrbracket}}, c_{i}\in{\mathcal{C}}$
 $$n = \displaystyle\sum_{i = 0}^{N-1}\left(c_{i}16^{i}\right)$$ 
 Par exemple, $(2\textsf{FA})_{16} = 2\times{16^{2}} + 15\times{16^{1}} + 10\times{16^{0}} = 762$.
 
@@ -736,14 +658,14 @@ $$
  & = & (b_{N-1, 3}b_{N-1, 2}b_{N-1, 1}b_{N-1, 0}\dots b_{0, 3}b_{0, 2}b_{0, 1}b_{0, 0})_{2}
 \end{array}
 $$
-\textbf{Interprétation :} Pour passer d'une écriture binaire à une écriture hexadécimale, il suffit d'écrire chaque mot\footnote{ou \textit{mot}} de quatre bits en un chiffre hexadécimale. Inversement, pour passer d'une écriture hexadécimale à une écriture binaire, il suffit de convertir chaque chiffre hexadécimale en un groupe de quatre bits.
+\textbf{Interprétation :} Pour passer d'une écriture binaire à une écriture hexadécimale, il suffit d'écrire chaque mot\footnote{Paquet} de quatre bits en un chiffre hexadécimale. Inversement, pour passer d'une écriture hexadécimale à une écriture binaire, il suffit de convertir chaque chiffre hexadécimale en un groupe de quatre bits.
 
 \textbf{Exemple :}  $0\textsf{x}2\textsf{FA} = \underbrace{0010}_{2}\ \underbrace{1111}_{F}\ \underbrace{1010}_{A}$
 
 \textbf{Remarque :} Cette transformation est aussi valable pour des nombres flottants, puisqu'il suffit de considérer l'interprétation entière du mot binaire qui par la norme \textit{IEEE 754} représente un flottant.
 
 \exercise{Conversion binaire-hexadécimale}{15}\newline
-Trouver les représentations binaires puis hexadécimale des nombres suivants. On utilisera l'écriture en base 2 pour les nombres entiers et la représentation 32 bits de la norme \textit{IEEE 754} pour les nombres à virgules :
+Trouver les représentations binaires puis hexadécimale des nombres suivants. On utilisera l'écriture en base 2 (indépendante du signe d'après la \textbf{Proposition 1}) pour les nombres entiers et la représentation 32 bits de la norme \textit{IEEE 754} pour les nombres à virgules :
 \begin{itemize}
      \item $713705$
      \item $8.8$

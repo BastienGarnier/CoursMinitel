@@ -20,7 +20,7 @@ On pose pour la suite $\mathcal{B} = \{0, 1\}$ et $N\in\mathbb{N}^{*}$
 Il semble donc intuitif de retrouver des expressions semblables :
 \begin{itemize}
 	\item $\vee\ :\ (a, b) \mapsto a + b - ab$
-	\item $\oplus\ :\ (a, b) \mapsto |a - b|$
+	\item $\oplus\ :\ (a, b) \mapsto |a + b - 2ab|$ ($= |a - b|$)
 	\item $\wedge\ :\ (a, b) \mapsto a\times b$
 	\item $\neg\ :\ a \mapsto 1 - a$
 \end{itemize}
@@ -47,8 +47,8 @@ Alors :
 $$
 \begin{array}{lcl}
 	e = t_i & \Leftrightarrow & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}(e_k = t_{i, k})\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}(e_k = t_{i, k}) \\
- & & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}(e_k = 1)\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}(e_k = 0) \\
- & & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}e_k\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}\neg{e_k}
+ & \Leftrightarrow & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}(e_k = 1)\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}(e_k = 0) \\
+ & \Leftrightarrow & \displaystyle\bigwedge_{k\in{K_{1}(t_i)}}e_k\displaystyle\bigwedge_{k\in{K_{0}(t_i)}}\neg{e_k}
 \end{array}
 $$
 Finalement, on arrive à la définition par compréhension de $\ast$ :
@@ -71,7 +71,7 @@ On peut montrer qu'une proposition logique en logique propositionnelle peut s'é
 	\item la forme normale conjonctive qui est une conjonction de disjonctions de variables :
 	$$\displaystyle\bigwedge\left(\displaystyle\bigvee x_{i}\right)$$
 \end{itemize}
-En électronique, ces deux formes sont nommés respectivement \textit{somme de produits} et \textit{produit de sommes} en raison des expressions trouvés à l'\refexercise{La compréhension pour mieux comprendre}.
+En électronique, ces deux formes sont nommés respectivement \textit{somme de produits} et \textit{produit de sommes} car $(\mathcal{B}, \vee, \wedge)$ est un semi-anneau. On en retrouve des conséquences dans l'\refexercise{La compréhension pour mieux comprendre}.
 \end{minitelbasicbox}
 \solution{Porte NAND}
 La table de vérité de NAND est :
@@ -141,6 +141,54 @@ Donc $G$ est bien un groupe commutatif.
 	\item $(01111110)_{2}$
 \end{itemize}
 \end{minipage}
+
+\solution{P'tites démos}
+
+Proposition 1 : $(btoi_{s}(v)) \equiv \displaystyle\sum_{i = 0}^{N-2}(b_{i}2^{i}) - b_{N-1}2^{N-1} + b_{N-1}2^{N} [2^{N}]$ \newline
+Donc $\dot{(btoi_{s}(v))} = \dot{(btoi_{u}(v))}$, or la représentation en base 2 d'un entier naturel est unique, donc $v = w$.
+
+Proposition 2 : $\displaystyle\sum_{i = 0}^{N-2}(b_{i}2^{i})$ est majoré par $\displaystyle\sum_{i = 0}^{N-2}(2^{i}) = 2^{N-1} - 1 < b_{N-1}2^{N-1}$
+
+Proposition 3 : \[
+\begin{array}{lcl}
+-(btoi_{s}(\neg{v}) + 1) & = & -(\displaystyle\sum_{i = 0}^{N-2}((1-b_{i})2^{i}) - (1-b_{N-1})2^{N-1} + 1) \\
+& = & \displaystyle\sum_{i = 0}^{N-2}((b_{i}2^{i}) - \displaystyle\sum_{i = 0}^{N-2}(2^{i}) + (1 - b_{N-1})2^{N-1} - 1 \\
+& = & \displaystyle\sum_{i = 0}^{N-1}((b_{i}2^{i}) - 2^{N-1} - b_{N-1}2^{N-1} \\
+& = & btoi_{s}(v)
+\end{array}
+\]
+
+Proposition 4 :
+\[
+\begin{array}{lcl}
+\dot{btoi_{u}(btoi^{-1}(x) + btoi^{-1}(y))} & = & \dot{btoi_{u}(btoi^{-1}(btoi_{u}(btoi^{-1}(x))) + btoi_{u}(btoi^{-1}(y)))} \\
+ & = & \dot{(btoi_{u}(btoi^{-1}(x)) + btoi_{u}(btoi^{-1}(y)))} \\
+ & = & \dot{(btoi_{u}(btoi^{-1}(x)))} + \dot{(btoi_{u}(btoi^{-1}(y)))} \\
+ & = & \dot{x} + \dot{y} \\
+ & = & \dot{(x + y)}
+\end{array}
+\]
+
+Proposition 5 : Soit $v = v_{N-1}\dots v_{0}\in{\mathcal{B}^{N}}$.
+\[
+\begin{array}{lcll}
+btoi_{u}(v\gg_{l}1)  & = & btoi_{u}(0v_{N-1}\dots v_{1}) \\
+& = & \displaystyle\sum_{i = 1}^{N-1}(v_{i}2^{i-1}) + \underbrace{\left\lfloor\dfrac{v_{0}}{2}\right\rfloor}_{=0} \\
+& = &  \left\lfloor\dfrac{btoi_{u}(v)}{2}\right\rfloor & \text{ car $\forall{(n, x)}\in{\mathbb{N}\times{\mathbb{R}}}, n + \lfloor{x}\rfloor = \lfloor{n + x}\rfloor$}
+\end{array}
+\]
+
+Proposition 6 : Soit $v = v_{N-1}\dots v_{0}\in{\mathcal{B}^{N}}$.
+\[
+\begin{array}{lcl}
+btoi_{s}(v\gg_{a}1)  & = & btoi_{s}(v_{N-1}v_{N-1}\dots v_{1}) \\
+& = & \displaystyle\sum_{i = 1}^{N-1}(v_{i}2^{i-1}) - v_{N-1}2^{N-1} + \underbrace{\left\lfloor\dfrac{v_{0}}{2}\right\rfloor}_{=0} \\
+& = &  \left\lfloor{\displaystyle\sum_{i = 0}^{N-1}(v_{i}2^{i-1}) - v_{N-1}2^{N-1}}\right\rfloor \\
+& = &  \left\lfloor{\displaystyle\sum_{i = 0}^{N-2}(v_{i}2^{i-1}) - v_{N-1}2^{N-2}}\right\rfloor \\
+& = & \left\lfloor\dfrac{btoi_{s}(v)}{2}\right\rfloor
+\end{array}
+\]
+
 \subsection{Opérations sur les nombres à virgules}
 \solution{Écriture en base 2 de nombres non entiers}
 \begin{itemize}
@@ -704,7 +752,60 @@ C(n) & = & \displaystyle\sum_{i = 0}^{e - 1}\sum_{k = 2^i}^{2^{i+1}-1}c(k) + r \
 
  Du point de vue des constantes, le code des listes chaînés est plus complexe et demande certaines optimisations comme un noeud virtuel pour éviter trop de branchements conditionnels. Si on ne fait qu'ajouter en tête ou en queue de liste, l'implantation par tableau semble relativement correcte au défaut du surcoût de redimensionnement. Par contre, l'implantation par tableau évite trop d'allocations dynamiques et est optimal pour la quantité de mémoire utilisée \textit{par élément}. Si la taille de la liste est bornée et proche par le dessous d'une puissance de 2, l'implantation par tableau est relativement optimale.
 
+\solution{Axiomes algébriques}
+
+
 \solution{Piles et files}
+
+On ne décrit que la construction d'une file \textit{via} deux piles. La construction d'une pile \textit{via} deux files est duale. Les analyses de correction et de complexité sont identiques.
+
+\textbf{Construction de la structure :}
+
+On veut définir une file comme un couple de deux piles $P_e$ et $P_s$ (avec $e$ pour \underline{e}ntrée et $s$ pour \underline{s}ortie). On pose pour $F = (P_e, P_s)$ :
+\begin{itemize}
+	\item $creer\_file\_vide() = (creer\_pile\_vide(), creer\_pile\_vide())$
+	\item $est\_vide(F) = est\_vide(P_e)\wedge est\_vide(P_s)$
+	\item $premier(F) = sommet(P_e)$
+	\item $dernier(F) = sommet(P_s)$
+	\item $enfiler((P_e, P_s), e) = (empiler(P_e, e), P_s)$
+\end{itemize}
+On définit alors une nouvelle opération spécifique à notre structure : $vider(P_e, P_s)$, qui va dépiler chaque élément de $P_e$ pour l'empiler sur $P_s$ :
+
+\begin{algorithm}
+\caption{Vider}\label{alg:vider_piles}
+\KwIn{$\textit{Pile}:P_e$, $\textit{Pile}:P_s$}
+\While {$\neg est\_vide(P_e)$} {
+	$P_s \leftarrow empiler(P_s, sommet(P_e))$\;
+	$P_e \leftarrow depiler(P_e)$\;
+}
+\Return $(P_e, P_s)$\;
+\end{algorithm}
+
+On utilise cette opération pour construire les opérations $defiler$ et $dernier$ de $F$ :
+
+\begin{algorithm}
+\caption{$dernier(F)$}\label{alg:dernier}
+\KwIn{$\textit{File}:F = (P_e, P_s)$}
+\If {$est\_vide(P_s)$} {
+	$(P_e, P_s) \leftarrow vider(P_e, P_s)$ \tcp{On suppose évidemment que la file est non vide.}
+}
+\Return $sommet(P_s)$
+\end{algorithm}
+\begin{algorithm}
+\caption{$defiler(F)$}\label{alg:defiler}
+\KwIn{$\textit{File}:F = (P_e, P_s)$}
+\eIf {$est\_vide(P_s)$} {
+	$(P_e, P_s) \leftarrow vider(P_e, P_s)$ \tcp{\textit{idem}}
+	$P_s \leftarrow depiler(P_s)$\;
+} {
+	$P_s \leftarrow depiler(P_s)$\;
+}
+\Return $(P_e, P_s)$
+\end{algorithm}
+
+\textbf{Correction :}
+
+\textbf{Complexité :}
 
 \solution{Optimizing greater than abstraction}
 

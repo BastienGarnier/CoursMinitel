@@ -38,7 +38,7 @@ Une signature minimale d'une liste peut alors être :\newline
 	\item $inserer\_en\_tete(\textit{mut Liste}, \textit{Élément})$ insère un élément comme premier élément de la liste
 \end{itemize}
 On peut étendre cette signature en ajoutant d'autres opérations. Plus on ajoute d'opérations, plus la structure de donnée implantée peut devenir complexe pour rester efficace. On peut ainsi envisager d'ajouter des éléments en queue de la liste ou même d'en insérer/supprimer au milieu. \newline
-Ajouter des éléments en queue de liste induit soit de devoir parcourir toute la liste pour arriver à la fin, soit d'ajouter un accesseur qui renvoie la dernière place de la liste. Pour calculer cet accesseur en $\mathcal{O}(1)$, il faut ajouter un pointeur vers la tête, ce qui constitue une complexification.
+Ajouter des éléments en queue de liste induit soit de devoir parcourir toute la liste pour arriver à la fin, soit d'ajouter un accesseur qui renvoie la dernière place de la liste. Pour calculer cet accesseur en $\mathcal{O}(1)$, il faut ajouter un pointeur vers la queue, ce qui constitue une complexification.
 \subsection{Piles}
 Une pile est un cas particulier plus simple de la liste qui explicitement n'autorise la suppression et l'ajout d'éléments que d'un seul côté d'une liste linéaire. Les piles ont un intérêt algorithmique pour la manipulation de structures plus complexes, par exemple pour le parcours en profondeur de graphes.
 
@@ -256,7 +256,23 @@ List list_push_on_tail(List l, Element e) {
 
 \exercise{Listes par tableaux}{23} Implanter une liste avec un tableau, qui permette l'accès, l'insertion et la suppression en tête et queue. On veut que le coût dans le pire cas de l'accès et de la suppression soit fonction de $O(1)$ et que le coût dans le pire cas des $n$ premières insertions soit fonction de $O(n)$\footnote{On dira que le coût \textit{amorti} d'une seule insertion est fonction de $O(1)$}. Quelle est le coût temporel des opérations de lecture, d'insertion et de suppression d'éléments à une place quelconque de la liste ? Comparer à l'implantation par chaînage.
 
-\exercise{Piles et files}{20} Montrer qu'on peut implanter une file avec deux piles et une pile avec deux files. Quelle est la complexité temporelle amortie des opérations ?
+\exercise{Axiomes algébriques}{25} Définir les axiomes algébriques qui régissent le comportement :
+\begin{itemize}
+	\item d'une pile
+	\item d'une file
+	\item d'une liste
+\end{itemize}
+
+\exercise{Piles et files}{25}
+\begin{enumerate}
+	\item Construire :
+	\begin{itemize}
+		\item une file en utilisant deux piles
+		\item une pile en utilisant deux files
+	\end{itemize}
+	\item Montrer en utilisant les axiomes de l'\refexercise{Axiomes algébriques} que les constructions sont correctes
+	\item Quelle est la complexité temporelle amortie des opérations de manipulation ?
+\end{enumerate}
 
 \exercise{Optimizing greater than abstraction}{29} Implanter une structure de liste \textit{doublement} chaînée dont les noeuds ne possèdent qu'un seul pointeur qui contient l'information à la fois du pointeur avant et du pointeur arrière. Écrire alors une procédure de renversement qui inverse l'ordre de la liste avec un coût fonction de $\mathcal{O}(1)$ \newline
 \textit{\underline{Indication :} utiliser les propriétés du groupe commutatif $(\mathcal{B}^N, \oplus)$ et analyser le titre de l'exercice.}
