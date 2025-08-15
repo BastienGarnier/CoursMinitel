@@ -28,10 +28,10 @@ La différence fondamentale entre les places et les éléments contenus à ces p
 Une signature minimale d'une liste peut alors être :\newline
 \textit{Liste\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément} et \textit{Place}
 \begin{itemize}
-	\item $creer\_vide() \rightarrow Liste$ renvoie une liste vide, sans éléments
+	\item $liste\_vide() \rightarrow Liste$ renvoie une liste vide, sans éléments
 	\item $premier(Liste)\rightarrow Place$ renvoie la place du premier élément, indéfini si la liste est vide
 	\item $est\_dernier(Liste, Place)\rightarrow \textit{Booléen}$ Teste si la place est la dernière de la liste.
-	\item $successeur(Liste, \textit{Place : p})\rightarrow Place$ calcule la place suivant une place, indéfini si $p$ est la dernière place de la liste
+	\item $successeur(Liste, p:\textit{Place})\rightarrow Place$ calcule la place suivant une place, indéfini si $p$ est la dernière place de la liste
 	\item $contenu(Liste,Place) \rightarrow \textit{Élement}$ renvoie l'élément contenu à une certaine place
 	\item $est\_vide(Liste)\rightarrow \textit{Booléen}$ renvoie $Vrai$ si la liste est vide, $Faux$ sinon
 	\item $supprimer\_en\_tete(\textit{mut Liste})\rightarrow \textit{Élément}$ supprime le premier élément de la liste et renvoie sa valeur
@@ -55,7 +55,7 @@ En anglais, cette structure est aussi appelée \textit{LIFO} (\textit{\underline
 La signature d'une pile est la suivante :
 \textit{Pile\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément}
 \begin{itemize}
-	\item $creer\_vide()\rightarrow Pile$ renvoie une pile vide, sans éléments
+	\item $pile\_vide()\rightarrow Pile$ renvoie une pile vide, sans éléments
 	\item $sommet(Pile)\rightarrow \textit{Élément}$ renvoie l'élément au sommet de la pile qui doit être non vide
 	\item $empiler(Pile, \textit{Élément}) \rightarrow Pile$ insère un élément au sommet de la pile
 	\item $depiler(Pile)\rightarrow Pile$ supprime l'élément au sommet de la pile, qui doit être non vide
@@ -77,7 +77,7 @@ typedef struct Stack {
 	unsigned int capacity;
 } Stack;
 
-Stack stack_create_empty() {
+Stack stack_empty() {
 	Stack s;
 	s.elts = (E*)malloc(10*sizeof(E));
 	s.capacity = 10;
@@ -136,7 +136,7 @@ En anglais, cette structure est aussi appelée \textit{FIFO} (\textit{\underline
 La signature d'une file est la suivante :\newline
 \textit{File\textless Élément\textgreater} utilise \textit{Booléen}, \textit{Élément}
 \begin{itemize}
-	\item $creer\_vide()\rightarrow File$ renvoie une file vide, sans éléments
+	\item $file\_vide()\rightarrow File$ renvoie une file vide, sans éléments
 	\item $premier(File)\rightarrow \textit{Élément}$ renvoie le premier élément de la file (celui le plus ``à gauche'' sur le schéma)
 	\item $dernier(File)\rightarrow \textit{Élément}$ renvoie le dernier élément de la file (celui le plus ``à droite'' sur le schéma)
 	\item $enfiler(File, \textit{Élément}) \rightarrow File$ insère un élément \textit{en tête} de la file
@@ -256,12 +256,13 @@ List list_push_on_tail(List l, Element e) {
 
 \exercise{Listes par tableaux}{23} Implanter une liste avec un tableau, qui permette l'accès, l'insertion et la suppression en tête et queue. On veut que le coût dans le pire cas de l'accès et de la suppression soit fonction de $O(1)$ et que le coût dans le pire cas des $n$ premières insertions soit fonction de $O(n)$\footnote{On dira que le coût \textit{amorti} d'une seule insertion est fonction de $O(1)$}. Quelle est le coût temporel des opérations de lecture, d'insertion et de suppression d'éléments à une place quelconque de la liste ? Comparer à l'implantation par chaînage.
 
-\exercise{Axiomes algébriques}{25} Définir les axiomes algébriques qui régissent le comportement :
+\exercise{Axiomes algébriques}{25}\\
+Définir les axiomes algébriques qui régissent le comportement :
 \begin{itemize}
 	\item d'une pile
 	\item d'une file
-	\item d'une liste
 \end{itemize}
+\textit{\underline{Indication :} on pourra remarquer que toute pile ou file peut être écrite sous forme canonique par ajouts d'éléments. Les opérations permettant cette écriture sont dites canoniques. Il est alors nécessaire et suffisant de décrire le comportement des opérations non canoniques selon les opérations canoniques ainsi que le comportement des opérations canoniques entre elles.}
 
 \exercise{Piles et files}{25}
 \begin{enumerate}
@@ -277,5 +278,5 @@ List list_push_on_tail(List l, Element e) {
 \exercise{Optimizing greater than abstraction}{29} Implanter une structure de liste \textit{doublement} chaînée dont les noeuds ne possèdent qu'un seul pointeur qui contient l'information à la fois du pointeur avant et du pointeur arrière. Écrire alors une procédure de renversement qui inverse l'ordre de la liste avec un coût fonction de $\mathcal{O}(1)$ \newline
 \textit{\underline{Indication :} utiliser les propriétés du groupe commutatif $(\mathcal{B}^N, \oplus)$ et analyser le titre de l'exercice.}
 
-\exercise{Fusion de listes}{17} Écrire une fonction $fusion(Liste, Liste) \rightarrow Liste$ qui renvoie la fusion de deux listes d'entiers triés. La liste résultante devra également être triée et sans doublons. Si les deux listes possèdent $n$ et $m$ éléments, le coût dans le pire cas doit être fonction de $O(n + m)$.
+\exercise{Fusion triée de listes}{17} Écrire une fonction $fusion(Liste, Liste) \rightarrow Liste$ qui renvoie la fusion de deux listes d'entiers triés. La liste résultante devra également être triée et sans doublons. Si les deux listes possèdent $n$ et $m$ éléments, le coût dans le pire cas doit être fonction de $O(n + m)$.
 \end{document}

@@ -6,8 +6,8 @@ L'idée fondamentale est de ne pas avoir à se soucier de la représentation lor
 
 On peut considérer deux démarches possibles pour la construction de types abstraits :
 \begin{itemize}
-	\item ascendante : on se donne une représentation concrète du type de données en terme d'objets du langage et des routines de manipulation correspondant aux opérations du type. Si on ne manipule plus la représentation que par ces routines, on manipule en fait le type abstrait.
-	\item descendante : on se donne une spécification d'un type abstrait et on conçoit l'algorithme à ce niveau. On donne une représentation concrète des types et opérations pour obtenir un programme exécutable.
+	\item \textit{ascendante} : on se donne une représentation concrète du type de données en terme d'objets du langage et des routines de manipulation correspondant aux opérations du type. Si on ne manipule plus la représentation que par ces routines, on manipule en fait le type abstrait.
+	\item \textit{descendante} : on se donne une spécification d'un type abstrait et on conçoit l'algorithme à ce niveau. On donne une représentation concrète des types et opérations pour obtenir un programme exécutable.
 \end{itemize}
 \textbf{Remarque :} on peut considérer plusieurs couches d'abstraction entre la représentation binaire et le plus haut niveau d'abstraction. Le type le plus abstrait a comme représentation ``concrète'' d'autres types abstraits eux-mêmes représentés par des types abstraits, etc\dots, jusqu'à des types abstraits \textit{élémentaires} qui ont comme représentation concrète un mot binaire.
 
@@ -62,7 +62,7 @@ Par \textit{complétude}, on entend qu'il faut que les axiomes permettent de dé
 
 On appelle un type abstrait décrit par de tels axiomes algébriques un \textit{type abstrait algébrique}.
 
-Dans l'exemple ci-dessus, on peut poser les axiomes suivants, où $t$ est un \textit{Tableau}, $i$ et $j$ deux \textit{Entier}s et $e$ un \textit{Element} : 
+Dans l'exemple ci-dessus, on peut poser les axiomes suivants, qui sont vrais pour tous $t:\textit{Tableau}$, $i, j:\textit{Entier}$ et $e:\textit{Element}$ : 
 \begin{itemize}
 	\item $taille(creer(i)) = i$
 	\item $taille(ecrire(t, i, e)) = taille(t)$ (conservation de la taille par modification)

@@ -754,6 +754,26 @@ C(n) & = & \displaystyle\sum_{i = 0}^{e - 1}\sum_{k = 2^i}^{2^{i+1}-1}c(k) + r \
 
 \solution{Axiomes algébriques}
 
+\textbf{Pile :} Toute pile est construite canoniquement sous la forme $P= empiler(\dots(empiler(pile\_vide(), e_1)\dots), e_n)$. Donc il faut décrire les opérations selon les formes canoniques résultant de $pile\_vide$ et $empiler$ (sachant que certaines opérations comme $depiler(pile\_vide())$ sont simplement impossibles).
+
+Pour toute $Pile:P$ quelconque et tout $\textit{Élément}:e$ quelconque, on pose :
+\begin{itemize}
+	\item $est\_vide(pile\_vide()) = \textit{Vrai}$
+	\item $est\_vide(empiler(P, e)) = \textit{Faux}$
+	\item $sommet(empiler(P, e)) = e$
+	\item $depiler(empiler(P, e)) = P$
+\end{itemize}
+
+\textbf{File :} Même remarque que pour les piles, la forme canonique d'une file est construite par compositions de $file\_vide$ et d'$enfiler$.
+
+Pour toute $File:F$ quelconque et tout $\textit{Élément}:e$ quelconque, on pose :
+\begin{itemize}
+	\item $est\_vide(file\_vide()) = \textit{Vrai}$
+	\item $est\_vide(enfiler(F, e)) = \textit{Faux}$
+	\item $premier(enfiler(F, e)) = e$
+	\item $dernier(enfiler(F, e)) = \left\{\begin{array}{ll}dernier(F) & \text{si $\neg est\_vide(F)$} \\ e & \text{sinon}\end{array}\right.$
+	\item $defiler(enfiler(F, e)) = \left\{\begin{array}{ll}enfiler(defiler(F), e) & \text{si $\neg est\_vide(F)$} \\ file\_vide() & \text{sinon}\end{array}\right.$
+\end{itemize}
 
 \solution{Piles et files}
 
@@ -763,10 +783,9 @@ On ne décrit que la construction d'une file \textit{via} deux piles. La constru
 
 On veut définir une file comme un couple de deux piles $P_e$ et $P_s$ (avec $e$ pour \underline{e}ntrée et $s$ pour \underline{s}ortie). On pose pour $F = (P_e, P_s)$ :
 \begin{itemize}
-	\item $creer\_file\_vide() = (creer\_pile\_vide(), creer\_pile\_vide())$
+	\item $file\_vide() = (pile\_vide(), pile\_vide())$
 	\item $est\_vide(F) = est\_vide(P_e)\wedge est\_vide(P_s)$
 	\item $premier(F) = sommet(P_e)$
-	\item $dernier(F) = sommet(P_s)$
 	\item $enfiler((P_e, P_s), e) = (empiler(P_e, e), P_s)$
 \end{itemize}
 On définit alors une nouvelle opération spécifique à notre structure : $vider(P_e, P_s)$, qui va dépiler chaque élément de $P_e$ pour l'empiler sur $P_s$ :
@@ -803,12 +822,27 @@ On utilise cette opération pour construire les opérations $defiler$ et $dernie
 \Return $(P_e, P_s)$
 \end{algorithm}
 
-\textbf{Correction :}
+\textbf{Correction :} il faut vérifier que les axiomes du type abstrait algébrique de \textit{File} sont bien respectés par cette structure.
+
+Les trois premiers axiomes sont immédiatement vérifiés :
+\begin{itemize}
+	\item $est\_vide(file\_vide()) = est\_vide(pile\_vide()) \wedge est\_vide(pile\_vide()) = \textit{Vrai}$
+	\item $est\_vide(enfiler(F, e)) = est\_vide(empiler(P_e, e)) \wedge est\_vide(P_s) = \textit{Faux}$
+	\item $premier(enfiler(F, e)) = sommet(empiler(P_e, e)) = e$
+\end{itemize}
 
 \textbf{Complexité :}
 
 \solution{Optimizing greater than abstraction}
 
 \textbf{Code :} \detokenize{solutions/part3/chapter2/listes_xor}
+
+\solution{Fusion triée de listes}
+
+On utilise l'implantation des listes de l'\refexercise{Listes virtuelles}
+
+\textbf{Code :} \detokenize{solutions/part3/chapter2/fusion_listes.c}
+
+La complexité temporelle est immédiatement fonction de $O(n + m)$ (où $n$ et $m$ sont les longueurs des deux listes) puisqu'on effectue exactement $n + m$ tours de boucle et que chaque tour est de complexité temporelle fonction de $O(1)$
 
 \end{document}

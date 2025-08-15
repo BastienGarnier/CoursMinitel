@@ -18,10 +18,10 @@ On peut associer à chaque tâche une pondération de chaque critère qui corres
 \textit{FilePriorite\textless{}Element\textgreater} utilise \textit{Booleen}, \textit{Element}
 \begin{itemize}
 	\item $file\_vide()\rightarrow FilePriorite$ renvoie une file de priorité sans éléments
-	\item $est\_vide(FilePriorite:f)\rightarrow Booleen$ teste si la file $f$ est vide.
-	\item $minimum(FilePriorite:f)\rightarrow Element$ renvoie l'élément minimal de la file de priorité
-	\item $supprimer\_min(FilePriorite:f)\rightarrow FilePriorite$ renvoie $f$ dont on a retiré l'élément minimal
-	\item $inserer(FilePriorite:f, Element:x)\rightarrow FilePriorite$ renvoie $f$ à laquelle on a ajouté $x$
+	\item $est\_vide(f:FilePriorite)\rightarrow Booleen$ teste si la file $f$ est vide.
+	\item $minimum(f:FilePriorite)\rightarrow Element$ renvoie l'élément minimal de la file de priorité
+	\item $supprimer\_min(f:FilePriorite)\rightarrow FilePriorite$ renvoie $f$ dont on a retiré l'élément minimal
+	\item $inserer(f:FilePriorite:f, x:Element)\rightarrow FilePriorite$ renvoie $f$ à laquelle on a ajouté $x$
 \end{itemize}
 On construit la routine de commodité $extraire\_min(\text{mut }FilePriorite:f)\rightarrow Element$ qui renvoie l'élément minimal de $f$ et le supprime de $f$.
 
@@ -368,8 +368,8 @@ Heap arrayheap_pop_min(Heap h) {
 \exercise{Tableau en tas}{} On s'intéresse à la construction d'un tas à partir d'un tableau de $n$ éléments.
 \begin{enumerate}
 	\item Si on part d'un tas vide et qu'on ajoute un à un par $inserer$ chacun des éléments du tableau, quelle est le coût temporel dans le pire des cas de la construction, selon $n$ ?
-	\item Proposer une seconde méthode permettant de construire un tas à partir des éléments d'un tableau dont le coût temporel soit fonction de $O(n)$
+	\item Proposer une seconde méthode permettant de construire un tas à partir des éléments d'un tableau dont le coût temporel dans le pire cas soit fonction de $O(n)$
 \end{enumerate}
 
-\exercise{Tri par tas}{}
+\exercise{Tri par tas}{12}Proposer et implanter en C un algorithme de tri de tableaux qui utilise un tas et dont la complexité temporelle est dans le pire cas fonction de $O(n.log_2(n))$, où $n$ désigne la longueur du tableau en entrée.
 \end{document}

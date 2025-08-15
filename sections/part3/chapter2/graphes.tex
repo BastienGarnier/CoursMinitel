@@ -1,5 +1,10 @@
 \documentclass[../../../main.tex]{subfiles}
 \begin{document}
+\begin{chapquote}{Inspiré d'Horace}
+Bis repetita placent.\footnote{La répétition est chose plaisante.}
+\end{chapquote}
+La section ci-présente présente le même objet que celui de la section \ref{sec:relations_binaires_et_ordre} mais sous un angle un peu différent. On peut considérer soit que les relations induisent la notion de graphe, soit que les graphes induisent la notion de relation. Cette question qui n'intéresse que les éleveurs de poules ne sera pas discutée ici.
+
 Les graphes constituent un outil fondamental de modélisation d'ensembles structurés par des relations. Ils interviennent chaque fois qu'on étudie un ensemble de liaisons (orientés ou non) entre les éléments d'un ensemble d'objets. On trouve des graphes par exemple :
 \begin{itemize}
 	\item dans la modélisation d'un réseau (Internet, relations social, etc\dots)
@@ -10,11 +15,11 @@ Les graphes constituent un outil fondamental de modélisation d'ensembles struct
 	\item la représentation de modèles de théories
 	\item etc\dots
 \end{itemize}
-Autant dire : un peu partout.
+Autant dire : un peu partout, puisque partout il y a des relations.
 
 La recherche des algorithmes les plus efficaces pour réaliser les opérations de base sur les graphes constitue donc un objectif essentiel de l’algorithmique.
 
-Les algorithmes décrits dans la suite ne sont pas exigés tels quels aux examens d'\textit{Algo/Prog} de l'ISMIN\footnote{Puisque n'est pas encore arrivée à l'ISMIN l'exigence tout court. Ou alors, ça fait longtemps qu'elle est partie voir ailleurs\dots}. Ils sont à connaître pour la culture. Il s'agit du minimum syndical des connaissances algorithmiques sur les graphes. Les connaître permet de se familiariser avec les bases pour avancer avec plus d'aisance à travers des propriétés moins simples.
+Les algorithmes décrits dans la suite ne sont pas exigés tels quels aux examens d'\textit{Algo/Prog} de l'ISMIN\footnote{Puisque l'exigence tout court n'est pas encore arrivée à l'ISMIN. Ou alors, ça fait longtemps qu'elle est partie voir ailleurs\dots}. Ils sont à connaître pour la culture. Il s'agit du minimum syndical des connaissances algorithmiques sur les graphes. Les connaître permet de se familiariser avec les bases pour avancer avec plus d'aisance à travers des propriétés moins simples.
 
 \textbf{Remarque :} Il a été essayé de présenter chaque algorithme avec un maximum de rigueur sans pour autant être \textit{trop} formel. Le but est de donner une intuition bien-fondé du fonctionnement et de la correction des algorithmes. On justifie donc principalement ``avec les mains'' les algorithmes et l'intuition que l'on peut avoir de leur fonctionnement. On peut trouver un cours bien plus formel et absolument rigoureux en bibliographie \cite{ENSGraphes}.
 \subsection{Définition et représentations}
@@ -60,7 +65,7 @@ De nombreuses définitions sont nécessaires pour discuter efficacement des grap
 	Un graphe $G = (S, A)$ est dit \textit{non orienté} si : $$\forall u,v\in S,(u, v)\in A \Rightarrow (v, u)\in A$$
 	On peut alors simplifier par $A\subseteq \{\{u, v\}\ |\ u, v\in S\}$. Les éléments $\{u, v\}\in A$ sont appelés les \textit{arêtes} de $G$.\newline
 
-	Soient $u, v\in S$. On note $u -- v$ pour dire qu'il existe une arête entre $u$ et $v$ dans $G$, c'est-à-dire que $\{u, v\}\in A$. On dit alors que $u$ et $v$ sont \textit{adjacents} ou \textit{voisins}.
+	Soient $u, v\in S$. On note $u - v$ pour dire qu'il existe une arête entre $u$ et $v$ dans $G$, c'est-à-dire que $\{u, v\}\in A$. On dit alors que $u$ et $v$ sont \textit{adjacents} ou \textit{voisins}.
 }
 \textbf{Remarque :} on peut toujours voir un graphe non orienté $G = (S, A)$ comme un graphe orienté $G = (S, \{(u, v), (v, u)\ |\ \{u, v\}\in A\})$
 
@@ -130,16 +135,17 @@ On a $d^+(3) = 1$ et $d^-(3) = 3$ donc $d(3) = d^+(3) + d^-(3) = 4$.
 \label{sub:signature_du_type_abstrait_graphe}
 Avant de présenter les représentations standards en mémoire  des graphes, on présente une signature minimale des routines de manipulation des graphes. Ces routines permettront de mettre en évidence quelles sont les opérations fondamentales sur les graphes qui seront utiles pour la quasi-totalité des algorithmes dans la suite.
 
-\textit{Graphe\textless Sommet\textgreater} utilise \textit{Liste\textless Sommet\textgreater}, \textit{Sommet}, \textit{Entier} :
+\textit{Graphe\textless Sommet\textgreater} utilise \textit{Liste\textless Sommet\textgreater}, \textit{Sommet}, \textit{Entier}, \textit{Booléen} :
 \begin{itemize}
-	\item $creer(Graphe, Entier:n)\rightarrow Graphe$ renvoie un graphe d'ordre $n$ sans arêtes.
-	\item $degre(Graphe, Sommet:s)\rightarrow Entier$ renvoie $d(s)$ le degré de $s$
-	\item $succ(Graphe, Sommet:s)\rightarrow \textit{Liste\textless Sommet\textgreater}$ renvoie la liste des successeurs de $s$
-	\item $prec(Graphe, Sommet:s)\rightarrow \textit{Liste\textless Sommet\textgreater}$ renvoie la liste des prédécesseurs de $s$
-	\item $ajouter\_sommet(Graphe:G)\rightarrow Graphe$ renvoie pour $G = (S, A)$ originellement d'ordre $n$ le graphe $G'=(S\cup\{n\}, A)$ d'ordre $(n+1)$
-	\item $supprimer\_sommet(Graphe:G, Sommet:s)\rightarrow Graphe$ renvoie pour $G = (S, A)$ originellement d'ordre $n$ le graphe $G'=(S\setminus\{s\}, A)$ d'ordre $(n+1)$\footnote{On remarque que $S = \{0, \dots, s-1, s+1, \dots, n\}$ puisque le sommet est quelconque dans $S$.}
-	\item $ajouter\_arc(Graphe:G, Sommet:u, Sommet:v)\rightarrow Graphe$ renvoie pour $G = (S, A)$ le graphe $G' = (S, A\cup\{(u, v)\})$ résultant de l'ajout de l'arc $(u, v)$
-	\item $supprimer\_arc(Graphe:G, Sommet:u, Sommet:v)\rightarrow Graphee$ renvoie pour $G = (S, A)$ le graphe $G' = (S, A\setminus\{(u, v)\})$ résultant du retrait de l'arc $(u, v)$
+	\item $creer(Graphe, n:Entier)\rightarrow Graphe$ renvoie un graphe d'ordre $n$ sans arêtes.
+	\item $degre(Graphe, s:Sommet)\rightarrow Entier$ renvoie $d(s)$ le degré de $s$
+	\item $test\_arc((E, V):Graphe, s_1:Sommet, s_2:Sommet)\rightarrow Booleen$ renvoie \textit{Vrai} si $(s_1, s_2)\in E$, \textit{Faux} sinon
+	\item $succ(Graphe, s:Sommet)\rightarrow \textit{Liste\textless Sommet\textgreater}$ renvoie la liste des successeurs de $s$
+	\item $prec(Graphe, s:Sommet)\rightarrow \textit{Liste\textless Sommet\textgreater}$ renvoie la liste des prédécesseurs de $s$
+	\item $ajouter\_sommet(G:Graphe)\rightarrow Graphe$ renvoie pour $G = (S, A)$ originellement d'ordre $n$ le graphe $G'=(S\cup\{n\}, A)$ d'ordre $(n+1)$
+	\item $supprimer\_sommet(G:Graphe, s:Sommet)\rightarrow Graphe$ renvoie pour $G = (S, A)$ originellement d'ordre $n$ le graphe $G'=(S\setminus\{s\}, A)$ d'ordre $(n+1)$\footnote{On remarque que $S = \{0, \dots, s-1, s+1, \dots, n\}$ puisque le sommet est quelconque dans $S$.}
+	\item $ajouter\_arc(G:Graphe, u:Sommet, v:Sommet)\rightarrow Graphe$ renvoie pour $G = (S, A)$ le graphe $G' = (S, A\cup\{(u, v)\})$ résultant de l'ajout de l'arc $(u, v)$
+	\item $supprimer\_arc(G:Graphe, Sommet:u, v:Sommet)\rightarrow Graphee$ renvoie pour $G = (S, A)$ le graphe $G' = (S, A\setminus\{(u, v)\})$ résultant du retrait de l'arc $(u, v)$
 \end{itemize}
 \textbf{Remarque 1 :} La signature ci-dessus ne préjuge en rien du type $Sommet$, bien qu'on puisse le plus souvent l'assimiler à $Entier$ lors de l'implantation.
 
@@ -150,7 +156,7 @@ On peut représenter d'au moins trois façons standard un graphe en mémoire :
 \begin{itemize}
 	\item par matrice d'adjacence
 	\item par liste de successeurs
-	\item \textit{\tiny(par matrice d'incidence, qu'on ne présentera pas ici de par son aspect particulièrement mineur dans la pratique comme dans la théorie)}
+	\item \textit{\tiny(par matrice d'incidence, qu'on ne présentera pas ici de par son aspect particulièrement mineur dans la pratique même si utile parfois dans la théorie)}
 \end{itemize}
 \subsubsection{Matrice d'adjacence}
 On peut représenter un graphe $G = (S, A)$ comme une matrice $M\in\mathcal{M}_{|S|}(\mathcal{B})$. On a alors :
@@ -196,7 +202,7 @@ $$
 \underline{\textbf{Complexité spatiale :}}\newline
 Cette représentation est de complexité spatiale en $\Theta(|S|^2)$.
 
-\underline{\textbf{Complexités temporelles des routines de parcours :}}\newline
+\underline{\textbf{Complexités temporelles des routines de test et de parcours :}}\newline
 On peut déduire, pour tout $u\in S$
 \begin{itemize}
 	\item la liste des successeurs de $u$ par le parcours de la $u^e$ ligne de $M$ (en $\Theta(|S|)$)
@@ -204,7 +210,9 @@ On peut déduire, pour tout $u\in S$
 \end{itemize}
 \textit{idem} pour les calculs de $d^+(u)$ et $d^-(u)$
 
-On va voir avec la représentation par liste de successeurs que le calcul des successeurs est plus rapide mais que le calcul des prédécesseurs est substantiellement plus long (dans le pire cas, en $O(|S|log_2(|S|))$ si la liste est triée, $O(|S|^2)$ sinon)
+$test\_arc$ est de complexité temporelle fonction de $\Theta(|1|)$ dans le pire des cas puisqu'il suffit de lire la matrice en une case.
+
+\textbf{VS les listes de successeurs :} On va voir avec la représentation par liste de successeurs que le calcul des successeurs est plus rapide mais que le calcul des prédécesseurs est substantiellement plus long (dans le pire cas, en $O(|S|log_2(|S|))$ si la liste est triée, $O(|S|^2)$ sinon). De plus, le test de l'existence d'un arc est linéaire dans le pire des cas pour une liste d'adjacence.
 \subsubsection{Liste de successeurs}
 Si un graphe $G = (S, A)$ contient peu d'arêtes, la matrice d'adjacence représentative de $G$ est creuse. On observe d'abord que la mémoire est gaspillée par le stockage d'une grande quantitée de $0$ inutiles, d'autre part que le calcul du degré sortant/des successeurs d'un sommet de $G$ n'est pas optimisé puisqu'il faut prendre en considération beaucoup d'absence d'arêtes, qu'on sait absentes si on sait la matrice creuse.
 
@@ -783,6 +791,18 @@ Pour tous $i, j\in \{1, \dots, n\}$
 	\item Justifier la complexité temporelle dans le pire cas de chaque routine de manipulation
 	\item Implanter deux fonctions \mintinline{c}{struct MatrixGraph listgraph_to_matrixgraph(struct ListGraph g);} et \mintinline{c}{struct ListGraph matrixgraph_to_listgraph(struct MatrixGraph g);} qui effectuent une copie d'un graphe en modifiant la représentation utilisée. Quelle est la complexité temporelle de chaque fonction dans le pire cas ?
 \end{enumerate}
+\exercise{Pour le plaisir de l'optimalité}{25}
+\begin{enumerate}
+	\item Proposer une représentation des graphes par tables de hachage d'adjacence telle que :
+	\begin{itemize}
+		\item le test de l'existence d'un arc
+		\item le calcul de la liste des successeurs
+		\item la suppression et l'ajout d'arcs
+	\end{itemize}
+	soient de complexité temporelle fonction de $\Theta(|1|)$ \textit{en moyenne}.
+	\item Implanter les graphes en C en utilisant cette représentation
+\end{enumerate}
+
 \exercise{Aiguilles hors d'oignons sans profondeur}{6} Finir l'exécution des algorithmes de parcours en profondeur et en largeur sur le graphe d'exemple donné.
 
 \exercise{Les parcours}{23}
@@ -790,6 +810,7 @@ Pour tous $i, j\in \{1, \dots, n\}$
 	\item Quelle est la complexité temporelle des deux parcours dans le pire cas si on choisit de représenter le graphe par matrice d'adjacence ?
 	\item Quelle est la complexité temporelle des deux parcours dans le pire cas si on choisit de représenter le graphe par listes d'adjacence ?
 	\item Implanter les parcours en profondeur et en largeur avec une représentation du graphe permettant une complexité temporelle optimale.
+	\item Soit $G = (S, A)$ un graphe orienté. Démontrer que si un parcours est initié sur un sommet $s\in S$, alors les parcours en profondeur et largeur déterminent exactement les sommets accessibles depuis $s$, c'est-à-dire tous les sommets $u\in S$ tels que $s\underset{\rightarrow^\star}{G} u$
 \end{enumerate}
 
 \exercise{Bicoloriage}{15} On dit qu'un graphe $G = (S, A)$ \textit{non orienté} est \textit{bicoloriable} si il est possible de colorier par une fonction $C:S\rightarrow \mathcal{B}$ chacun de ses sommets avec deux couleurs $0$ et $1$ de sorte que pour chaque arête $\{a, b\}\in A$, $C(a)\neq C(b)$.
@@ -801,9 +822,12 @@ Pour tous $i, j\in \{1, \dots, n\}$
 	\item Quelle est sa classe de complexité temporelle ?
 \end{enumerate}
 
-\exercise{Plus court chemin}{15}
-
-\exercise{Labyrinthe}{} On s'intéresse à la génération et à l'exploration de labyrinthes parfaits.
+\exercise{Plus court chemin}{20} Soit $G = (S, A)$ un graphe orienté. Soit $s\in S$ fixé.
+\begin{enumerate}
+	\item Montrer que le parcours en largeur sur $G$ depuis $s$ détermine pour chaque sommet $u\in S$ la longueur en nombre d'arcs du plus court chemin entre $s$ et $u$. On note cette longueur $d(s, u)$
+	\item Montrer également que pour tout $d\in\mathbb{N}$, les sommets de distance $d(s, u)\leq d$ sont tous visités avant les sommets de distance $d(s, u) > d$
+	\item En déduire et implanter en C un algorithme de parcours en largeur qui n'utilise pas de file mais alterne deux ensembles\footnote{Implantés avec une structure quelconque.} de sommets $E_d$ et $E_{d+1}$ (représentant les sommets à distance $d$ et $d+1$) en incrémentant $d$ à chaque tour de boucle, c'est-à-dire lorsque tous les sommets de $E_d$ sont visités.
+\end{enumerate}
 
 \exercise{Arbres et graphes}{24} On s'intéresse dans cet exercice à la relation entre les arbres et les graphes.
 \definition{Arbre non orienté} {

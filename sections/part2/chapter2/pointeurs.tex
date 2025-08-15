@@ -31,7 +31,7 @@ L'utilisation des pointeurs pour manipuler des adresses non locales décuple les
 
 Cela amène cependant un inconvénient : si les données d'un environnement local sont accessibles hors de celui-ci, il devient facilement possible d'écrire des bugs. Il s'agit de la source d'erreurs la plus classique en programmation en C. Cette erreur est traduite par le fameux message d'erreur \textit{Segmentation Fault}, c'est-à-dire littéralement : accès non autorisé (écriture ou exécution) à un segment de mémoire.
  
-Un pointeur est définit selon la syntaxe suivante :
+Un pointeur est défini selon la syntaxe suivante :
 \begin{minted}[linenos=false]{c}
 TYPE* ptr;
 \end{minted}

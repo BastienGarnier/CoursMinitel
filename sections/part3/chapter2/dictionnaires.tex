@@ -71,15 +71,15 @@ Le type abstrait qui décrit un tel comportement est appelé un \textit{dictionn
 \begin{itemize}
 	\item $creer\_vide()\rightarrow Dictionnaire$ renvoie un dictionnaire vide, sans couple $(cle, valeur)$
 	\item $est\_vide(Dictionnaire)\rightarrow \textit{Booléen}$ teste si le dictionnaire contient au moins un couple
-	\item $trouver(Dictionnaire, Clef)\rightarrow Element$ renvoie la valeur d'une clé dans le dictionnaire, indéfini si la clé n'appartient pas au dictionnaire
-	\item $supprimer(Dictionnaire, Clef:k)\rightarrow Dictionnaire$ supprime le couple de clé $k$ du dictionnaire
-	\item $insertion(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ ajoute un couple $(cle, valeur)$ au dictionnaire, indéfini si la clé appartient au dictionnaire
-	\item $modifier(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ remplace dans le dictionnaire la valeur de la clé, indéfini si la clé n'appartient pas au dictionnaire
+	\item $trouver(Dictionnaire, Clef)\rightarrow Element$ renvoie la valeur d'une clef dans le dictionnaire, indéfini si la clef n'appartient pas au dictionnaire
+	\item $supprimer(Dictionnaire, k:Clef)\rightarrow Dictionnaire$ supprime le couple de clef $k$ du dictionnaire
+	\item $insertion(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ ajoute un couple $(clef, valeur)$ au dictionnaire, indéfini si la clef appartient au dictionnaire
+	\item $modifier(Dictionnaire, Clef, Element)\rightarrow Dictionnaire$ remplace dans le dictionnaire la valeur de la clef, indéfini si la clef n'appartient pas au dictionnaire
 	\item $taille(Dictionnaire)\rightarrow Entier$ renvoie le nombre de couples $(clef, valeur)$ stockés dans le dictionnaire.
 \end{itemize}
 On observe que les routines $insertion$ et $modifier$ sont complémentaires. On peut donc l'implanter avec une unique routine qui ajoute le couple si la clef n'existe pas déjà et le met à jour sinon.
 
-\textbf{Remarque :} les tableaux sont l'implantation d'un cas particulier des dictionnaires où les indices du tableau sont les clés et dont certaines cases ne sont simplement pas utilisées. En fait, si on arrive à transformer par un calcul les éléments d'un ensemble de clefs dans un ensemble borné d'entiers, on peut utiliser ce premier ensemble de clefs comme pour indicer le tableau \textit{via} la transformation, et on a une implantation générique d'un dictionnaire au prix seulement du calcul de la transformation.
+\textbf{Remarque :} les tableaux sont l'implantation d'un cas particulier des dictionnaires où les indices du tableau sont les clefs et dont certaines cases ne sont simplement pas utilisées. En fait, si on arrive à transformer par un calcul les éléments d'un ensemble de clefs dans un ensemble borné d'entiers, on peut utiliser ce premier ensemble de clefs comme pour indicer le tableau \textit{via} la transformation, et on a une implantation générique d'un dictionnaire au prix seulement du calcul de la transformation.
 
 C'est cette remarque qui guide l'implantation par \textit{tables de hachages}. 
 % On peut aussi implanter les dictionnaires grâce aux $ABR$ (voir exercices).
@@ -172,16 +172,16 @@ Le hachage par pliage consiste à découper le mot binaire à hacher en sous-mot
 $$f(K) = \left((K_0, \dots, K_{m-1})_2\star \dots \star (K_{(q-1)m}, \dots, K_{qm - 1})\right)\text{ mod }M$$
 Si $\star$ est une opération bit-à-bit, le modulo n'a pas besoin d'être calculé. On peut choisir par exemple $\star = \oplus$. Finalement :
 $$f(K) = \displaystyle\bigoplus_{i = 1}^{q}(K_{(i - 1)m}, \dots, K_{im - 1})_2$$
-Cette méthode ne peut être efficace que pour des clés de taille très supérieure à $M$.
+Cette méthode ne peut être efficace que pour des clefs de taille très supérieure à $M$.
 % \subsubsection{Hachage par conversion de base}
 \subsection{Réduction}
 Supposons que la table $T$ utilisé soit de capacité $|T|\in\mathbb{N}$. Pour toute clef $k$, il faut donc $0\leq r(f(k)) < |T|$. En particulier, $r$ dépend de $T$. On écrit donc dès à présent $r(T, f(k))$.
 
-Idéalement, on veut exactement $\dfrac{|Im(f)|}{|T|}$ clés pour chaque indice dans l'intervalle $\llbracket 0; |T| - 1\rrbracket$. Ce n'est possible que si $|Im(f)|$ est divisible par $|T|$, ce qui n'est généralement pas le cas. Au mieux, on peut avoir soit $\left\lfloor \dfrac{|Im(f)|}{|T|}\right\rfloor$ soit $\left\lceil \dfrac{|Im(f)|}{|T|}\right\rceil$ valeurs pour chaque indice. Si $|T|$ est petit par rapport à $|Im(f)|$, on peut considérer la réduction comme parfaite.
+Idéalement, on veut exactement $\dfrac{|Im(f)|}{|T|}$ clefs pour chaque indice dans l'intervalle $\llbracket 0; |T| - 1\rrbracket$. Ce n'est possible que si $|Im(f)|$ est divisible par $|T|$, ce qui n'est généralement pas le cas. Au mieux, on peut avoir soit $\left\lfloor \dfrac{|Im(f)|}{|T|}\right\rfloor$ soit $\left\lceil \dfrac{|Im(f)|}{|T|}\right\rceil$ valeurs pour chaque indice. Si $|T|$ est petit par rapport à $|Im(f)|$, on peut considérer la réduction comme parfaite.
 
 Le modulo est à nouveau la solution la plus simple :
 $$r(T, f(K)) = f(K)\text{ mod }|T|$$
-\textbf{Remarque :} Dans le cas où on a $f : K\mapsto K$, la réduction sert également de hachage dans l'implantation. Il apparaît que certaines valeurs de $|T|$ sont meilleures que d'autres par la même analyse que celle du hachage par modulo décrit précédemment. % TODO : à justifier -> superposition des bits de la clé si non premier.
+\textbf{Remarque :} Dans le cas où on a $f : K\mapsto K$, la réduction sert également de hachage dans l'implantation. Il apparaît que certaines valeurs de $|T|$ sont meilleures que d'autres par la même analyse que celle du hachage par modulo décrit précédemment. % TODO : à justifier -> superposition des bits de la clef si non premier.
 
 On peut programmer facilement cette réduction :
 \begin{minted}{c}
@@ -228,7 +228,7 @@ Si la table de hachage de $m$ cases contient $n$ couples $(clef, valeur)$, le \t
 \subsubsection{Collisions séparées par listes chaînées}
 La méthode par de collisions séparées apparaît comme la solution la plus ``simple'' : stocker toutes les collisions dans un/des espace(s) séparé(s) de la table. Exemples :
 \begin{itemize}
-	\item une table de collisions supplémentaire, qui contient toutes les clés dont la tentative d'ajout a généré une collision
+	\item une table de collisions supplémentaire, qui contient toutes les clefs dont la tentative d'ajout a généré une collision
 	\item une table de hachage avec une liste chaînée pour chaque valeur de hachage possible. On a alors une table de listes chaînées
 \end{itemize}
 On s'intéresse à la deuxième possibilité : stocker les collisions dans des listes chaînées.
@@ -241,7 +241,7 @@ On s'intéresse à la deuxième possibilité : stocker les collisions dans des l
 
 Lors de la recherche de la valeur de ``Horloge'', il suffit de parcourir la liste de la cellule calculée par la fonction $r\circ f$, et pour chaque élément de comparer la clef avec celle recherchée.
 
-\textbf{Remarque :} comme les fonctions de hachage et de réduction sont supposées répartir uniformément les clés parmi les indices de la table, il n'y a que peu d'éléments en collisions en moyenne. L'implantation d'une liste par tableau dynamique peut être plus rapide car les données sont stockés dans la même localité mémoire et rentrent mieux dans le cache du processeur.
+\textbf{Remarque :} comme les fonctions de hachage et de réduction sont supposées répartir uniformément les clefs parmi les indices de la table, il n'y a que peu d'éléments en collisions en moyenne. L'implantation d'une liste par tableau dynamique peut être plus rapide car les données sont stockés dans la même localité mémoire et rentrent mieux dans le cache du processeur.
 
 
 \textbf{Redimensionnement :} Si la table est très remplie ($\alpha \gg 1$), 
@@ -284,7 +284,7 @@ $place \leftarrow hash + s(n)$\;
 }
 \end{algorithm}
 
-\textbf{Remarque :} le test $n < |T|$ est optionnel si on suppose l'algorithme définit \textit{ssi} la clé est présente dans le dictionnaire.
+\textbf{Remarque :} le test $n < |T|$ est optionnel si on suppose l'algorithme définit \textit{ssi} la clef est présente dans le dictionnaire.
 
 Pour l'insertion d'un élément et la suppression d'éléments, on peut utiliser un algorithme très similaire, en se munissant d'une fonction $est\_utilise(Table:T, Place:p)\rightarrow \textit{Booléen}$ qui renvoie $Vrai$ si la place est utilisée pour un couple $(clef, valeur)$ et $Faux$ sinon. La condition de la boucle devient simplement $est\_utilise(T, place) \wedge n < |T|$.
 \subsection{Exercices}

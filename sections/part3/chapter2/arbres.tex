@@ -60,7 +60,7 @@ On peut définir de la même façon n'importe quel arbre par induction\footnote{
 \definition{Arbres binaires} {
 On appelle $E$ l'arbre vide. 
 
-On note $A_{X}$ l'ensemble des arbres binaires définis sur un ensemble $X$. $A_{X}$ est définit par induction par les règles :
+On note $A_{X}$ l'ensemble des arbres binaires définis sur un ensemble $X$. $A_{X}$ est défini par induction par les règles :
 $$\left\{\begin{array}{cll}
 	\mathcal{B} & : & E\in{A_{X}} \\
 	\mathcal{I} & : & \forall{x\in{X}}, \forall{g, d\in{A_{X}}}, (g, x, d)\in{A_{X}}
@@ -90,15 +90,15 @@ La définition d'un arbre montre que tout arbre peut être construit par composi
 \textit{ArbreBinaire\textless{}Element\textgreater} utilise \textit{Booleen}, \textit{Element}
 \begin{itemize}
 	\item $arbrevide()\rightarrow E$ renvoie la constante $E$ d'arbre vide.
-	\item $creer(Element:x) \rightarrow ArbreBinaire$ renvoie l'arbre $(E, x, E)$
-	\item $contenu(ArbreBinaire:T)\rightarrow Element$ où $T = (g, x, d)$ renvoie $x$. Indéfini si $T = E$
-	\item $arbre\_droit(ArbreBinaire:T)\rightarrow ArbreBinaire$ où $T = (g, x, d)$ renvoie $d$. Indéfini si $T = E$
-	\item $arbre\_gauche(ArbreBinaire:T)\rightarrow ArbreBinaire$ où $T = (g, x, d)$ renvoie $g$. Indéfini si $T = E$
-	\item $construire(ArbreBinaire:g, Element:x, ArbreBinaire:d)\rightarrow ArbreBinaire$ renvoie l'arbre $(g, x, d)$
-	\item $fixer\_contenu(ArbreBinaire:T, Element:x)\rightarrow ArbreBinaire$ où $T = (g, \dots, d)$ renvoie $(g, x, d)$
-	\item $fixer\_droit(ArbreBinaire:T, ArbreBinaire:d)\rightarrow ArbreBinaire$ où $T = (g, x, \dots)$ renvoie $(g, x, d)$
-	\item $fixer\_gauche(ArbreBinaire:T, ArbreBinaire:g)\rightarrow ArbreBinaire$ où $T = (\dots, x, d)$ renvoie $(g, x, d)$
-	\item $chercher(ArbreBinaire:T, Element:x)\rightarrow Booleen$ teste si $x$ apparaît dans un des noeuds de l'arbre
+	\item $creer(x:Element) \rightarrow ArbreBinaire$ renvoie l'arbre $(E, x, E)$
+	\item $contenu(T:ArbreBinaire)\rightarrow Element$ où $T = (g, x, d)$ renvoie $x$. Indéfini si $T = E$
+	\item $arbre\_droit(T:ArbreBinaire)\rightarrow ArbreBinaire$ où $T = (g, x, d)$ renvoie $d$. Indéfini si $T = E$
+	\item $arbre\_gauche(T:ArbreBinaire)\rightarrow ArbreBinaire$ où $T = (g, x, d)$ renvoie $g$. Indéfini si $T = E$
+	\item $construire(g:ArbreBinaire, x:Element, d:ArbreBinaire)\rightarrow ArbreBinaire$ renvoie l'arbre $(g, x, d)$
+	\item $fixer\_contenu(T:ArbreBinaire, x:Element)\rightarrow ArbreBinaire$ où $T = (g, \dots, d)$ renvoie $(g, x, d)$
+	\item $fixer\_droit(T:ArbreBinaire, d:ArbreBinaire)\rightarrow ArbreBinaire$ où $T = (g, x, \dots)$ renvoie $(g, x, d)$
+	\item $fixer\_gauche(T:ArbreBinaire, g:ArbreBinaire)\rightarrow ArbreBinaire$ où $T = (\dots, x, d)$ renvoie $(g, x, d)$
+	\item $chercher(T:ArbreBinaire, x:Element)\rightarrow Booleen$ teste si $x$ apparaît dans un des noeuds de l'arbre
 \end{itemize}
 En C, on peut, par exemple, utiliser des pointeurs d'arbres et poser par convention $E = \textsf{NULL}$ :
 \begin{minted}[linenos=false]{c}
@@ -153,7 +153,7 @@ Dans un parcours préfixe, la racine de l'arbre est parcourue/traitée \textit{a
 \begin{algorithm}
 \caption{Parcours récursif \textit{préfixe}\label{alg:arbre_parcours_prefixe}}
 \SetKwFunction{parcoursrecursif}{\textsc{ParcoursPréfixe}}
-\Indm\nonl\parcoursrecursif{$ArbreBinaire:A$, $Procedure:p$} \\
+\Indm\nonl\parcoursrecursif{$A:ArbreBinaire$, $p:Procedure$} \\
 \Indp
 \Switch {$A$} {
 	\Case {$A = E$} { \tcp{Assure que l'algorithme termine puisque les sous-arbres finissent tous sur $E$}
@@ -180,7 +180,7 @@ Dans un parcours suffixe, la racine de l'arbre est parcourue/traitée \textit{ap
 \begin{algorithm}
 \caption{Parcours récursif \textit{suffixe}\label{alg:arbre_parcours_suffixe}}
 \SetKwFunction{parcoursrecursif}{\textsc{ParcoursSuffixe}}
-\Indm\nonl\parcoursrecursif{$ArbreBinaire:A$, $Procedure:p$} \\
+\Indm\nonl\parcoursrecursif{$A:ArbreBinaire$, $p:Procedure$} \\
 \Indp
 \Switch {$A$} {
 	\Case {$A = E$} {
@@ -210,7 +210,7 @@ Dans un parcours infixe, on traite d'abord le sous-arbre gauche, puis la racine,
 \begin{algorithm}
 \caption{Parcours récursif \textit{infixe}\label{alg:arbre_parcours_infixe}}
 \SetKwFunction{parcoursrecursif}{\textsc{ParcoursInfixe}}
-\Indm\nonl\parcoursrecursif{$ArbreBinaire:A$, $Procedure:p$} \\
+\Indm\nonl\parcoursrecursif{$A:ArbreBinaire$, $p:Procedure$} \\
 \Indp
 \Switch {$A$} {
 	\Case {$A = E$} {
@@ -277,13 +277,13 @@ La signature d'\textit{ABR} (pour \textit{ArbreBinaireDeRecherche}) est différe
 \textit{ABR\textless{}Element\textgreater} utilise \textit{Booleen}, \textit{Element} :
 \begin{itemize}
 	\item $arbrevide()\rightarrow E$ renvoie la constante $E$ d'arbre vide.
-	\item $creer(Element:x) \rightarrow ABR$ renvoie l'arbre $(E, x, E)$
-	\item $contenu(ABR:A)\rightarrow Element$ où $A = (g, x, d)$ renvoie $x$. Indéfini si $A = E$
-	\item $arbre\_droit(ABR:A)\rightarrow ABR$ où $A = (g, x, d)$ renvoie $d$. Indéfini si $A = E$
-	\item $arbre\_gauche(ABR:A)\rightarrow ABR$ où $A = (g, x, d)$ renvoie $g$. Indéfini si $A = E$
-	\item $chercher(ABR:A, Element:x)\rightarrow Boolen$ teste si $x$ apparaît dans un des noeuds de l'arbre
-	\item $inserer(ABR:A, Element:x)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(A)\cup\{x\}$
-	\item $supprimer(ABR:A, Element:x)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(A)\setminus\{x\}$
+	\item $creer(x:Element) \rightarrow ABR$ renvoie l'arbre $(E, x, E)$
+	\item $contenu(A:ABR)\rightarrow Element$ où $A = (g, x, d)$ renvoie $x$. Indéfini si $A = E$
+	\item $arbre\_droit(A:ABR)\rightarrow ABR$ où $A = (g, x, d)$ renvoie $d$. Indéfini si $A = E$
+	\item $arbre\_gauche(A:ABR)\rightarrow ABR$ où $A = (g, x, d)$ renvoie $g$. Indéfini si $A = E$
+	\item $chercher(A:ABR, x:Element)\rightarrow Boolen$ teste si $x$ apparaît dans un des noeuds de l'arbre
+	\item $inserer(A:ABR, x:Element)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(A)\cup\{x\}$
+	\item $supprimer(A:ABR, x:Element)\rightarrow ABR$ renvoie un arbre binaire de recherche contenant $elts(A)\setminus\{x\}$
 \end{itemize}
 
 Ces routines sont les seules à pouvoir être utilisés en externe. Les routines elles-même peuvent en interne utiliser des routines de manipulation d'\textit{ArbreBinaire}. Pour rester rigoureux, on peut simplement considérer que les routines d'\textit{ArbreBinaire} restent définis \textit{si et seulement si} elles préservent la structure d'ABR.
@@ -295,7 +295,7 @@ Si on veut trouver $x\in X$ dans un arbre $A = (g, y, d)$ et que $x \neq y$, alo
 \end{itemize}
 \begin{algorithm}
 \caption{Recherche d'un élément \label{alg:recherche_abr}}
-\KwIn{$\textit{ABR\textless{}Element\textgreater}:A, Element:x$}
+\KwIn{$A:\textit{ABR\textless{}Element\textgreater}, x:Element$}
 \While {$A\neq E \wedge contenu(A)\neq x$} {
 	\eIf {$x \leq contenu(A)$} {
 		$A\leftarrow arbre\_gauche(A)$\;
@@ -312,7 +312,7 @@ Pour insérer un élément, il suffit de chercher une place pour lui conserve la
 \begin{algorithm}
 \caption{Insertion d'un élément \label{alg:insertion_abr}}
 \SetKwFunction{abrinserer}{\textsc{InsererElement}}
-\Indm\nonl\abrinserer{$ABR:A$, $Element:x$} \\
+\Indm\nonl\abrinserer{$A:ABR$, $x:Element$} \\
 \Indp
 \Switch {$A$} {
 	\Case {$A = E$} {
@@ -336,7 +336,7 @@ La suppression d'éléments dans un arbre est légèrement plus délicate pour s
 \begin{algorithm}
 \caption{Suppression d'un élément \label{alg:suppression_abr}}
 \SetKwFunction{parcoursrecursif}{\textsc{SupprimerMax}}
-\Indm\nonl\parcoursrecursif{$ABR:A$, $Element:x$} \\
+\Indm\nonl\parcoursrecursif{$A:ABR$, $x:Element$} \\
 \Indp
 \Case {$A = (g, y, E)$} {
 	\Return $g$
@@ -345,7 +345,7 @@ La suppression d'éléments dans un arbre est légèrement plus délicate pour s
 	\Return (g, y, \parcoursrecursif{d, x})
 }
 \SetKwFunction{abrsupprimer}{\textsc{SupprimerElement}}
-\Indm\nonl\abrsupprimer{$ABR:A$, $Element:x$} \\
+\Indm\nonl\abrsupprimer{$A:ABR$, $x:Element$} \\
 \Indp
 \Switch {$A$} {
 	\Case {$A = E$} {
@@ -386,8 +386,8 @@ La suppression d'éléments dans un arbre est légèrement plus délicate pour s
 
 \begin{algorithm}
 \caption{Tri ABR\label{alg:arbre_tri_infixe}}
-\KwIn{$\textit{Liste\textless{}Element\textgreater}:L$}
-$\textit{ArbreBinaireRecherche\textless{}Element\textgreater}:abr \leftarrow construire(L)$\;
+\KwIn{$L:\textit{Liste\textless{}Element\textgreater}$}
+$\textit{abr:ABR\textless{}Element\textgreater} \leftarrow construire(L)$\;
 $L\leftarrow \textsc{ParcoursInfixe}(abr)$\;
 \Return $L$\;
 \end{algorithm}
@@ -584,6 +584,7 @@ Les opérations d'insertion, de suppression et de recherche sont donc de complex
 	\item d'abord avec les enregistrements proposés dans le cours
 	\item ensuite avec un tableau qui contient tous les noeuds de l'arbre
 \end{enumerate}
+Discuter les performances de chaque implantation.
 
 \exercise{Arbres binaire de recherche}{23} Implanter en C la signature d'\textit{ArbreBinaireDeRecherche}.\newline
 \textit{\underline{Remarque :} identique à la structure d'un arbre binaire. La seule différence est dans le corps des routines, qui doit préserver la structure d'ordre entre les étiquettes.}

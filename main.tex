@@ -95,6 +95,9 @@
 \begin{refsection} % enlève des warnings et des bugs sur les réfèrences longue portée (biblio ou multifichier)
 TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoir) :
 \begin{itemize}
+	\item pas fini la section \ref{sec:induction_structurelle} sur l'induction structurelle (mais assez pour comprendre la partie 3)
+	\item pas encore d'exercices pour le chapitre \ref{cha:rappels_math_matiques}
+	\item pas fini le chapitre \ref{cha:l_ordinateur} sur l'architecture des ordinateurs.
 	\item le chapitre \ref{chap:concepts_avances} n'a que très peu d'exercices
 	\item raisonnements sur les algorithmes (ce qui peut être frustrant puisque certains exercices peuvent nécessiter de savoir faire)
 	\item il manque les solutions des exercices de la partie 3
@@ -103,9 +106,9 @@ TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoi
 	\item algo sur les flots
 	\item détail des opérations de tamisage de tas
 	\item Approches algorithmiques
-	\item Partie 4 : GDB, Git, Programmation propre, opt constantes
+	\item Partie 4 : GDB, Git, Programmation propre, optimisation des constantes (en approfondissement du chapitre \ref{cha:l_ordinateur} d'un point de vue de programmeur)
 \end{itemize}
-À réfléchir pour mettre en annexe toutes les démonstrations longues dont seuls importent les résultats. Dépendra des avis. Pour l'instant, les démos sont à la suite des propositions.
+À réfléchir pour mettre en annexe toutes les démonstrations longues dont seuls importent les résultats. Dépendra des avis. Pour l'instant, les démos sont à la suite des propositions ou en exercice.
 \section*{Préface}
 \subfile{sections/preface}
 \tableofcontents
@@ -118,15 +121,18 @@ TODO (pour indiquer ce qui n'est pas encore fait histoire de pas (trop) décevoi
 	\section*{Introduction de l'introduction}
 	\addcontentsline{toc}{section}{Introduction de l'introduction}
 	\subfile{sections/part1/introduction}
+	\chapter{Rappels mathématiques}
+	\label{cha:rappels_math_matiques}
+		\subfile{sections/part1/chapter1/chapter1}
 	\chapter{Les données}
 	\label{cha:les_donn_es}
-		\subfile{sections/part1/chapter1/chapter1}
+		\subfile{sections/part1/chapter2/chapter2}
 	\chapter{L'ordinateur}
 	\label{cha:l_ordinateur}
-		\subfile{sections/part1/chapter2/chapter2}
+		\subfile{sections/part1/chapter3/chapter3}
 	\chapter{Premières notions de programmation}
 	\label{cha:programmer_un_ordinateur}
-		\subfile{sections/part1/chapter3/chapter3}
+		\subfile{sections/part1/chapter4/chapter4}
 \part{Du langage C}
 \label{part:du_langage_c}
 	\phantomsection
