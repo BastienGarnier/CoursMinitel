@@ -106,4 +106,17 @@ debug_printf("Dividing by %d", x);
 \end{minted}
 \subsection{Exercices}
 \exercise{À un doigt du zéro}{10} Écrire une fonction \textsf{unsigned int mult(unsigned int first, \dots);} qui parcourt ses arguments jusqu'au premier 0 rencontré, et renvoie le produit de ces arguments, 0 exclu.
+
+\exercise{Fonctions à paramètres par défaut}{20}\\
+On veut implanter en C le concept de paramètres par défaut. Il s'agit de définir une fonction dont certains paramètres, nommés, ont une valeur par défaut à l'appel et n'ont pas besoin d'être précisés. Par exemple, on peut imaginer une fonction d'addition avec retenue avec un paramètre $r$ dont la valeur par défaut est $0$. Idéalement, on voudrait pouvoir écrire :
+\begin{minted}{c}
+add_r(4, 5); // par défaut, retenue = 0 -> resultat = 4 + 5
+add_r(4, 5, .r = 1); // on modifie la valeur par défaut à 1 -> resultat = 4 + 5 + 1
+\end{minted}
+\begin{enumerate}
+	\item Écrire une structure \mintinline{c}{add_r_opt} contenant un unique champ $r$
+	\item Écrire une fonction \mintinline{c}{int add_r_(int a, int b, add_r_opt opt);} dont le comportement est décrit ci-dessus.
+	\item Écrire une macro \mintinline{c}{add_r} qui se comporte exactement comme ci-dessus.
+	\item Faire de même pour la fonction \mintinline{c}{int atoi(char* string)} de l'\refexercise{AtoI} en ajoutant un paramètre $base$ qui correspond à la base dans laquelle est écrit le nombre à convertir ($base = 10$ par défaut).
+\end{enumerate}
 \end{document}

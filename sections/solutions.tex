@@ -686,6 +686,10 @@ int main() {
 \solution{À un doigt du zéro}
 
 \textbf{Code :} \detokenize{solutions/part2/chapter3/un_doigt_du_zero.c}
+
+\solution{Fonctions à paramètres par défaut}
+
+\textbf{Code :} \detokenize{solutions/part2/chapter3/default_parameters.c}
 \section{Troisième partie}
 \subsection{Types abstraits}
 \solution{Tableaux dynamiques}
@@ -754,7 +758,7 @@ C(n) & = & \displaystyle\sum_{i = 0}^{e - 1}\sum_{k = 2^i}^{2^{i+1}-1}c(k) + r \
 
 \solution{Axiomes algébriques}
 
-\textbf{Pile :} Toute pile est construite canoniquement sous la forme $P= empiler(\dots(empiler(pile\_vide(), e_1)\dots), e_n)$. Donc il faut décrire les opérations selon les formes canoniques résultant de $pile\_vide$ et $empiler$ (sachant que certaines opérations comme $depiler(pile\_vide())$ sont simplement impossibles).
+\textbf{Pile :} Toute pile est construite canoniquement sous la forme $P= empiler(\dots(empiler(pile\_vide(), e_1)\dots), e_n)$. On note $P = [e_n, \dots, e_1]$ Donc il faut décrire les opérations selon les formes canoniques résultant de $pile\_vide$ et $empiler$ (sachant que certaines opérations comme $depiler(pile\_vide())$ sont simplement impossibles).
 
 Pour toute $Pile:P$ quelconque et tout $\textit{Élément}:e$ quelconque, on pose :
 \begin{itemize}
@@ -764,7 +768,7 @@ Pour toute $Pile:P$ quelconque et tout $\textit{Élément}:e$ quelconque, on pos
 	\item $depiler(empiler(P, e)) = P$
 \end{itemize}
 
-\textbf{File :} Même remarque que pour les piles, la forme canonique d'une file est construite par compositions de $file\_vide$ et d'$enfiler$.
+\textbf{File :} Même remarque que pour les piles, la forme canonique d'une file est construite par compositions de $file\_vide$ et d'$enfiler$. On utilise la même notation.
 
 Pour toute $File:F$ quelconque et tout $\textit{Élément}:e$ quelconque, on pose :
 \begin{itemize}
@@ -799,6 +803,8 @@ On définit alors une nouvelle opération spécifique à notre structure : $vide
 }
 \Return $(P_e, P_s)$\;
 \end{algorithm}
+On montre par récurrence que pour tout éléments $e_1, \dots, e_n, s_1, \dots, s_m$, on a :
+$$vider([e_n, \dots, e_1], [s_m, \dots, s_1]) = ([], [e_1, \dots, e_n, s_m, \dots, s_1])$$
 
 On utilise cette opération pour construire les opérations $defiler$ et $dernier$ de $F$ :
 
@@ -830,8 +836,33 @@ Les trois premiers axiomes sont immédiatement vérifiés :
 	\item $est\_vide(enfiler(F, e)) = est\_vide(empiler(P_e, e)) \wedge est\_vide(P_s) = \textit{Faux}$
 	\item $premier(enfiler(F, e)) = sommet(empiler(P_e, e)) = e$
 \end{itemize}
+Quatrième axiome : soit $F = (P_e, P_s)$ un couple de deux piles. 
+\begin{itemize}
+	\item Si $\neg est\_vide(P_s)$, on a immédiatement $dernier(enfiler((P_e, P_s), e)) = dernier((P_e, P_s))$ puisque $P_s$ est inchangé et non vide et donc que l'algorithme $dernier$ n'agit que sur $P_s$.
+	\item Si $est\_vide(P_s)$, on peut écrire $P_e = [e_n, \dots, e_1]$ (avec $P_e = []$ si $F = []$). Alors :
+$$\begin{array}{lcll}
+dernier(enfiler(([e_n, \dots, e_1], []), e)) & = & dernier(([e, e_n, \dots, e_1], [])) \\
+& = & dernier([], [e_1, \dots, e_n, e]) & \text{après $vider$ car $P_s = []$} \\
+& = & sommet([e_1, \dots, e_n, e])
+\end{array}
+$$
+D'où $dernier(enfiler((P_e, []), e)) = \left\{\begin{array}{ll}e & \text{ si } est\_vide(P_e)\\ dernier((P_e, [])) & \text{ sinon}\end{array}\right.$
+\end{itemize}
+Cinquième axiome : soit $F = (P_e, P_s)$ un couple de deux piles.
+\begin{itemize}
+	\item Si $\neg est\_vide(P_s)$, on a immédiatement $defiler(enfiler(F, e)) = enfiler(defiler(F), e)$ puisque $P_s$ est inchangé par enfilement et non vide et donc que l'algorithme $defiler$ n'agit que sur $P_s$.
+	\item Si $est\_vide(P_s)$, on peut écrire $P_e = [e_n, \dots, e_1]$ (avec $P_e = []$ si $F = []$). Alors :
+	$$\begin{array}{lcll}
+defiler(enfiler(([e_n, \dots, e_1], []), e)) & = & defiler(([e, e_n, \dots, e_1], [])) \\
+& = & defiler([], [e_1, \dots, e_n, e]) & \text{après $vider$ car $P_s = []$} \\
+& = & ([], depiler([e_1, \dots, e_n, e]))
+\end{array}
+$$
+Si $est\_vide(P_e)$, on a bien $defiler(enfiler((P_e, []), e)) = file\_vide()$. Dans l'autre cas, on a $defiler(enfiler((P_e, []), e)) = ([], [e_2, \dots, e_n, e])$, et on veut montrer que cet objet a exactement le même comportement que $([e], [e_2, \dots, e_n])$. C'est immédiat puisqu'il suffit de vérifier que les observables ($est\_vide$, $premier$ et $dernier$) donnent les mêmes résultats.
+\end{itemize}
+\textbf{Complexité :} on suppose que les piles sont implantés comme des listes simplement chaînés (le double chaînage n'apporte rien ici).
 
-\textbf{Complexité :}
+Les trois opérations $est\_vide$, $premier$ et $enfiler$ sont immédiatement de complexité temporelle fonction de $O(1)$. Soit $F = (P_e, P_s)$ une file\footnote{On a prouvé ci-dessus qu'un tel couple est bien une file lorsque manipulé par les opérations décrites.}. On note $|P_e|$ (resp. $|P_s$) le nombre d'éléments de $P_e$ (resp. $P_s$) selon la représentation canonique (c'est-à-dire la longueur de la liste chaînée). La fonction $vider$ est de complexité temporelle $O(|P_e|)$ puisqu'elle dépile chacun des éléments de $P_e$. Déterminer la complexité temporelle de $dernier$ et $defiler$ n'est pas évident puisqu'on ne sait pas si la fonction $vider$ est appelée. Dans le pire des cas, $vider$ est appelée et la complexité est linéaire selon $P_e$, donc selon la longueur de la file. Toutefois, on observe que chaque élément de la file sera \textit{au pire} empilé et dépilé une unique fois de chacune des deux piles $P_e$ et $P_s$ (pour entrer et sortir). Ainsi, toute séquence de $n$ fonctions de manipulation débutant sur une file \textit{vide} nécessitera $O(4n) = O(n)$ opérations élémentaires. Le coût \textit{amorti} des opérations $defiler$ et $dernier$ est donc fonction de $O(1)$. La construction est donc équivalente dans la pratique à une implantation par une liste doublement chaînée.
 
 \solution{Optimizing greater than abstraction}
 
