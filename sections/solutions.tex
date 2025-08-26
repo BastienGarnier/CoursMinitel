@@ -197,6 +197,22 @@ btoi_{s}(v\gg_{a}1)  & = & btoi_{s}(v_{N-1}v_{N-1}\dots v_{1}) \\
 	\item $(111.0111)_2$
 	\item $(0.0001001\underline{001}\dots)_2$ : il existe un nombre infini de décimales. On a le même phénomène avec la représentation de $\frac{1}{3}$ en décimal.
 \end{itemize}
+\solution{S'ennuyer, ça s'entraîne}
+\begin{enumerate}
+	\item \begin{itemize}
+		\item $01000001011010010000000000000000$ 
+		\item $00111111101101000000000000000000$ 
+		\item $01000000111011100000000000000000$ 
+		\item $00111101110011001100110011001101$ 
+	\end{itemize}
+	\item \begin{itemize}
+		\item $01000000010010010000111111011011$ 
+		\item $01000001000011001100110011001101$ 
+		\item $01000010001010000000000000000000$ 
+		\item $10111111100011001100110011001101$ 
+		\item $01000010110010100000000000000000$ 
+	\end{itemize}
+\end{enumerate}
 \solution{Racine carrée inverse rapide (1)} \\
 On note $P = x^2 + y^2 + z^2$. Pour simplifier les notations, on note pour $x\in\mathbb{R}$ :
 \begin{itemize}
@@ -216,11 +232,15 @@ $$\frac{1}{\sqrt{P}} = itof\left(-\frac{1}{2}ftoi(P) - \frac{3B}{2A}\right)$$
 \subsection{Représentation hexadécimale}
 \solution{Conversion binaire-hexadécimale}
 \begin{itemize}
-	\item $713705 = (1010\ 1110\ 0011\ 1110\ 1001)_{2} = 0\textsf{xAE}3\textsf{E}9$
-	\item $8.8 = (1.00011001001001001001001)_{2}\times 2^{3} = 0100\ 0001\ 1000\ 1100\ 1001\ 0010\ 0100\ 1001 = 0\textsf{x}418\textsf{C}9249$
-	\item $42 = (0001\ 1010)_{2} = 0\textsf{x}1\textsf{A}$
-	\item $-1.1 = -(1.00010010010010010010010)_2\times{2^1} = 1100\ 0000\ 0000\ 1001\ 0010\ 0100\ 1001\ 0010 = 0\textsf{xC}0092492$
-	\item $101 = (0110\ 0101)_2 = 0\textsf{x}65$
+	\item 0\textsf{x}41690000
+	\item 0\textsf{x}3fb40000
+	\item 0\textsf{x}40ee0000
+	\item 0\textsf{x}3dcccccd
+	\item 0\textsf{x}40490fdb
+	\item 0\textsf{x}410ccccd
+	\item 0\textsf{x}42280000
+	\item 0\textsf{x}bf8ccccd
+	\item 0\textsf{x}42ca0000
 \end{itemize}
 \subsection{Caractères ASCII}
 \solution{Traduction ASCII 1} La chaîne de caractères décrite est : 

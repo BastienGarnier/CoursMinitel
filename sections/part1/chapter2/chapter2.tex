@@ -465,14 +465,6 @@ On en déduit une propriété qui permet de calculer la représentation en base 
 d'où : $x = (10101.001)_{2}$
 
 On peut ainsi calculer la notation scientifique en base $b = 2$ de tout réel $x$ (voir section \ref{ssub:rappel_de_vocabulaire_en_notation_scientifique})
-
-\exercise{Écriture en base 2 de nombres non entiers}{15} Écrire en base 2 les nombres suivants :
-\begin{itemize}
-     \item $14.5625$
-     \item $1.40625$
-     \item $7.4375$
-     \item $0.1$ : Que remarque-t-on ? Exhiber un exemple d'un tel phénomène en écriture décimale.
-\end{itemize} 
 \subsection{Norme \textit{IEEE 754}}
 Ne seront décrits ici que les nombres à virgules suivant la norme \textit{IEEE 754} d'une taille $N = 32$. En effet, le principe est le même pour les autres tailles si ce n'est que certaines constantes diffèrent.
 
@@ -626,6 +618,27 @@ Les deux points soulèvent deux optimisations calculatoire de taille dans la man
 
 Ils relèvent aussi la pertinence du choix de cette norme et pas d'une autre.
 \subsection{Exercices}
+\exercise{Écriture en base 2 de nombres non entiers}{15} Écrire en base 2 les nombres suivants :
+\begin{itemize}
+     \item $14.5625$
+     \item $1.40625$
+     \item $7.4375$
+     \item $0.1$ : Que remarque-t-on ? Exhiber un exemple d'un tel phénomène en écriture décimale.
+\end{itemize} 
+
+\exercise{S'ennuyer, ça s'entraîne}{15}
+\begin{enumerate}
+    \item Donner la représentation 32 bits selon la norme \textit{IEEE 754} des nombres de l'\refexercise{Écriture en base 2 de nombres non entiers} 
+    \item Faire de même avec les nombres suivants :
+\begin{itemize}
+     \item $\pi$
+     \item $8.8$
+     \item $42$
+     \item $-1.1$
+     \item $101$
+\end{itemize}
+\end{enumerate}
+
 \exercise{Racine carrée inverse rapide (1)}{20M} Une grande part du temps de calcul dans un jeu-vidéo est destiné à l'affichage 3D, et en particulier au calcul de la direction d'un rayon. Cela sert en particulier au rendu de la lumière. Il faut pour cela normaliser le vecteur de direction. Cela peut servir pour calculer un produit scalaire ou un produit vectoriel. On s'intéresse ici à une optimisation connue sous le nom de \textit{Racine carrée inverse rapide} qui apparaît dans le jeu \textit{Quake III}.
 
 Soit $v = (x, y, z)\in\mathbb{R}^3$. On veut calculer le vecteur unitaire $\dfrac{v}{\lVert v\rVert_2} = \dfrac{1}{\sqrt{x^2 + y^2 + z^2}}v$. \\
@@ -664,15 +677,9 @@ $$
 
 \textbf{Remarque :} Cette transformation est aussi valable pour des nombres flottants, puisqu'il suffit de considérer l'interprétation entière du mot binaire qui par la norme \textit{IEEE 754} représente un flottant.
 
-\exercise{Conversion binaire-hexadécimale}{15}\newline
-Trouver les représentations binaires puis hexadécimale des nombres suivants. On utilisera l'écriture en base 2 (indépendante du signe d'après la \textbf{Proposition 1}) pour les nombres entiers et la représentation 32 bits de la norme \textit{IEEE 754} pour les nombres à virgules :
-\begin{itemize}
-     \item $713705$
-     \item $8.8$
-     \item $42$
-     \item $-1.1$
-     \item $101$
-\end{itemize}
+\exercise{Conversion binaire-hexadécimale}{15}\\
+Trouver les représentations hexadécimale des nombres trouvés à l'\refexercise{S'ennuyer, ça s'entraîne}.
+
 \section{Données textuelles} \label{sec:donn_es_textuelles}
 \definecolor{asciigreen}{rgb}{0, 0.52, 0.51}
 \definecolor{asciiblue}{rgb}{0.16, 0, 0.46}
