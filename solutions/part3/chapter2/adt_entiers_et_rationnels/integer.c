@@ -1,19 +1,24 @@
 #include "integer.h"
+#include <stdio.h>
 
 Integer integer_new(const char* string) {
-	Integer n = integer_new_b256(1, NULL, !(string[0] == '-'));
-	Integer tmp = integer_new_b256(1, NULL, POSITIVE);
+	bool sign =  !(string[0] == '-');
+	Integer n = integer_new_b256(2, NULL, POSITIVE);
+
+	Integer tmp = integer_new_b256(2, NULL, POSITIVE);
 	uint32_t len = 0;
 	while (*(string + len++));
-	for (unsigned int i = !(n.sign); i < len-1; i++) {
+	for (unsigned int i = !sign; i < len-1; i++) {
 		if (string[i] != ' ') {
 			tmp.weights[0] = 10;
 			integer_mulm(&n, tmp);
 			tmp.weights[0] = string[i] - 0x30; // chiffres ASCII entre 0x30 et 0x39
 			integer_uaddm(&n, tmp);
 		}
+
 	}
 	integer_destroy(tmp);
+	n.sign = sign;
 	return n;
 }
 
@@ -39,21 +44,20 @@ Integer integer_copy(Integer i) {
 	return j;
 }
 
-Integer integer_set_bitm(Integer n, uint32_t i, bool value) {
+void integer_set_bitm(Integer *n, uint32_t i, bool value) {
 	uint32_t c = i / P;
 	uint32_t b = i % P;
 
-	if (value && c >= n.length) {
-		uint8_t *weights = (uint8_t*)malloc(sizeof(uint8_t)*(c + 1));
-		for (uint32_t j = 0; j < c+1; j++) {
-			weights[j] = (j >= n.length) ? 0 : n.weights[j];
+	if (value && c + 1 >= n->length) {
+		uint8_t *weights = (uint8_t*)malloc(sizeof(uint8_t)*(c + 2));
+		for (uint32_t j = 0; j < c+2; j++) {
+			weights[j] = (j >= n->length) ? 0 : n->weights[j];
 		}
-		free(n.weights);
-		n.weights = weights;
-		n.length = c + 1;
+		free(n->weights);
+		n->weights = weights;
+		n->length = c + 2;
 	}
-	n.weights[c] = (value) ? (n.weights[c] | (1 << b)) : (n.weights[c] & ((int8_t)(-1) ^ (1 << b)));
-	return n;
+	n->weights[c] = (value) ? (n->weights[c] | (1 << b)) : (n->weights[c] & ((int8_t)(-1) ^ (1 << b)));
 }
 
 bool integer_test_bit(Integer n, uint32_t i) {
@@ -65,16 +69,30 @@ bool integer_test_bit(Integer n, uint32_t i) {
 	return (n.weights[c] >> b) & 1; 
 }
 
-Integer integer_shift_left(Integer n, uint32_t k) {
+Integer integer_sl(Integer n, uint32_t k) {
 	uint32_t d = k / P;
 	uint32_t s = k % P;
 	uint32_t nl = integer_length(n);
-	Integer m = integer_new_b256(d + nl + 1, NULL, n.sign);
+	Integer m = integer_new_b256(d + nl + 2, NULL, n.sign);
 	for (uint32_t i = nl-1; i + 1 > 0; i--) {
 		m.weights[i + d + 1] = m.weights[i + d + 1] ^ (n.weights[i] >> (P - s));
 		m.weights[i + d] = n.weights[i] << s;
 	}
 	return m;
+}
+
+void integer_slm(Integer *n, uint32_t k) {
+	uint32_t d = k / P;
+	uint32_t s = k % P;
+	uint32_t nl = integer_length(*n);
+	Integer m = integer_new_b256(d + nl + 2, NULL, n->sign);
+	for (uint32_t i = nl-1; i + 1 > 0; i--) {
+		m.weights[i + d + 1] = m.weights[i + d + 1] ^ (n->weights[i] >> (P - s));
+		m.weights[i + d] = n->weights[i] << s;
+	}
+	free(n->weights);
+	n->weights = m.weights;
+	n->length = m.length;
 }
 
 Integer integer_sub(Integer a, Integer b) {
@@ -113,7 +131,8 @@ int integer_ucmp(Integer a, Integer b) {
 			}
 		}
 	}
-	for (; i >= 0; i++) {
+	// al == bl
+	for (; i >= 0 && i < bl; i++) {
 		if (a.weights[i] > b.weights[i]) {
 			return 1;
 		}
@@ -138,13 +157,12 @@ Integer integer_uadd(Integer a, Integer b) {
 	uint32_t bl = integer_length(b);
 	uint32_t minl = (((al < bl) ? al : bl));
 	uint32_t maxl = (((al > bl) ? al : bl));
-	Integer sum = integer_new_b256(maxl+1, NULL, POSITIVE);
-
+	Integer sum = integer_new_b256(maxl+2, NULL, POSITIVE);
 	uint32_t r = 0;
 	uint32_t i = 0;
-	for (; i < minl; i++) {
-		sum.weights[i] = (a.weights[i] + b.weights[i] + r) % (1 << P);
-		r = (a.weights[i] + b.weights[i] + r) / (1 << P);
+	for (; i <= minl; i++) {
+		sum.weights[i] = (a.weights[i] + b.weights[i] + r) % BASE;
+		r = (a.weights[i] + b.weights[i] + r) / BASE;
 	}
 	for (; i < maxl; i++) {
 		int16_t b_value = (maxl == bl ? b.weights[i] : 0);
@@ -162,13 +180,13 @@ Integer integer_uaddm(Integer *a, Integer b) {
 	uint32_t bl = integer_length(b);
 	uint32_t minl = (((al < bl) ? al : bl));
 	uint32_t maxl = (((al > bl) ? al : bl));
-	uint8_t *weights = malloc(sizeof(uint8_t) * (maxl + 1));
-	for (unsigned int i = 0; i < (maxl + 1); i++) {
+	uint8_t *weights = malloc(sizeof(uint8_t) * (maxl + 2));
+	for (unsigned int i = 0; i < (maxl + 2); i++) {
 		weights[i] = 0;
 	}
 	uint32_t r = 0;
 	uint32_t i = 0;
-	for (; i < minl; i++) {
+	for (; i <= minl; i++) {
 		weights[i] = (a->weights[i] + b.weights[i] + r) % (1 << P);
 		r = (a->weights[i] + b.weights[i] + r) / (1 << P);
 	}
@@ -181,7 +199,7 @@ Integer integer_uaddm(Integer *a, Integer b) {
 	}
 	free(a->weights);
 	a->weights = weights;
-	a->length = maxl + 1;
+	a->length = maxl + 2;
 	a->sign = POSITIVE;
 }
 
@@ -190,7 +208,7 @@ Integer integer_usub(Integer a, Integer b) {
 	int16_t* weights = (int16_t*)malloc(sizeof(int16_t) * a.length);
 
 	for (unsigned int i = a.length - 1; i+1 > 0; i--) {
-		weights[i] = (i >= b.length) ? (uint16_t)(a.weights[i]) : ((uint16_t)a.weights[i] - (uint16_t)b.weights[i]);
+		weights[i] = (i >= b.length) ? (int16_t)(a.weights[i]) : ((int16_t)a.weights[i] - (int16_t)b.weights[i]);
 		// on assure que tous les coefficients sont positifs
 		for (unsigned int j = i; weights[j] < 0; j++) {
 			weights[j] += BASE;
@@ -235,18 +253,19 @@ Integer integer_add(Integer a, Integer b) {
 	return r;
 }
 
-void integer_usubml(Integer *a, Integer b) {
-	int16_t* weights = (int16_t*)malloc(sizeof(int16_t) * a->length);
+void integer_usubml(Integer *a, Integer b) { // on suppose |a| >= |b|
+	uint32_t al = integer_length(*a); // al >= bl avec a.weights[al-1] >= b.weights[al-1]
+	int16_t* weights = (int16_t*)malloc(sizeof(int16_t) * al);
 
-	for (unsigned int i = a->length - 1; i+1 > 0; i--) {
-		weights[i] = (i >= b.length) ? (uint16_t)(a->weights[i]) : ((uint16_t)a->weights[i] - (uint16_t)b.weights[i]);
+	for (unsigned int i = al - 1; i+1 > 0; i--) {
+		weights[i] = (i >= b.length) ? (uint16_t)(a->weights[i]) : ((int16_t)a->weights[i] - (int16_t)b.weights[i]);
 		// on assure que tous les coefficients sont positifs
 		for (unsigned int j = i; weights[j] < 0; j++) {
 			weights[j] += BASE;
 			weights[j+1]--;
 		}
 	}
-	for (unsigned int i = 0; i < a->length; i++) {
+	for (unsigned int i = 0; i < al; i++) {
 		a->weights[i] = (uint8_t)weights[i];
 	}
 	a->sign = POSITIVE;
@@ -257,7 +276,7 @@ void integer_usubmr(Integer a, Integer *b) {
 	int16_t* weights = (int16_t*)malloc(sizeof(int16_t) * a.length);
 
 	for (unsigned int i = a.length - 1; i+1 > 0; i--) {
-		weights[i] = (i >= b->length) ? (uint16_t)(a.weights[i]) : ((uint16_t)a.weights[i] - (uint16_t)b->weights[i]);
+		weights[i] = (i >= b->length) ? (uint16_t)(a.weights[i]) : ((int16_t)a.weights[i] - (int16_t)b->weights[i]);
 		// on assure que tous les coefficients sont positifs
 		for (unsigned int j = i; weights[j] < 0; j++) {
 			weights[j] += BASE;
@@ -274,11 +293,7 @@ void integer_usubmr(Integer a, Integer *b) {
 	free(weights);
 }
 
-Integer integer_inverse(Integer n) {
-	n.sign = !n.sign;
-	return n;
-}
-
+// calcul a = a + b
 void integer_addm(Integer *a, Integer b) {
 	if (a->sign == b.sign) {
 		integer_uaddm(a, b);
@@ -286,37 +301,43 @@ void integer_addm(Integer *a, Integer b) {
 		return;
 	}
 
-	// if (a->sign > b.sign) {
-	// 	integer_usubml(a, b); // a <- a - b
-	// } else {
-	// 	integer_usubmr(b, a); // a <- -(b - a)
-	// }
 	if (a->sign > b.sign) {
-		if (integer_ucmp(*a, b) == 1) { // a > b
-			integer_usubml(a, b);
+		if (integer_ucmp(*a, b) == 1) { // |a| > |b|
+			integer_usubml(a, b); // a = |a| - |b|
 			a->sign = POSITIVE;
 		} else {
-			integer_usubmr(b, a);
+			integer_usubmr(b, a); // |b| >= |a| et b - a <= 0
 			a->sign = NEGATIVE;
 		}
-	} else {
-		if (integer_ucmp(b, *a) == 1) { // a > b
+	} else { // a < 0, b > 0, a + b = b - |a| = |b| - |a|
+		if (integer_ucmp(b, *a) == 1) { // |b| > |a|
 			integer_usubmr(b, a);
 			a->sign = POSITIVE;
-		} else {
-			integer_usubml(a, b);
+		} else { // |a| > |b|
+			integer_usubml(a, b); // a + b = -(|a| - |b|)
 			a->sign = NEGATIVE;
 		}
 	}
 }
 
+void integer_subm(Integer *a, Integer b) {
+	b.sign = !b.sign;
+	integer_addm(a, b);
+}
+
+Integer integer_inverse(Integer n) {
+	n.sign = !n.sign;
+	return n;
+}
+
 Integer integer_mul(Integer a, Integer b) {
-	Integer p = integer_new_b256(1, NULL, a.sign && b.sign);
+	bool sign = !(a.sign ^ b.sign);
+	Integer p = integer_new_b256(1, NULL, POSITIVE);
 	a.sign = b.sign = POSITIVE;
 	if (a.length > b.length) {
 		for (unsigned int j = 0; j < b.length * P; j++) {
 			if (integer_test_bit(b, j)) {
-				Integer shifted = integer_shift_left(a, j);
+				Integer shifted = integer_sl(a, j);
 				integer_uaddm(&p, shifted);
 				integer_destroy(shifted);
 			}
@@ -324,22 +345,25 @@ Integer integer_mul(Integer a, Integer b) {
 	} else {
 		for (unsigned int j = 0; j < a.length * P; j++) {
 			if (integer_test_bit(a, j)) {
-				Integer shifted = integer_shift_left(b, j);
+				Integer shifted = integer_sl(b, j);
 				integer_uaddm(&p, shifted);
 				integer_destroy(shifted);
 			}
 		}
 	}
+	p.sign = sign;
 	return p;
 }
 
 void integer_mulm(Integer *a, Integer b) {
-	Integer p = integer_new_b256(1, NULL, a->sign && b.sign);
+	bool sign = !(a->sign ^ b.sign);
+	Integer p = integer_new_b256(2, NULL, POSITIVE);
+	a->sign = POSITIVE;
 	b.sign = POSITIVE;
 	if (a->length > b.length) {
 		for (unsigned int j = 0; j < b.length * P; j++) {
 			if (integer_test_bit(b, j)) {
-				Integer shifted = integer_shift_left(*a, j);
+				Integer shifted = integer_sl(*a, j);
 				integer_uaddm(&p, shifted);
 				integer_destroy(shifted);
 			}
@@ -347,7 +371,7 @@ void integer_mulm(Integer *a, Integer b) {
 	} else {
 		for (unsigned int j = 0; j < a->length * P; j++) {
 			if (integer_test_bit(*a, j)) {
-				Integer shifted = integer_shift_left(b, j);
+				Integer shifted = integer_sl(b, j);
 				integer_uaddm(&p, shifted);
 				integer_destroy(shifted);
 			}
@@ -356,7 +380,7 @@ void integer_mulm(Integer *a, Integer b) {
 	free(a->weights);
 	a->weights = p.weights;
 	a->length = p.length;
-	a->sign = p.sign;
+	a->sign = sign;
 }
 
 
@@ -374,18 +398,20 @@ void integer_div(Integer n, Integer d, Integer *q, Integer *r) {
 		int* z = NULL;
 		z[0] = 0;
 	}
-	*q = integer_new_b256(1, NULL, n.sign || d.sign);
-	*r = integer_new_b256(1, NULL, POSITIVE);
-	for (unsigned int i = n.length * P - 1; i + 1 > 0; i--) {
-		*r = integer_shift_left(*r, 1);
-		integer_set_bitm(*r, 0, integer_test_bit(n, i));
+	uint32_t l = integer_length(n);
+
+	*q = integer_new_b256(2, NULL, !(n.sign ^ d.sign));
+	*r = integer_new_b256(2, NULL, POSITIVE);
+	for (unsigned int i = l * P - 1; i + 1 > 0; i--) {
+		integer_slm(r, 1);
+		integer_set_bitm(r, 0, integer_test_bit(n, i));
 		if (integer_ucmp(*r, d) >= 0) {
 			integer_usubml(r, d);
-			integer_set_bitm(*q, i, 1);
+			integer_set_bitm(q, i, 1);
 		}
 	}
 	if (integer_ucmp(*r, d) >= 0) {
-		Integer un = integer_new_b256(1, (uint8_t[]){1}, POSITIVE);
+		Integer un = integer_new_b256(2, (uint8_t[]){0, 1}, POSITIVE);
 		integer_usubml(r, d);
 		integer_uaddm(q, un);
 	}

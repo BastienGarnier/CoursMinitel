@@ -736,6 +736,8 @@ Le type $(\mathbb{Z}, +, \times)$ est beaucoup plus lourd à implanter en termes
 \textbf{Code :} \detokenize{solutions/part3/chapter2/adt_entiers_et_rationnels}
 
 \subsection{Listes}
+\textbf{REMARQUE (IMPORTANTE) : } l'implantation de la signature est faite \textit{telle quelle}. Dans une implantation réelle\footnote{\textit{i.e.} industrielle}, on ajoute soit des \textit{static inline} soit on évite d'implanter des routines d'une seule ligne, qui sont jolies d'un point de vue théorique mais absolument immonde et non optimisé dans la pratique. C'est une limitation du C qui laisse peu de libertés sur la programmation d'opérateurs (à comparer au C++).
+
 \solution{Listes virtuelles}
 
 \textbf{Code :} \detokenize{solutions/part3/chapter2/listes_virtuelles}
